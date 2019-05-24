@@ -1,0 +1,36 @@
+Package: archeR
+Type: Package
+Title: Identify Different Architectures of Sequence Elements
+Version: 0.0.0.9000
+Authors@R: person("Nikumbh", "Sarvesh", email = "sarvesh.nikumbh@gmail.com",
+  role = c("aut", "cre"))
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports:
+    BBmisc,
+    cluster,
+    cvTools,
+    dplyr,
+    gplots,   
+    ggplot2,
+    ggseqlogo,
+    heatmap3,
+    MASS,
+    pkgmaker,
+    purrr,
+    RColorBrewer,
+    readr,
+    reticulate,
+    reshape2,
+    seqinr,
+    stringr,
+    tibble,
+    tidyr
+RoxygenNote: 6.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

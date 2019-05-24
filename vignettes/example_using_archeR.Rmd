@@ -1,0 +1,24 @@
+---
+title: "pyNMF-experiments-synthetic-data-randomized"
+author: "Sarvesh Nikumbh"
+date: "`r Sys.time()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pyNMF-experiments-synthetic-data-randomized}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(archeR)
+```
+
+

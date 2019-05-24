@@ -1,0 +1,40 @@
+
+
+#' Visualize a given (PWM) matrix as a sequence logo.
+#'
+#' @param pwmMat Matrix (usually a PWM, but can be non-normalized/any matrix)
+#' to be represented as a sequence logo.
+#' @param position_labels Labels of the positions in the sequences.
+#' @param savePDFfilename Name of the file which will be saved as PDF.
+#'
+#' @return A ggplot object so you can simply call \code{print} or \code{save}
+#' on it later. If \code{savePDFfilename} is given, it is also saved and the
+#' \code{ggplot} object returned.
+#' @export
+#'
+#' @examples
+#'
+#'
+plot_ggseqlogo <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
+  # require(ggplot2)
+  # require(ggseqlogo)
+  #
+  p1 <- ggplot() + geom_logo(pwmMat, method="custom", seq_type="dna") +
+          theme_logo() +
+          # theme_update(plot.margin=grid::unit(c(0,0,0,0), "mm"),
+          #       axis.ticks.length = unit(0, "lines"),
+          #       axis.line = element_blank(),
+          #       axis.title.y = element_blank(),
+          #       axis.text.y = element_blank()
+          #       ) +
+          #theme_bw() +
+          scale_x_continuous(breaks = 1:ncol(pwmMat), labels = position_labels,
+                             expand = expand_scale(mult = c(0, 0))
+                             ) #+
+          #ylim(0.0, 2.0)
+  #
+  if(!is.null(savePDFfilename)){
+          ggsave(p1, device="pdf", width=20, height=2.5)
+    }
+  return(p1)
+}
