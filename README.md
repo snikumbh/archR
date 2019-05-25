@@ -6,7 +6,7 @@ To install this package, use
 
 ```
 library(devtools)
-devtools::install_github("snikumbh/archeR")
+withr::with_libpaths(<path_here>, install_github("snikumbh/archeR", auth_token="29e825452191fa6cdc161719d5a3ddeebe2b017b", build = FALSE)
 ```
 
 ## Troubleshooting Installation
