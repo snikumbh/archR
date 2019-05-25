@@ -56,7 +56,7 @@ get_q2_using_py <- function(x, seed_val, verbose = 0){
       D_W <- nmf_submatrixD[[1]]
       D_H <- nmf_submatrixD[[2]]
       #
-      reconstructed_submatrixA <- submatrixB %*% ginv(D_H) %*% ginv(D_W) %*% submatrixC
+      reconstructed_submatrixA <- submatrixB %*% MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% submatrixC
       #
       if(verbose == 1){
           print( paste("INFO-END", x["k_vals"], x["alpha"], sep=",") )
@@ -114,6 +114,9 @@ compute_q2 <- function(A, recA){
 #'
 #' @return A tibble of grid_search_results
 #' @export
+#'
+#' @importFrom magrittr %>%
+#' @importFrom purrr cross_df
 #'
 #' @examples
 #'
@@ -185,9 +188,9 @@ cv_model_select_pyNMF <- function(X,
         X <<- X
         cvfolds <<- cvfolds
         #nCoresUse <<- nCores
-        q2_vals <- unlist(rowLapply(grid_search_params, get_q2_using_py, seed_val))
+        q2_vals <- unlist(BBmisc::rowLapply(grid_search_params, get_q2_using_py, seed_val))
       }
-      grid_search_results <- add_column(grid_search_params, q2_vals)
+      grid_search_results <- tibble::add_column(grid_search_params, q2_vals)
       return(grid_search_results)
 }
 
@@ -336,6 +339,8 @@ get_best_alpha <- function(for_alpha, for_k, min_or_max = min){
 #' on it later.
 #' @export
 #'
+#' @import ggplot2
+#'
 #' @examples
 #'
 plot_cv_K <- function(averages){
@@ -371,6 +376,8 @@ plot_cv_K <- function(averages){
 #' @return A ggplot object so you can simply call \code{print} or \code{save}
 #' on it later.
 #' @export
+#'
+#' @import ggplot2
 #'
 #' @examples
 #'

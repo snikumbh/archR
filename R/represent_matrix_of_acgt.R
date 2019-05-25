@@ -6,7 +6,7 @@
 #' @param at_every Show tickmarks only at positions specified.
 #'
 #' @return A label vector that can be directly used for setting the tickmarks.
-#' @export
+#'
 #'
 #' @examples
 #'
@@ -104,40 +104,37 @@ represent_matrix_of_acgt <- function(givenMat,
       # heatmap3 solution
       seq_labels <- get_tick_labels(1:nSeqs, use_asis = F, at_every = mark_seq_at_every)
       pos_labels <- get_tick_labels(positions, use_asis = T, at_every = mark_pos_at_every)
-      heatmap3(plot_mat,
-               revC = T, # set this to T to plot starting from the top
-              Colv = NA,
-              Rowv = NA,
-              col = acgt_palette,
-              main = plot.title,
-              margins = c(2.5,3),
-              scale = "none",
-              # positions along x-axis
-              xlab=paste0('positions'),
-              labCol = pos_labels$label_val,
-              # sequences along y-axis
-              ylab=paste0('sequences'),
-              labRow = seq_labels$label_val,
-              # xtick = T,
-              # add.expr = function(pos_labels=pos_labels, seq_labels=seq_labels) {
-              #                        axis(side=1, at = pos_labels$label_val, labels = pos_labels$label_val, tick = T)
-              #                        #axis(side=2, at = , labels = seq_labels, tick = T)
-              #                       },
-              legendfun = function() showLegend(legend=sinuc,
-                                                lwd = NA,
-                                                horiz = F,
-                                                seg.len = 0.1,
-                                                fill = iupac_colors,
-                                                title="Nucleotides" #Legend/color key title
-                                                ),
-              useRaster = TRUE
-              )
+      heatmap3::heatmap3(plot_mat,
+                revC = T, # set this to T to plot starting from the top
+                Colv = NA,
+                Rowv = NA,
+                col = acgt_palette,
+                main = plot.title,
+                margins = c(2.5,3),
+                scale = "none",
+                # positions along x-axis
+                xlab=paste0('positions'),
+                labCol = pos_labels$label_val,
+                # sequences along y-axis
+                ylab=paste0('sequences'),
+                labRow = seq_labels$label_val,
+                # xtick = T,
+                # add.expr = function(pos_labels=pos_labels, seq_labels=seq_labels) {
+                #                        axis(side=1, at = pos_labels$label_val, labels = pos_labels$label_val, tick = T)
+                #                        #axis(side=2, at = , labels = seq_labels, tick = T)
+                #                       },
+                legendfun = function() heatmap3::showLegend(legend=sinuc,
+                                                  lwd = NA,
+                                                  horiz = F,
+                                                  seg.len = 0.1,
+                                                  fill = iupac_colors,
+                                                  title="Nucleotides" #Legend/color key title
+                                                  ),
+                useRaster = TRUE
+                )
       # axis(side=1, at = pos_labels$label_val, labels = pos_labels$label_val, tick = T)
       # axis(side=2, at = seq_labels$label_ind, labels = seq_labels$label_val, tick = T)
       if(!is.na(savePDFfilename)){
         dev.off()
       }
 }
-
-
-

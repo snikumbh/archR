@@ -21,4 +21,207 @@ knitr::opts_chunk$set(
 library(archeR)
 ```
 
+## Fetch data
+
+```{r sinuc-profiles-synthetic-dataset-2, echo=FALSE}
+
+# Simply get filename and create the feature matrix
+#data("example_data")
+#devtools::load_all()
+
+# creating data matrix from FASTA file
+inputFastaFilename <- system.file("extdata", "example_data.fa", package = "archeR", mustWork = TRUE)
+#inputFastaFilename <- file.path("inst/extdata", 'example_data.fa') 
+tss.seqs_o <- prepare_data_from_FASTA(inputFastaFilename)
+nSeqs <- ncol(tss.seqs_o)
+positions <- setdiff(seq(-100,100),c(0))
+sinuc <- c('A', 'C', 'G', 'T')
+# Randomize the sequence order
+changed_order <- sample.int(nSeqs, nSeqs, replace = FALSE)
+tss.seqs <- tss.seqs_o[ , changed_order]
+
+```
+
+
+```{r plot-seqs, echo=FALSE}
+# Represent sequences as heatmap
+represent_matrix_of_acgt(tss.seqs, positions = positions)
+
+```
+
+## Run NMF and model selection
+
+As is obvious, we need to fix the optimum number of factors before proceding to factorize. 
+Additionally, as can be noted from the objective function of NMF (see equation above), some parameters determine the quality of factorization. 
+For example, in the above, these are alpha and l1_ratio.
+
+In order to determine the best performing model among the numerous possibilities, we perform a model selection procedure. 
+We tune the parameters by 5-fold cross-validation in which we test for the reconstruction error of each model.
+Note that the number of folds can be specified by the user.
+
+In the following, we test the following range of values for $K$ and $\alpha$.
+
+$K = \{3, 30\}$
+
+$\alpha = 2^{-6,\ldots,3}$
+
+```{r pyNMF-on-data, echo=FALSE, warning=FALSE, message=FALSE}
+## Random ordered data
+data_mat <- tss.seqs
+##
+param_ranges <- NULL
+param_ranges$alphaBase <- 0
+param_ranges$alphaPow <- 0
+param_ranges$k_vals <- seq(3, 30)
+kFolds <- 5
+nCoresUse <- 8
+seed_val <- 10208090
+cat("Choosing optimal K\n")
+# Fix number of patterns (K)
+start <- Sys.time()
+chooseK_logfilename <- file.path(paste0('pyNMF-synthetic-data2-worker-output-chooseK-',                     paste(Sys.Date(), format(Sys.time(), "%X"), sep='-'), '.txt'))
+model_selectK <- invisible(cv_model_select_pyNMF(X=tss.seqs, 
+                                                 param_ranges=param_ranges, 
+                                                 kFolds=kFolds, 
+                                                 parallel=FALSE, 
+                                                 nCores=nCoresUse, 
+                                                 seed=seed_val,
+                                                 logfile=chooseK_logfilename,
+                                                 set_verbose = 0
+)
+)
+print(Sys.time() - start)
+
+best_k <- get_best_k(model_selectK)
+q2_means_by_k_vals <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, mean)
+q2_threshold <- get_q2_threshold_by_k(model_selectK)
+Q2vsK <- plot_cv_K(q2_means_by_k_vals)
+print(Q2vsK)
+
+###########
+
+param_ranges <- NULL
+param_ranges$alphaBase <- 2
+param_ranges$alphaPow <- seq(-6, 3)
+param_ranges$k_vals <- best_k
+seed_val <- 10208090
+start <- Sys.time()
+chooseAlpha_logfilename <- file.path(paste0('pyNMF-synthetic-data2-worker-output-chooseAlpha-',                                                               paste(Sys.Date(), format(Sys.time(), "%X"), sep='-'), '.txt')
+)
+model_selectAlpha <- invisible(cv_model_select_pyNMF(X=tss.seqs,
+                                                     param_ranges=param_ranges,
+                                                     kFolds=kFolds,
+                                                     parallel=FALSE,
+                                                     nCores=nCoresUse,
+                                                     seed=seed_val,
+                                                     logfile=chooseAlpha_logfilename,
+                                                     set_verbose = 0
+)
+)
+print(Sys.time() - start)
+
+best_alpha <- get_best_alpha(for_alpha = model_selectAlpha, for_k = model_selectK, min_or_max = min)
+q2_means_by_alpha <- get_q2_aggregates_chosen_var(model_selectAlpha, model_selectAlpha$alpha, mean)
+#
+cat(paste0("## Best K: ", best_k, ", Best Alpha: ", best_alpha, '\n\n'))
+#
+Q2vsAlpha <- plot_cv_Alpha(q2_means_by_alpha, q2_threshold)
+print(Q2vsAlpha)
+#
+# 
+```
+
+```{r final-nmf-on-data, echo=FALSE}
+cat("Performing NMF on the complete data...")
+seed_val <- 10208090
+start <- Sys.time()
+result <- perform_nmf(tss.seqs, 
+                              nPatterns = as.integer(best_k),
+                              nIter = as.integer(1000),
+                              givenAlpha = best_alpha,
+                              givenL1_ratio = 1,
+                              seed_val = as.integer(seed_val)
+                              )
+cat("done\n")
+print(Sys.time() - start)
+
+
+```
+
+
+```{r fetch-factorized-matrices, echo=FALSE}
+featuresMatrix <- result[[1]]
+samplesMatrix <- result[[2]]
+
+```
+
+
+
+```{r sparsify-feature-matrix, fig.height=2, fig.width=25, echo=FALSE, message=FALSE, warning=FALSE}
+cat(paste0("Number of factors: ", best_k, "\n"))
+# Sparsify features
+cat("Sparsifying features matrix...")
+spFeaturesMatrix <- sparsify_mat(featuresMatrix)
+cat("done\n")
+#
+```
+
+
+# Combined plots -- Non-sparsified Features Matrix
+```{r combined-plot-patterns-as-PWMs-non-sparse, fig.height=5, fig.width=25, echo=FALSE, warning=FALSE, message=FALSE}
+# Plot here and also save as PDF -- both done in the function
+# filename_heatmaps <- file.path(paths_list$synthetic_data_results_path, "architectures-as-patterns-pyNMF-sparsified-heatmaps.pdf")
+# viz_all_factors_as_heatmap(featuresMatrix)
+# #
+# filename <- file.path(paths_list$synthetic_data_results_path, "architectures-as-patterns-pyNMF-non-sparsified.pdf")
+# viz_all_factors_as_seqlogo(featuresMatrix)
+#
+viz_all_factors_in_combined_heatmaps_seqlogos(featuresMatrix, add_pseudo_counts = F)
+```
+
+
+
+```{r Cluster-sequences, echo=FALSE, warning=FALSE, message=FALSE}
+
+final_nClust <- choose_clusters(t(samplesMatrix), clustMethod = "kmeans", nCluster_vals_test = seq(3,20))
+cat("Number of clusters: ", final_nClust, "\n")
+
+clustering_sol <- get_clusters(t(samplesMatrix), clustMethod = "kmeans", final_nClust)
+
+```
+
+
+```{r plot-seqs-post-nmf, fig.align = "center", echo=FALSE}
+# Represent sequences as heatmap
+# represent_matrix_of_acgt(tss.seqs, positions = positions, plot.title = "Given")
+# represent_matrix_of_acgt(tss.seqs[ , ord_hm2$colInd], positions, plot.title = "After NMF")
+# represent_matrix_of_acgt(tss.seqs, positions = positions, plot.title = "Given")
+# # represent_matrix_of_acgt(tss.seqs[ , ss_hclust], positions = positions, plot.title = "hclust")
+# # represent_matrix_of_acgt(tss.seqs[ , ord_hm2$colInd], positions, plot.title = "ord_hm2")
+represent_matrix_of_acgt(tss.seqs[ , unlist(clustering_sol$reordering_idx)], positions, plot.title = "NMF+kmeans")
+
+
+```
+
+# Report architectures characteristic of clusters
+
+```{r report-arch, fig.height=7, fig.width=25, echo=FALSE, warning=FALSE, message=FALSE}
+#source(file.path(paths_list$src_path, "plot_arch_for_clusters.R"))
+
+plot_arch_for_clusters(samplesMatrix, featuresMatrix, final_nClust, clustering_sol, tss.seqs, positions)
+
+# sprintf("Time taken from start to end: %s", format(Sys.time() - processStart, digits = 5, trim = F))
+```
+
+# Conclusion
+NMF + K-means on the given data successfully identifies different clusters of sequences with characteristic architectures.
+
+
+
+# Session Info
+```{r session_info, include=TRUE, echo=TRUE, results='markup'}
+sessionInfo()
+```
+
+
 

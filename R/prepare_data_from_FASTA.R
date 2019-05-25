@@ -1,3 +1,12 @@
+#' Title
+#'
+#' @param givenSeq
+#'
+#' @return
+#'
+#'
+#' @examples
+#'
 one_hot_encode <- function(givenSeq){
   # Input: A DNA seq as a vector of caharacters (A/C/G/T)
   # Returns: A row matrix of size 4*seq_len
@@ -13,6 +22,15 @@ one_hot_encode <- function(givenSeq){
 }
 
 
+#' Title
+#'
+#' @param givenFastaSeqs
+#'
+#' @return
+#'
+#'
+#' @examples
+#'
 get_one_hot_encoded_seqs <- function(givenFastaSeqs){
   # Input: list of FASTA seqs
   # Returns: A one-hot encoded feature matrix for the sequences
@@ -23,6 +41,15 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs){
 }
 
 
+#' Title
+#'
+#' @param givenSeqs
+#'
+#' @return
+#'
+#'
+#' @examples
+#'
 assert_attributes <- function(givenSeqs){
   # Check that all sequences are of same length
   length_vals <- as.factor(lapply(givenSeqs, length))
@@ -33,12 +60,22 @@ assert_attributes <- function(givenSeqs){
 }
 
 
+#' Title
+#'
+#' @param inputFastaFilename
+#'
+#' @return Returns one-hot-encoded sequences as matrix with dimensions #Features
+#' x #Sequences
+#' @export
+#'
+#' @examples
+#'
 prepare_data_from_FASTA <- function(inputFastaFilename){
   # Input: Complete FASTA filename with path
-  # 
+  #
   # Returns: data matrix
   start <- Sys.time()
-  givenSeqs <- read.fasta(inputFastaFilename, seqtype="DNA", as.string = TRUE)
+  givenSeqs <- seqinr::read.fasta(inputFastaFilename, seqtype="DNA", as.string = TRUE)
   #
   assert_attributes(givenSeqs)
   #
