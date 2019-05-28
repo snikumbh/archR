@@ -2,7 +2,7 @@
 % Please edit documentation in R/pyNMF_model_selection_functions.R
 \name{generate_folds}
 \alias{generate_folds}
-\title{Generate cross-validation data splits}
+\title{Generate Cross-Validation Data Splits}
 \usage{
 generate_folds(Xdims, kFolds, seed_val)
 }
@@ -18,7 +18,8 @@ A list of two elements: rowIDs and columnIDs for different cross-
 validation folds.
 }
 \description{
-Generate cross-validation data splits
+This function generates the row and column indices for the cross-
+validation splits.
 }
 \examples{
 

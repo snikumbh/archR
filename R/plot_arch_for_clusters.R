@@ -1,20 +1,28 @@
-#' Plot the sequence architectures of the sequence clusters.
+#' @title Plot the sequence architectures of the sequence clusters.
+#'
+#' @description The different architectures characteristic of the different
+#' sequence clusters are visualized. Therefore, the function takes as arguments
+#' the samplesMatrix and featuresMatrix output by NMF, the number of clusters,
+#' the clustering solution obtained and the position labels for the sequences.
+#'
 #'
 #' @param givenSamplesMat The samples matrix resulting for NMF.
 #' @param givenFeaturesMatrix The features matrix resulting from NMF.
 #' @param nCluster The number of clusters.
 #' @param clustering_sol The clustering solution as returned by
 #' \code{get_clusters} function.
-#' @param seqs May not be needed.
-#' @param positions Labels of the positions in the sequences. Passed on to function
-#' \code{viz_all_factors_in_combined_heatmaps_seqlogos}
+#' @param seqs For representing the sequences as an image (TO-DO: May not be needed).
+#' @param position_labels Labels of the positions in the sequences. Used for
+#' visualization with function \code{viz_all_factors_in_combined_heatmaps_seqlogos}.
 #'
-#' @return
+#' @return nothing.
 #'
 #' @export
 #' @examples
 #'
-plot_arch_for_clusters <- function(givenSamplesMat, givenFeaturesMatrix, nCluster, clustering_sol, seqs, positions){
+plot_arch_for_clusters <- function(givenSamplesMat, givenFeaturesMatrix,
+                                   nCluster, clustering_sol, seqs,
+                                   position_labels){
 
   for (grp_ID in 1:nCluster){
         select_block <- givenSamplesMat[, clustering_sol$reordering_idx[[grp_ID]]]
@@ -51,7 +59,7 @@ plot_arch_for_clusters <- function(givenSamplesMat, givenFeaturesMatrix, nCluste
         #                           plot.title = paste0(clustering_sol$clust_sol$size[grp_ID], " sequences in cluster ", grp_ID)
         #                         )
         #
-        viz_all_factors_in_combined_heatmaps_seqlogos(feat_in_block, position_labels = positions, add_pseudo_counts = F)
+        viz_all_factors_in_combined_heatmaps_seqlogos(feat_in_block, position_labels = positions_labels, add_pseudo_counts = F)
   }
 
 

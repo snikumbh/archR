@@ -2,18 +2,18 @@
 % Please edit documentation in R/prepare_data_from_FASTA.R
 \name{one_hot_encode}
 \alias{one_hot_encode}
-\title{Title}
+\title{One-hot encode}
 \usage{
 one_hot_encode(givenSeq)
 }
 \arguments{
-\item{givenSeq}{}
+\item{givenSeq}{A single sequence.}
 }
 \value{
-
+The one-hot encoded sequence.
 }
 \description{
-Title
+One-hot encode a given DNA sequence.
 }
 \examples{
 

@@ -2,22 +2,25 @@
 % Please edit documentation in R/pyNMF_model_selection_functions.R
 \name{get_best_alpha}
 \alias{get_best_alpha}
-\title{Get the best perfing value of \eqn{\alpha}.}
+\title{Get Best \eqn{\alpha}.}
 \usage{
 get_best_alpha(for_alpha, for_k, min_or_max = min)
 }
 \arguments{
-\item{for_alpha}{grid_search_result copy for \eqn{\alpha}}
+\item{for_alpha}{The return value from \code{\link{cv_model_select_pyNMF}}.
+This is used for \eqn{\alpha}.}
 
-\item{for_k}{grid_search_search_result copy for K.}
+\item{for_k}{The return value from \code{\link{cv_model_select_pyNMF}}.
+This is used for K.}
 
-\item{min_or_max}{Specify whether min or max is to be used as the condition to choose one when multiple values satisfy the threshold.}
+\item{min_or_max}{Specify whether min or max is to be used as the condition
+to choose one when multiple values satisfy the threshold.}
 }
 \value{
 The best performing value of \eqn{\alpha}.
 }
 \description{
-Get the best perfing value of \eqn{\alpha}.
+Get the best performing value of \eqn{\alpha}.
 }
 \examples{
 

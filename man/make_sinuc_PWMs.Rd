@@ -2,8 +2,7 @@
 % Please edit documentation in R/make_sinuc_PWMs.R
 \name{make_sinuc_PWMs}
 \alias{make_sinuc_PWMs}
-\title{Make a PWM-resembling matrix with 4 rows for 4 nucleotides as relevant number
- of columns out of a given n-vector}
+\title{Make a PWM-resembling matrix out of a given n-vector}
 \usage{
 make_sinuc_PWMs(givenMatrix, add_pseudo_counts = T, scale = T)
 }
@@ -23,8 +22,7 @@ G, T) and the relevant number of columns (i.e., number of elements in given
 vector/4)
 }
 \description{
-Make a PWM-resembling matrix with 4 rows for 4 nucleotides as relevant number
- of columns out of a given n-vector
+The given matrix (or simply a vector) is reshaped to have four rows for four nucleotides and a relevant number of columns.
 }
 \examples{
 

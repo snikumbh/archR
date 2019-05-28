@@ -2,20 +2,19 @@
 % Please edit documentation in R/represent_matrix_of_acgt.R
 \name{represent_matrix_of_acgt}
 \alias{represent_matrix_of_acgt}
-\title{Represent or Image a matrix of sequences given a data matrix  of size
-\#Features x \#Sequences.}
+\title{Represent a Matrix of Sequences as an Image.}
 \usage{
-represent_matrix_of_acgt(givenMat, positions,
+represent_matrix_of_acgt(givenMat, position_labels,
   mark_seq_at_every = as.integer(ncol(givenMat) * 0.1),
   mark_pos_at_every = 10, plot.title = "DNA Sequences",
-  savePDFfilename = NA, verbose = 0)
+  savePDFfilename = NULL, verbose = 0)
 }
 \arguments{
 \item{givenMat}{The data matrix describing the set of sequences to be
 visualized as an image. The current version is applicable only for DNA
 sequences.}
 
-\item{positions}{Labels of the positions in the sequences.}
+\item{position_labels}{Labels of the positions in the sequences.}
 
 \item{mark_seq_at_every}{Tickmarks for sequences, i.e., these are y-ticks.}
 
@@ -32,11 +31,11 @@ positive value. For every percentage N-th position, specify 0.01 for 10\%.}
 set to \code{1} which will print messages.}
 }
 \value{
-
+nothing.
 }
 \description{
-Represent or Image a matrix of sequences given a data matrix  of size
-\#Features x \#Sequences.
+The data matrix is expected to have features alogn the rows and
+sequences along the columns.
 }
 \examples{
 

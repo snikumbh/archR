@@ -1,4 +1,7 @@
-#' Plot a heatmap using ggplot2.
+#' @title Plot a given matrix as a heatmap using ggplot2.
+#'
+#' @description The given matrix is plotted as a heatmap using \code{ggplot2}'s
+#' \code{geom_tile}.
 #'
 #' @param pwmMat Matrix (usually a PWM, but can be non-normalized/any matrix)
 #' to be represented as a heatmap.
@@ -10,12 +13,34 @@
 #' \code{ggplot} object returned.
 #' @export
 #'
+#' @importFrom dplyr mutate
+#' @importFrom reshape2 melt
+#' @import ggplot2
+#' @import ggseqlogo
+#'
 #' @examples
 #'
 #'
 plot_ggheatmap <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
-        # require(ggplot2)
-        # require(reshape2)
+        if(!is.matrix(pwmMat)){
+          stop("Expecting a matrix with 4 rows")
+        }
+        if(!(nrow(pwmMat) == 4)){
+          stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
+        }
+        #
+        if(length(position_labels) < ncol(pwmMat)){
+          stop(paste0("Inadequate position labels supplied",
+                      ncol(pwmMat) - length(position_labels))
+          )
+        }
+        #
+        if(length(position_labels) > ncol(pwmMat)){
+          stop(paste0("Overabundant position labels supplied",
+                      length(position_labels) - ncol(pwmMat))
+          )
+        }
+        # Convert pwmMat to df, heatmap by ggplot-way
         pwmMat_df <- as.data.frame(pwmMat)
         #
         pwmMat_df <- mutate(pwmMat_df, Nucleotides = rownames(pwmMat_df))
@@ -41,6 +66,9 @@ plot_ggheatmap <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
                     #              )
 
         if(!is.null(savePDFfilename)){
+                if(file.exists(savePDFfilename)){
+                  warning("File exists, will overwrite")
+                }
                 ggsave(p1, device="pdf", width=20, height=2.5)
         }
         return(p1)

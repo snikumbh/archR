@@ -1,5 +1,6 @@
-#' Make a PWM-resembling matrix with 4 rows for 4 nucleotides as relevant number
-#'  of columns out of a given n-vector
+#' @title Make a PWM-resembling matrix out of a given n-vector
+#'
+#' @description The given matrix (or simply a vector) is reshaped to have four rows for four nucleotides and a relevant number of columns.
 #'
 #' @param givenMatrix Actually a vector that will be reshaped into a (PWM)
 #' matrix of DNA sequences.
@@ -12,6 +13,7 @@
 #' G, T) and the relevant number of columns (i.e., number of elements in given
 #' vector/4)
 #' @export
+#'
 #'
 #' @examples
 #'

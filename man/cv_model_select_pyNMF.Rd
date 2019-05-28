@@ -2,7 +2,7 @@
 % Please edit documentation in R/pyNMF_model_selection_functions.R
 \name{cv_model_select_pyNMF}
 \alias{cv_model_select_pyNMF}
-\title{Perform cross-validation and model selection}
+\title{Perform Model Selection via Cross-Validation}
 \usage{
 cv_model_select_pyNMF(X, param_ranges, kFolds = 5, parallel = FALSE,
   nCores = NA, seed_val = 10208090, logfile = "outfile.txt",
@@ -32,7 +32,9 @@ can be set to \code{1} which will print messages. Value passed to the
 A tibble of grid_search_results
 }
 \description{
-Perform cross-validation and model selection
+The function performs model selection via cross-validation for
+choosing the optimal values of parameters for NMF. These are K, the number of
+ factors in NMF, and \eqn{\alpha}, the sparsity coefficient.
 }
 \examples{
 

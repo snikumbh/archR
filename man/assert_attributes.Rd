@@ -2,19 +2,17 @@
 % Please edit documentation in R/prepare_data_from_FASTA.R
 \name{assert_attributes}
 \alias{assert_attributes}
-\title{Title}
+\title{Assert attributes of sequences}
 \usage{
 assert_attributes(givenSeqs)
 }
 \arguments{
-\item{givenSeqs}{}
+\item{givenSeqs}{DNA sequences as a list.}
 }
 \value{
-
+nothing. Only prints a warning to the screen.
 }
 \description{
-Title
-}
-\examples{
-
+Assert the attributes of the sequences provided. This includes checking for
+(1) the length of the sequences, (2) characters in the sequences.
 }

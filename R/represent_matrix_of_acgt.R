@@ -1,4 +1,6 @@
-#' Getter function for labels of x- or y-ticks.
+#' @title Getter function for labels of x- or y-ticks.
+#'
+#' @description A convenience function to provide the right set of x-tick labels for the image matrix representing the sequences.
 #'
 #' @param givenVec The vector of values for the x- or y-ticks.
 #' @param use_asis Use the vector \emph{as is}, i.e., all given values will
@@ -29,13 +31,15 @@ get_tick_labels <- function(givenVec, use_asis = T, at_every){
 }
 
 
-#' Represent or Image a matrix of sequences given a data matrix  of size
-#' \#Features x \#Sequences.
+#' @title Represent a Matrix of Sequences as an Image.
+#'
+#' @description The data matrix is expected to have features alogn the rows and
+#' sequences along the columns.
 #'
 #' @param givenMat The data matrix describing the set of sequences to be
 #' visualized as an image. The current version is applicable only for DNA
 #' sequences.
-#' @param positions Labels of the positions in the sequences.
+#' @param position_labels Labels of the positions in the sequences.
 #' @param mark_seq_at_every Tickmarks for sequences, i.e., these are y-ticks.
 #' @param mark_pos_at_every Tickmarks for sequence positions, i.e., these are
 #' x-ticks. The tickmarks can be specified for every N-th position or every
@@ -46,18 +50,18 @@ get_tick_labels <- function(givenVec, use_asis = T, at_every){
 #' @param verbose Default \code{0} which will not print any messages, or can be
 #' set to \code{1} which will print messages.
 #'
-#' @return
+#' @return nothing.
 #'
 #' @export
 #'
 #' @examples
 #'
 represent_matrix_of_acgt <- function(givenMat,
-                                     positions,
+                                     position_labels,
                                      mark_seq_at_every = as.integer(ncol(givenMat)*0.1), #percentage value, 10 as default
                                      mark_pos_at_every = 10,
                                      plot.title = 'DNA Sequences',
-                                     savePDFfilename=NA,
+                                     savePDFfilename=NULL,
                                      verbose = 0){
       # givenMat is expected as a matrix of #Features x #Sequences
       # WARNING: This seems to not work when pseudo-counts are added to the data matrix
@@ -92,7 +96,7 @@ represent_matrix_of_acgt <- function(givenMat,
       # we plot #Sequences x #Features
       plot_mat <- t(plot_mat)
       #
-      if(!is.na(savePDFfilename)){
+      if(!is.null(savePDFfilename)){
           pdf(savePDFfilename)
       }
       # heatmap.2 solution is slow (available in `represent_matrix_of_acgt_heatmap2.R`),
@@ -134,7 +138,7 @@ represent_matrix_of_acgt <- function(givenMat,
                 )
       # axis(side=1, at = pos_labels$label_val, labels = pos_labels$label_val, tick = T)
       # axis(side=2, at = seq_labels$label_ind, labels = seq_labels$label_val, tick = T)
-      if(!is.na(savePDFfilename)){
+      if(!is.null(savePDFfilename)){
         dev.off()
       }
 }

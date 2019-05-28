@@ -2,20 +2,30 @@
 % Please edit documentation in R/prepare_data_from_FASTA.R
 \name{prepare_data_from_FASTA}
 \alias{prepare_data_from_FASTA}
-\title{Title}
+\title{Given a FASTA file, prepares the data matrix with one-hot encoded features.}
 \usage{
 prepare_data_from_FASTA(inputFastaFilename)
 }
 \arguments{
-\item{inputFastaFilename}{}
+\item{inputFastaFilename}{Provide the name (with complete path) of the input
+FASTA file.}
 }
 \value{
-Returns one-hot-encoded sequences as matrix with dimensions #Features
-x #Sequences
+A matrix of sequences represented with one-hot-encoding. Dimensions
+of the matrix: 4*(sequence length) x number of sequences.
 }
 \description{
-Title
+In the data matrix, the features are along rows, and sequences along columns.
+Currently, only mono-character features for DNA sequences are supported.
+Therefore, the length of the feature vector is four times the
+length of the sequences (since the DNA alphabet is four characters).
 }
 \examples{
+\donttest{
+sample_file <- system.file("extdata", "example_data.fa", package = "archeR",
+                          mustWork = TRUE)
+sample_data <- prepare_data_from_FASTA(sample_file)
+}
+
 
 }

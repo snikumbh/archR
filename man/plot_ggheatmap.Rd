@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ggheatmap.R
 \name{plot_ggheatmap}
 \alias{plot_ggheatmap}
-\title{Plot a heatmap using ggplot2.}
+\title{Plot a given matrix as a heatmap using ggplot2.}
 \usage{
 plot_ggheatmap(pwmMat, position_labels = NULL, savePDFfilename = NULL)
 }
@@ -20,7 +20,8 @@ on it later. If \code{savePDFfilename} is given, it is also saved and the
 \code{ggplot} object returned.
 }
 \description{
-Plot a heatmap using ggplot2.
+The given matrix is plotted as a heatmap using \code{ggplot2}'s
+\code{geom_tile}.
 }
 \examples{
 

@@ -2,23 +2,23 @@
 % Please edit documentation in R/pyNMF_model_selection_functions.R
 \name{get_q2_aggregates_chosen_var}
 \alias{get_q2_aggregates_chosen_var}
-\title{Aggregate \eqn{Q^2} values fromthe grid search results}
+\title{Aggregate \eqn{Q^2} Values}
 \usage{
 get_q2_aggregates_chosen_var(x, chosen_var, chosen_func)
 }
 \arguments{
-\item{x}{The grid_search_result return value.}
+\item{x}{The return object from \code{\link{cv_model_select_pyNMF}}.}
 
 \item{chosen_var}{The variable to aggregate over.}
 
-\item{chosen_func}{The aggregate function to use (should be something already
-existing wihtin R). Values such as \code{mean}, or \code{sd} are allowed.}
+\item{chosen_func}{The aggregate function to use (should be a function already
+existing wihtin R). Possible values are: \code{mean} and \code{sd}.}
 }
 \value{
 The mean of $Q^2$ values per the chosen variable
 }
 \description{
-Aggregate \eqn{Q^2} values fromthe grid search results
+Aggregate the \eqn{Q^2} values from the grid search results.
 }
 \examples{
 

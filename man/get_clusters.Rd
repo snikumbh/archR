@@ -24,7 +24,8 @@ A list containing the clustering result \code{clust_sol}, and the
 reordered indices \code{reordering_idx}.
 }
 \description{
-Get a specified number of clusters from the given data.
+Get the specified number of clusters from the given data using
+the chosen clusering method.
 }
 \examples{
 

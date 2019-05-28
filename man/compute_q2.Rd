@@ -2,7 +2,7 @@
 % Please edit documentation in R/pyNMF_model_selection_functions.R
 \name{compute_q2}
 \alias{compute_q2}
-\title{Compute \eqn{Q^2} value}
+\title{Compute \eqn{Q^2} Value}
 \usage{
 compute_q2(A, recA)
 }
@@ -15,7 +15,7 @@ compute_q2(A, recA)
 Q^2, the reconstruction accuracy
 }
 \description{
-Compute \eqn{Q^2} value
+Computes the reconstruction accuracy, \eqn{Q^2}, given the original matrix and the recontructed matrix to check against.
 }
 \examples{
 

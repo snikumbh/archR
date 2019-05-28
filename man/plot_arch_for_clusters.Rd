@@ -5,7 +5,7 @@
 \title{Plot the sequence architectures of the sequence clusters.}
 \usage{
 plot_arch_for_clusters(givenSamplesMat, givenFeaturesMatrix, nCluster,
-  clustering_sol, seqs, positions)
+  clustering_sol, seqs, position_labels)
 }
 \arguments{
 \item{givenSamplesMat}{The samples matrix resulting for NMF.}
@@ -17,16 +17,19 @@ plot_arch_for_clusters(givenSamplesMat, givenFeaturesMatrix, nCluster,
 \item{clustering_sol}{The clustering solution as returned by
 \code{get_clusters} function.}
 
-\item{seqs}{May not be needed.}
+\item{seqs}{For representing the sequences as an image (TO-DO: May not be needed).}
 
-\item{positions}{Labels of the positions in the sequences. Passed on to function
-\code{viz_all_factors_in_combined_heatmaps_seqlogos}}
+\item{position_labels}{Labels of the positions in the sequences. Used for
+visualization with function \code{viz_all_factors_in_combined_heatmaps_seqlogos}.}
 }
 \value{
-
+nothing.
 }
 \description{
-Plot the sequence architectures of the sequence clusters.
+The different architectures characteristic of the different
+sequence clusters are visualized. Therefore, the function takes as arguments
+the samplesMatrix and featuresMatrix output by NMF, the number of clusters,
+the clustering solution obtained and the position labels for the sequences.
 }
 \examples{
 

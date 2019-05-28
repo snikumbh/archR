@@ -45,7 +45,7 @@ get_q2_using_py <- function(x, seed_val, verbose = 0){
       # Setup params
       # NMF call
       # Using python/scikit-learn NMF
-      nmf_submatrixD <- perform_nmf(submatrixD,
+      nmf_submatrixD <- perform_nmf_func(submatrixD,
                                     nPatterns = as.integer(this_k),
                                     nIter = as.integer(1000),
                                     givenAlpha = this_alpha,
@@ -70,7 +70,9 @@ get_q2_using_py <- function(x, seed_val, verbose = 0){
 
 
 
-#' Compute \eqn{Q^2} value
+#' @title Compute \eqn{Q^2} Value
+#'
+#' @description Computes the reconstruction accuracy, \eqn{Q^2}, given the original matrix and the recontructed matrix to check against.
 #'
 #' @param A The original matrix
 #' @param recA The reconstructed matrix
@@ -84,7 +86,18 @@ get_q2_using_py <- function(x, seed_val, verbose = 0){
 compute_q2 <- function(A, recA){
   # input: original matrix, reconstructed portion
   # return: computed q2 val
-
+  if(!is.matrix(A)){
+      stop("Original matrix is not of type matrix")
+  }
+  if(!is.matrix(recA)){
+      stop("Reconstructed matrix is not of type matrix")
+  }
+  if(is.na(A) & sum(dim(A))){
+      stop("Empty: Original matrix")
+  }
+  if(is.na(recA) & sum(dim(recA))){
+      stop("Empty: Reconstructed matrix")
+  }
   second_term_num <- sum((A - recA)^2)
   second_term_den <- sum(A^2) #TO-DO: make sure this is not zero
   if(second_term_den != 0.0){
@@ -98,7 +111,11 @@ compute_q2 <- function(A, recA){
 
 
 
-#' Perform cross-validation and model selection
+#' @title Perform Model Selection via Cross-Validation
+#'
+#' @description The function performs model selection via cross-validation for
+#' choosing the optimal values of parameters for NMF. These are K, the number of
+#'  factors in NMF, and \eqn{\alpha}, the sparsity coefficient.
 #'
 #' @param X The given data matrix
 #' @param param_ranges An object holding the range of values for parameters
@@ -195,7 +212,10 @@ cv_model_select_pyNMF <- function(X,
 }
 
 
-#' Generate cross-validation data splits
+#' @title Generate Cross-Validation Data Splits
+#'
+#' @description This function generates the row and column indices for the cross-
+#' validation splits.
 #'
 #' @param Xdims Dimensions of matrix data matrix X.
 #' @param kFolds Number of cross-validation folds.
@@ -227,7 +247,7 @@ generate_folds <- function(Xdims, kFolds, seed_val){
 #'
 #' @examples
 #'
-get_best_k <- function(x){
+get_best_K <- function(x){
       # Assumes, max q2_val is best
       # Returns simply the best performing K value
       averages <- get_q2_aggregates_chosen_var(x, chosen_var=x$k_vals, mean)
@@ -237,21 +257,23 @@ get_best_k <- function(x){
       # q2_std <- unlist(aggregate(x, by=list(k = x$k_vals), sd)["q2_vals"])
       # q2_threshold <- as.numeric( x[idx_best,"q2_vals"] - q2_std )
       #
-      best_k <- as.numeric( averages[idx_best, "rel_var"] )
+      best_K <- as.numeric( averages[idx_best, "rel_var"] )
       # best_vals <- list(averages = averages,
       #                   best_k = as.numeric( averages[idx_best, "k"] ),
       #                   q2_threshold = q2_threshold )
-      return (best_k)
+      return (best_K)
 }
 
 
-# Do something ---------------------------
-#' Aggregate \eqn{Q^2} values fromthe grid search results
+
+#' @title Aggregate \eqn{Q^2} Values
 #'
-#' @param x The grid_search_result return value.
+#' @description Aggregate the \eqn{Q^2} values from the grid search results.
+#'
+#' @param x The return object from \code{\link{cv_model_select_pyNMF}}.
 #' @param chosen_var The variable to aggregate over.
-#' @param chosen_func The aggregate function to use (should be something already
-#'  existing wihtin R). Values such as \code{mean}, or \code{sd} are allowed.
+#' @param chosen_func The aggregate function to use (should be a function already
+#'  existing wihtin R). Possible values are: \code{mean} and \code{sd}.
 #'
 #' @return The mean of $Q^2$ values per the chosen variable
 #' @export
@@ -266,8 +288,10 @@ get_q2_aggregates_chosen_var <- function(x, chosen_var, chosen_func){
 }
 
 
-# Do something ---------------------------
-#' Get the threshold value for selection of \eqn{\alpha} by looking at
+
+#' @title Get Threshold Value for Selecting \eqn{\alpha}
+#'
+#' @description Get the threshold value for selection of \eqn{\alpha} by looking at
 #' cross-validation performance for K.
 #'
 #' @param model_selectK Cross-validation performance over K values.
@@ -277,27 +301,32 @@ get_q2_aggregates_chosen_var <- function(x, chosen_var, chosen_func){
 #'
 #' @examples
 #'
-get_q2_threshold_by_k <- function(model_selectK){
+get_q2_threshold_by_K <- function(model_selectK){
       #
-      mean_by_k <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, mean)
-      sd_by_k <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, sd)
-      se_by_k <- sd_by_k/sqrt(nrow(sd_by_k))
+      mean_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, mean)
+      sd_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, sd)
+      se_by_K <- sd_by_K/sqrt(nrow(sd_by_K))
       #
-      best_k  <- get_best_k(model_selectK)
-      idx_best_k <- which(sd_by_k$rel_var == best_k)
+      best_K  <- get_best_K(model_selectK)
+      idx_best_K <- which(sd_by_K$rel_var == best_K)
       #
-      q2_threshold <- as.numeric( mean_by_k[idx_best_k, "q2_vals"] - se_by_k[idx_best_k,"q2_vals"])
+      q2_threshold <- as.numeric( mean_by_K[idx_best_K, "q2_vals"] - se_by_K[idx_best_K,"q2_vals"])
       #
       return(q2_threshold)
 }
 
 
-# Do something ---------------------------
-#' Get the best perfing value of \eqn{\alpha}.
+
+#' @title Get Best \eqn{\alpha}.
 #'
-#' @param for_alpha grid_search_result copy for \eqn{\alpha}
-#' @param for_k grid_search_search_result copy for K.
-#' @param min_or_max Specify whether min or max is to be used as the condition to choose one when multiple values satisfy the threshold.
+#' @description Get the best performing value of \eqn{\alpha}.
+#'
+#' @param for_alpha The return value from \code{\link{cv_model_select_pyNMF}}.
+#' This is used for \eqn{\alpha}.
+#' @param for_k The return value from \code{\link{cv_model_select_pyNMF}}.
+#' This is used for K.
+#' @param min_or_max Specify whether min or max is to be used as the condition
+#' to choose one when multiple values satisfy the threshold.
 #'
 #' @return The best performing value of \eqn{\alpha}.
 #' @export
@@ -311,7 +340,7 @@ get_best_alpha <- function(for_alpha, for_k, min_or_max = min){
       # more than 1 std.err of the mean q2 for best k at
       # alpha = 0
       #
-      q2_threshold <- get_q2_threshold_by_k(for_k)
+      q2_threshold <- get_q2_threshold_by_K(for_k)
       #
       cat(paste0("Q2 threshold: ", q2_threshold, "\n"))
       averagesA <- get_q2_aggregates_chosen_var(for_alpha, for_alpha$alpha, mean)
@@ -329,11 +358,14 @@ get_best_alpha <- function(for_alpha, for_k, min_or_max = min){
       return( best_alpha )
 }
 
-# Do something ---------------------------
-#' Title
+
+#' @title Plot Cross-Validation Performance of K
+#'
+#' @description Plot showing performance of different values of K tested in
+#' cross-validation.
 #'
 #' @param averages The average of performance values for different combinations
-#' in grid_search
+#' in grid search
 #'
 #' @return A ggplot object so you can simply call \code{print} or \code{save}
 #' on it later.
@@ -366,8 +398,11 @@ plot_cv_K <- function(averages){
 }
 
 
-# Do something ---------------------------
-#' Plot cross-validation performance of alpha values
+
+#' @title Plot Cross-Validation Performance of \eqn{\alpha}
+#'
+#' @description Plot showing performance of different values of \eqn{\alpha} tested in
+#' cross-validation.
 #'
 #' @param averages The cross-validation averages
 #' @param threshold The threshold to be applied when choosing the best

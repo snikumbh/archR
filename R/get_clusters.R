@@ -1,4 +1,7 @@
-#' Get a specified number of clusters from the given data.
+#' @title Get a specified number of clusters from the given data.
+#'
+#' @description Get the specified number of clusters from the given data using
+#' the chosen clusering method.
 #'
 #' @param givenMat A data matrix representing sequences along columns and their
 #' features aling the rows.

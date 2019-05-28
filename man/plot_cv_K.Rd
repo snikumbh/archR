@@ -2,20 +2,21 @@
 % Please edit documentation in R/pyNMF_model_selection_functions.R
 \name{plot_cv_K}
 \alias{plot_cv_K}
-\title{Title}
+\title{Plot Cross-Validation Performance of K}
 \usage{
 plot_cv_K(averages)
 }
 \arguments{
 \item{averages}{The average of performance values for different combinations
-in grid_search}
+in grid search}
 }
 \value{
 A ggplot object so you can simply call \code{print} or \code{save}
 on it later.
 }
 \description{
-Title
+Plot showing performance of different values of K tested in
+cross-validation.
 }
 \examples{
 

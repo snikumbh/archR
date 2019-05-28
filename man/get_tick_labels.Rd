@@ -18,7 +18,7 @@ be shown as ticks.}
 A label vector that can be directly used for setting the tickmarks.
 }
 \description{
-Getter function for labels of x- or y-ticks.
+A convenience function to provide the right set of x-tick labels for the image matrix representing the sequences.
 }
 \examples{
 

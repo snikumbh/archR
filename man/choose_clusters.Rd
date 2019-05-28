@@ -25,7 +25,9 @@ Default is \code{\(3,\ldots,5\)}.}
 The number of clusters most suitable for the given data.
 }
 \description{
-Find the appropriate numebr of clusters for the given data.
+Tests for different clusterings (different number of clusters)
+of the given data. The average silhoutte value is used for choosing the best
+suitable number of clusters.
 }
 \examples{
 

@@ -1,11 +1,21 @@
-#' Title
+#' @title Visualize the features matrix in a paired heatmap and sequence logo plot.
 #'
-#' @param featuresMatrix
-#' @param position_labels
-#' @param add_pseudo_counts
-#' @param savePDFfilename
+#' @description The given features matrix (with 4 rows) is represented as a
+#' heatmap followed by a sequence logo where the positions are aligned for
+#' better visualization.
 #'
-#' @return
+#' @param featuresMatrix The features matrix output from NMF. Expected
+#' dimensionality: number of columns represent the number of factors from NMF,
+#' and the number of rows is 4 times the length of the sequences in the collection.
+#' @param position_labels Labels of the positions in the sequences.
+#' @param add_pseudo_counts Boolean, taking values TRUE/T or FALSE/F, default set
+#'  to FALSE. Setting it to TRUE will enable adding pseudo-counts to the features
+#'  matrix.
+#' @param savePDFfilename Name of the file which will be saved as PDF
+#' (also provide the extension).
+#'
+#' @return nothing
+#'
 #' @export
 #'
 #' @importFrom dplyr mutate

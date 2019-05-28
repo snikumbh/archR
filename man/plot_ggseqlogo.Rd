@@ -7,8 +7,8 @@
 plot_ggseqlogo(pwmMat, position_labels = NULL, savePDFfilename = NULL)
 }
 \arguments{
-\item{pwmMat}{Matrix (usually a PWM, but can be non-normalized/any matrix)
-to be represented as a sequence logo.}
+\item{pwmMat}{Matrix (usually a PWM, but can be any non-normalized matrix) to
+be represented as a sequence logo.}
 
 \item{position_labels}{Labels of the positions in the sequences.}
 

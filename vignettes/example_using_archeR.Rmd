@@ -19,7 +19,11 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(archeR)
-#reticulate::source_python("inst/py/perform_nmf.py")
+reticulate::source_python(system.file("../inst/python/perform_nmf.py",
+                                            package="archeR",
+                                            mustWork=TRUE)
+                                            )
+
 ```
 
 ## Fetch data
@@ -39,14 +43,14 @@ positions <- setdiff(seq(-100,100),c(0))
 sinuc <- c('A', 'C', 'G', 'T')
 # Randomize the sequence order
 changed_order <- sample.int(nSeqs, nSeqs, replace = FALSE)
-#tss.seqs <- tss.seqs_o[ , changed_order]
+tss.seqs <- tss.seqs_o[ , changed_order]
 
 ```
 
 
 ```{r plot-seqs, echo=FALSE}
 # Represent sequences as heatmap
-represent_matrix_of_acgt(tss.seqs, positions = positions)
+represent_matrix_of_acgt(tss.seqs, position_labels = positions)
 
 ```
 
@@ -93,9 +97,9 @@ model_selectK <- invisible(cv_model_select_pyNMF(X=tss.seqs,
 )
 print(Sys.time() - start)
 
-best_k <- get_best_k(model_selectK)
+best_K <- get_best_K(model_selectK)
 q2_means_by_k_vals <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, mean)
-q2_threshold <- get_q2_threshold_by_k(model_selectK)
+q2_threshold <- get_q2_threshold_by_K(model_selectK)
 Q2vsK <- plot_cv_K(q2_means_by_k_vals)
 print(Q2vsK)
 
@@ -104,7 +108,7 @@ print(Q2vsK)
 param_ranges <- NULL
 param_ranges$alphaBase <- 2
 param_ranges$alphaPow <- seq(-6, 3)
-param_ranges$k_vals <- best_k
+param_ranges$k_vals <- best_K
 seed_val <- 10208090
 start <- Sys.time()
 chooseAlpha_logfilename <- file.path(paste0('pyNMF-synthetic-data2-worker-output-chooseAlpha-',                                                               paste(Sys.Date(), format(Sys.time(), "%X"), sep='-'), '.txt')
@@ -124,7 +128,7 @@ print(Sys.time() - start)
 best_alpha <- get_best_alpha(for_alpha = model_selectAlpha, for_k = model_selectK, min_or_max = min)
 q2_means_by_alpha <- get_q2_aggregates_chosen_var(model_selectAlpha, model_selectAlpha$alpha, mean)
 #
-cat(paste0("## Best K: ", best_k, ", Best Alpha: ", best_alpha, '\n\n'))
+cat(paste0("## Best K: ", best_K, ", Best Alpha: ", best_alpha, '\n\n'))
 #
 Q2vsAlpha <- plot_cv_Alpha(q2_means_by_alpha, q2_threshold)
 print(Q2vsAlpha)
@@ -136,8 +140,8 @@ print(Q2vsAlpha)
 cat("Performing NMF on the complete data...")
 seed_val <- 10208090
 start <- Sys.time()
-result <- perform_nmf(tss.seqs, 
-                              nPatterns = as.integer(best_k),
+result <- perform_nmf_func(tss.seqs, 
+                              nPatterns = as.integer(best_K),
                               nIter = as.integer(1000),
                               givenAlpha = best_alpha,
                               givenL1_ratio = 1,
@@ -159,7 +163,7 @@ samplesMatrix <- result[[2]]
 
 
 ```{r sparsify-feature-matrix, fig.height=2, fig.width=25, echo=FALSE, message=FALSE, warning=FALSE}
-cat(paste0("Number of factors: ", best_k, "\n"))
+cat(paste0("Number of factors: ", best_K, "\n"))
 # Sparsify features
 cat("Sparsifying features matrix...")
 spFeaturesMatrix <- sparsify_mat(featuresMatrix)

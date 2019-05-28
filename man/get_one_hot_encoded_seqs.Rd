@@ -2,19 +2,25 @@
 % Please edit documentation in R/prepare_data_from_FASTA.R
 \name{get_one_hot_encoded_seqs}
 \alias{get_one_hot_encoded_seqs}
-\title{Title}
+\title{Get One-Hot Encoded Sequences}
 \usage{
 get_one_hot_encoded_seqs(givenFastaSeqs)
 }
 \arguments{
-\item{givenFastaSeqs}{}
+\item{givenFastaSeqs}{List of sequences.}
 }
 \value{
-
+One-hot encoded sequences.
 }
 \description{
-Title
+Get the one-hot encoding representation of the given sequences.
 }
 \examples{
+testSeqs <- c("AACGTGACTA",
+              "ACCGATCGAT",
+              "GGCATCATGC",
+              "TCATCTAGAT")
+
+ohe_seqs <- get_one_hot_encoded_seqs(testSeqs)
 
 }
