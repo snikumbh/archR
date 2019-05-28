@@ -26,16 +26,25 @@
 #' @examples
 #'
 #'
-viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix, position_labels=NA, add_pseudo_counts = F, savePDFfilename=NULL){
-  suppressMessages( require(cowplot) )
+viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix,
+                                                          position_labels=NA,
+                                                          add_pseudo_counts = F,
+                                                          savePDFfilename=NULL){
+  # suppressMessages( require(cowplot) )
   suppressMessages( require(gridExtra) )
   #
+  if(!is.matrix(featuresMatrix)){
+        stop("featuresMatrix not of type matrix")
+  }
+  if(sum(dim(featuresMatrix)) == 2 && is.na(featuresMatrix)){
+        stop("Empty featuresMatrix")
+  }
   invisible(apply(featuresMatrix, MARGIN = 2, function(x){
                       pwm <- make_sinuc_PWMs(x, add_pseudo_counts = add_pseudo_counts, scale=F)
                       #
                       # Heatmap on top
                       p1 <- plot_ggheatmap(pwmMat=pwm,
-                                           position_labels=positions,
+                                           position_labels=position_labels,
                                            savePDFfilename=savePDFfilename
                       )
                       # Make adjustments for alignment
@@ -44,7 +53,7 @@ viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix, positi
                       # )
                       # Seqlogo below
                       p2 <- plot_ggseqlogo(pwmMat=pwm,
-                                           position_labels=positions,
+                                           position_labels=position_labels,
                                            savePDFfilename=savePDFfilename
                       )
                       # Make adjustments for alignment

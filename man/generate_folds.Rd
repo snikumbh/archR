@@ -4,7 +4,7 @@
 \alias{generate_folds}
 \title{Generate Cross-Validation Data Splits}
 \usage{
-generate_folds(Xdims, kFolds, seed_val)
+generate_folds(Xdims, kFolds, seed_val = 10208090)
 }
 \arguments{
 \item{Xdims}{Dimensions of matrix data matrix X.}

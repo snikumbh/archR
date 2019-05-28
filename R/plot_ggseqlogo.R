@@ -25,6 +25,9 @@ plot_ggseqlogo <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
   if(!is.matrix(pwmMat)){
         stop("Expecting a matrix with 4 rows")
   }
+  if(sum(dim(pwmMat)) == 2 && is.na(pwmMat)){
+    stop("Empty matrix")
+  }
   if(!(nrow(pwmMat) == 4)){
         stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
   }
@@ -40,6 +43,7 @@ plot_ggseqlogo <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
                     length(position_labels) - ncol(pwmMat))
         )
   }
+  #
   p1 <- ggplot() + geom_logo(pwmMat, method="custom", seq_type="dna") +
           theme_logo() +
           # theme_update(plot.margin=grid::unit(c(0,0,0,0), "mm"),

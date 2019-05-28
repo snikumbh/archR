@@ -20,6 +20,15 @@ test_that("Given object is matrix", {
 
 })
 
+test_that("Handling empty matrix", {
+
+  testPwmMat <- matrix()
+  testPositionLabels <- seq(25)
+  expect_error(plot_ggseqlogo(testPwmMat, position_labels = testPositionLabels)
+               , "Empty")
+
+})
+
 test_that("Position labels inadequate", {
 
   testPwmMat <- matrix(rnorm(100), nrow = 4)
@@ -38,4 +47,16 @@ test_that("Position labels over-abundant", {
 
 })
 
+test_that("ggseqlogo plotting works", {
+  # setting seed enables proper comparison between ggplot objects since we use
+  # rnorm
+  set.seed(11223344)
+  # test variables
+  testPositionLabels <- seq(25)
+  testPwmMat <- matrix(rnorm(100), nrow=4)
+  testPwmMat <- make_sinuc_PWMs(testPwmMat)
+  p1 <- plot_ggseqlogo(pwmMat = testPwmMat, position_labels =  testPositionLabels)
+  # test plot
+  vdiffr::expect_doppelganger("ggseqlogo plot example", p1)
 
+})

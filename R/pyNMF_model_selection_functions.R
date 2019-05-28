@@ -92,10 +92,10 @@ compute_q2 <- function(A, recA){
   if(!is.matrix(recA)){
       stop("Reconstructed matrix is not of type matrix")
   }
-  if(is.na(A) & sum(dim(A))){
+  if(sum(dim(A)) == 2 && is.na(A)){
       stop("Empty: Original matrix")
   }
-  if(is.na(recA) & sum(dim(recA))){
+  if(sum(dim(recA)) == 2 && is.na(recA)){
       stop("Empty: Reconstructed matrix")
   }
   second_term_num <- sum((A - recA)^2)
@@ -120,7 +120,7 @@ compute_q2 <- function(A, recA){
 #' @param X The given data matrix
 #' @param param_ranges An object holding the range of values for parameters
 #' \code{k}, \code{alphaBase}, and \code{alphaPow}.
-#' @param kFolds The number of cross-validation folds.
+#' @param kFolds Numeric The number of cross-validation folds.
 #' @param parallel Set to \code{1} if you want to parallelize, else \code{0}.
 #' @param nCores If \code{parallel} is set to \code{1}
 #' @param seed_val The seed to be set.
@@ -148,6 +148,26 @@ cv_model_select_pyNMF <- function(X,
                                   set_verbose = 0){
       # For Moore-Penrose pseudoinverse, load them on the clusters directly
       #suppressPackageStartupMessages(library(MASS, quietly = TRUE))
+      #
+      if(!is.matrix(X)){
+              stop("X not of type matrix")
+      }
+      #
+      if(kFolds < 3){
+          if(kFolds < 0){
+              stop("Number of cross-validation folds cannot be negative")
+          }else{
+              stop("Set at least 3 cross-validation folds")
+          }
+      }else if(kFolds > ncol(X)){
+              stop("CV folds should be less than or equal to #sequences. Standard values: 5, 10.")
+
+      }
+      # Check names in param_ranges list, the function relies on it below
+      if(length( setdiff(names(param_ranges), c("alphaPow", "alphaBase", "k_vals")) ) > 0){
+            stop(paste0("Check param_ranges list, expecting three element names: ",
+                        c("alphaBase", "alphaPow", "k_vals")))
+      }
 
       # Get cross-validation folds
       cvfolds <- generate_folds(dim(X), kFolds, seed_val = seed_val)
@@ -227,7 +247,7 @@ cv_model_select_pyNMF <- function(X,
 #'
 #' @examples
 #'
-generate_folds <- function(Xdims, kFolds, seed_val){
+generate_folds <- function(Xdims, kFolds, seed_val = 10208090){
       # Xdims gives the dimensions of the matrix X
       suppressPackageStartupMessages(require(cvTools, quietly = TRUE))
       set.seed(seed_val)
@@ -250,6 +270,12 @@ generate_folds <- function(Xdims, kFolds, seed_val){
 get_best_K <- function(x){
       # Assumes, max q2_val is best
       # Returns simply the best performing K value
+      # Check names in param_ranges list, the function relies on it below
+      if(length( setdiff(names(x), c("k_vals", "alpha", "fold", "q2_vals")) ) > 0){
+        stop(paste0("Check colnames in tibble, expecting four element names: ",
+                    c("k_vals", "alpha", "fold", "q2_vals")))
+      }
+      #
       averages <- get_q2_aggregates_chosen_var(x, chosen_var=x$k_vals, mean)
       idx_best <- as.numeric( which.max( unlist(averages["q2_vals"])) )
       #

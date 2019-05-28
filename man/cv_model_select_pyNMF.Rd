@@ -14,7 +14,7 @@ cv_model_select_pyNMF(X, param_ranges, kFolds = 5, parallel = FALSE,
 \item{param_ranges}{An object holding the range of values for parameters
 \code{k}, \code{alphaBase}, and \code{alphaPow}.}
 
-\item{kFolds}{The number of cross-validation folds.}
+\item{kFolds}{Numeric The number of cross-validation folds.}
 
 \item{parallel}{Set to \code{1} if you want to parallelize, else \code{0}.}
 

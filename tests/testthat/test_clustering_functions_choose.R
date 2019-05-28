@@ -61,6 +61,9 @@ test_that("Choosing clusters handles #clusters > #sequences", {
   )
 })
 
+
+
+
 # test_that("Choosing clusters handles kmeans well", {
 #   testMat <- matrix(rnorm(10000), nrow = 200)
 #   clustMethodTest <- "kmeans"

@@ -107,7 +107,7 @@ represent_matrix_of_acgt <- function(givenMat,
       }
       # heatmap3 solution
       seq_labels <- get_tick_labels(1:nSeqs, use_asis = F, at_every = mark_seq_at_every)
-      pos_labels <- get_tick_labels(positions, use_asis = T, at_every = mark_pos_at_every)
+      pos_labels <- get_tick_labels(position_labels, use_asis = T, at_every = mark_pos_at_every)
       heatmap3::heatmap3(plot_mat,
                 revC = T, # set this to T to plot starting from the top
                 Colv = NA,

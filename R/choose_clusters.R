@@ -33,16 +33,19 @@ choose_clusters <- function(givenMat,
   # Default distMethod: euclidean, other options: manhattan?
   #
   chosen_nClust_val <- 0
+  # For consistency, the input argument matrix has sequences along columns, but
+  # we need sequences along rows here.
+  givenMat2 <- t(givenMat)
   #
   if(is.na(givenMat) && sum(dim(givenMat)) == 2){
         stop("Empty matrix")
   }
   #
   if(distMethod == "euclidean"){
-        distMat <- dist(givenMat, method = "euclidean")
+        distMat <- dist(givenMat2, method = "euclidean")
   }
   else if(distMethod == "manhattan"){
-        distMat <- dist(givenMat, method = "manhattan")
+        distMat <- dist(givenMat2, method = "manhattan")
   }
   else{
         stop("Wrong distMethod passed [Takes 'euclidean'/'manhattan'].")
@@ -56,15 +59,14 @@ choose_clusters <- function(givenMat,
                            byrow = T)
         colnames(sil_vals) <- c("nClustVals", "Silhouette values")
         sil_vals[,1] <- nCluster_vals_test
-
+        #
         if(clustMethod == "kmeans"){
               print("kmeans")
               start <- Sys.time()
               for (i in 1:length(nCluster_vals_test)){
                 kmeans_res <- suppressWarnings(
-                                    kmeans(givenMat,
-                                            centers =
-                                            nCluster_vals_test[i],
+                                    kmeans(givenMat2,
+                                            centers = nCluster_vals_test[i],
                                             iter.max = 1000,
                                             nstart = 50,
                                             algorithm = "Lloyd"))
