@@ -26,7 +26,7 @@ withr::with_libpaths(<path_here>,
 			)
 ``` 
 
-If R complains, "Skipping install of 'archR' from a github remote, the SHA1 (7bfe4812) has not changed since last install.
+If R complains, "Skipping install of 'archR' from a github remote, the SHA1 has not changed since last install.
   Use `force = TRUE` to force installation", do as it suggests.
 
 ```
