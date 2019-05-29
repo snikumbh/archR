@@ -1,5 +1,6 @@
-
+sklearn <- NULL
 .onLoad <- function(libname, pkgname) {
+  sklearn <<- reticulate::import("sklearn", delay_load = TRUE)
   reticulate::source_python(system.file("python/perform_nmf.py",
     package = "archR",
     mustWork = TRUE
