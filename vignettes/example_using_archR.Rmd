@@ -185,7 +185,7 @@ viz_all_factors_in_combined_heatmaps_seqlogos(featuresMatrix, add_pseudo_counts 
 
 ```{r Cluster-sequences, echo=FALSE, warning=FALSE, message=FALSE}
 
-final_nClust <- choose_clusters(samplesMatrix, clustMethod = "kmeans", nCluster_vals_test = seq(3,20))
+final_nClust <- choose_clusters(samplesMatrix, clustMethod = "kmeans", nClusterValsTest = seq(3,20))
 cat("Number of clusters: ", final_nClust, "\n")
 
 clustering_sol <- get_clusters(samplesMatrix, clustMethod = "kmeans", final_nClust)

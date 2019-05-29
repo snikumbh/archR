@@ -8,7 +8,7 @@ test_that("Choosing clusters handles wrong clustMethod", {
     choose_clusters(testMat,
       distMethod = distMethodTest,
       clustMethod = clustMethodTest,
-      nCluster_vals_test = seq(3, 5)
+      nClusterValsTest = seq(3, 5)
     ),
     "Wrong clustMethod"
   )
@@ -22,7 +22,7 @@ test_that("Choosing clusters handles wrong distMethod", {
     choose_clusters(testMat,
       distMethod = distMethodTest,
       clustMethod = clustMethodTest,
-      nCluster_vals_test = seq(3, 5)
+      nClusterValsTest = seq(3, 5)
     ),
     "Wrong distMethod"
   )
@@ -36,7 +36,7 @@ test_that("Choosing clusters handles empty matrix", {
     choose_clusters(testMat,
       distMethod = distMethodTest,
       clustMethod = clustMethodTest,
-      nCluster_vals_test = seq(3, 5)
+      nClusterValsTest = seq(3, 5)
     ),
     "Empty"
   )
@@ -51,7 +51,7 @@ test_that("Choosing clusters handles non-positive #clusters", {
     choose_clusters(testMat,
       distMethod = distMethodTest,
       clustMethod = clustMethodTest,
-      nCluster_vals_test = nClustersTest
+      nClusterValsTest = nClustersTest
     ),
     "at least 2 clusters"
   )
@@ -66,7 +66,7 @@ test_that("Choosing clusters handles #clusters > #sequences", {
     choose_clusters(testMat,
       distMethod = distMethodTest,
       clustMethod = clustMethodTest,
-      nCluster_vals_test = seq(
+      nClusterValsTest = seq(
         nClustersTest - 10,
         nClustersTest
       )

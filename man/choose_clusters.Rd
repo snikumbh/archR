@@ -4,11 +4,11 @@
 \alias{choose_clusters}
 \title{Find the appropriate numebr of clusters for the given data.}
 \usage{
-choose_clusters(givenMat, distMethod = "euclidean",
-  clustMethod = "kmeans", nCluster_vals_test = seq(3, 5))
+choose_clusters(givenMatrix, distMethod = "euclidean",
+  clustMethod = "kmeans", nClusterValsTest = seq(3, 5))
 }
 \arguments{
-\item{givenMat}{A data matrix representing sequences along columns and their
+\item{givenMatrix}{A data matrix representing sequences along columns and their
 features aling the rows.}
 
 \item{distMethod}{The distance method to be used. Default is \code{euclidean}.
@@ -18,7 +18,7 @@ Takes all values that can be passed to the \code{dist} method from the
 \item{clustMethod}{The method used for clustering the data. Default is
 \code{kmeans}. The other value supported currently in \code{hclust}.}
 
-\item{nCluster_vals_test}{The different number of clusters to be tested.
+\item{nClusterValsTest}{The different number of clusters to be tested.
 Default is \code{\(3,\ldots,5\)}.}
 }
 \value{
