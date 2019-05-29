@@ -8,10 +8,6 @@
 #'
 #' @return \eqn{Q^2} value
 #' @export
-#'
-#' @examples
-#'
-#'
 get_q2_using_py <- function(x, seed_val, verbose = 0){
       ##
       if(verbose == 1){
@@ -79,10 +75,6 @@ get_q2_using_py <- function(x, seed_val, verbose = 0){
 #'
 #' @return Q^2, the reconstruction accuracy
 #' @export
-#'
-#' @examples
-#'
-#'
 compute_q2 <- function(A, recA){
   # input: original matrix, reconstructed portion
   # return: computed q2 val
@@ -134,10 +126,8 @@ compute_q2 <- function(A, recA){
 #'
 #' @importFrom magrittr %>%
 #' @importFrom purrr cross_df
-#'
-#' @examples
-#'
-#'
+#' @importFrom parallel makeCluster stopCluster detectCores clusterEvalQ
+#' @importFrom parallel clusterExport
 cv_model_select_pyNMF <- function(X,
                                   param_ranges,
                                   kFolds = 5,
@@ -244,12 +234,11 @@ cv_model_select_pyNMF <- function(X,
 #' @return A list of two elements: rowIDs and columnIDs for different cross-
 #' validation folds.
 #' @export
-#'
-#' @examples
+#' @importFrom cvTools cvFolds
 #'
 generate_folds <- function(Xdims, kFolds, seed_val = 10208090){
       # Xdims gives the dimensions of the matrix X
-      suppressPackageStartupMessages(require(cvTools, quietly = TRUE))
+      # suppressPackageStartupMessages(require(cvTools, quietly = TRUE))
       set.seed(seed_val)
       cvf_rows <- cvFolds(Xdims[1], K = kFolds, type="random")
       cvf_cols <- cvFolds(Xdims[2], K = kFolds, type="random")
@@ -264,9 +253,6 @@ generate_folds <- function(Xdims, kFolds, seed_val = 10208090){
 #'
 #' @return A number The best performing value of K.
 #' @export
-#'
-#' @examples
-#'
 get_best_K <- function(x){
       # Assumes, max q2_val is best
       # Returns simply the best performing K value
@@ -303,13 +289,12 @@ get_best_K <- function(x){
 #'
 #' @return The mean of $Q^2$ values per the chosen variable
 #' @export
-#'
-#' @examples
+#' @importFrom stats aggregate
 #'
 get_q2_aggregates_chosen_var <- function(x, chosen_var, chosen_func){
       # Returns the mean of q2 values per the chosen variable
       #
-      averages <- aggregate(x, by=list(rel_var = chosen_var), chosen_func, simplify = TRUE)
+      averages <- stats::aggregate(x, by=list(rel_var = chosen_var), chosen_func, simplify = TRUE)
       return( averages )
 }
 
@@ -324,13 +309,11 @@ get_q2_aggregates_chosen_var <- function(x, chosen_var, chosen_func){
 #'
 #' @return The \eqn{Q^2} threshold value.
 #' @export
-#'
-#' @examples
-#'
+#' @importFrom stats sd
 get_q2_threshold_by_K <- function(model_selectK){
       #
       mean_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, mean)
-      sd_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, sd)
+      sd_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, stats::sd)
       se_by_K <- sd_by_K/sqrt(nrow(sd_by_K))
       #
       best_K  <- get_best_K(model_selectK)
@@ -356,9 +339,6 @@ get_q2_threshold_by_K <- function(model_selectK){
 #'
 #' @return The best performing value of \eqn{\alpha}.
 #' @export
-#'
-#' @examples
-#'
 get_best_alpha <- function(for_alpha, for_k, min_or_max = min){
       #
       # Use the one standard error rule
@@ -398,9 +378,6 @@ get_best_alpha <- function(for_alpha, for_k, min_or_max = min){
 #' @export
 #'
 #' @import ggplot2
-#'
-#' @examples
-#'
 plot_cv_K <- function(averages){
   # Using ggplot to plot
   if("rel_var" %in% averages){
@@ -439,9 +416,6 @@ plot_cv_K <- function(averages){
 #' @export
 #'
 #' @import ggplot2
-#'
-#' @examples
-#'
 plot_cv_Alpha <- function(averages, threshold = 0.0){
       # Using ggplot to plot
       if("rel_var" %in% averages){

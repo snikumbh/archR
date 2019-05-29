@@ -18,9 +18,6 @@
 #' @import ggplot2
 #' @import ggseqlogo
 #'
-#' @examples
-#'
-#'
 plot_ggheatmap <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
         if(!is.matrix(pwmMat)){
           stop("Expecting a matrix with 4 rows")
@@ -50,18 +47,18 @@ plot_ggheatmap <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
         colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
         #
         pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars=c("Nucleotides"), variable.name = "positions")
-        p1 <- ggplot(data = pwmMat_df_for_ggheatmap, mapping = aes(x = positions,
+        p1 <- ggplot2::ggplot(data = pwmMat_df_for_ggheatmap, mapping = aes(x = positions, #Here, 'positions' is the column_name, see previous statement. Do not change it to position_labels
                                                                    y = Nucleotides,
                                                                    fill = value)) +
-                    geom_tile() +
-                    theme_bw() +
-                    xlab(label = "Positions") +
-                    scale_fill_gradient2(name = "", #"Loading",
+                    ggplot2::geom_tile() +
+                    ggplot2::theme_bw() +
+                    ggplot2::xlab(label = "Positions") +
+                    ggplot2::scale_fill_gradient2(name = "", #"Loading",
                                          low = "white", #"#FFFFFF",
                                          mid = "white", #FFFFFF",
                                          high = "#012345"
                                         ) +
-                    theme(legend.position = "top",
+                    ggplot2::theme(legend.position = "top",
                           legend.justification = "center"
                     )
                     # theme_update(legend.position = "top",
@@ -72,7 +69,7 @@ plot_ggheatmap <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
                 if(file.exists(savePDFfilename)){
                   warning("File exists, will overwrite")
                 }
-                ggsave(p1, device="pdf", width=20, height=2.5)
+                ggplot2::ggsave(p1, device="pdf", width=20, height=2.5)
         }
         return(p1)
 }

@@ -19,8 +19,7 @@
 #' @return nothing.
 #'
 #' @export
-#' @examples
-#'
+#' @importFrom stats quantile sd
 plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
                                    nCluster, clustering_sol, seqs = NULL,
                                    position_labels = NA){
@@ -69,10 +68,10 @@ plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
             print(summary(feat_in_block))
             # sp_feat_in_block <- sparsify_mat(feat_in_block)
             # rescale
-            feat_in_block <- (feat_in_block - mean(feat_in_block))/sd(feat_in_block)
+            feat_in_block <- (feat_in_block - mean(feat_in_block))/stats::sd(feat_in_block)
             print(summary(feat_in_block))
             print(as.numeric(quantile(feat_in_block, 0.95)))
-            feat_in_block[feat_in_block < as.numeric(quantile(feat_in_block, 0.95))] <- 10^-5
+            feat_in_block[feat_in_block < as.numeric(stats::quantile(feat_in_block, 0.95))] <- 10^-5
             # feat_in_block <- feat_in_block *  (norm(givenFeaturesMatrix, type="2")/norm(feat_in_block, type="2"))
             #
             print(summary(feat_in_block))

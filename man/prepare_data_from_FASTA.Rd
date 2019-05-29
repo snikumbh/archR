@@ -20,12 +20,3 @@ Currently, only mono-character features for DNA sequences are supported.
 Therefore, the length of the feature vector is four times the
 length of the sequences (since the DNA alphabet is four characters).
 }
-\examples{
-\donttest{
-sample_file <- system.file("extdata", "example_data.fa", package = "archeR",
-                          mustWork = TRUE)
-sample_data <- prepare_data_from_FASTA(sample_file)
-}
-
-
-}

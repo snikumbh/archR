@@ -22,16 +22,13 @@
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @import ggseqlogo
-#'
-#' @examples
-#'
-#'
+#' @import gridExtra
 viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix,
                                                           position_labels=NA,
                                                           add_pseudo_counts = F,
                                                           savePDFfilename=NULL){
   # suppressMessages( require(cowplot) )
-  suppressMessages( require(gridExtra) )
+  # suppressMessages( require(gridExtra) )
   #
   if(!is.matrix(featuresMatrix)){
         stop("featuresMatrix not of type matrix")

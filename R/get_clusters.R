@@ -14,9 +14,7 @@
 #' @return A list containing the clustering result \code{clust_sol}, and the
 #' reordered indices \code{reordering_idx}.
 #' @export
-#'
-#' @examples
-#'
+#' @importFrom stats dist kmeans hclust
 #'
 get_clusters <- function(givenMat, clustMethod,  nCluster, distMethod.hclust = "euclidean"){
       #
@@ -40,7 +38,7 @@ get_clusters <- function(givenMat, clustMethod,  nCluster, distMethod.hclust = "
             if(clustMethod == "kmeans"){
                   print("kmeans")
                   start <- Sys.time()
-                  kmeans_result <- suppressWarnings(kmeans(givenMat2, centers = nCluster, iter.max = 1000, nstart = 50, algorithm = "Lloyd"))
+                  kmeans_result <- suppressWarnings(stats::kmeans(givenMat2, centers = nCluster, iter.max = 1000, nstart = 50, algorithm = "Lloyd"))
                   print(Sys.time()-start)
                   # reorder sequences in the matrix by clusters
                   reordering_idx <- sapply(1:nCluster, function(x) which(kmeans_result$cluster == x))
@@ -51,14 +49,14 @@ get_clusters <- function(givenMat, clustMethod,  nCluster, distMethod.hclust = "
                   print("hclust")
                   start <- Sys.time()
                   if(distMethod.hclust == "euclidean"){
-                        distMat <- dist(givenMat2, method = distMethod.hclust)
+                        distMat <- stats::dist(givenMat2, method = distMethod.hclust)
                   }else if(distMethod.hclust == "manhattan"){
-                        distMat <- dist(givenMat2, method = distMethod.hclust)
+                        distMat <- stats::dist(givenMat2, method = distMethod.hclust)
                   }else{
                         stop("Wrong distMethod.hclust")
                   }
-                  hclust_result <- hclust(distMat)
-                  hclust_cl <- cutree(hclust_result, nCluster)
+                  hclust_result <- stats::hclust(distMat)
+                  hclust_cl <- stats::cutree(hclust_result, nCluster)
                   print(Sys.time()-start)
                   # reorder sequences in the matrix by clusters
                   reordering_idx <-  hclust_result$order # this is still not cluster-wise ordering, but an ordering that avoids crossings of the branches in the dendrogram

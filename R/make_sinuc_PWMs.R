@@ -13,11 +13,6 @@
 #' G, T) and the relevant number of columns (i.e., number of elements in given
 #' vector/4)
 #' @export
-#'
-#'
-#' @examples
-#'
-#'
 make_sinuc_PWMs <- function(givenMatrix, add_pseudo_counts = T, scale = T){
       # return PWM matrix
       #
@@ -37,7 +32,7 @@ make_sinuc_PWMs <- function(givenMatrix, add_pseudo_counts = T, scale = T){
       rownames(this_givenMatrix) <- sinuc
       if(scale){
           scaled <- this_givenMatrix
-          scaled <- sweep(this_givenMatrix, 2, colSums(this_givenMatrix), '/')
+          scaled <- base::sweep(this_givenMatrix, 2, colSums(this_givenMatrix), '/')
           return (scaled)
       }else{
           return(this_givenMatrix)

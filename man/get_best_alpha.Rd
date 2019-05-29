@@ -22,6 +22,3 @@ The best performing value of \eqn{\alpha}.
 \description{
 Get the best performing value of \eqn{\alpha}.
 }
-\examples{
-
-}

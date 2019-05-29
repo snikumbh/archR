@@ -37,6 +37,3 @@ nothing.
 The data matrix is expected to have features alogn the rows and
 sequences along the columns.
 }
-\examples{
-
-}

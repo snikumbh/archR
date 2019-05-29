@@ -16,18 +16,15 @@
 #'
 #' @return The number of clusters most suitable for the given data.
 #' @export
-#'
-#'
-#'
-#' @examples
-#'
+#' @importFrom stats dist kmeans hclust cutree
+#' @importFrom cluster silhouette
 #'
 choose_clusters <- function(givenMat,
                             distMethod = "euclidean",
                             clustMethod = "kmeans",
                             nCluster_vals_test = seq(3,5)
                             ){
-  require(cluster)
+  # require(cluster)
   #
   # Default clustMethod: kmeans, other options: hclust?
   # Default distMethod: euclidean, other options: manhattan?
@@ -42,10 +39,10 @@ choose_clusters <- function(givenMat,
   }
   #
   if(distMethod == "euclidean"){
-        distMat <- dist(givenMat2, method = "euclidean")
+        distMat <- stats::dist(givenMat2, method = "euclidean")
   }
   else if(distMethod == "manhattan"){
-        distMat <- dist(givenMat2, method = "manhattan")
+        distMat <- stats::dist(givenMat2, method = "manhattan")
   }
   else{
         stop("Wrong distMethod passed [Takes 'euclidean'/'manhattan'].")
@@ -65,12 +62,12 @@ choose_clusters <- function(givenMat,
               start <- Sys.time()
               for (i in 1:length(nCluster_vals_test)){
                 kmeans_res <- suppressWarnings(
-                                    kmeans(givenMat2,
+                                    stats::kmeans(givenMat2,
                                             centers = nCluster_vals_test[i],
                                             iter.max = 1000,
                                             nstart = 50,
                                             algorithm = "Lloyd"))
-                sils <- silhouette(kmeans_res$cluster, dist=distMat)
+                sils <- cluster::silhouette(kmeans_res$cluster, dist=distMat)
                 sil_vals[i,2] <- mean(sils[,"sil_width"])
               }
               print(Sys.time()-start)
@@ -83,7 +80,7 @@ choose_clusters <- function(givenMat,
               start <- Sys.time()
               for (i in 1:length(nCluster_vals_test)){
                 hclust_res <- hclust(distMat)
-                sils <- silhouette(cutree(hclust_res, nCluster_vals_test[i]), dist=distMat)
+                sils <- cluster::silhouette(cutree(hclust_res, nCluster_vals_test[i]), dist=distMat)
                 sil_vals[i,2] <- mean(sils[,"sil_width"])
               }
               print(Sys.time()-start)

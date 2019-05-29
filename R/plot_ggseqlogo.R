@@ -14,10 +14,6 @@
 #'
 #' @import ggplot2
 #' @import ggseqlogo
-#'
-#' @examples
-#'
-#'
 plot_ggseqlogo <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
   # require(ggplot2)
   # require(ggseqlogo)

@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(archeR)
-reticulate::source_python(system.file("../inst/python/perform_nmf.py",
+reticulate::source_python(system.file("python/perform_nmf.py",
                                             package="archeR",
                                             mustWork=TRUE)
                                             )
@@ -31,9 +31,6 @@ reticulate::source_python(system.file("../inst/python/perform_nmf.py",
 ```{r sinuc-profiles-synthetic-dataset-2, echo=FALSE}
 
 # Simply get filename and create the feature matrix
-#data("example_data")
-#devtools::load_all()
-
 # creating data matrix from FASTA file
 inputFastaFilename <- system.file("extdata", "example_data.fa", package = "archeR", mustWork = TRUE)
 #inputFastaFilename <- file.path("inst/extdata", 'example_data.fa') 

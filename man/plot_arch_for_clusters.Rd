@@ -32,6 +32,3 @@ sequence clusters are visualized. Therefore, the function takes as arguments
 the samplesMatrix and featuresMatrix output by NMF, the number of clusters,
 the clustering solution obtained and the position labels for the sequences.
 }
-\examples{
-
-}

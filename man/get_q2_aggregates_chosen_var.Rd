@@ -20,6 +20,3 @@ The mean of $Q^2$ values per the chosen variable
 \description{
 Aggregate the \eqn{Q^2} values from the grid search results.
 }
-\examples{
-
-}

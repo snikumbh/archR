@@ -17,6 +17,3 @@ Sparsified matrix of same dimension
 \description{
 This function sparsifies a given matrix below a given a threshold.
 }
-\examples{
-
-}

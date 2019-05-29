@@ -27,7 +27,3 @@ reordered indices \code{reordering_idx}.
 Get the specified number of clusters from the given data using
 the chosen clusering method.
 }
-\examples{
-
-
-}

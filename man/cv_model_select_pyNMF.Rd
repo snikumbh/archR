@@ -36,7 +36,3 @@ The function performs model selection via cross-validation for
 choosing the optimal values of parameters for NMF. These are K, the number of
  factors in NMF, and \eqn{\alpha}, the sparsity coefficient.
 }
-\examples{
-
-
-}

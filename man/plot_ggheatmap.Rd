@@ -23,7 +23,3 @@ on it later. If \code{savePDFfilename} is given, it is also saved and the
 The given matrix is plotted as a heatmap using \code{ggplot2}'s
 \code{geom_tile}.
 }
-\examples{
-
-
-}

@@ -6,15 +6,16 @@ Authors@R: person("Nikumbh", "Sarvesh", email = "sarvesh.nikumbh@gmail.com",
   role = c("aut", "cre"))
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Depends:
+    R (>= 2.10)
 Imports:
     BBmisc,
     cluster,
     cvTools,
     dplyr,
-    gplots,   
     ggplot2,
     ggseqlogo,
     heatmap3,
@@ -29,7 +30,9 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    vctrs
+    vctrs,
+    magrittr,
+    gridExtra
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,

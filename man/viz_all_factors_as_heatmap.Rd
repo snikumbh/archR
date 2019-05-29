@@ -29,6 +29,3 @@ Each factor in the given features matrix is separately
 represented as a heatmap. Since each feeature vector is a one-hot-encoded DNA
  sequence, it is reshaped to have 4 rows and then visualized.
 }
-\examples{
-
-}

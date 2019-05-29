@@ -7,9 +7,6 @@
 #'
 #' @return Sparsified matrix of same dimension
 #' @export
-#'
-#' @examples
-#'
 sparsify_mat <- function(given_mat, threshold = 0.5){
   # Are the factors on the columns of the matrix? or on rows?
   # Currently assumed, on the columns.

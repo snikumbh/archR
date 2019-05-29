@@ -1,4 +1,4 @@
-context("Test combined plotting of heatmap and seqlogo")
+context("Test heatmap and seqlogo")
 library(ggplot2)
 library(ggseqlogo)
 library(gridExtra)
@@ -40,7 +40,7 @@ test_that("Position labels over-abundant", {
 
 })
 
-test_that("Combined heatmap and seqlogo plotting works", {
+test_that("Combined heatmap and seqlogo works", {
   # setting seed enables proper comparison between ggplot objects since we use
   # rnorm
   set.seed(11223344)
@@ -48,7 +48,7 @@ test_that("Combined heatmap and seqlogo plotting works", {
   testPositionLabels <- seq(25)
   testFeaturesMat <- matrix(rnorm(100), ncol=1)
   # test plot, include the function directly inside because it returns nothing.
-  vdiffr::expect_doppelganger("combined heatmap seqlogo plot example",
+  vdiffr::expect_doppelganger("heatmap seqlogo plot ex",
                               viz_all_factors_in_combined_heatmaps_seqlogos(featuresMatrix = testFeaturesMat,                                                                                        position_labels = testPositionLabels))
 
 })

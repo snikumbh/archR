@@ -17,7 +17,3 @@ Q^2, the reconstruction accuracy
 \description{
 Computes the reconstruction accuracy, \eqn{Q^2}, given the original matrix and the recontructed matrix to check against.
 }
-\examples{
-
-
-}

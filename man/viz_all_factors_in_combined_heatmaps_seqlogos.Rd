@@ -30,7 +30,3 @@ The given features matrix (with 4 rows) is represented as a
 heatmap followed by a sequence logo where the positions are aligned for
 better visualization.
 }
-\examples{
-
-
-}

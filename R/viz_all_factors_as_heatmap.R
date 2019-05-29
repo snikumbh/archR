@@ -10,8 +10,6 @@
 
 #' @export
 #'
-#' @examples
-#'
 viz_all_factors_as_heatmap <- function(featuresMatrix, position_labels=NA, add_pseudo_counts = F, savePDFfilename=NULL){
       # Visualize all basis factors (expected as columns of the given features matrix)
       # as heatmaps

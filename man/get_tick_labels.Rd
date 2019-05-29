@@ -20,7 +20,3 @@ A label vector that can be directly used for setting the tickmarks.
 \description{
 A convenience function to provide the right set of x-tick labels for the image matrix representing the sequences.
 }
-\examples{
-
-
-}

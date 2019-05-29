@@ -15,12 +15,3 @@ One-hot encoded sequences.
 \description{
 Get the one-hot encoding representation of the given sequences.
 }
-\examples{
-testSeqs <- c("AACGTGACTA",
-              "ACCGATCGAT",
-              "GGCATCATGC",
-              "TCATCTAGAT")
-
-ohe_seqs <- get_one_hot_encoded_seqs(testSeqs)
-
-}

@@ -22,7 +22,3 @@ on it later. If \code{savePDFfilename} is given, it is also saved and the
 \description{
 Visualize a given (PWM) matrix as a sequence logo.
 }
-\examples{
-
-
-}

@@ -22,7 +22,3 @@ be set to \code{1} which will print messages.}
 Get the reconstruction accuracy, \eqn{Q^2}, for a given choice of parameter
 values
 }
-\examples{
-
-
-}

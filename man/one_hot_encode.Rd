@@ -15,6 +15,3 @@ The one-hot encoded sequence.
 \description{
 One-hot encode a given DNA sequence.
 }
-\examples{
-
-}

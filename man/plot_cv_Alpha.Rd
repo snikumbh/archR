@@ -20,6 +20,3 @@ on it later.
 Plot showing performance of different values of \eqn{\alpha} tested in
 cross-validation.
 }
-\examples{
-
-}

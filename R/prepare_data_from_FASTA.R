@@ -6,9 +6,6 @@
 #'
 #' @return The one-hot encoded sequence.
 #'
-#'
-#' @examples
-#'
 one_hot_encode <- function(givenSeq){
   # Input: A DNA seq as a vector of caharacters (A/C/G/T)
   # Returns: A row matrix of size 4*seq_len
@@ -35,14 +32,6 @@ one_hot_encode <- function(givenSeq){
 #' @param givenFastaSeqs List of sequences.
 #'
 #' @return One-hot encoded sequences.
-#'
-#' @examples
-#' testSeqs <- c("AACGTGACTA",
-#'               "ACCGATCGAT",
-#'               "GGCATCATGC",
-#'               "TCATCTAGAT")
-#'
-#' ohe_seqs <- get_one_hot_encoded_seqs(testSeqs)
 #'
 get_one_hot_encoded_seqs <- function(givenFastaSeqs){
     #
@@ -111,15 +100,6 @@ assert_attributes <- function(givenSeqs){
 #' @return A matrix of sequences represented with one-hot-encoding. Dimensions
 #' of the matrix: 4*(sequence length) x number of sequences.
 #' @export
-#'
-#' @examples
-#' \donttest{
-#' sample_file <- system.file("extdata", "example_data.fa", package = "archeR",
-#'                           mustWork = TRUE)
-#' sample_data <- prepare_data_from_FASTA(sample_file)
-#' }
-#'
-#'
 prepare_data_from_FASTA <- function(inputFastaFilename){
       start <- Sys.time()
       if(file.exists(inputFastaFilename)){
@@ -135,11 +115,3 @@ prepare_data_from_FASTA <- function(inputFastaFilename){
       print(Sys.time()-start)
       return (t(oheSeqs))
 }
-
-
-
-
-
-
-
-

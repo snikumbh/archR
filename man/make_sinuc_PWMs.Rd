@@ -24,7 +24,3 @@ vector/4)
 \description{
 The given matrix (or simply a vector) is reshaped to have four rows for four nucleotides and a relevant number of columns.
 }
-\examples{
-
-
-}

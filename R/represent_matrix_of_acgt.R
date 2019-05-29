@@ -9,10 +9,6 @@
 #'
 #' @return A label vector that can be directly used for setting the tickmarks.
 #'
-#'
-#' @examples
-#'
-#'
 get_tick_labels <- function(givenVec, use_asis = T, at_every){
   givenLength <- length(givenVec)
   label_vec <- rep('', givenLength)
@@ -53,8 +49,7 @@ get_tick_labels <- function(givenVec, use_asis = T, at_every){
 #' @return nothing.
 #'
 #' @export
-#'
-#' @examples
+#' @importFrom grDevices dev.off pdf colorRampPalette
 #'
 represent_matrix_of_acgt <- function(givenMat,
                                      position_labels,
@@ -91,7 +86,7 @@ represent_matrix_of_acgt <- function(givenMat,
       if(verbose > 0){
         cat("Creating a color palette based IUPAC colors for nucleotides\n")
       }
-      acgt_palette <- colorRampPalette(iupac_colors)(n = 4)
+      acgt_palette <- grDevices::colorRampPalette(iupac_colors)(n = 4)
       # given matrix is #Features x #Sequences
       # we plot #Sequences x #Features
       plot_mat <- t(plot_mat)
@@ -139,6 +134,6 @@ represent_matrix_of_acgt <- function(givenMat,
       # axis(side=1, at = pos_labels$label_val, labels = pos_labels$label_val, tick = T)
       # axis(side=2, at = seq_labels$label_ind, labels = seq_labels$label_val, tick = T)
       if(!is.null(savePDFfilename)){
-        dev.off()
+        grDevices::dev.off()
       }
 }

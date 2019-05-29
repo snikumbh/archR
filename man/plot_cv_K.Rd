@@ -18,6 +18,3 @@ on it later.
 Plot showing performance of different values of K tested in
 cross-validation.
 }
-\examples{
-
-}

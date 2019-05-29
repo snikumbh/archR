@@ -21,6 +21,3 @@ validation folds.
 This function generates the row and column indices for the cross-
 validation splits.
 }
-\examples{
-
-}
