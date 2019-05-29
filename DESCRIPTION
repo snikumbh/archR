@@ -1,7 +1,7 @@
 Package: archeR
 Type: Package
 Title: Identify Different Architectures of Sequence Elements
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: person("Nikumbh", "Sarvesh", email = "sarvesh.nikumbh@gmail.com",
   role = c("aut", "cre"))
 Description: More about what it does (maybe more than one line)
