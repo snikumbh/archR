@@ -3,12 +3,12 @@ Package: archR
 Title: Identify Different Architectures of Sequence Elements
 Version: 0.0.0.9003
 Authors@R: 
-    person(given = "Nikumbh",
-           family = "Sarvesh",
+    person(given = "Sarvesh",
+           family = "Nikumbh",
            role = c("aut", "cre"),
            email = "sarvesh.nikumbh@gmail.com")
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Given a set of DNA sequences, the \code{archR} package enables 
+    discovery of clusters of sequence with characteristic sequence architectures.
 License: GPL-3
 Depends:
     R (>= 3.1)
