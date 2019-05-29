@@ -19,14 +19,23 @@ This package requires the Python module scikit-learn. See installations instruct
 
 ```
 library(devtools)
-withr::with_libpaths(<path_here>, install_github("snikumbh/archR", auth_token="29e825452191fa6cdc161719d5a3ddeebe2b017b", build = TRUE))
+withr::with_libpaths(<path_here>, 
+			install_github("snikumbh/archR", 
+				auth_token="29e825452191fa6cdc161719d5a3ddeebe2b017b", 
+				build = TRUE)
+			)
 ``` 
 
 If R complains, "Skipping install of 'archR' from a github remote, the SHA1 (7bfe4812) has not changed since last install.
   Use `force = TRUE` to force installation", do as it suggests.
 
 ```
-withr::with_libpaths(<path_here>, install_github("snikumbh/archR", auth_token="29e825452191fa6cdc161719d5a3ddeebe2b017b", build = TRUE, force = TRUE))
+withr::with_libpaths(<path_here>, 
+			install_github("snikumbh/archR", 
+				auth_token="29e825452191fa6cdc161719d5a3ddeebe2b017b", 
+				build = TRUE, 
+				force = TRUE)
+			)
 ```
 
 
