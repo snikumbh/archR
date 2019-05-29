@@ -11,11 +11,11 @@ R package for discovery of clusters with characteristic sequence architectures u
 
 ## Installation
 
-# Python scikit-learn dependency
+### Python scikit-learn dependency
 This package requires the Python module scikit-learn. See installations instructions [here](insert-link).
 
 
-# To install this package, use 
+### To install this package, use 
 
 ```
 library(devtools)
