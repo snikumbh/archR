@@ -4,40 +4,41 @@ library(ggseqlogo)
 
 
 test_that("Given object is matrix", {
-
   testFeaturesMat <- rnorm(10000) # err
   testPositionLabels <- seq(25)
-  expect_error(viz_all_factors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels)
-               , "not of type matrix")
-
+  expect_error(
+    viz_all_factors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels),
+    "not of type matrix"
+  )
 })
 
 test_that("Handling empty matrix", {
-
   testFeaturesMat <- matrix()
   testPositionLabels <- seq(25)
-  expect_error(viz_all_factors_as_seqlogo(testFeaturesMat,
-                                                             position_labels = testPositionLabels)
-               , "Empty")
-
+  expect_error(
+    viz_all_factors_as_seqlogo(testFeaturesMat,
+      position_labels = testPositionLabels
+    ),
+    "Empty"
+  )
 })
 
 test_that("Position labels inadequate", {
-
   testFeaturesMat <- matrix(rnorm(10000), nrow = 200)
   testPositionLabels <- seq(20)
-  expect_error(viz_all_factors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels)
-               , "Inadequate")
-
+  expect_error(
+    viz_all_factors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels),
+    "Inadequate"
+  )
 })
 
 test_that("Position labels over-abundant", {
-
   testFeaturesMat <- matrix(rnorm(10000), nrow = 200)
   testPositionLabels <- seq(60)
-  expect_error(viz_all_factors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels)
-               , "Overabundant")
-
+  expect_error(
+    viz_all_factors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels),
+    "Overabundant"
+  )
 })
 
 # test_that("Seqlogo plotting works", {

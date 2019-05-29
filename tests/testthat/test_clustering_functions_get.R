@@ -5,9 +5,12 @@ test_that("Handles empty matrix", {
   clustMethodTest <- "kmeans"
   distMethodTest <- "euclidean"
   nClustersTest <- 5
-  expect_error(get_clusters(givenMat = testMat, clustMethod = clustMethodTest,
-                               nCluster = nClustersTest)
-               , "Empty"
+  expect_error(
+    get_clusters(
+      givenMat = testMat, clustMethod = clustMethodTest,
+      nCluster = nClustersTest
+    ),
+    "Empty"
   )
 })
 
@@ -16,9 +19,12 @@ test_that("Handles non-positive #clusters", {
   clustMethodTest <- "kmeans"
   distMethodTest <- "euclidean"
   nClustersTest <- -5
-  expect_error(get_clusters(givenMat = testMat, clustMethod = clustMethodTest,
-                            nCluster = nClustersTest)
-               , "at least 2 clusters"
+  expect_error(
+    get_clusters(
+      givenMat = testMat, clustMethod = clustMethodTest,
+      nCluster = nClustersTest
+    ),
+    "at least 2 clusters"
   )
 })
 
@@ -27,9 +33,12 @@ test_that("Handles #clusters > #sequences", {
   clustMethodTest <- "kmeans"
   distMethodTest <- "euclidean"
   nClustersTest <- ncol(testMat) + 5
-  expect_error(get_clusters(givenMat = testMat, clustMethod = clustMethodTest,
-                            nCluster = nClustersTest)
-               , "nClusters more than #sequences"
+  expect_error(
+    get_clusters(
+      givenMat = testMat, clustMethod = clustMethodTest,
+      nCluster = nClustersTest
+    ),
+    "nClusters more than #sequences"
   )
 })
 
@@ -37,10 +46,13 @@ test_that("Handles a list as nCluster value", {
   testMat <- matrix(rnorm(10000), nrow = 200)
   clustMethodTest <- "kmeans"
   distMethodTest <- "euclidean"
-  nClustersTest <- seq(3,5)
-  expect_error(get_clusters(givenMat = testMat, clustMethod = clustMethodTest,
-                            nCluster = nClustersTest)
-               , "Expecting only one value"
+  nClustersTest <- seq(3, 5)
+  expect_error(
+    get_clusters(
+      givenMat = testMat, clustMethod = clustMethodTest,
+      nCluster = nClustersTest
+    ),
+    "Expecting only one value"
   )
 })
 
@@ -49,9 +61,12 @@ test_that("Handles wrongly given clustMethod", {
   clustMethodTest <- "kmns" # err
   distMethodTest <- "euclidean"
   nClustersTest <- 5
-  expect_error(get_clusters(givenMat = testMat, clustMethod = clustMethodTest,
-                            nCluster = nClustersTest)
-               , "Wrong clustMethod"
+  expect_error(
+    get_clusters(
+      givenMat = testMat, clustMethod = clustMethodTest,
+      nCluster = nClustersTest
+    ),
+    "Wrong clustMethod"
   )
 })
 
@@ -60,10 +75,13 @@ test_that("Handles wrongly given distMethod with hclust", {
   clustMethodTest <- "hclust"
   distMethodTest <- "" # err, with hclust
   nClustersTest <- 5
-  expect_error(get_clusters(givenMat = testMat, clustMethod = clustMethodTest,
-                            nCluster = nClustersTest,
-                            distMethod.hclust = distMethodTest)
-               , "Wrong distMethod.hclust"
+  expect_error(
+    get_clusters(
+      givenMat = testMat, clustMethod = clustMethodTest,
+      nCluster = nClustersTest,
+      distMethod.hclust = distMethodTest
+    ),
+    "Wrong distMethod.hclust"
   )
 })
 
@@ -74,8 +92,10 @@ test_that("Returned List element names are right.", {
   testMat <- matrix(rnorm(10000), nrow = 200)
   clustMethodTest <- "kmeans"
   nClustersTest <- 5
-  givenAns <- get_clusters(givenMat = testMat, clustMethod = clustMethodTest,
-                          nCluster = nClustersTest)
+  givenAns <- get_clusters(
+    givenMat = testMat, clustMethod = clustMethodTest,
+    nCluster = nClustersTest
+  )
   testAnsNames <- c("clust_sol", "reordering_idx")
   expect_equal(names(givenAns), testAnsNames)
   #
@@ -84,11 +104,11 @@ test_that("Returned List element names are right.", {
   clustMethodTest <- "hclust"
   distMethodTest <- "euclidean"
   nClustersTest <- 5
-  givenAns <- get_clusters(givenMat = testMat, clustMethod = clustMethodTest,
-                           nCluster = nClustersTest,
-                           distMethod.hclust = distMethodTest
-                           )
+  givenAns <- get_clusters(
+    givenMat = testMat, clustMethod = clustMethodTest,
+    nCluster = nClustersTest,
+    distMethod.hclust = distMethodTest
+  )
   testAnsNames <- c("clust_sol", "reordering_idx")
   expect_equal(names(givenAns), testAnsNames)
-
 })

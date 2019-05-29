@@ -22,8 +22,7 @@
 choose_clusters <- function(givenMatrix,
                             distMethod = "euclidean",
                             clustMethod = "kmeans",
-                            nClusterValsTest = seq(3,5)
-                            ){
+                            nClusterValsTest = seq(3, 5)) {
   # require(cluster)
   #
   # Default clustMethod: kmeans, other options: hclust?
@@ -35,64 +34,67 @@ choose_clusters <- function(givenMatrix,
   givenMat2 <- t(givenMatrix)
   #
   if (is.na(givenMatrix) && sum(dim(givenMatrix)) == 2) {
-        stop("Empty matrix")
+    stop("Empty matrix")
   }
   #
   if (distMethod == "euclidean") {
-        distMat <- stats::dist(givenMat2, method = "euclidean")
+    distMat <- stats::dist(givenMat2, method = "euclidean")
   }
   else if (distMethod == "manhattan") {
-        distMat <- stats::dist(givenMat2, method = "manhattan")
+    distMat <- stats::dist(givenMat2, method = "manhattan")
   }
-  else{
-        stop("Wrong distMethod passed [Takes 'euclidean'/'manhattan'].")
+  else {
+    stop("Wrong distMethod passed [Takes 'euclidean'/'manhattan'].")
   }
-  if (max(nClusterValsTest) < 2 ) {
-        stop("Ask for at least 2 clusters")
-  }else if (any(nClusterValsTest > ncol(givenMatrix))) {
-        stop("nClusters more than #sequences")
-  }else{
-        silhouetteVals <- matrix(rep(c(-1,-1), length(nClusterValsTest) ),
-                                 ncol = 2, byrow = T)
-        colnames(silhouetteVals) <- c("nClustVals", "Silhouette values")
-        silhouetteVals[, 1] <- nClusterValsTest
-        #
-        if (clustMethod == "kmeans") {
-              print("kmeans")
-              start <- Sys.time()
-              for (i in 1:length(nClusterValsTest)) {
-                kmeansRes <- suppressWarnings(
-                                    stats::kmeans(givenMat2,
-                                            centers = nClusterValsTest[i],
-                                            iter.max = 1000,
-                                            nstart = 50,
-                                            algorithm = "Lloyd"))
-                sils <- cluster::silhouette(kmeansRes$cluster, dist = distMat)
-                silhouetteVals[i,2] <- mean(sils[, "sil_width"])
-              }
-              print(Sys.time() - start)
-              # Report best value
-              print(silhouetteVals)
-              chosenNClusterVal <- silhouetteVals[which.max(silhouetteVals[,2]), 1]
-              #
-        }else if (clustMethod == "hclust") {
-              print("hclust")
-              start <- Sys.time()
-              for (i in 1:length(nClusterValsTest)) {
-                hclustRes <- hclust(distMat)
-                sils <- cluster::silhouette(cutree(hclustRes, nClusterValsTest[i]), dist = distMat)
-                silhouetteVals[i, 2] <- mean(sils[, "sil_width"])
-              }
-              print(Sys.time() - start)
-              # Report best value
-              print(silhouetteVals)
-              chosenNClusterVal <- silhouetteVals[
-                                          which.max(silhouetteVals[,2]), 1
-                                          ]
-        }
-        else{
-              stop("Wrong clustMethod passed. Takes 'kmeans'/'hclust'")
-        }
+  if (max(nClusterValsTest) < 2) {
+    stop("Ask for at least 2 clusters")
+  } else if (any(nClusterValsTest > ncol(givenMatrix))) {
+    stop("nClusters more than #sequences")
+  } else {
+    silhouetteVals <- matrix(rep(c(-1, -1), length(nClusterValsTest)),
+      ncol = 2, byrow = T
+    )
+    colnames(silhouetteVals) <- c("nClustVals", "Silhouette values")
+    silhouetteVals[, 1] <- nClusterValsTest
+    #
+    if (clustMethod == "kmeans") {
+      print("kmeans")
+      start <- Sys.time()
+      for (i in 1:length(nClusterValsTest)) {
+        kmeansRes <- suppressWarnings(
+          stats::kmeans(givenMat2,
+            centers = nClusterValsTest[i],
+            iter.max = 1000,
+            nstart = 50,
+            algorithm = "Lloyd"
+          )
+        )
+        sils <- cluster::silhouette(kmeansRes$cluster, dist = distMat)
+        silhouetteVals[i, 2] <- mean(sils[, "sil_width"])
+      }
+      print(Sys.time() - start)
+      # Report best value
+      print(silhouetteVals)
+      chosenNClusterVal <- silhouetteVals[which.max(silhouetteVals[, 2]), 1]
+      #
+    } else if (clustMethod == "hclust") {
+      print("hclust")
+      start <- Sys.time()
+      for (i in 1:length(nClusterValsTest)) {
+        hclustRes <- hclust(distMat)
+        sils <- cluster::silhouette(cutree(hclustRes, nClusterValsTest[i]), dist = distMat)
+        silhouetteVals[i, 2] <- mean(sils[, "sil_width"])
+      }
+      print(Sys.time() - start)
+      # Report best value
+      print(silhouetteVals)
+      chosenNClusterVal <- silhouetteVals[
+        which.max(silhouetteVals[, 2]), 1
+      ]
+    }
+    else {
+      stop("Wrong clustMethod passed. Takes 'kmeans'/'hclust'")
+    }
   }
   return(chosenNClusterVal)
 }

@@ -14,51 +14,54 @@
 #'
 #' @import ggplot2
 #' @import ggseqlogo
-plot_ggseqlogo <- function(pwmMat, position_labels=NULL, savePDFfilename=NULL){
+plot_ggseqlogo <- function(pwmMat, position_labels = NULL, savePDFfilename = NULL) {
   # require(ggplot2)
   # require(ggseqlogo)
   #
-  if(!is.matrix(pwmMat)){
-        stop("Expecting a matrix with 4 rows")
+  if (!is.matrix(pwmMat)) {
+    stop("Expecting a matrix with 4 rows")
   }
-  if(sum(dim(pwmMat)) == 2 && is.na(pwmMat)){
+  if (sum(dim(pwmMat)) == 2 && is.na(pwmMat)) {
     stop("Empty matrix")
   }
-  if(!(nrow(pwmMat) == 4)){
-        stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
+  if (!(nrow(pwmMat) == 4)) {
+    stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
   }
   #
-  if(length(position_labels) < ncol(pwmMat)){
-        stop(paste0("Inadequate position labels supplied",
-                    ncol(pwmMat) - length(position_labels))
-             )
+  if (length(position_labels) < ncol(pwmMat)) {
+    stop(paste0(
+      "Inadequate position labels supplied",
+      ncol(pwmMat) - length(position_labels)
+    ))
   }
   #
-  if(length(position_labels) > ncol(pwmMat)){
-        stop(paste0("Overabundant position labels supplied",
-                    length(position_labels) - ncol(pwmMat))
-        )
+  if (length(position_labels) > ncol(pwmMat)) {
+    stop(paste0(
+      "Overabundant position labels supplied",
+      length(position_labels) - ncol(pwmMat)
+    ))
   }
   #
-  p1 <- ggplot() + geom_logo(pwmMat, method="custom", seq_type="dna") +
-          theme_logo() +
-          # theme_update(plot.margin=grid::unit(c(0,0,0,0), "mm"),
-          #       axis.ticks.length = unit(0, "lines"),
-          #       axis.line = element_blank(),
-          #       axis.title.y = element_blank(),
-          #       axis.text.y = element_blank()
-          #       ) +
-          #theme_bw() +
-          scale_x_continuous(breaks = 1:ncol(pwmMat), labels = position_labels,
-                             expand = expand_scale(mult = c(0, 0))
-                             ) #+
-          #ylim(0.0, 2.0)
+  p1 <- ggplot() + geom_logo(pwmMat, method = "custom", seq_type = "dna") +
+    theme_logo() +
+    # theme_update(plot.margin=grid::unit(c(0,0,0,0), "mm"),
+    #       axis.ticks.length = unit(0, "lines"),
+    #       axis.line = element_blank(),
+    #       axis.title.y = element_blank(),
+    #       axis.text.y = element_blank()
+    #       ) +
+    # theme_bw() +
+    scale_x_continuous(
+      breaks = 1:ncol(pwmMat), labels = position_labels,
+      expand = expand_scale(mult = c(0, 0))
+    ) #+
+  # ylim(0.0, 2.0)
   #
-  if(!is.null(savePDFfilename)){
-        if(file.exists(savePDFfilename)){
-              warning("File exists, will overwrite")
-        }
-        ggsave(p1, device="pdf", width=20, height=2.5)
+  if (!is.null(savePDFfilename)) {
+    if (file.exists(savePDFfilename)) {
+      warning("File exists, will overwrite")
+    }
+    ggsave(p1, device = "pdf", width = 20, height = 2.5)
   }
   return(p1)
 }
