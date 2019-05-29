@@ -18,9 +18,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(archeR)
+library(archR)
 reticulate::source_python(system.file("python/perform_nmf.py",
-                                            package="archeR",
+                                            package="archR",
                                             mustWork=TRUE)
                                             )
 
@@ -32,7 +32,7 @@ reticulate::source_python(system.file("python/perform_nmf.py",
 
 # Simply get filename and create the feature matrix
 # creating data matrix from FASTA file
-inputFastaFilename <- system.file("extdata", "example_data.fa", package = "archeR", mustWork = TRUE)
+inputFastaFilename <- system.file("extdata", "example_data.fa", package = "archR", mustWork = TRUE)
 #inputFastaFilename <- file.path("inst/extdata", 'example_data.fa') 
 tss.seqs_o <- prepare_data_from_FASTA(inputFastaFilename)
 nSeqs <- ncol(tss.seqs_o)

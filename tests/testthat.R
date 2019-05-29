@@ -1,4 +1,4 @@
 library(testthat)
-library(archeR)
+library(archR)
 
-test_check("archeR")
+test_check("archR")

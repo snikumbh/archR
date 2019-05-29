@@ -1,10 +1,10 @@
-#' archeR: A package for discovering different architectures of sequence elements.
+#' archR: A package for discovering different architectures of sequence elements.
 #'
-#' Given a set of DNA sequences, the \code{archeR} package enables discovery of
+#' Given a set of DNA sequences, the \code{archR} package enables discovery of
 #' clusters of sequence with characteristic sequence architectures.
 #'
 #'
-#' The archeR package provides three categories of important functions:
+#' The archR package provides three categories of important functions:
 #' related to data preparation, performing non-negative matrix factorization,
 #' performing clustering, and visualization-related functions.
 #'
@@ -18,5 +18,5 @@
 #' @section Visualizations
 #'
 #' @docType package
-#' @name archeR
+#' @name archR
 NULL

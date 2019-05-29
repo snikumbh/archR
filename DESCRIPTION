@@ -1,4 +1,4 @@
-Package: archeR
+Package: archR
 Type: Package
 Title: Identify Different Architectures of Sequence Elements
 Version: 0.0.0.9002
