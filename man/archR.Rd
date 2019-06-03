@@ -11,36 +11,52 @@ clusters of sequence with characteristic sequence architectures.
 }
 \details{
 The archR package provides three categories of important functions:
-related to data preparation, performing non-negative matrix factorization,
+related to data preparation and manipulation, performing non-negative matrix factorization,
 performing clustering, and visualization-related functions.
 }
-\section{Data preparation functions}{
+\section{Functions for data preparation and manipulation}{
 
-\code{\link{prepare_data_from_FASTA}}, \code{\link{make_sinuc_PWMs}},
-\code{\link{sparsify_mat}}
+\itemize{
+\item \code{\link{prepare_data_from_FASTA}}
+\item \code{\link{make_sinuc_PWMs}}
+\item \code{\link{sparsify_mat}}
+}
 }
 
-\section{Performing NMF and model selection}{
+\section{Functions related to performing NMF and model selection}{
 
-\code{\link{get_q2_using_py}}, \code{\link{compute_q2}},
-\code{\link{cv_model_select_pyNMF}}, \code{\link{generate_folds}},
-\code{\link{get_best_K}}, \code{\link{get_best_alpha}}
-\code{\link{get_q2_aggregates_chosen_var}},
-\code{\link{get_q2_threshold_by_K}},
+\itemize{
+\item \code{\link{get_q2_using_py}}
+\item \code{\link{compute_q2}}
+\item \code{\link{cv_model_select_pyNMF}}
+\item \code{\link{generate_folds}}
+\item \code{\link{get_best_K}}
+\item \code{\link{get_best_alpha}}
+\item \code{\link{get_q2_aggregates_chosen_var}}
+\item \code{\link{get_q2_threshold_by_K}}
+}
 }
 
-\section{Performing clustering}{
+\section{For related to clustering}{
 
-\code{\link{choose_clusters}}, \code{\link{get_clusters}}.
+\itemize{
+\item \code{\link{choose_clusters}}
+\item \code{\link{get_clusters}}
+}
 }
 
-\section{Visualizations}{
+\section{Functions for visualizations}{
 
-\code{\link{plot_ggseqlogo}}, \code{\link{plot_ggheatmap}},
-\code{\link{viz_all_factors_as_heatmap}},
-\code{\link{viz_all_factors_as_seqlogo}},
-\code{\link{viz_all_factoes_in_combined_heatmaps_seqlogo}},
-\code{\link{plot_arch_for_clusters}}, \code{\link{represent_matrix_of_acgt}},
-\code{\link{plot_cv_K}}, \code{\link{plot_cv_Alpha}}
+\itemize{
+\item \code{\link{plot_ggseqlogo}}
+\item \code{\link{plot_ggheatmap}}
+\item \code{\link{viz_all_factors_as_heatmap}}
+\item \code{\link{viz_all_factors_as_seqlogo}}
+\item \code{\link{viz_all_factors_in_combined_heatmaps_seqlogos}}
+\item \code{\link{plot_arch_for_clusters}}
+\item \code{\link{represent_matrix_of_acgt}}
+\item \code{\link{plot_cv_K}}
+\item \code{\link{plot_cv_Alpha}}
+}
 }
 
