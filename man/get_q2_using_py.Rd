@@ -2,7 +2,7 @@
 % Please edit documentation in R/pyNMF_model_selection_functions.R
 \name{get_q2_using_py}
 \alias{get_q2_using_py}
-\title{Get the reconstruction accuracy, \eqn{Q^2}, for a given choice of parameter
+\title{Get the reconstruction accuracy, \eqn{Q^{2}}, for a given choice of parameter
 values}
 \usage{
 get_q2_using_py(x, seed_val, verbose = 0)
@@ -16,9 +16,9 @@ get_q2_using_py(x, seed_val, verbose = 0)
 be set to \code{1} which will print messages.}
 }
 \value{
-\eqn{Q^2} value
+\eqn{Q^{2}}, a real value
 }
 \description{
-Get the reconstruction accuracy, \eqn{Q^2}, for a given choice of parameter
+Get the reconstruction accuracy, \eqn{Q^{2}}, for a given choice of parameter
 values
 }

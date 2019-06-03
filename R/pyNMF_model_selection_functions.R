@@ -1,4 +1,4 @@
-#' Get the reconstruction accuracy, \eqn{Q^2}, for a given choice of parameter
+#' Get the reconstruction accuracy, \eqn{Q^{2}}, for a given choice of parameter
 #' values
 #'
 #' @param x The parameter values. Expected columns "k_vals", "alpha" and "fold".
@@ -6,7 +6,7 @@
 #' @param verbose Default to \code{0} which will not print any messages, or can
 #' be set to \code{1} which will print messages.
 #'
-#' @return \eqn{Q^2} value
+#' @return \eqn{Q^{2}}, a real value
 #' @export
 get_q2_using_py <- function(x, seed_val, verbose = 0) {
   ##
