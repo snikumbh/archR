@@ -2,7 +2,7 @@
 % Please edit documentation in R/viz_all_factors_as_heatmap.R
 \name{viz_all_factors_as_heatmap}
 \alias{viz_all_factors_as_heatmap}
-\title{Visualize the factors in features matrix as a heatmap plot.}
+\title{Visualize the factors in features matrix as a heatmap plot}
 \usage{
 viz_all_factors_as_heatmap(featuresMatrix, position_labels = NA,
   add_pseudo_counts = F, savePDFfilename = NULL)

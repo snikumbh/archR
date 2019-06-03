@@ -2,16 +2,19 @@
 % Please edit documentation in R/viz_all_factors_in_combined_heatmaps_seqlogos.R
 \name{viz_all_factors_in_combined_heatmaps_seqlogos}
 \alias{viz_all_factors_in_combined_heatmaps_seqlogos}
-\title{Visualize the features matrix in a paired heatmap and sequence logo plot.}
+\title{Visualize the features matrix in a paired heatmap and sequence logo plot}
 \usage{
 viz_all_factors_in_combined_heatmaps_seqlogos(featuresMatrix,
-  position_labels = NA, add_pseudo_counts = F,
+  plotMethod = "custom", position_labels = NA, add_pseudo_counts = F,
   savePDFfilename = NULL)
 }
 \arguments{
 \item{featuresMatrix}{The features matrix output from NMF. Expected
 dimensionality: number of columns represent the number of factors from NMF,
 and the number of rows is 4 times the length of the sequences in the collection.}
+
+\item{plotMethod}{For \code{ggseqlogo}; either of "custom", "bits", or "probability".
+Default is "custom".}
 
 \item{position_labels}{Labels of the positions in the sequences.}
 

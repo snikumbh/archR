@@ -33,7 +33,6 @@ reticulate::source_python(system.file("python/perform_nmf.py",
 
 # Ceation of data matrix from FASTA file
 inputFastaFilename <- system.file("extdata", "example_data.fa", package = "archR", mustWork = TRUE)
-#inputFastaFilename <- file.path("inst/extdata", 'example_data.fa') 
 tssSeqsOriginal <- prepare_data_from_FASTA(inputFastaFilename)
 nSeqs <- ncol(tssSeqsOriginal)
 positions <- setdiff(seq(-100,100),c(0))

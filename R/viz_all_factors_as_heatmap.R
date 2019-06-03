@@ -1,4 +1,4 @@
-#' @title Visualize the factors in features matrix as a heatmap plot.
+#' @title Visualize the factors in features matrix as a heatmap plot
 #'
 #' @description Each factor in the given features matrix is separately
 #' represented as a heatmap. Since each feeature vector is a one-hot-encoded DNA
@@ -10,7 +10,10 @@
 
 #' @export
 #'
-viz_all_factors_as_heatmap <- function(featuresMatrix, position_labels = NA, add_pseudo_counts = F, savePDFfilename = NULL) {
+viz_all_factors_as_heatmap <- function(featuresMatrix,
+                                       position_labels = NA,
+                                       add_pseudo_counts = F,
+                                       savePDFfilename = NULL) {
   # Visualize all basis factors (expected as columns of the given features matrix)
   # as heatmaps
   #

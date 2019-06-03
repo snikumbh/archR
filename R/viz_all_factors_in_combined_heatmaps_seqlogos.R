@@ -1,4 +1,4 @@
-#' @title Visualize the features matrix in a paired heatmap and sequence logo plot.
+#' @title Visualize the features matrix in a paired heatmap and sequence logo plot
 #'
 #' @description The given features matrix (with 4 rows) is represented as a
 #' heatmap followed by a sequence logo where the positions are aligned for
@@ -7,6 +7,8 @@
 #' @param featuresMatrix The features matrix output from NMF. Expected
 #' dimensionality: number of columns represent the number of factors from NMF,
 #' and the number of rows is 4 times the length of the sequences in the collection.
+#' @param plotMethod For \code{ggseqlogo}; either of "custom", "bits", or "probability".
+#' Default is "custom".
 #' @param position_labels Labels of the positions in the sequences.
 #' @param add_pseudo_counts Boolean, taking values TRUE/T or FALSE/F, default set
 #'  to FALSE. Setting it to TRUE will enable adding pseudo-counts to the features
@@ -24,6 +26,7 @@
 #' @import ggseqlogo
 #' @import gridExtra
 viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix,
+                                                          plotMethod = "custom",
                                                           position_labels = NA,
                                                           add_pseudo_counts = F,
                                                           savePDFfilename = NULL) {

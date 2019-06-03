@@ -2,15 +2,19 @@
 % Please edit documentation in R/viz_all_factors_as_seqlogo.R
 \name{viz_all_factors_as_seqlogo}
 \alias{viz_all_factors_as_seqlogo}
-\title{Visualize the factors in features matrix as a sequence logo.}
+\title{Visualize the factors in features matrix as a sequence logo}
 \usage{
-viz_all_factors_as_seqlogo(featuresMatrix, position_labels = NA,
-  add_pseudo_counts = F, savePDFfilename = NULL)
+viz_all_factors_as_seqlogo(featuresMatrix, plotMethod = "custom",
+  position_labels = NA, add_pseudo_counts = F,
+  savePDFfilename = NULL)
 }
 \arguments{
 \item{featuresMatrix}{The features matrix output from NMF. Expected
 dimensionality: number of columns represent the number of factors from NMF,
 and the number of rows is 4 times the length of the sequences in the collection.}
+
+\item{plotMethod}{For \code{ggseqlogo}; either of "custom", "bits", or "probability".
+Default is "custom".}
 
 \item{position_labels}{Labels of the positions in the sequences.}
 
