@@ -4,7 +4,7 @@
 \name{archR}
 \alias{archR}
 \alias{archR-package}
-\title{archR: A package for discovering different architectures of sequence elements.}
+\title{archR: A package for discovering different architectures of sequence elements}
 \description{
 Given a set of DNA sequences, the \code{archR} package enables discovery of
 clusters of sequence with characteristic sequence architectures.
@@ -16,18 +16,31 @@ performing clustering, and visualization-related functions.
 }
 \section{Data preparation functions}{
 
-The foo functions ...
+\code{\link{prepare_data_from_FASTA}}, \code{\link{make_sinuc_PWMs}},
+\code{\link{sparsify_mat}}
 }
 
-\section{Performing NMF}{
-NA
+\section{Performing NMF and model selection}{
+
+\code{\link{get_q2_using_py}}, \code{\link{compute_q2}},
+\code{\link{cv_model_select_pyNMF}}, \code{\link{generate_folds}},
+\code{\link{get_best_K}}, \code{\link{get_best_alpha}}
+\code{\link{get_q2_aggregates_chosen_var}},
+\code{\link{get_q2_threshold_by_K}},
 }
 
 \section{Performing clustering}{
-NA
+
+\code{\link{choose_clusters}}, \code{\link{get_clusters}}.
 }
 
 \section{Visualizations}{
-NA
+
+\code{\link{plot_ggseqlogo}}, \code{\link{plot_ggheatmap}},
+\code{\link{viz_all_factors_as_heatmap}},
+\code{\link{viz_all_factors_as_seqlogo}},
+\code{\link{viz_all_factoes_in_combined_heatmaps_seqlogo}},
+\code{\link{plot_arch_for_clusters}}, \code{\link{represent_matrix_of_acgt}},
+\code{\link{plot_cv_K}}, \code{\link{plot_cv_Alpha}}
 }
 
