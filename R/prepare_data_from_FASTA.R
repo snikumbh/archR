@@ -76,7 +76,7 @@ assert_attributes <- function(givenSeqs) {
     #
   } else if (any(!(char_levels %in% dna_alphabet))) {
     # Check for non-alphabet characters
-    stop("Non DNA-alphabet character in the sequences\n")
+    stop("Non DNA-alphabet character in the sequences: ", char_levels, "\n")
     #
   } else {
     # All OK!
