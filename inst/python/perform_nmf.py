@@ -13,7 +13,8 @@ def perform_nmf_func(givenMat, nPatterns, nIter=200, givenAlpha = 0, givenL1_rat
     model = NMF(n_components=nPatterns, 
                 init='nndsvd', 
                 alpha=givenAlpha, 
-                max_iter = nIter,
+                max_iter=nIter,
+                tol=1e-06,
                 l1_ratio=givenL1_ratio, 
                 random_state=seed_val)
     #
