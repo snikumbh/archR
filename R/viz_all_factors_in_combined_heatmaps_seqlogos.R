@@ -29,7 +29,8 @@ viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix,
                                                           plotMethod = "custom",
                                                           position_labels = NA,
                                                           add_pseudo_counts = F,
-                                                          savePDFfilename = NULL) {
+                                                          savePDFfilename = NULL,
+                                                          sinuc_or_dinuc = "sinuc") {
   # suppressMessages( require(cowplot) )
   # suppressMessages( require(gridExtra) )
   #
@@ -40,7 +41,14 @@ viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix,
     stop("Empty featuresMatrix")
   }
   invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
-    pwm <- make_sinuc_PWMs(x, add_pseudo_counts = add_pseudo_counts, scale = F)
+    if (sinuc_or_dinuc == "dinuc"){
+      dna_alphabet <- c("A", "C", "G", "T")
+      dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet, dna_alphabet))
+      pwm <- collapse_into_sinuc_matrix(as.matrix(x), feature_names = dna_alphabet_dinuc)
+    } else if (sinuc_or_dinuc == "sinuc") {
+      pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F, scale = F)
+    }
+    # pwm <- make_sinuc_PWMs(x, add_pseudo_counts = add_pseudo_counts, scale = F)
     #
     # Heatmap on top
     p1 <- plot_ggheatmap(
@@ -55,6 +63,7 @@ viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix,
     # Seqlogo below
     p2 <- plot_ggseqlogo(
       pwmMat = pwm,
+      plotMethod = plotMethod,
       position_labels = position_labels,
       savePDFfilename = savePDFfilename
     )

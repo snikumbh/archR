@@ -56,17 +56,22 @@ plot_ggseqlogo <- function(pwmMat,
     #       axis.text.y = element_blank()
     #       ) +
     # theme_bw() +
-    scale_x_continuous(
+    ggplot2::scale_x_continuous(
       breaks = 1:ncol(pwmMat), labels = position_labels,
       expand = expand_scale(mult = c(0, 0))
-    ) #+
-  # ylim(0.0, 2.0)
+    ) +
+    # ggplot2::coord_fixed(ratio = 8, clip = "on") +
+    # ggplot2::labs(title = plot.title) + 
+    ggplot2::theme(axis.text.x = element_text(size = rel(0.5), angle = 90, hjust = 1),
+          axis.text.y = element_text(size = rel(0.5))) 
+    # +
+    # ylim(0.0, 2.0)
   #
   if (!is.null(savePDFfilename)) {
     if (file.exists(savePDFfilename)) {
       warning("File exists, will overwrite")
     }
-    ggsave(p1, device = "pdf", width = 20, height = 2.5)
+    ggsave(p1, device = "pdf", width = 25, height = 0.5)
   }
   return(p1)
 }

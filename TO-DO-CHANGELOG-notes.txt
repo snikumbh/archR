@@ -1,0 +1,9 @@
+
+
+get_q2_threhold_by_K returns a list with names mean and se
+TEST: q2_threshold has named list with "mean" and "se"
+
+
+
+
+

@@ -11,7 +11,7 @@
 get_q2_using_py <- function(x, seed_val, verbose = 0) {
   ##
   if (verbose == 1) {
-    print(paste("INFO-START", x["k_vals"], x["alpha"], sep = ","))
+    cat(paste("INFO-START", x["k_vals"], x["alpha"], "\n", sep = ","))
   } else {
     cat(".")
   }
@@ -31,23 +31,114 @@ get_q2_using_py <- function(x, seed_val, verbose = 0) {
   #
   # Reconstruct A, by performing NMF on D
   # More details in Owen and Perry, Annals of Statistics, 2009
+  # for (itr in seq(100)) {
+      new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
+      X <- X[ , new_ord]
+      # 
+      submatrixD <- X[train_rows, train_cols]
+      submatrixA <- X[test_rows, test_cols]
+      submatrixB <- X[test_rows, train_cols]
+      submatrixC <- X[train_rows, test_cols]
+    
+      # NMF on submatrixD
+      # Setup params
+      # NMF call
+      # Using python/scikit-learn NMF
+      
+        # new_ord <- sample(ncol(submatrixD), ncol(submatrixD))
+        # submatrixD <- submatrixD[ , new_ord]
+        #
+        # Sourcing perform_nmf_func, see: https://rstudio.github.io/reticulate/reference/py_is_null_xptr.html
+        #
+        #print(file.path(paths_list_src_path, 'perform_nmf.py'))
+        #source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
+        # if(py_validate_xptr(perform_nmf_func)) {
+          nmf_submatrixD <- perform_nmf_func(submatrixD,
+                                             nPatterns = as.integer(this_k),
+                                             nIter = as.integer(200),
+                                             givenAlpha = this_alpha,
+                                             givenL1_ratio = 1,
+                                             seed_val = as.integer(seed_val)
+          )
+        # }else{
+        #   #Throw error
+        # }
+        #
+        D_W <- nmf_submatrixD[[1]]
+        D_H <- nmf_submatrixD[[2]]
+        #
+        reconstructed_submatrixA <- submatrixB %*% MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% submatrixC
+        #
+        if (verbose == 1) {
+          cat(paste("INFO-END", x["k_vals"], x["alpha"], "\n", sep = ","))
+        } else {
+          # if (itr %% 5 == 0) cat(",", itr)
+          # if (itr %% 50 == 0) cat("\n")
+          # cat(",")
+        }
+        #
+        q2 <- compute_q2(submatrixA, reconstructed_submatrixA)
+  # }
+  # return(mean(unlist(q2)))
+  # return (q2)
+}
 
+
+get_q2_using_py_with_rslurm <- function(k_vals, alpha, fold, iteration, seed_val, verbose = 0, paths_list_src_path) {
+  ##
+  if (verbose == 1) {
+    cat(paste("INFO-START", k_vals, alpha, "\n", sep = ","))
+  } else {
+    cat(".")
+  }
+  this_k <- as.numeric(k_vals)
+  this_alpha <- as.numeric(alpha)
+  #
+  test_fold <- as.numeric(fold)
+  train_rows <- cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which != test_fold]
+  train_cols <- cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which != test_fold]
+  test_rows <- cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which == test_fold]
+  test_cols <- cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which == test_fold]
+  
+  # Split data matrix X -- separate the training and test parts
+  #        _      _
+  #   X = |  A  B  |
+  #       |_ C  D _|
+  #
+  # Reconstruct A, by performing NMF on D
+  # More details in Owen and Perry, Annals of Statistics, 2009
+  # for (itr in seq(100)) {
+  new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
+  X <- X[ , new_ord]
+  # 
   submatrixD <- X[train_rows, train_cols]
   submatrixA <- X[test_rows, test_cols]
   submatrixB <- X[test_rows, train_cols]
   submatrixC <- X[train_rows, test_cols]
-
+  
   # NMF on submatrixD
   # Setup params
   # NMF call
   # Using python/scikit-learn NMF
+  
+  # new_ord <- sample(ncol(submatrixD), ncol(submatrixD))
+  # submatrixD <- submatrixD[ , new_ord]
+  #
+  # Sourcing perform_nmf_func, see: https://rstudio.github.io/reticulate/reference/py_is_null_xptr.html
+  #
+  #print(file.path(paths_list_src_path, 'perform_nmf.py'))
+  source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
+  # if(py_validate_xptr(perform_nmf_func)) {
   nmf_submatrixD <- perform_nmf_func(submatrixD,
-    nPatterns = as.integer(this_k),
-    nIter = as.integer(1000),
-    givenAlpha = this_alpha,
-    givenL1_ratio = 1,
-    seed_val = as.integer(seed_val)
+                                     nPatterns = as.integer(this_k),
+                                     nIter = as.integer(200),
+                                     givenAlpha = this_alpha,
+                                     givenL1_ratio = 1,
+                                     seed_val = as.integer(seed_val)
   )
+  # }else{
+  #   #Throw error
+  # }
   #
   D_W <- nmf_submatrixD[[1]]
   D_H <- nmf_submatrixD[[2]]
@@ -55,14 +146,21 @@ get_q2_using_py <- function(x, seed_val, verbose = 0) {
   reconstructed_submatrixA <- submatrixB %*% MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% submatrixC
   #
   if (verbose == 1) {
-    print(paste("INFO-END", x["k_vals"], x["alpha"], sep = ","))
+    cat(paste("INFO-END", k_vals, alpha, "\n", sep = ","))
   } else {
-    cat(",")
+    # if (itr %% 5 == 0) cat(",", itr)
+    # if (itr %% 50 == 0) cat("\n")
+    # cat(",")
   }
   #
   q2 <- compute_q2(submatrixA, reconstructed_submatrixA)
-  return(q2)
+  # }
+  # return(mean(unlist(q2)))
+  # return (q2)
 }
+
+
+
 
 
 
@@ -100,7 +198,10 @@ compute_q2 <- function(A, recA) {
   return(q2)
 }
 
-
+get_py_func_at_runtime <- function(paths_list_src_path) {
+  source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
+  #return()
+}
 
 
 #' @title Perform Model Selection via Cross-Validation
@@ -131,11 +232,15 @@ compute_q2 <- function(A, recA) {
 cv_model_select_pyNMF <- function(X,
                                   param_ranges,
                                   kFolds = 5,
-                                  parallel = FALSE,
+                                  useSLURM = TRUE,
+                                  parallelDo = FALSE,
                                   nCores = NA,
+                                  nIterations = 20,
                                   seed_val = 10208090,
                                   logfile = "outfile.txt",
-                                  set_verbose = 0) {
+                                  set_verbose = 1,
+                                  paths_list = paths_list
+                                  ) {
   # For Moore-Penrose pseudoinverse, load them on the clusters directly
   # suppressPackageStartupMessages(library(MASS, quietly = TRUE))
   #
@@ -168,62 +273,98 @@ cv_model_select_pyNMF <- function(X,
   grid_search_params <- list(
     k_vals = param_ranges$k_vals,
     alpha = param_ranges$alphaBase^param_ranges$alphaPow,
-    fold = 1:kFolds
+    fold = 1:kFolds,
+    iteration = 1:nIterations,
+    seed_val = seed_val,
+    verbose = set_verbose,
+    paths_list_src_path = paths_list$src_path
   ) %>% cross_df() # Convert to data frame grid
+  #
+  #
   cat(paste0("Grid search: ", nrow(grid_search_params), " combinations\n"))
   #
-  if (parallel) {
+  if (parallelDo) {
     cat(paste0("Opted: Parallel for grid search\n"))
-    if (is.na(nCores)) {
-      # raise error or handle
-      print("'nCores' not specified, turning to serially perform grid search")
-      stop("Number of cores to use not specified")
-    } else {
-      if (nCores <= detectCores()) {
-        cat(paste0("No. of cores: ", nCores, "\n"))
-      } else {
-        stop("Specified more than available cores. Stopping ")
-      }
-      if (nCores > nrow(grid_search_params)) {
-        stop("nCores more than number of individual computations. Stopping ")
-      }
+    #
+    if (useSLURM) {
+      # Use the rslurm package
+      library(rslurm)
+      X <<- X
+      cvfolds <<- cvfolds
+      samarth_job <- slurm_apply(get_q2_using_py_with_rslurm, grid_search_params,
+                                 jobname = NA,#"grid_search_archR",
+                                 nodes = nCores/8,
+                                 cpus_per_node = 1,
+                                 add_objects = c("get_q2_using_py", "compute_q2", "X", "cvfolds"),
+                                 #pkgs = X, default: loads all those already loaded when calling slurm_apply
+                                 #libPaths = NULL,
+                                 slurm_options = list(mem = "10G", "cpus-per-task"=8),
+                                 submit = TRUE
+                                   )
+      print_job_status(samarth_job) 
+      q2_vals <- unlist(get_slurm_out(samarth_job, "raw", wait = TRUE))
+      # cleanup_files(samarth_job)
+      # To cancel this job, use `cancel_slurm(samarth_job)`. 
+      # Subsequently run the cleanup_files(samarth_job) command. 
     }
-    cl <- makeCluster(nCores, type = "FORK", outfile = logfile)
-    clusterEvalQ(cl, suppressWarnings(require(CoGAPS))) # for NMF using CoGAPS
-    clusterEvalQ(cl, suppressWarnings(require(MASS))) # for pseudo-inverse using function `ginv`
-    clusterExport(
-      cl = cl, varlist = c("get_q2_using_py", "compute_q2", "X", "cvfolds"),
-      envir = environment()
-    )
-    # q2_vals <- parallel::parRapply(cl=cl, grid_search_params, get_q2, seed_val)
     #
-    # parRapply does not balance load dynamically.
-    # We observed many of the nodes lying idle (process mode S in htop)
-    # when a few of them were working. This happens because the indices
-    # have been split statically beforehand and assigned to each node.
-    # Using a load-balancing approach distributes jobs to each node after
-    # one assigned to it earlier has been completed. This way one would
-    # expect that nodes do not lie idle while there jobs running slowly
-    # on few other nodes.
-    #
-    q2_vals <- unlist(parallel::clusterApplyLB(
-      cl = cl, 1:nrow(grid_search_params),
-      function(i) {
-        get_q2_using_py(grid_search_params[i, ], seed_val, verbose = set_verbose)
+    if(!useSLURM) {
+      if (is.na(nCores)) {
+        # raise error or handle
+        print("'nCores' not specified, turning to serially perform grid search")
+        stop("Number of cores to use not specified")
+      } else {
+        if (nCores <= parallel::detectCores()) {
+          cat(paste0("No. of cores: ", nCores, "\n"))
+        } else {
+          stop("Specified more than available cores. Stopping ")
+        }
+        if (nCores > nrow(grid_search_params)) {
+          stop("nCores more than number of individual computations. Stopping ")
+        }
       }
-    ))
-    cat("Stopping cluster...")
-    stopCluster(cl)
-    cat("done!\n")
+      cl <- parallel::makeCluster(nCores, type = "FORK", outfile = logfile)
+      # clusterEvalQ(cl, suppressWarnings(require(CoGAPS))) # for NMF using CoGAPS
+      parallel::clusterEvalQ(cl, suppressWarnings(require(MASS))) # for pseudo-inverse using function `ginv`
+      parallel::clusterExport(
+        cl = cl, varlist = c("get_q2_using_py", "compute_q2", "X", "cvfolds"),
+        envir = environment()
+      )
+      # q2_vals <- parallel::parRapply(cl=cl, grid_search_params, get_q2, seed_val)
+      #
+      # parRapply does not balance load dynamically.
+      # We observed many of the nodes lying idle (process mode S in htop)
+      # when a few of them were working. This happens because the indices
+      # have been split statically beforehand and assigned to each node.
+      # Using a load-balancing approach distributes jobs to each node after
+      # one assigned to it earlier has been completed. This way one would
+      # expect that nodes do not lie idle while there jobs running slowly
+      # on few other nodes.
+      #
+      q2_vals <- unlist(parallel::clusterApplyLB(
+        cl = cl, 1:nrow(grid_search_params),
+        function(i) {
+          get_q2_using_py(grid_search_params[i, ], seed_val, verbose = set_verbose)
+        }
+      ))
+      cat("Stopping cluster...")
+      parallel::stopCluster(cl)
+      cat("done!\n")
+    }
   }
-  if (!parallel) {
+  if (!parallelDo) {
     # TO-DO: check params passed to rowLapply
     cat(paste0("Opted: Serial\n"))
     X <<- X
     cvfolds <<- cvfolds
     # nCoresUse <<- nCores
-    q2_vals <- unlist(BBmisc::rowLapply(grid_search_params, get_q2_using_py, seed_val))
+    q2_vals <- unlist(BBmisc::rowLapply(grid_search_params, get_q2_using_py, seed_val, verbose = set_verbose))
   }
+  #
+  # The dummy copy for satisfying the constraint in rslurm.
+  # The filtered true copy maintained for downstream steps in the procedure
+  #
+  grid_search_params <- dplyr::select(grid_search_params, k_vals, alpha, fold, iteration)
   grid_search_results <- tibble::add_column(grid_search_params, q2_vals)
   return(grid_search_results)
 }
@@ -264,10 +405,10 @@ get_best_K <- function(x) {
   # Assumes, max q2_val is best
   # Returns simply the best performing K value
   # Check names in param_ranges list, the function relies on it below
-  if (length(setdiff(names(x), c("k_vals", "alpha", "fold", "q2_vals"))) > 0) {
+  if (length(setdiff(names(x), c("k_vals", "alpha", "fold", "iteration", "q2_vals"))) > 0) {
     stop(paste0(
-      "Check colnames in tibble, expecting four element names: ",
-      c("k_vals", "alpha", "fold", "q2_vals")
+      "Check colnames in tibble, expecting five element names: ",
+      c("k_vals", "alpha", "fold", "iteration", "q2_vals")
     ))
   }
   #
@@ -324,11 +465,14 @@ get_q2_threshold_by_K <- function(model_selectK) {
   mean_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, mean)
   sd_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, stats::sd)
   se_by_K <- sd_by_K / sqrt(nrow(sd_by_K))
+  # print(model_selectK)
+  # print(mean_by_K)
   #
   best_K <- get_best_K(model_selectK)
   idx_best_K <- which(sd_by_K$rel_var == best_K)
   #
-  q2_threshold <- as.numeric(mean_by_K[idx_best_K, "q2_vals"] - se_by_K[idx_best_K, "q2_vals"])
+  q2_threshold <- list(mean = as.numeric(mean_by_K[idx_best_K, "q2_vals"]),
+                       se = as.numeric(se_by_K[idx_best_K, "q2_vals"]))
   #
   return(q2_threshold)
 }
@@ -357,17 +501,21 @@ get_best_alpha <- function(for_alpha, for_k, min_or_max = min) {
   #
   q2_threshold <- get_q2_threshold_by_K(for_k)
   #
-  cat(paste0("Q2 threshold: ", q2_threshold, "\n"))
+  cat(paste0("Q2 threshold, mean: ", q2_threshold$mean, "\n"))
   averagesA <- get_q2_aggregates_chosen_var(for_alpha, for_alpha$alpha, mean)
   #
-  idx_best_alpha <- which(unlist(averagesA["q2_vals"]) > q2_threshold)
+  idx_best_alpha <- which(unlist(averagesA["q2_vals"]) > q2_threshold$mean)
   #
   if (length(idx_best_alpha) > 1) {
+    cat("IF")
     cat("Choosing the highest alpha: ")
     # Choose one (the highest -- max value) if many satisfy threshold
     cat(averagesA[idx_best_alpha, "alpha"])
     best_alpha <- min_or_max(as.numeric(averagesA[idx_best_alpha, "alpha"]))
   } else {
+    cat("ELSE")
+    print(idx_best_alpha)
+    print(averagesA)
     best_alpha <- averagesA[idx_best_alpha, "alpha"]
   }
   return(best_alpha)
@@ -417,7 +565,8 @@ plot_cv_K <- function(averages) {
 #' @description Plot showing performance of different values of \eqn{\alpha} tested in
 #' cross-validation.
 #'
-#' @param averages The cross-validation averages
+#' @param The return value from \code{\link{cv_model_select_pyNMF}}.
+#' This is used for \eqn{\alpha}.
 #' @param threshold The threshold to be applied when choosing the best
 #' performing value
 #'
@@ -426,18 +575,30 @@ plot_cv_K <- function(averages) {
 #' @export
 #'
 #' @import ggplot2
-plot_cv_Alpha <- function(averages, threshold = 0.0) {
+plot_cv_Alpha <- function(model_selectAlpha, threshold = 0.0) {
   # Using ggplot to plot
-  if ("rel_var" %in% averages) {
-    cat("Plotting Q2 vs. alpha: check colnames in the object (need 'a')")
-    return(NULL)
-  }
+  # if ("rel_var" %in% averages) {
+  #   cat("Plotting Q2 vs. alpha: check colnames in the object (need 'a')")
+  #   return(NULL)
+  # }
+  
+  mean_by_Alpha <- get_q2_aggregates_chosen_var(model_selectAlpha, model_selectAlpha$alpha, mean)
+  sd_by_Alpha <- get_q2_aggregates_chosen_var(model_selectAlpha, model_selectAlpha$alpha, stats::sd)
+  se_by_Alpha <- sd_by_Alpha / sqrt(nrow(sd_by_Alpha))
+  # print(mean_by_Alpha)
   cat("Plotting Q2 as a function of alpha")
-  p1 <- ggplot(averages, aes(x = log2(rel_var), y = q2_vals)) +
+  p1 <- ggplot(mean_by_Alpha, aes(x = log2(rel_var), y = q2_vals)) +
+    # geom_ribbon(aes(ymin = threshold$mean - threshold$se,
+    #                 ymax = threshold$mean + threshold$se),
+    #             fill = "grey90") +
     geom_point() +
     geom_line() +
-    geom_hline(yintercept = threshold, linetype = "dashed") +
-    scale_x_continuous(breaks = log2(averages$rel_var), labels = log2(averages$rel_var)) +
+    geom_hline(yintercept = threshold$mean - threshold$se, linetype = "dashed") +
+    geom_hline(yintercept = threshold$mean + threshold$se, linetype = "dashed") +
+    # geom_errorbar(aes(ymin = mean_by_Alpha$q2_vals - sd_by_Alpha$q2_vals,
+    #                   ymax = mean_by_Alpha$q2_vals + sd_by_Alpha$q2_vals),
+    #               width = 0.1) +
+    scale_x_continuous(breaks = log2(mean_by_Alpha$rel_var), labels = log2(mean_by_Alpha$rel_var)) +
     labs(
       title = "Reconstruction accuracy, Q\U00B2 = f(\u03B1)",
       x = paste0("\u03B1", "=", expression(2^x)),

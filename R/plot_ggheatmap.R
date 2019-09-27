@@ -26,11 +26,14 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL, savePDFfilename = NUL
     stop("Empty matrix")
   }
   if (!(nrow(pwmMat) == 4)) {
-    stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
+    if (!(nrow(pwmMat) == 16)) {
+        stop("Expecting a matrix with 4 or 8 rows corresponding to 
+             DNA alphabet or dinucleotide prfiles respectively")
+    }
   }
   #
   if (length(position_labels) < ncol(pwmMat)) {
-    stop(paste0(
+    warning(paste0(
       "Inadequate position labels supplied",
       ncol(pwmMat) - length(position_labels)
     ))
@@ -42,13 +45,19 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL, savePDFfilename = NUL
       length(position_labels) - ncol(pwmMat)
     ))
   }
+  #
   # Convert pwmMat to df, heatmap by ggplot-way
   pwmMat_df <- as.data.frame(pwmMat)
-  #
-  pwmMat_df <- mutate(pwmMat_df, Nucleotides = rownames(pwmMat_df))
+  
+  pwmMat_df <- add_column(pwmMat_df, Nucleotides = rownames(pwmMat_df))
+  
+  # pwmMat_df <- mutate(pwmMat_df, Nucleotides = rownames(pwmMat_df))
+  # colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
+  # WHY THE HELL IS THIS THIS WAY?
   colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
   #
   pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars = c("Nucleotides"), variable.name = "positions")
+  #
   p1 <- ggplot2::ggplot(data = pwmMat_df_for_ggheatmap, mapping = aes(
     x = positions, # Here, 'positions' is the column_name, see previous statement. Do not change it to position_labels
     y = Nucleotides,
@@ -63,9 +72,11 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL, savePDFfilename = NUL
       mid = "white", # FFFFFF",
       high = "#012345"
     ) +
+    ggplot2::coord_fixed(ratio = 2.0, clip = "on") +
     ggplot2::theme(
       legend.position = "top",
-      legend.justification = "center"
+      legend.justification = "center",
+      axis.text.x = element_text(size=rel(0.5), angle = 90, hjust = 1)
     )
   # theme_update(legend.position = "top",
   #              legend.justification = "center"
