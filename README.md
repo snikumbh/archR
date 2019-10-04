@@ -12,7 +12,7 @@ R package for discovery of sequence architectures using Non-negative Matrix Fact
 ## Installation
 
 ### Python scikit-learn dependency
-This package requires the Python module scikit-learn. See installations instructions [here](insert-link).
+This package requires the Python module scikit-learn. See installation instructions [here](https://scikit-learn.org/stable/install.html).
 
 
 ### To install this package, use 
