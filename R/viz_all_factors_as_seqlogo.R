@@ -13,35 +13,27 @@
 #' @import ggplot2
 #' @import ggseqlogo
 #'
-viz_all_factors_as_seqlogo <- function(featuresMatrix,
-                                       plotMethod = "custom",
-                                       position_labels = NA,
-                                       add_pseudo_counts = F,
-                                       savePDFfilename = NULL,
-                                       sinuc_or_dinuc = "sinuc") {
-  # Visualize all basis factors (expected as columns of the given features matrix)
-  # as seqlogos
-  if (!is.matrix(featuresMatrix)) {
-    stop("featuresMatrix not of type matrix")
-  }
-  if (sum(dim(featuresMatrix)) == 2 && is.na(featuresMatrix)) {
-    stop("Empty featuresMatrix")
-  }
-  invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
-    if (sinuc_or_dinuc == "dinuc"){
-      dna_alphabet <- c("A", "C", "G", "T")
-      dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet, dna_alphabet))
-      pwm <- collapse_into_sinuc_matrix(as.matrix(x), feature_names = dna_alphabet_dinuc)
-    } else if (sinuc_or_dinuc == "sinuc") {
-      pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F)
+viz_all_factors_as_seqlogo <- function(featuresMatrix, plotMethod = "custom", position_labels = NA, 
+    add_pseudo_counts = F, savePDFfilename = NULL, sinuc_or_dinuc = "sinuc") {
+    # Visualize all basis factors (expected as columns of the given features matrix) as
+    # seqlogos
+    if (!is.matrix(featuresMatrix)) {
+        stop("featuresMatrix not of type matrix")
     }
-    
-    p1 <- plot_ggseqlogo(
-      pwmMat = pwm,
-      plotMethod = plotMethod,
-      position_labels = position_labels,
-      savePDFfilename = savePDFfilename
-    )
-    base::suppressMessages(print(p1))
-  }))
+    if (sum(dim(featuresMatrix)) == 2 && is.na(featuresMatrix)) {
+        stop("Empty featuresMatrix")
+    }
+    invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
+        if (sinuc_or_dinuc == "dinuc") {
+            dna_alphabet <- c("A", "C", "G", "T")
+            dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet, dna_alphabet))
+            pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = F)
+        } else if (sinuc_or_dinuc == "sinuc") {
+            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F)
+        }
+        
+        p1 <- plot_ggseqlogo(pwmMat = pwm, plotMethod = plotMethod, position_labels = position_labels, 
+            savePDFfilename = savePDFfilename)
+        base::suppressMessages(print(p1))
+    }))
 }

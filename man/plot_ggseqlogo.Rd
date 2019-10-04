@@ -11,8 +11,8 @@ plot_ggseqlogo(pwmMat, plotMethod = "custom", position_labels = NULL,
 \item{pwmMat}{Matrix (usually a PWM, but can be any non-normalized matrix) to
 be represented as a sequence logo.}
 
-\item{plotMethod}{For \code{ggseqlogo}; either of "custom", "bits", or "probability".
-Default is "custom".}
+\item{plotMethod}{For \code{ggseqlogo}; either of 'custom', 'bits', or 'probability'.
+Default is 'custom'.}
 
 \item{position_labels}{Labels of the positions in the sequences.}
 

@@ -15,6 +15,7 @@
 #'
 #' @importFrom dplyr mutate
 #' @importFrom reshape2 melt
+#' @importFrom tibble add_column
 #' @import ggplot2
 #' @import ggseqlogo
 #'
@@ -27,7 +28,7 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL, savePDFfilename = NUL
   }
   if (!(nrow(pwmMat) == 4)) {
     if (!(nrow(pwmMat) == 16)) {
-        stop("Expecting a matrix with 4 or 8 rows corresponding to 
+        stop("Expecting a matrix with 4 or 8 rows corresponding to
              DNA alphabet or dinucleotide prfiles respectively")
     }
   }
@@ -48,9 +49,9 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL, savePDFfilename = NUL
   #
   # Convert pwmMat to df, heatmap by ggplot-way
   pwmMat_df <- as.data.frame(pwmMat)
-  
+
   pwmMat_df <- add_column(pwmMat_df, Nucleotides = rownames(pwmMat_df))
-  
+
   # pwmMat_df <- mutate(pwmMat_df, Nucleotides = rownames(pwmMat_df))
   # colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
   # WHY THE HELL IS THIS THIS WAY?

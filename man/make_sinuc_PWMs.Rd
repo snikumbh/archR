@@ -4,7 +4,7 @@
 \alias{make_sinuc_PWMs}
 \title{Make a PWM-resembling matrix out of a given n-vector}
 \usage{
-make_sinuc_PWMs(givenMatrix, add_pseudo_counts = T, scale = T)
+make_sinuc_PWMs(givenMatrix, add_pseudo_counts = TRUE, scale = TRUE)
 }
 \arguments{
 \item{givenMatrix}{Actually a vector that will be reshaped into a (PWM)

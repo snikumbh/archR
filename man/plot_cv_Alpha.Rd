@@ -4,10 +4,11 @@
 \alias{plot_cv_Alpha}
 \title{Plot Cross-Validation Performance of \eqn{\alpha}}
 \usage{
-plot_cv_Alpha(averages, threshold = 0)
+plot_cv_Alpha(model_selectAlpha, threshold = 0)
 }
 \arguments{
-\item{averages}{The cross-validation averages}
+\item{model_selectAlpha}{The return value from \code{\link{cv_model_select_pyNMF}}.
+This is used for \eqn{\alpha}.}
 
 \item{threshold}{The threshold to be applied when choosing the best
 performing value}

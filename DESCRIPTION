@@ -24,6 +24,12 @@ Imports:
     heatmap3 (>= 1.1.6),
     magrittr (>= 1.5),
     MASS,
+    rlang,
+    matrixStats,
+    BiocGenerics,
+    scales,
+    assertthat,
+    data.table,
     pkgmaker (>= 0.27),
     purrr (>= 0.3.2),
     RColorBrewer (>= 1.1.2),
@@ -34,7 +40,9 @@ Imports:
     stringr (>= 1.4.0),
     tibble (>= 2.1.1),
     tidyr (>= 0.8.3),
-    vctrs (>= 0.1.0)
+    vctrs (>= 0.1.0),
+    hopach (>= 2.42.0),
+    ggpubr (>= 0.2.3)
 Suggests: 
     knitr (>= 1.22),
     rmarkdown (>= 1.12),
@@ -43,5 +51,5 @@ Suggests:
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 RoxygenNote: 6.1.1

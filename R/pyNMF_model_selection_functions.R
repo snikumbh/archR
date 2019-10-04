@@ -34,17 +34,17 @@ get_q2_using_py <- function(x, seed_val, verbose = 0) {
   # for (itr in seq(100)) {
       new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
       X <- X[ , new_ord]
-      # 
+      #
       submatrixD <- X[train_rows, train_cols]
       submatrixA <- X[test_rows, test_cols]
       submatrixB <- X[test_rows, train_cols]
       submatrixC <- X[train_rows, test_cols]
-    
+
       # NMF on submatrixD
       # Setup params
       # NMF call
       # Using python/scikit-learn NMF
-      
+
         # new_ord <- sample(ncol(submatrixD), ncol(submatrixD))
         # submatrixD <- submatrixD[ , new_ord]
         #
@@ -84,80 +84,80 @@ get_q2_using_py <- function(x, seed_val, verbose = 0) {
 }
 
 
-get_q2_using_py_with_rslurm <- function(k_vals, alpha, fold, iteration, seed_val, verbose = 0, paths_list_src_path) {
-  ##
-  if (verbose == 1) {
-    cat(paste("INFO-START", k_vals, alpha, "\n", sep = ","))
-  } else {
-    cat(".")
-  }
-  this_k <- as.numeric(k_vals)
-  this_alpha <- as.numeric(alpha)
-  #
-  test_fold <- as.numeric(fold)
-  train_rows <- cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which != test_fold]
-  train_cols <- cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which != test_fold]
-  test_rows <- cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which == test_fold]
-  test_cols <- cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which == test_fold]
-  
-  # Split data matrix X -- separate the training and test parts
-  #        _      _
-  #   X = |  A  B  |
-  #       |_ C  D _|
-  #
-  # Reconstruct A, by performing NMF on D
-  # More details in Owen and Perry, Annals of Statistics, 2009
-  # for (itr in seq(100)) {
-  new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
-  X <- X[ , new_ord]
-  # 
-  submatrixD <- X[train_rows, train_cols]
-  submatrixA <- X[test_rows, test_cols]
-  submatrixB <- X[test_rows, train_cols]
-  submatrixC <- X[train_rows, test_cols]
-  
-  # NMF on submatrixD
-  # Setup params
-  # NMF call
-  # Using python/scikit-learn NMF
-  
-  # new_ord <- sample(ncol(submatrixD), ncol(submatrixD))
-  # submatrixD <- submatrixD[ , new_ord]
-  #
-  # Sourcing perform_nmf_func, see: https://rstudio.github.io/reticulate/reference/py_is_null_xptr.html
-  #
-  #print(file.path(paths_list_src_path, 'perform_nmf.py'))
-  source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
-  # if(py_validate_xptr(perform_nmf_func)) {
-  nmf_submatrixD <- perform_nmf_func(submatrixD,
-                                     nPatterns = as.integer(this_k),
-                                     nIter = as.integer(200),
-                                     givenAlpha = this_alpha,
-                                     givenL1_ratio = 1,
-                                     seed_val = as.integer(seed_val)
-  )
-  # }else{
-  #   #Throw error
-  # }
-  #
-  D_W <- nmf_submatrixD[[1]]
-  D_H <- nmf_submatrixD[[2]]
-  #
-  reconstructed_submatrixA <- submatrixB %*% MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% submatrixC
-  #
-  if (verbose == 1) {
-    cat(paste("INFO-END", k_vals, alpha, "\n", sep = ","))
-  } else {
-    # if (itr %% 5 == 0) cat(",", itr)
-    # if (itr %% 50 == 0) cat("\n")
-    # cat(",")
-  }
-  #
-  q2 <- compute_q2(submatrixA, reconstructed_submatrixA)
-  # }
-  # return(mean(unlist(q2)))
-  # return (q2)
-}
+# get_q2_using_py_with_rslurm <- function(k_vals, alpha, fold, iteration, seed_val, verbose = 0, paths_list_src_path) {
+#   ##
+#   if (verbose == 1) {
+#     cat(paste("INFO-START", k_vals, alpha, "\n", sep = ","))
+#   } else {
+#     cat(".")
+#   }
+#   this_k <- as.numeric(k_vals)
+#   this_alpha <- as.numeric(alpha)
+#   #
+#   test_fold <- as.numeric(fold)
+#   train_rows <- cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which != test_fold]
+#   train_cols <- cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which != test_fold]
+#   test_rows <- cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which == test_fold]
+#   test_cols <- cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which == test_fold]
+#
+#   # Split data matrix X -- separate the training and test parts
+#   #        _      _
+#   #   X = |  A  B  |
+#   #       |_ C  D _|
+#   #
+#   # Reconstruct A, by performing NMF on D
+#   # More details in Owen and Perry, Annals of Statistics, 2009
+#   # for (itr in seq(100)) {
+#   new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
+#   X <- X[ , new_ord]
+#   #
+#   submatrixD <- X[train_rows, train_cols]
+#   submatrixA <- X[test_rows, test_cols]
+#   submatrixB <- X[test_rows, train_cols]
+#   submatrixC <- X[train_rows, test_cols]
+#
+#   # NMF on submatrixD
+#   # Setup params
+#   # NMF call
+#   # Using python/scikit-learn NMF
+#
+#   # new_ord <- sample(ncol(submatrixD), ncol(submatrixD))
+#   # submatrixD <- submatrixD[ , new_ord]
+#   #
+#   # Sourcing perform_nmf_func, see: https://rstudio.github.io/reticulate/reference/py_is_null_xptr.html
+#   #
+#   #print(file.path(paths_list_src_path, 'perform_nmf.py'))
+#   # source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
+#   # if(py_validate_xptr(perform_nmf_func)) {
+#   nmf_submatrixD <- perform_nmf_func(submatrixD,
+#                                      nPatterns = as.integer(this_k),
+#                                      nIter = as.integer(200),
+#                                      givenAlpha = this_alpha,
+#                                      givenL1_ratio = 1,
+#                                      seed_val = as.integer(seed_val)
+#   )
+#   # }else{
+#   #   #Throw error
+#   # }
+#   #
+#   D_W <- nmf_submatrixD[[1]]
+#   D_H <- nmf_submatrixD[[2]]
+#   #
+#   reconstructed_submatrixA <- submatrixB %*% MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% submatrixC
+#   #
+#   if (verbose == 1) {
+#     cat(paste("INFO-END", k_vals, alpha, "\n", sep = ","))
+#   } else {
+#     # if (itr %% 5 == 0) cat(",", itr)
+#     # if (itr %% 50 == 0) cat("\n")
+#     # cat(",")
+#   }
+#   #
+#   q2 <- compute_q2(submatrixA, reconstructed_submatrixA)
+#   # }
+#   # return(mean(unlist(q2)))
+#   # return (q2)
+# }
 
 
 
@@ -198,10 +198,10 @@ compute_q2 <- function(A, recA) {
   return(q2)
 }
 
-get_py_func_at_runtime <- function(paths_list_src_path) {
-  source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
-  #return()
-}
+# get_py_func_at_runtime <- function(paths_list_src_path) {
+#   source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
+#   #return()
+# }
 
 
 #' @title Perform Model Selection via Cross-Validation
@@ -214,7 +214,8 @@ get_py_func_at_runtime <- function(paths_list_src_path) {
 #' @param param_ranges An object holding the range of values for parameters
 #' \code{k}, \code{alphaBase}, and \code{alphaPow}.
 #' @param kFolds Numeric The number of cross-validation folds.
-#' @param parallel Set to \code{1} if you want to parallelize, else \code{0}.
+#' @param parallelDo Set to \code{1} if you want to parallelize, else \code{0}.
+#' @param nIterations Number of iterations for NMF.
 #' @param nCores If \code{parallel} is set to \code{1}
 #' @param seed_val The seed to be set.
 #' @param logfile The log file name.
@@ -232,14 +233,14 @@ get_py_func_at_runtime <- function(paths_list_src_path) {
 cv_model_select_pyNMF <- function(X,
                                   param_ranges,
                                   kFolds = 5,
-                                  useSLURM = TRUE,
+                                  # useSLURM = TRUE,
                                   parallelDo = FALSE,
                                   nCores = NA,
                                   nIterations = 20,
                                   seed_val = 10208090,
                                   logfile = "outfile.txt",
-                                  set_verbose = 1,
-                                  paths_list = paths_list
+                                  set_verbose = 1
+                                  #paths_list = paths_list
                                   ) {
   # For Moore-Penrose pseudoinverse, load them on the clusters directly
   # suppressPackageStartupMessages(library(MASS, quietly = TRUE))
@@ -271,13 +272,13 @@ cv_model_select_pyNMF <- function(X,
   # Params to tune: alphaP, alphaA, #factors
   # Tidyverse approach
   grid_search_params <- list(
-    k_vals = param_ranges$k_vals,
-    alpha = param_ranges$alphaBase^param_ranges$alphaPow,
-    fold = 1:kFolds,
-    iteration = 1:nIterations,
-    seed_val = seed_val,
-    verbose = set_verbose,
-    paths_list_src_path = paths_list$src_path
+    "k_vals" = param_ranges$k_vals,
+    "alpha" = param_ranges$alphaBase^param_ranges$alphaPow,
+    "fold" = 1:kFolds,
+    "iteration" = 1:nIterations,
+    "seed_val" = seed_val,
+    verbose = set_verbose
+    #paths_list_src_path = paths_list$src_path
   ) %>% cross_df() # Convert to data frame grid
   #
   #
@@ -286,29 +287,29 @@ cv_model_select_pyNMF <- function(X,
   if (parallelDo) {
     cat(paste0("Opted: Parallel for grid search\n"))
     #
-    if (useSLURM) {
+    # if (useSLURM) {
       # Use the rslurm package
-      library(rslurm)
-      X <<- X
-      cvfolds <<- cvfolds
-      samarth_job <- slurm_apply(get_q2_using_py_with_rslurm, grid_search_params,
-                                 jobname = NA,#"grid_search_archR",
-                                 nodes = nCores/8,
-                                 cpus_per_node = 1,
-                                 add_objects = c("get_q2_using_py", "compute_q2", "X", "cvfolds"),
-                                 #pkgs = X, default: loads all those already loaded when calling slurm_apply
-                                 #libPaths = NULL,
-                                 slurm_options = list(mem = "10G", "cpus-per-task"=8),
-                                 submit = TRUE
-                                   )
-      print_job_status(samarth_job) 
-      q2_vals <- unlist(get_slurm_out(samarth_job, "raw", wait = TRUE))
-      # cleanup_files(samarth_job)
-      # To cancel this job, use `cancel_slurm(samarth_job)`. 
-      # Subsequently run the cleanup_files(samarth_job) command. 
-    }
+      # library(rslurm)
+      # X <<- X
+      # cvfolds <<- cvfolds
+      # samarth_job <- slurm_apply(get_q2_using_py_with_rslurm, grid_search_params,
+      #                            jobname = NA,#"grid_search_archR",
+      #                            nodes = nCores/8,
+      #                            cpus_per_node = 1,
+      #                            add_objects = c("get_q2_using_py", "compute_q2", "X", "cvfolds"),
+      #                            #pkgs = X, default: loads all those already loaded when calling slurm_apply
+      #                            #libPaths = NULL,
+      #                            slurm_options = list(mem = "10G", "cpus-per-task"=8),
+      #                            submit = TRUE
+      #                              )
+      # print_job_status(samarth_job)
+      # q2_vals <- unlist(get_slurm_out(samarth_job, "raw", wait = TRUE))
+      # # cleanup_files(samarth_job)
+      # # To cancel this job, use `cancel_slurm(samarth_job)`.
+      # # Subsequently run the cleanup_files(samarth_job) command.
+    # }
     #
-    if(!useSLURM) {
+    # if(!useSLURM) {
       if (is.na(nCores)) {
         # raise error or handle
         print("'nCores' not specified, turning to serially perform grid search")
@@ -350,7 +351,7 @@ cv_model_select_pyNMF <- function(X,
       cat("Stopping cluster...")
       parallel::stopCluster(cl)
       cat("done!\n")
-    }
+    # }
   }
   if (!parallelDo) {
     # TO-DO: check params passed to rowLapply
@@ -364,7 +365,7 @@ cv_model_select_pyNMF <- function(X,
   # The dummy copy for satisfying the constraint in rslurm.
   # The filtered true copy maintained for downstream steps in the procedure
   #
-  grid_search_params <- dplyr::select(grid_search_params, k_vals, alpha, fold, iteration)
+  # grid_search_params <- dplyr::select(grid_search_params, k_vals, alpha, fold, iteration)
   grid_search_results <- tibble::add_column(grid_search_params, q2_vals)
   return(grid_search_results)
 }
@@ -546,7 +547,7 @@ plot_cv_K <- function(averages) {
     return(NULL)
   }
   cat("Plotting Q2 as a function of K")
-  p1 <- ggplot(averages, aes(x = rel_var, y = q2_vals)) +
+  p1 <- ggplot(averages, aes_string(x = 'rel_var', y = 'q2_vals')) +
     geom_point() +
     geom_line() +
     scale_x_continuous(breaks = averages$rel_var, labels = averages$rel_var) +
@@ -565,7 +566,7 @@ plot_cv_K <- function(averages) {
 #' @description Plot showing performance of different values of \eqn{\alpha} tested in
 #' cross-validation.
 #'
-#' @param The return value from \code{\link{cv_model_select_pyNMF}}.
+#' @param model_selectAlpha The return value from \code{\link{cv_model_select_pyNMF}}.
 #' This is used for \eqn{\alpha}.
 #' @param threshold The threshold to be applied when choosing the best
 #' performing value
@@ -575,19 +576,20 @@ plot_cv_K <- function(averages) {
 #' @export
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
 plot_cv_Alpha <- function(model_selectAlpha, threshold = 0.0) {
   # Using ggplot to plot
   # if ("rel_var" %in% averages) {
   #   cat("Plotting Q2 vs. alpha: check colnames in the object (need 'a')")
   #   return(NULL)
   # }
-  
+
   mean_by_Alpha <- get_q2_aggregates_chosen_var(model_selectAlpha, model_selectAlpha$alpha, mean)
   sd_by_Alpha <- get_q2_aggregates_chosen_var(model_selectAlpha, model_selectAlpha$alpha, stats::sd)
   se_by_Alpha <- sd_by_Alpha / sqrt(nrow(sd_by_Alpha))
   # print(mean_by_Alpha)
   cat("Plotting Q2 as a function of alpha")
-  p1 <- ggplot(mean_by_Alpha, aes(x = log2(rel_var), y = q2_vals)) +
+  p1 <- ggplot(mean_by_Alpha, aes(x = log2(.data$rel_var), y = .data$q2_vals)) +
     # geom_ribbon(aes(ymin = threshold$mean - threshold$se,
     #                 ymax = threshold$mean + threshold$se),
     #             fill = "grey90") +

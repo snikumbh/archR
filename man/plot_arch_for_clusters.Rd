@@ -5,7 +5,9 @@
 \title{Plot the sequence architectures of the sequence clusters.}
 \usage{
 plot_arch_for_clusters(givenSamplesMatrix, givenFeaturesMatrix, nCluster,
-  clustering_sol, seqs = NULL, position_labels = NA)
+  clustering_sol, seqs = NULL, position_labels = NA,
+  plotMethod = "custom", add_pseudo_counts = F,
+  sinuc_or_dinuc = "sinuc")
 }
 \arguments{
 \item{givenSamplesMatrix}{The samples matrix resulting for NMF.}
@@ -22,6 +24,12 @@ Default value is NULL when no image gets printed.}
 
 \item{position_labels}{Labels of the positions in the sequences. Used for
 visualization with function \code{viz_all_factors_in_combined_heatmaps_seqlogos}.}
+
+\item{plotMethod}{'custom' or 'bits', passed to ggseqlogo}
+
+\item{add_pseudo_counts}{OK}
+
+\item{sinuc_or_dinuc}{'sinuc' or 'dinuc'}
 }
 \value{
 nothing.

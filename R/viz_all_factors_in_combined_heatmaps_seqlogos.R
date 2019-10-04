@@ -15,6 +15,7 @@
 #'  matrix.
 #' @param savePDFfilename Name of the file which will be saved as PDF
 #' (also provide the extension).
+#' @param sinuc_or_dinuc "sinuc" or "dinuc"
 #'
 #' @return nothing
 #'
@@ -42,11 +43,11 @@ viz_all_factors_in_combined_heatmaps_seqlogos <- function(featuresMatrix,
   }
   invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
     if (sinuc_or_dinuc == "dinuc"){
-      dna_alphabet <- c("A", "C", "G", "T")
-      dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet, dna_alphabet))
-      pwm <- collapse_into_sinuc_matrix(as.matrix(x), feature_names = dna_alphabet_dinuc)
+        dna_alphabet <- c("A", "C", "G", "T")
+        dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet, dna_alphabet))
+        pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = F, scale = F)
     } else if (sinuc_or_dinuc == "sinuc") {
-      pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F, scale = F)
+        pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F, scale = F)
     }
     # pwm <- make_sinuc_PWMs(x, add_pseudo_counts = add_pseudo_counts, scale = F)
     #

@@ -6,7 +6,7 @@
 \usage{
 viz_all_factors_in_combined_heatmaps_seqlogos(featuresMatrix,
   plotMethod = "custom", position_labels = NA, add_pseudo_counts = F,
-  savePDFfilename = NULL)
+  savePDFfilename = NULL, sinuc_or_dinuc = "sinuc")
 }
 \arguments{
 \item{featuresMatrix}{The features matrix output from NMF. Expected
@@ -24,6 +24,8 @@ matrix.}
 
 \item{savePDFfilename}{Name of the file which will be saved as PDF
 (also provide the extension).}
+
+\item{sinuc_or_dinuc}{"sinuc" or "dinuc"}
 }
 \value{
 nothing

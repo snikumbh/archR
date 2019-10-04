@@ -4,10 +4,12 @@
 \alias{get_one_hot_encoded_seqs}
 \title{Get One-Hot Encoded Sequences}
 \usage{
-get_one_hot_encoded_seqs(givenFastaSeqs)
+get_one_hot_encoded_seqs(givenFastaSeqs, sinuc_or_dinuc = "sinuc")
 }
 \arguments{
 \item{givenFastaSeqs}{List of sequences.}
+
+\item{sinuc_or_dinuc}{'sinuc' or 'dinuc'}
 }
 \value{
 One-hot encoded sequences.

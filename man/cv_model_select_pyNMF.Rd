@@ -4,9 +4,9 @@
 \alias{cv_model_select_pyNMF}
 \title{Perform Model Selection via Cross-Validation}
 \usage{
-cv_model_select_pyNMF(X, param_ranges, kFolds = 5, parallel = FALSE,
-  nCores = NA, seed_val = 10208090, logfile = "outfile.txt",
-  set_verbose = 0)
+cv_model_select_pyNMF(X, param_ranges, kFolds = 5, parallelDo = FALSE,
+  nCores = NA, nIterations = 20, seed_val = 10208090,
+  logfile = "outfile.txt", set_verbose = 1)
 }
 \arguments{
 \item{X}{The given data matrix}
@@ -16,9 +16,11 @@ cv_model_select_pyNMF(X, param_ranges, kFolds = 5, parallel = FALSE,
 
 \item{kFolds}{Numeric The number of cross-validation folds.}
 
-\item{parallel}{Set to \code{1} if you want to parallelize, else \code{0}.}
+\item{parallelDo}{Set to \code{1} if you want to parallelize, else \code{0}.}
 
 \item{nCores}{If \code{parallel} is set to \code{1}}
+
+\item{nIterations}{Number of iterations for NMF.}
 
 \item{seed_val}{The seed to be set.}
 
