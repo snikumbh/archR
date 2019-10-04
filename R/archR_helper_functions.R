@@ -54,45 +54,7 @@ archRSetConfig <- function(innerChunkSize = 500, kMin = 2,
                            ){
 
     ### Configuration Params that can be set by user
-    ###
-    # archRconfig <- NULL
-    # archRconfig <- vector("list")
-    # archRconfig$kFolds <- cvFolds
-    # archRconfig$parallelize <- parallelize
-    # archRconfig$nCoresUse <- nCoresUse
-    # ## Bootstrapping iterations
-    # archRconfig$nIterationsUse <- nIterationsUse
-    # archRconfig$seedVal <- seedVal
-    # archRconfig$paramRanges <- NULL
-    # ## Keep alpha = 0
-    # archRconfig$paramRanges$alphaBase <- alphaBase
-    # archRconfig$paramRanges$alphaPow <- alphaPow
-    # archRconfig$paramRanges$k_vals <- seq(kMin, kMax, by=1)
-    # ##
-    # archRconfig$innerChunkSize <- innerChunkSize
-    # archRconfig$modSelLogFile <- modSelLogFile
-    # archRconfig$minSeqs <- minSeqs
-    #     # file.path(paths_list$src_path,
-    #     #                                    paste0('modSel-Logfile-',
-    #     #                                           paste(Sys.Date(),
-    #     #                                                 format(Sys.time(), "%X"),
-    #     #                                                 sep = '-')
-    #     #                                           , '.txt')
-    #     # )
-    # archRconfig$flags <- list(debugFlag = FALSE,
-    #                           timeFlag = FALSE,
-    #                           verboseFlag = TRUE,
-    #                           plotVerboseFlag = FALSE)
-    # debugFlag --> For debug level information printing on screen
-    # timeFlag --> For printing computation time elapsed information
-    # verboseFlag --> For verbosity of working stage information
-    # plotVerboseFlag --> For verbosity in plotting
-    #
-    ###
-    ###
     archRconfig <- NULL
-    # archRconfig <- vector("list")
-    #
     archRconfig <- list(
         kFolds = cvFolds,
         parallelize = parallelize,
@@ -111,8 +73,6 @@ archRSetConfig <- function(innerChunkSize = 500, kMin = 2,
                      verboseFlag = TRUE,
                      plotVerboseFlag = FALSE)
     )
-    ###
-    # return(archRconfig)
 }
 ## =============================================================================
 
@@ -183,14 +143,7 @@ get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
 ## =============================================================================
 
 
-### On the given inner chunk,
-### 1. perform model selection for #factors for NMF
-### 2. Perform final NMF with chosen best_k (#Factors)
-### 3. Store factors (globFactors)
-### 4. Perform k-means clustering
-### 5. Store cluster assignments (globClustAssignments)
-### 6. Return updated globFactors, globClustAssignments
-###
+#
 
 #' @title
 #' Set archR run configuration
@@ -209,6 +162,14 @@ get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
 handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
                                      this_tss.seqs, globFactors,
                                      globClustAssignments, config){
+    ###
+    ### On the given inner chunk,
+    ### 1. perform model selection for #factors for NMF
+    ### 2. Perform final NMF with chosen best_k (#Factors)
+    ### 3. Store factors (globFactors)
+    ### 4. Perform k-means clustering
+    ### 5. Store cluster assignments (globClustAssignments)
+    ### 6. Return updated globFactors, globClustAssignments
     ###
     if(config$flags$verboseFlag){
                         cat(paste0("Working on chunk: ", innerChunkIdx,
@@ -250,7 +211,6 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
     ###
     if(config$flags$timeFlag){start <- Sys.time()}
     ###
-    # seed_val <- 10208090
     result <- perform_nmf_func(this_tss.seqs, nPatterns = as.integer(best_k),
                                nIter = as.integer(1000), givenAlpha = 0,
                                givenL1_ratio = 1,
@@ -265,15 +225,9 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
     globFactors[[innerChunkIdx]] <- featuresMatrix
     ###
     ### Cluster sequences
-    ### After ideal number of clusters has been chosen, get those clusters
     solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
                               nCluster = best_k)
     if(config$flags$timeFlag){print(Sys.time() - start)}
-    print("=== solKmeans check ===")
-    print(solKmeans$reordering_idx)
-    print("LENGTH IS")
-    print(length(solKmeans$reordering_idx))
-    ###
     ### Set the right cluster orders respective to the factor order in the chunk
     ### and, collect the clusters/cluster assignments for the global list
     ###
@@ -286,8 +240,6 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
             flags = config$flags
         )
     ###
-    print("=== clust assignment in handler/helper function")
-    print(globClustAssignments)
     innerChunkNMFResult <- list(globFactors = globFactors,
                              globClustAssignments = globClustAssignments)
     ###
