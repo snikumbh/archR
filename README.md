@@ -2,9 +2,6 @@
 [![Travis build status](https://travis-ci.org/snikumbh/archR.svg?branch=master)](https://travis-ci.org/snikumbh/archR)
 <!-- badges: end -->
 
-<!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/snikumbh/archR/branch/master/graph/badge.svg)](https://codecov.io/gh/snikumbh/archR?branch=master)
-<!-- badges: end -->
 
 # archR
 R package for discovery of sequence architectures using Non-negative Matrix Factorization
