@@ -7,7 +7,7 @@
 <!-- badges: end -->
 
 # archR
-R package for discovery of clusters with characteristic sequence architectures using NMF
+R package for discovery of sequence architectures using Non-negative Matrix Factorization
 
 ## Installation
 
@@ -18,32 +18,16 @@ This package requires the Python module scikit-learn. See installations instruct
 ### To install this package, use 
 
 ```
-library(devtools)
-withr::with_libpaths(<path_here>, 
-			install_github("snikumbh/archR", 
-				auth_token="29e825452191fa6cdc161719d5a3ddeebe2b017b", 
-				build = TRUE)
-			)
+# install.packages("devtools")
+devtools::install_github("snikumbh/archR")
 ``` 
-
-If R complains, "Skipping install of 'archR' from a github remote, the SHA1 has not changed since last install.
-  Use `force = TRUE` to force installation", do as it suggests.
-
-```
-withr::with_libpaths(<path_here>, 
-			install_github("snikumbh/archR", 
-				auth_token="29e825452191fa6cdc161719d5a3ddeebe2b017b", 
-				build = TRUE, 
-				force = TRUE)
-			)
-```
 
 
 ## Troubleshooting Installation
 
-- List some points or link to issues if they are already present
+- List some points or link to already known issues reported/resolved
 - Possible problems: 
- - installing Python module scikit-learn, 
+ - installing Python module scikit-learn 
  - getting reticulate to work
 
 # Contact
