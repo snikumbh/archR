@@ -1,6 +1,8 @@
 
 # archR
-R package for discovery of sequence architectures using Non-negative Matrix Factorization
+This is an R package implementing an unsupervised, non-negative matrix factorization-based method (of the same name) for discovery of sequence architectures.
+
+_This package is currently under development. So, please bear with me while I put the final blocks together. Thanks for your understanding!_ 
 
 ## Installation
 
