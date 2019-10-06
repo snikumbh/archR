@@ -1,8 +1,8 @@
+Note: _This package is currently under development. So, please bear with me while I put the final blocks together. Thanks for your understanding!_ 
 
 # archR
 This is an R package implementing an unsupervised, non-negative matrix factorization-based method (of the same name) for discovery of sequence architectures.
 
-_This package is currently under development. So, please bear with me while I put the final blocks together. Thanks for your understanding!_ 
 
 ## Installation
 
@@ -16,6 +16,22 @@ This package requires the Python module scikit-learn. See installation instructi
 # install.packages("devtools")
 devtools::install_github("snikumbh/archR")
 ``` 
+
+
+### Usage
+```r
+# tssSeqs holds the one-hot encoded input matrix of all sequences
+tssSeqs <- prepare_data_from_FASTA(inputFastaFilename)
+
+# Set archR configuration
+thisConfig <- archR::archRSetConfig(innerChunkSize = 500,
+                                    kMin = 1, kMax = 8, 
+				    parallelize = TRUE, nCores = 4,
+		                    cvFolds = 3, nIterationsUse = 100)
+# Call archR
+archRresult <- archR::archR(config = thisConfig, 
+                            tss.seqs = tssSeqs)
+```
 
 
 ## Troubleshooting Installation
