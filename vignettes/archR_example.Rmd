@@ -50,19 +50,21 @@ set.seed(seed_val)
 # Ceation of data matrix from FASTA file
 inputFastaFilename <- system.file("extdata", "example_data.fa", package = "archR", mustWork = TRUE)
 tssSeqsOriginal <- prepare_data_from_FASTA(inputFastaFilename)
+tssSeqsOriginal_raw <- prepare_data_from_FASTA(inputFastaFilename, rawSeq = TRUE)
 nSeqs <- ncol(tssSeqsOriginal)
 positions <- seq(1,200)
 sinuc <- c('A', 'C', 'G', 'T')
 # Randomize the sequence order
 changedOrder <- sample.int(nSeqs, nSeqs, replace = FALSE)
 tssSeqs <- tssSeqsOriginal[ , changedOrder]
+tssSeqs_raw <- tssSeqsOriginal_raw[changedOrder]
 ```
 
 # Represent original set of sequences as an image
 
-```{r plot-seqs, echo=TRUE}
+```{r plot-seqs, echo=TRUE, fig.height=4, fig.width=3}
 # Represent sequences as heatmap
-represent_matrix_of_acgt(tssSeqs, position_labels = positions)
+represent_matrix_of_acgt_with_ggplot2(tssSeqs_raw, position_labels = positions, saveFilename = NULL)
 ```
 
 
@@ -126,8 +128,8 @@ This is then again a list holding two pieces of information: the number of basis
 
 # Basis vectors at iteration 2
 archRresult$clustBasisVectors[[2]]$nBasisVectors
-dim(archRresult$clustBasisVectors[[2]]$BasisVectors)
-head(archRresult$clustBasisVectors[[2]]$BasisVectors)
+dim(archRresult$clustBasisVectors[[2]]$basisVectors)
+head(archRresult$clustBasisVectors[[2]]$basisVectors)
 ```
 
 
@@ -140,49 +142,34 @@ One can visualize the NMF basis vectors as well as the sequence clusters.
 We can visualize the basis vectors corresponding to each cluster at any iteration. 
 These per-iteration basis vectors are available from the `archRresult` object (see above Section).
 
-```{r visualize-basis-vectors, fig.height=2, fig.width=25, echo=TRUE, message=FALSE, warning=FALSE}
-viz_all_factors_as_seqlogo(as.matrix(archRresult$clustBasisVectors[[2]]$BasisVectors), 
+```{r visualize-basis-vectors-iter1, fig.height=2, fig.width=25, echo=TRUE, message=FALSE, warning=FALSE}
+viz_all_factors_as_seqlogo(archRresult$clustBasisVectors[[1]]$basisVectors, 
                            position_labels = positions, 
                            plotMethod = "bits")
 
-viz_all_factors_as_heatmap(as.matrix(archRresult$clustBasisVectors[[2]]$BasisVectors), 
+viz_all_factors_as_heatmap(as.matrix(archRresult$clustBasisVectors[[1]]$basisVectors), 
+                           position_labels = positions)
+```
+
+
+```{r visualize-basis-vectors-iter2, fig.height=2, fig.width=25, echo=TRUE, message=FALSE, warning=FALSE}
+viz_all_factors_as_seqlogo(archRresult$clustBasisVectors[[2]]$basisVectors, 
+                           position_labels = positions, 
+                           plotMethod = "bits")
+
+viz_all_factors_as_heatmap(as.matrix(archRresult$clustBasisVectors[[2]]$basisVectors),
                            position_labels = positions)
 ```
 
 
 ```{r visualize-basis-vectors-combined, fig.height=4, fig.width=25, echo=TRUE, message=FALSE, warning=FALSE}
 viz_all_factors_in_combined_heatmaps_seqlogos(
-                           archRresult$clustBasisVectors[[2]]$BasisVectors, 
+                           archRresult$clustBasisVectors[[2]]$basisVectors, 
                            position_labels = positions, 
                            plotMethod = "bits")
 ```
 The `plotMethod` argument to functions producing sequence logos is supplied to the call to `ggseqlogo`. The possible values are "custom", "bits".
 
-
-### Visualizing sequence clusterings at any iteration
-We can visualize the sequence clusterings at any iteration of archR as follows.
-
-```{r visualize-seqs-clusters, echo=TRUE, message=FALSE, warning=FALSE}
-
-iupac_colorings <- c("A" = "darkgreen", "C" = "blue", "G" = "orange",
-                     "T" = "red")
-# for(i in 1:length(archRresult$clustFactors)){
-#     chosenLevelLabels <- archR::collect_cluster_labels(archRresult$seqsClustLabels,
-#                                                 choose_levels = i + 1)
-#     chosenLevelLabels_sorted <- sort(chosenLevelLabels, index.return = TRUE)
-#     # fname <- paste0("samarth_all_seqs_Level", i,"_Clustering")
-#     represent_matrix_of_acgt_with_ggplot2(tssSeqs[chosenLevelLabels_sorted$ix],
-#                                           position_labels = positions,
-#                                           sinuc_or_dinuc = "sinuc",
-#                                           choose_colors = iupac_colorings,
-#                                           annClusters = chosenLevelLabels_sorted$x
-#                                           # saveFilename = fname,
-#                                           # fileType = "png"
-#     )
-#     
-# }
-
-```
 
 # Session Info
 ```{r session_info, include=TRUE, echo=TRUE, results='markup'}

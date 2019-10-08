@@ -4,7 +4,7 @@
 #' chosen iteration/level.
 #'
 #' @param given_seqsClustLabels from archR result object
-#' @param choose_levels
+#' @param choose_levels choose a level/iteration
 #'
 #' @return A numeric vector of the same saize as seqsClustLabels, with labels
 #' only up to the chosen iteration
