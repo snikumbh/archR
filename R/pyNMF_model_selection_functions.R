@@ -14,7 +14,7 @@ get_q2_using_py <- function(x, seed_val, verbose = 0) {
   if (verbose == 1) {
     cat(paste("INFO-START", x["k_vals"], x["alpha"], "\n", sep = ","))
   } else {
-    cat(".")
+    # cat(".")
   }
   this_k <- as.numeric(x["k_vals"])
   this_alpha <- as.numeric(x["alpha"])
@@ -408,7 +408,7 @@ get_best_K <- function(x) {
   # Returns simply the best performing K value
   # Check names in param_ranges list, the function relies on it below
   if (length(setdiff(names(x), c("k_vals", "alpha", "fold", "iteration", "q2_vals"))) > 0) {
-    names(x)
+    message(names(x))
     stop(paste0(
       "Check colnames in tibble, expecting five element names: ",
       c("k_vals", "alpha", "fold", "iteration", "q2_vals")
