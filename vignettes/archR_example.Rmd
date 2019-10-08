@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 
 ```{r setup-two, echo=TRUE}
 
-remove.packages("archR")
+# remove.packages("archR")
 # devtools::install_github("snikumbh/archR")
 library(archR)
 reticulate::source_python(system.file("python/perform_nmf.py",
@@ -141,11 +141,11 @@ We can visualize the basis vectors corresponding to each cluster at any iteratio
 These per-iteration basis vectors are available from the `archRresult` object (see above Section).
 
 ```{r visualize-basis-vectors, fig.height=2, fig.width=25, echo=TRUE, message=FALSE, warning=FALSE}
-viz_all_factors_as_seqlogo(archRresult$clustBasisVectors[[2]]$BasisVectors, 
+viz_all_factors_as_seqlogo(as.matrix(archRresult$clustBasisVectors[[2]]$BasisVectors), 
                            position_labels = positions, 
                            plotMethod = "bits")
 
-viz_all_factors_as_heatmap(archRresult$clustBasisVectors[[2]]$BasisVectors, 
+viz_all_factors_as_heatmap(as.matrix(archRresult$clustBasisVectors[[2]]$BasisVectors), 
                            position_labels = positions)
 ```
 
