@@ -9,7 +9,7 @@ collect_cluster_labels(given_seqsClustLabels, choose_levels = 1)
 \arguments{
 \item{given_seqsClustLabels}{from archR result object}
 
-\item{choose_levels}{}
+\item{choose_levels}{choose a level/iteration}
 }
 \value{
 A numeric vector of the same saize as seqsClustLabels, with labels

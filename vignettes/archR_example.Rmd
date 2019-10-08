@@ -3,18 +3,9 @@ title: "Example usage archR"
 author: "snikumbh"
 date: "`r Sys.time()`"
 output:
-  html_document: 
-    fig_caption: yes
-    keep_md: yes
-    number_sections: yes
-    self_contained: no
-    toc: yes
-    code_folding: hide
-    toc_float: true
-editor_options: 
-  chunk_output_type: inline
+  pdf_document
 vignette: >
-  %\VignetteIndexEntry{archR example}
+  %\VignetteIndexEntry{ExampleWitharchR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
