@@ -7,6 +7,7 @@
 #' be set to \code{1} which will print messages.
 #'
 #' @return \eqn{Q^{2}}, a real value
+#' @importFrom MASS ginv
 #' @export
 get_q2_using_py <- function(x, seed_val, verbose = 0) {
   ##
@@ -73,7 +74,7 @@ get_q2_using_py <- function(x, seed_val, verbose = 0) {
           cat(paste("INFO-END", x["k_vals"], x["alpha"], "\n", sep = ","))
         } else {
           # if (itr %% 5 == 0) cat(",", itr)
-          # if (itr %% 50 == 0) cat("\n")
+          # if (itr %% 50 == 0) cat(paste(itr, ", "))
           # cat(",")
         }
         #
@@ -272,11 +273,11 @@ cv_model_select_pyNMF <- function(X,
   # Params to tune: alphaP, alphaA, #factors
   # Tidyverse approach
   grid_search_params <- list(
-    "k_vals" = param_ranges$k_vals,
-    "alpha" = param_ranges$alphaBase^param_ranges$alphaPow,
-    "fold" = 1:kFolds,
-    "iteration" = 1:nIterations,
-    "seed_val" = seed_val,
+    k_vals = param_ranges$k_vals,
+    alpha = param_ranges$alphaBase^param_ranges$alphaPow,
+    fold = 1:kFolds,
+    iteration = 1:nIterations,
+    seed_val = seed_val,
     verbose = set_verbose
     #paths_list_src_path = paths_list$src_path
   ) %>% cross_df() # Convert to data frame grid
@@ -365,7 +366,7 @@ cv_model_select_pyNMF <- function(X,
   # The dummy copy for satisfying the constraint in rslurm.
   # The filtered true copy maintained for downstream steps in the procedure
   #
-  # grid_search_params <- dplyr::select(grid_search_params, k_vals, alpha, fold, iteration)
+  grid_search_params <- dplyr::select(grid_search_params, k_vals, alpha, fold, iteration)
   grid_search_results <- tibble::add_column(grid_search_params, q2_vals)
   return(grid_search_results)
 }
@@ -407,6 +408,7 @@ get_best_K <- function(x) {
   # Returns simply the best performing K value
   # Check names in param_ranges list, the function relies on it below
   if (length(setdiff(names(x), c("k_vals", "alpha", "fold", "iteration", "q2_vals"))) > 0) {
+    names(x)
     stop(paste0(
       "Check colnames in tibble, expecting five element names: ",
       c("k_vals", "alpha", "fold", "iteration", "q2_vals")
