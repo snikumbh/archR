@@ -2,10 +2,6 @@
 title: "Example usage archR"
 author: "snikumbh"
 date: "`r Sys.time()`"
-vignette: >
-  %\VignetteEngine{knitr::knitr}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{Example usage archR}
 output:
   html_document: 
     fig_caption: yes
@@ -17,6 +13,10 @@ output:
     toc_float: true
 editor_options: 
   chunk_output_type: inline
+vignette: >
+  %\VignetteIndexEntry{archR example}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 
