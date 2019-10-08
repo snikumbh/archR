@@ -38,7 +38,7 @@ seqs_to_df <- function(seqs, position_labels, annClusters = NULL,
                             # given one hot encoded seq to str on nucleotides
                             str_seq <- seqs[x]
                             nucleotides <- unlist(strsplit(str_seq,
-                                                           split=''))
+                                                           split = NULL))
                             temp_df <- as.data.frame(nucleotides,
                                                      stringsAsFactors = FALSE)
                             ## This is before adding other columns, because
