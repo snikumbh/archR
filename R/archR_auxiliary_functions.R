@@ -117,12 +117,12 @@ collate_clusters <- function(hopachObj, globClustAssignments) {
 
 update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
                                   flags) {
-    print("=== updating clust labels ===")
-    print(collatedClustAssignments)
-    print("=== oldSeqLustLabels ===")
-    print(oldSeqsClustLabels)
+    # print("=== updating clust labels ===")
+    # print(collatedClustAssignments)
+    # print("=== oldSeqLustLabels ===")
+    # print(oldSeqsClustLabels)
     nClusters <- length(collatedClustAssignments)
-    print(paste0("nClusters: ", nClusters))
+    # print(paste0("nClusters: ", nClusters))
     if (flags$verboseFlag) {
         cat("Updating sequence cluster labels\n")
         cat(paste0("#Clusters: ", length(collatedClustAssignments), "\n"))
@@ -139,8 +139,8 @@ update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
                 paste0(c(x, toString(i)), collapse = "-")
             })
     }
-    print("=== newSeqClustLabels ===")
-    print(newSeqsClustLabels)
+    # print("=== newSeqClustLabels ===")
+    # print(newSeqsClustLabels)
     return(newSeqsClustLabels)
 }
 ## =============================================================================

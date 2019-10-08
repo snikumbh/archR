@@ -41,8 +41,8 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
             ###
             if (doNotProcess) {
                 collatedClustAssignments <- list(outerChunk)
-                print("=== dim of clustFactors prev itr ===")
-                print(dim(clustFactors[[test_itr]]$Factors))
+                # print("=== dim of clustFactors prev itr ===")
+                # print(dim(clustFactors[[test_itr]]$Factors))
                 if (!is.null(intClustFactors)) {
                   intClustFactors <-
                       cbind(intClustFactors,
@@ -64,8 +64,8 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 globClustAssignments <- vector("list", length(innerChunksColl))
                 ###
                 for (innerChunkIdx in 1:length(innerChunksColl)) {
-                  print("=== inner chunk size: ===")
-                  print(length(innerChunksColl[[innerChunkIdx]]))
+                  # print("=== inner chunk size: ===")
+                  # print(length(innerChunksColl[[innerChunkIdx]]))
                   this_tss.seqs <- tss.seqs[, innerChunksColl[[innerChunkIdx]]]
                   thisNMFResult <- handle_chunk_w_NMF(innerChunkIdx,
                                                       innerChunksColl,
