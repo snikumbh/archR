@@ -122,18 +122,19 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
             ### Collect (append) clusters at current level
             nxtOuterChunksColl <- append(nxtOuterChunksColl,
                                          collatedClustAssignments)
-            message(paste0("Chunk ", outerChunkIdx, ", #intClustFactors: ",
+            message(paste0("Outer chunk ", outerChunkIdx, ", current total basis vectors: ",
                            ncol(intClustFactors)))
 
         }  ### for loop over outerChunksCollection ENDS
         #
-        clustFactors[[test_itr + 1]] <- list(nFactors = ncol(intClustFactors),
-                                             Factors = intClustFactors)
+        clustFactors[[test_itr + 1]] <-
+            list(nBasisVectors = ncol(intClustFactors),
+                 basisVectors = intClustFactors)
         outerChunksColl <- nxtOuterChunksColl
         test_itr <- test_itr + 1
     }  # algorithm while loop ENDS
 
-    archRresult <- list(seqsClustLabels = seqsClustLabels, clustFactors = clustFactors,
+    archRresult <- list(seqsClustLabels = seqsClustLabels, clustBasisVectors = clustFactors,
         config = config, call = match.call())
     message("=== archR exiting, returning result ===")
     return(archRresult)

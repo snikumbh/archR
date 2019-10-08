@@ -1,3 +1,15 @@
+#' @title Get cluster labels for chosen level/iteration
+#'
+#' @description Given a seqsClustLabels, collect cluster labels for sequences at the
+#' chosen iteration/level.
+#'
+#' @param given_seqsClustLabels from archR result object
+#' @param choose_levels
+#'
+#' @return A numeric vector of the same saize as seqsClustLabels, with labels
+#' only up to the chosen iteration
+#' @export
+#'
 collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     ### Check if all_ok, all elements should have same length
     splitChar <- "-"
@@ -201,7 +213,7 @@ handle_clustering_of_factors <- function(globFactorsMat,
                                         initord = "clust", mss = "mean",
                                         verbose = flags$verboseFlag)
     if (flags$debugFlag || flags$verboseFlag) {
-        cat(paste0("HOPACH identified #clusters:",
+        cat(paste0("Identified #clusters:",
                    globFactorsHopach$clustering$k,
             "\n"))
     }

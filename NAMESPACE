@@ -3,6 +3,7 @@
 export(archR)
 export(archRSetConfig)
 export(choose_clusters)
+export(collect_cluster_labels)
 export(compute_q2)
 export(cv_model_select_pyNMF)
 export(generate_folds)

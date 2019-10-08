@@ -106,10 +106,10 @@ decide_hopach <- function(globFactorsMat, distMethod = "cosangle",
                             between = "mean")
     decision <- FALSE
     if(ncol(globFactorsMat) > 2 && estClusters[1] > 1){
-        message("*** HOPACH: Yes ***")
+        message("Collating clusters from inner chunks")
         decision <- TRUE
     }
-    if(!decision) message("*** HOPACH: No ***")
+    if(!decision) message("No collation of clusters from inner chunks")
     return(decision)
 }
 ## =============================================================================
@@ -206,7 +206,7 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
         print(Q2vsK)
     }
     if(config$flags$verboseFlag || config$flags$debugFlag){
-        cat("Performing NMF with K = ", best_k, "\n")
+        cat("Performing NMF with K =", best_k, "\n")
     }
     ###
     if(config$flags$timeFlag){start <- Sys.time()}
@@ -216,7 +216,7 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
                                givenL1_ratio = 1,
                                seed_val = as.integer(config$seedVal)
     )
-    if(config$flags$timeFlag){print(Sys.time() - start)}
+    # if(config$flags$timeFlag){print(Sys.time() - start)}
     ###
     featuresMatrix <- get_features_matrix(result)
     samplesMatrix <- get_samples_matrix(result)

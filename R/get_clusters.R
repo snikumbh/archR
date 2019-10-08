@@ -30,48 +30,46 @@ get_clusters <- function(givenMat, clustMethod, nCluster, distMethod.hclust = "e
   #
   if (length(nCluster) > 1) {
       stop("Expecting only one value for nCluster")
-  } 
+  }
   # else if (nCluster < 2) {
   #     stop("Ask for at least 2 clusters")
-  # } 
+  # }
   else if (nCluster > ncol(givenMat)) {
       stop("nClusters more than #sequences")
   } else if (nCluster == 1){
         ######
-        print("kmeans WITH ONLY 1 CLUSTER")
-        start <- Sys.time()
+        # print("kmeans WITH ONLY 1 CLUSTER")
         kmeans_result <- NULL
         ######
-        print(Sys.time() - start)
         # print("=== kmeans in getCluster ===")
         # print(kmeans_result)
         # reorder sequences in the matrix by clusters
         reordering_idx <- vector("list", 1)
         reordering_idx[[1]] <- 1:nSeqs
         #
-        return(list(clustType = "kmeans", clust_sol = kmeans_result, 
+        return(list(clustType = "kmeans", clust_sol = kmeans_result,
                     reordering_idx = reordering_idx))
         #
   } else {
       if (clustMethod == "kmeans") {
-          start <- Sys.time()
+          # start <- Sys.time()
           kmeans_result <- suppressWarnings(
-                              stats::kmeans(givenMat2, 
-                                  centers = nCluster, 
-                                  iter.max = 1000, 
-                                  nstart = 50, 
+                              stats::kmeans(givenMat2,
+                                  centers = nCluster,
+                                  iter.max = 1000,
+                                  nstart = 50,
                                   algorithm = "Lloyd")
                               )
-          print(Sys.time() - start)
+          # print(Sys.time() - start)
           # print("=== kmeans in getCluster ===")
           # print(kmeans_result)
           # reorder sequences in the matrix by clusters
-          reordering_idx <- lapply(1:nCluster, function(x) 
+          reordering_idx <- lapply(1:nCluster, function(x)
             which(kmeans_result$cluster == x))
           #
-          return(list(clustType = "kmeans", clust_sol = kmeans_result, 
+          return(list(clustType = "kmeans", clust_sol = kmeans_result,
                       reordering_idx = reordering_idx))
-      } 
+      }
       else {
           stop("Wrong clustMethod passed. Takes 'kmeans'/'hclust'/'kmedoids'")
       }
@@ -82,8 +80,8 @@ get_clusters <- function(givenMat, clustMethod, nCluster, distMethod.hclust = "e
 
 
 ### ===================== Commented out
-### 
-### 
+###
+###
 # else if (clustMethod == "hclust") {
 # # TO-DO check this part of code for option hclust
 # print("hclust")
@@ -99,8 +97,8 @@ get_clusters <- function(givenMat, clustMethod, nCluster, distMethod.hclust = "e
 # hclust_cl <- stats::cutree(hclust_result, nCluster)
 # print(Sys.time() - start)
 # # reorder sequences in the matrix by clusters
-# # reordering_idx <- hclust_cl  
-# reordering_idx <-sapply(1:nCluster, function(x) 
+# # reordering_idx <- hclust_cl
+# reordering_idx <-sapply(1:nCluster, function(x)
 #   which(hclust_cl == x))
 # # ^this is still not cluster-wise ordering, but an ordering that avoids crossings of the branches in the dendrogram
 # # sapply(1:nCluster, function(x) which(hclust_result$cluster == x))
