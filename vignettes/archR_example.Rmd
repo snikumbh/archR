@@ -1,0 +1,190 @@
+---
+title: "Example usage archR"
+author: "snikumbh"
+date: "`r Sys.time()`"
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Example usage archR}
+output:
+  html_document: 
+    fig_caption: yes
+    keep_md: yes
+    number_sections: yes
+    self_contained: no
+    toc: yes
+    code_folding: hide
+    toc_float: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  tidy = "styler",
+  collapse = TRUE,
+  comment = "#>"
+)
+
+```
+
+```{r setup-two, echo=TRUE}
+
+remove.packages("archR")
+# devtools::install_github("snikumbh/archR")
+library(archR)
+reticulate::source_python(system.file("python/perform_nmf.py",
+                                            package="archR",
+                                            mustWork=TRUE)
+                                            )
+seed_val <- 11992288
+set.seed(seed_val)
+
+```
+
+# Load data
+
+```{r load-example-data, echo=TRUE}
+# Ceation of data matrix from FASTA file
+inputFastaFilename <- system.file("extdata", "example_data.fa", package = "archR", mustWork = TRUE)
+tssSeqsOriginal <- prepare_data_from_FASTA(inputFastaFilename)
+nSeqs <- ncol(tssSeqsOriginal)
+positions <- seq(1,200)
+sinuc <- c('A', 'C', 'G', 'T')
+# Randomize the sequence order
+changedOrder <- sample.int(nSeqs, nSeqs, replace = FALSE)
+tssSeqs <- tssSeqsOriginal[ , changedOrder]
+```
+
+# Represent original set of sequences as an image
+
+```{r plot-seqs, echo=TRUE}
+# Represent sequences as heatmap
+represent_matrix_of_acgt(tssSeqs, position_labels = positions)
+```
+
+
+
+# Synthetic data explained
+
+A set of 1000 simulated DNA sequences, each 200 nucleotides long and with uniform probability for all nucleotides. These sequences have four clusters in them, each with 250 sequences. The profiles of the four clusters is as follows:
+
+Cluster A: Dinucleotide `AT` repeated at 10 nt throughout the sequences.
+
+Cluster B: Motif `GATTACA` at position 40 and motif `GAGAG` at position 60.
+
+Cluster C: Motif `GAGAG` at position 60.
+
+Cluster D: Motif `GAGAG` at position 80 and `TCAT` at position 40.
+
+All the motifs across the clusters were planted with a pre-fixed mutation rate.
+
+# Feature representation
+
+We use one-hot encoding to represent each sequence in the data set. 
+
+```{r setup-timing, echo=FALSE}
+sTime <- Sys.time()
+```
+```{r call-archR, echo=TRUE}
+# Set archR configuration
+thisConfig <- archR::archRSetConfig(innerChunkSize = 500,
+                                    kMin = 1, kMax = 8, parallelize = FALSE, 
+                                    cvFolds = 3, nIterationsUse = 10,
+                                    nCoresUse = NA)
+# Call archR
+archRresult <- archR::archR(config = thisConfig, 
+                            tss.seqs = tssSeqs)
+```
+```{r setup-timing-end, echo=FALSE}
+print(Sys.time() - sTime)
+```
+
+## Understanding the result object from `archR`
+
+In the current version, archR naively returns a result object which is a list of lists.
+The elements include: (a) the sequence cluster labels per iteration; (b) the collection of NMF basis vectors per iteration; (c) the configuration setting used; and (d) the call itself.
+
+### Sequence cluster labels
+For each sequence, archR provides the cluster label for the sequence in each iteration separated by a hyphen. 
+This is similar to labelling nodes in a tree, in which the label for any node denotes the path from the root to that node traversing intermediate nodes.
+For example, cluster label for a sequence can look like "0-3-1-2". Here, "0" is denotes the root (all data), the sequence was then assigned to cluster 3 in the first iteration (among all sequences in the data set), then to cluster 1 in the second iteration (among sequences in cluster 3 from first iteration), and cluster 2
+For instance, below are the cluster labels for the first 100 sequences in the data.
+```{r archR-result-seqs-clust-labels}
+archRresult$seqsClustLabels[1:100]
+
+```
+
+### NMF basis vectors
+archR also stores the NMF basis vectors corresponding to each cluster in every iteration in the lust variable `clustBasisVectors`. `clustBasisVectors` is a numbered list corresponding to the number of iterations performed.
+This is then again a list holding two pieces of information: the number of basis vectors (`nBasisVectors`/`numeric`) and the basis vectors (`basisVectors`/`matrix`).
+
+```{r archR-result-clust-factors}
+# archRresult$clustFactors
+
+# Basis vectors at iteration 2
+archRresult$clustBasisVectors[[2]]$nBasisVectors
+dim(archRresult$clustBasisVectors[[2]]$BasisVectors)
+head(archRresult$clustBasisVectors[[2]]$BasisVectors)
+```
+
+
+## Visualize results from archR
+
+In this section we demonstrate how to visualize results from archR. 
+One can visualize the NMF basis vectors as well as the sequence clusters.
+
+### Visualizing NMF basis vectors at any iteration
+We can visualize the basis vectors corresponding to each cluster at any iteration. 
+These per-iteration basis vectors are available from the `archRresult` object (see above Section).
+
+```{r visualize-basis-vectors, fig.height=2, fig.width=25, echo=TRUE, message=FALSE, warning=FALSE}
+viz_all_factors_as_seqlogo(archRresult$clustBasisVectors[[2]]$BasisVectors, 
+                           position_labels = positions, 
+                           plotMethod = "bits")
+
+viz_all_factors_as_heatmap(archRresult$clustBasisVectors[[2]]$BasisVectors, 
+                           position_labels = positions)
+```
+
+
+```{r visualize-basis-vectors-combined, fig.height=4, fig.width=25, echo=TRUE, message=FALSE, warning=FALSE}
+viz_all_factors_in_combined_heatmaps_seqlogos(
+                           archRresult$clustBasisVectors[[2]]$BasisVectors, 
+                           position_labels = positions, 
+                           plotMethod = "bits")
+```
+The `plotMethod` argument to functions producing sequence logos is supplied to the call to `ggseqlogo`. The possible values are "custom", "bits".
+
+
+### Visualizing sequence clusterings at any iteration
+We can visualize the sequence clusterings at any iteration of archR as follows.
+
+```{r visualize-seqs-clusters, echo=TRUE, message=FALSE, warning=FALSE}
+
+iupac_colorings <- c("A" = "darkgreen", "C" = "blue", "G" = "orange",
+                     "T" = "red")
+# for(i in 1:length(archRresult$clustFactors)){
+#     chosenLevelLabels <- archR::collect_cluster_labels(archRresult$seqsClustLabels,
+#                                                 choose_levels = i + 1)
+#     chosenLevelLabels_sorted <- sort(chosenLevelLabels, index.return = TRUE)
+#     # fname <- paste0("samarth_all_seqs_Level", i,"_Clustering")
+#     represent_matrix_of_acgt_with_ggplot2(tssSeqs[chosenLevelLabels_sorted$ix],
+#                                           position_labels = positions,
+#                                           sinuc_or_dinuc = "sinuc",
+#                                           choose_colors = iupac_colorings,
+#                                           annClusters = chosenLevelLabels_sorted$x
+#                                           # saveFilename = fname,
+#                                           # fileType = "png"
+#     )
+#     
+# }
+
+```
+
+# Session Info
+```{r session_info, include=TRUE, echo=TRUE, results='markup'}
+sessionInfo()
+```
