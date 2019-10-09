@@ -1,5 +1,5 @@
 ---
-title: "Example usage archR"
+title: "Example usage with archR"
 author: "Sarvesh Nikumbh"
 date: "`r Sys.Date()`"
 output:
@@ -24,8 +24,16 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r setup-two, echo=TRUE}
+# Introduction
+archR is an NMF-based unsupervised learning approach for identifying
+different core promoter architectures. We demonstrated that archR's simple algorithm based on
+chunking and iterative processing successfully uncovers hidden clusters characterized by combinations
+of sequence motifs. To our knowledge, this is a novel application of NMF on sequence data where
+motifs, their positional specificities and complex inter-relationships, all are simultaneously inferred
+from the data.
 
+# Working with archR
+```{r setup-two, echo=TRUE}
 # remove.packages("archR")
 # devtools::install_github("snikumbh/archR")
 library(archR)
@@ -38,32 +46,8 @@ set.seed(seed_val)
 
 ```
 
-# Load data
 
-```{r load-example-data, echo=TRUE}
-# Ceation of data matrix from FASTA file
-inputFastaFilename <- system.file("extdata", "example_data.fa", package = "archR", mustWork = TRUE)
-tssSeqsOriginal <- prepare_data_from_FASTA(inputFastaFilename)
-tssSeqsOriginal_raw <- prepare_data_from_FASTA(inputFastaFilename, rawSeq = TRUE)
-nSeqs <- ncol(tssSeqsOriginal)
-positions <- seq(1,200)
-sinuc <- c('A', 'C', 'G', 'T')
-# Randomize the sequence order
-changedOrder <- sample.int(nSeqs, nSeqs, replace = FALSE)
-tssSeqs <- tssSeqsOriginal[ , changedOrder]
-tssSeqs_raw <- tssSeqsOriginal_raw[changedOrder]
-```
-
-# Represent original set of sequences as an image
-
-```{r plot-seqs, echo=TRUE, fig.height=4, fig.width=3}
-# Represent sequences as heatmap
-represent_matrix_of_acgt_with_ggplot2(tssSeqs_raw, position_labels = positions, saveFilename = NULL)
-```
-
-
-
-# Synthetic data explained
+## Synthetic data explained
 
 A set of 1000 simulated DNA sequences, each 200 nucleotides long and with uniform probability for all nucleotides. These sequences have four clusters in them, each with 250 sequences. The profiles of the four clusters is as follows:
 
@@ -76,6 +60,42 @@ Cluster C: Motif `GAGAG` at position 60.
 Cluster D: Motif `GAGAG` at position 80 and `TCAT` at position 40.
 
 All the motifs across the clusters were planted with a pre-fixed mutation rate.
+
+
+## Load data
+
+The function `prepare_data_from_FASTA' provides with the functionality to 
+produce one-hot encoded DNA sequences.
+Setting the argument `rawSeq`, the function returns the raw sequences.
+
+```{r load-example-data, echo=TRUE}
+# Creation of one-hot encoded data matrix from FASTA file
+inputFastaFilename <- system.file("extdata", "example_data.fa", 
+                                  package = "archR", 
+                                  mustWork = TRUE)
+tssSeqsOriginal <- prepare_data_from_FASTA(inputFastaFilename)
+tssSeqsOriginal_raw <- prepare_data_from_FASTA(inputFastaFilename, 
+                                               rawSeq = TRUE)
+nSeqs <- ncol(tssSeqsOriginal)
+positions <- seq(1,200)
+sinuc <- c('A', 'C', 'G', 'T')
+# Randomize the sequence order
+changedOrder <- sample.int(nSeqs, nSeqs, replace = FALSE)
+tssSeqs <- tssSeqsOriginal[ , changedOrder]
+tssSeqs_raw <- tssSeqsOriginal_raw[changedOrder]
+```
+
+### Represent original set of sequences as an image
+
+```{r plot-seqs, echo=TRUE, fig.height=6, fig.width=5}
+# Represent sequences as heatmap
+represent_matrix_of_acgt_with_ggplot2(tssSeqs_raw, 
+                                      position_labels = positions, 
+                                      saveFilename = NULL)
+```
+
+
+
 
 # Feature representation
 
@@ -106,7 +126,7 @@ The elements include: (a) the sequence cluster labels per iteration; (b) the col
 ### Sequence cluster labels
 For each sequence, archR provides the cluster label for the sequence in each iteration separated by a hyphen. 
 This is similar to labelling nodes in a tree, in which the label for any node denotes the path from the root to that node traversing intermediate nodes.
-For example, cluster label for a sequence can look like "0-3-1-2". Here, "0" is denotes the root (all data), the sequence was then assigned to cluster 3 in the first iteration (among all sequences in the data set), then to cluster 1 in the second iteration (among sequences in cluster 3 from first iteration), and cluster 2
+For example, cluster label for a sequence can look like "0-3-1-2". Here, "0" is denotes the root (all data), the sequence was then assigned to cluster 3 in the first iteration (among all sequences in the data set), then to cluster 1 in the second iteration (among sequences in cluster 3 from first iteration), and subsequently, cluster 2.
 For instance, below are the cluster labels for the first 100 sequences in the data.
 ```{r archR-result-seqs-clust-labels}
 archRresult$seqsClustLabels[1:100]
@@ -164,6 +184,20 @@ viz_all_factors_in_combined_heatmaps_seqlogos(
 ```
 The `plotMethod` argument to functions producing sequence logos is supplied to the call to `ggseqlogo`. The possible values are "custom", "bits".
 
+
+# Conclusion
+
+archR can detect de novo sequence features and simultaneously identify the complex
+interactions of different features together with their positional specificities.
+
+Note that the sequence architectures identified by archR have no limitations 
+due to the size of or gaps in the motifs, distance between motifs, compositional
+and positional variations in the individual motifs and their effects on the 
+complex interactions, and number of motifs involved in any interaction. 
+It is advisable to perform a large number of bootstrapped iterations for NMF in 
+archR. This potentially affects the computation time of archR. But being an 
+embarrasingly parallelizable case, this issue is alleviated. There are already 
+provisions in archR to choose parallelization for speeding up computations.
 
 # Session Info
 ```{r session_info, include=TRUE, echo=TRUE, results='markup'}
