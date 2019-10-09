@@ -14,7 +14,7 @@ This package requires the Python module scikit-learn. See installation instructi
 
 ```r
 # install.packages("devtools")
-devtools::install_github("snikumbh/archR")
+devtools::install_github("snikumbh/archR", build_vignettes = TRUE)
 ``` 
 
 
