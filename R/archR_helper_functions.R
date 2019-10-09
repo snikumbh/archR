@@ -173,7 +173,8 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
     ###
     if(config$flags$verboseFlag){
                         cat(paste0("Working on chunk: ", innerChunkIdx,
-                                   " of ", length(innerChunksColl), " (chunkSize: ",
+                                   " of ", length(innerChunksColl),
+                                   " (chunkSize: ",
                                    ncol(this_tss.seqs), ") \n"))
     }
     ###

@@ -19,7 +19,8 @@
 #' @import ggplot2
 #' @import ggseqlogo
 #'
-plot_ggheatmap <- function(pwmMat, position_labels = NULL, savePDFfilename = NULL) {
+plot_ggheatmap <- function(pwmMat, position_labels = NULL,
+                           savePDFfilename = NULL) {
   if (!is.matrix(pwmMat)) {
     stop("Expecting a matrix with 4 rows")
   }
@@ -57,10 +58,13 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL, savePDFfilename = NUL
   # WHY THE HELL IS THIS THIS WAY?
   colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
   #
-  pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars = c("Nucleotides"), variable.name = "positions")
+  pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars = c("Nucleotides"),
+                                  variable.name = "positions")
   #
   p1 <- ggplot2::ggplot(data = pwmMat_df_for_ggheatmap, mapping = aes(
-    x = positions, # Here, 'positions' is the column_name, see previous statement. Do not change it to position_labels
+    x = positions,
+    # Here, 'positions' is the column_name, see previous statement.
+    # Do not change it to position_labels
     y = Nucleotides,
     fill = value
   )) +
@@ -100,7 +104,8 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL, savePDFfilename = NUL
 # pwmMat_df <- mutate(pwmMat_df, Nucleotides = rownames(pwmMat_df))
 # colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
 # #
-# pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars=c("Nucleotides"), variable.name = "positions")
+# pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars=c("Nucleotides"),
+# variable.name = "positions")
 #
 # p1 <- ggplot(data = pwmMat_df_for_ggheatmap, mapping = aes(x = positions,
 #                                        y = Nucleotides,

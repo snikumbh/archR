@@ -167,7 +167,8 @@ get_q2_using_py <- function(x, seed_val, verbose = 0) {
 
 #' @title Compute \eqn{Q^2} Value
 #'
-#' @description Computes the reconstruction accuracy, \eqn{Q^2}, given the original matrix and the recontructed matrix to check against.
+#' @description Computes the reconstruction accuracy, \eqn{Q^2}, given the
+#' original matrix and the recontructed matrix to check against.
 #'
 #' @param A The original matrix
 #' @param recA The reconstructed matrix
@@ -257,10 +258,12 @@ cv_model_select_pyNMF <- function(X,
       stop("Set at least 3 cross-validation folds")
     }
   } else if (kFolds > ncol(X)) {
-    stop("CV folds should be less than or equal to #sequences. Standard values: 5, 10.")
+    stop("CV folds should be less than or equal to #sequences.
+         Standard values: 5, 10.")
   }
   # Check names in param_ranges list, the function relies on it below
-  if (length(setdiff(names(param_ranges), c("alphaPow", "alphaBase", "k_vals"))) > 0) {
+  if (length(setdiff(names(param_ranges), c("alphaPow", "alphaBase",
+                                            "k_vals"))) > 0) {
     stop(paste0(
       "Check param_ranges list, expecting three element names: ",
       c("alphaBase", "alphaPow", "k_vals")
@@ -293,14 +296,18 @@ cv_model_select_pyNMF <- function(X,
       # library(rslurm)
       # X <<- X
       # cvfolds <<- cvfolds
-      # samarth_job <- slurm_apply(get_q2_using_py_with_rslurm, grid_search_params,
+      # samarth_job <- slurm_apply(get_q2_using_py_with_rslurm,
+      #                             grid_search_params,
       #                            jobname = NA,#"grid_search_archR",
       #                            nodes = nCores/8,
       #                            cpus_per_node = 1,
-      #                            add_objects = c("get_q2_using_py", "compute_q2", "X", "cvfolds"),
-      #                            #pkgs = X, default: loads all those already loaded when calling slurm_apply
+      #                            add_objects = c("get_q2_using_py",
+      #                            "compute_q2", "X", "cvfolds"),
+      #                            #pkgs = X, default: loads all those already
+      #                            loaded when calling slurm_apply
       #                            #libPaths = NULL,
-      #                            slurm_options = list(mem = "10G", "cpus-per-task"=8),
+      #                            slurm_options = list(mem = "10G",
+      #                            "cpus-per-task"=8),
       #                            submit = TRUE
       #                              )
       # print_job_status(samarth_job)
@@ -326,13 +333,14 @@ cv_model_select_pyNMF <- function(X,
         }
       }
       cl <- parallel::makeCluster(nCores, type = "FORK", outfile = logfile)
-      # clusterEvalQ(cl, suppressWarnings(require(CoGAPS))) # for NMF using CoGAPS
-      parallel::clusterEvalQ(cl, suppressWarnings(require(MASS))) # for pseudo-inverse using function `ginv`
+      parallel::clusterEvalQ(cl, suppressWarnings(require(MASS)))
+      # for pseudo-inverse using function `ginv`
       parallel::clusterExport(
         cl = cl, varlist = c("get_q2_using_py", "compute_q2", "X", "cvfolds"),
         envir = environment()
       )
-      # q2_vals <- parallel::parRapply(cl=cl, grid_search_params, get_q2, seed_val)
+      # q2_vals <- parallel::parRapply(cl=cl, grid_search_params,
+      # get_q2, seed_val)
       #
       # parRapply does not balance load dynamically.
       # We observed many of the nodes lying idle (process mode S in htop)
@@ -346,7 +354,8 @@ cv_model_select_pyNMF <- function(X,
       q2_vals <- unlist(parallel::clusterApplyLB(
         cl = cl, 1:nrow(grid_search_params),
         function(i) {
-          get_q2_using_py(grid_search_params[i, ], seed_val, verbose = set_verbose)
+          get_q2_using_py(grid_search_params[i, ], seed_val,
+                          verbose = set_verbose)
         }
       ))
       cat("Stopping cluster...")
@@ -360,13 +369,15 @@ cv_model_select_pyNMF <- function(X,
     X <<- X
     cvfolds <<- cvfolds
     # nCoresUse <<- nCores
-    q2_vals <- unlist(BBmisc::rowLapply(grid_search_params, get_q2_using_py, seed_val, verbose = set_verbose))
+    q2_vals <- unlist(BBmisc::rowLapply(grid_search_params, get_q2_using_py,
+                                        seed_val, verbose = set_verbose))
   }
   #
   # The dummy copy for satisfying the constraint in rslurm.
   # The filtered true copy maintained for downstream steps in the procedure
   #
-  grid_search_params <- dplyr::select(grid_search_params, k_vals, alpha, fold, iteration)
+  grid_search_params <- dplyr::select(grid_search_params, k_vals, alpha, fold,
+                                      iteration)
   grid_search_results <- tibble::add_column(grid_search_params, q2_vals)
   return(grid_search_results)
 }
@@ -374,8 +385,8 @@ cv_model_select_pyNMF <- function(X,
 
 #' @title Generate Cross-Validation Data Splits
 #'
-#' @description This function generates the row and column indices for the cross-
-#' validation splits.
+#' @description This function generates the row and column indices for the
+#' cross-validation splits.
 #'
 #' @param Xdims Dimensions of matrix data matrix X.
 #' @param kFolds Number of cross-validation folds.
@@ -407,7 +418,8 @@ get_best_K <- function(x) {
   # Assumes, max q2_val is best
   # Returns simply the best performing K value
   # Check names in param_ranges list, the function relies on it below
-  if (length(setdiff(names(x), c("k_vals", "alpha", "fold", "iteration", "q2_vals"))) > 0) {
+  if (length(setdiff(names(x), c("k_vals", "alpha", "fold", "iteration",
+                                 "q2_vals"))) > 0) {
     message(names(x))
     stop(paste0(
       "Check colnames in tibble, expecting five element names: ",
@@ -437,8 +449,8 @@ get_best_K <- function(x) {
 #'
 #' @param x The return object from \code{\link{cv_model_select_pyNMF}}.
 #' @param chosen_var The variable to aggregate over.
-#' @param chosen_func The aggregate function to use (should be a function already
-#'  existing wihtin R). Possible values are: \code{mean} and \code{sd}.
+#' @param chosen_func The aggregate function to use (should be a function
+#' already existing wihtin R). Possible values are: \code{mean} and \code{sd}.
 #'
 #' @return The mean of $Q^2$ values per the chosen variable
 #' @export
@@ -447,7 +459,8 @@ get_best_K <- function(x) {
 get_q2_aggregates_chosen_var <- function(x, chosen_var, chosen_func) {
   # Returns the mean of q2 values per the chosen variable
   #
-  averages <- stats::aggregate(x, by = list(rel_var = chosen_var), chosen_func, simplify = TRUE)
+  averages <- stats::aggregate(x, by = list(rel_var = chosen_var), chosen_func,
+                               simplify = TRUE)
   return(averages)
 }
 
@@ -455,8 +468,8 @@ get_q2_aggregates_chosen_var <- function(x, chosen_var, chosen_func) {
 
 #' @title Get Threshold Value for Selecting \eqn{\alpha}
 #'
-#' @description Get the threshold value for selection of \eqn{\alpha} by looking at
-#' cross-validation performance for K.
+#' @description Get the threshold value for selection of \eqn{\alpha} by
+#' looking at cross-validation performance for K.
 #'
 #' @param model_selectK Cross-validation performance over K values.
 #'
@@ -465,8 +478,10 @@ get_q2_aggregates_chosen_var <- function(x, chosen_var, chosen_func) {
 #' @importFrom stats sd
 get_q2_threshold_by_K <- function(model_selectK) {
   #
-  mean_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, mean)
-  sd_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals, stats::sd)
+  mean_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals,
+                                            mean)
+  sd_by_K <- get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals,
+                                          stats::sd)
   se_by_K <- sd_by_K / sqrt(nrow(sd_by_K))
   # print(model_selectK)
   # print(mean_by_K)
@@ -541,7 +556,8 @@ get_best_alpha <- function(for_alpha, for_k, min_or_max = min) {
 plot_cv_K <- function(averages) {
   # Using ggplot to plot
   if ("rel_var" %in% averages) {
-    cat("Plotting Q2 vs. K: check colnames in the object (need 'rel_var' as 'k')")
+    cat("Plotting Q2 vs. K: check colnames in the object
+        (need 'rel_var' as 'k')")
     return(NULL)
   }
   if ("q2_vals" %in% averages) {
@@ -565,11 +581,11 @@ plot_cv_K <- function(averages) {
 
 #' @title Plot Cross-Validation Performance of \eqn{\alpha}
 #'
-#' @description Plot showing performance of different values of \eqn{\alpha} tested in
-#' cross-validation.
+#' @description Plot showing performance of different values of \eqn{\alpha}
+#' tested in cross-validation.
 #'
-#' @param model_selectAlpha The return value from \code{\link{cv_model_select_pyNMF}}.
-#' This is used for \eqn{\alpha}.
+#' @param model_selectAlpha The return value from
+#' \code{\link{cv_model_select_pyNMF}}. This is used for \eqn{\alpha}.
 #' @param threshold The threshold to be applied when choosing the best
 #' performing value
 #'
@@ -586,8 +602,11 @@ plot_cv_Alpha <- function(model_selectAlpha, threshold = 0.0) {
   #   return(NULL)
   # }
 
-  mean_by_Alpha <- get_q2_aggregates_chosen_var(model_selectAlpha, model_selectAlpha$alpha, mean)
-  sd_by_Alpha <- get_q2_aggregates_chosen_var(model_selectAlpha, model_selectAlpha$alpha, stats::sd)
+  mean_by_Alpha <- get_q2_aggregates_chosen_var(model_selectAlpha,
+                                                model_selectAlpha$alpha, mean)
+  sd_by_Alpha <- get_q2_aggregates_chosen_var(model_selectAlpha,
+                                              model_selectAlpha$alpha,
+                                              stats::sd)
   se_by_Alpha <- sd_by_Alpha / sqrt(nrow(sd_by_Alpha))
   # print(mean_by_Alpha)
   cat("Plotting Q2 as a function of alpha")
@@ -597,12 +616,16 @@ plot_cv_Alpha <- function(model_selectAlpha, threshold = 0.0) {
     #             fill = "grey90") +
     geom_point() +
     geom_line() +
-    geom_hline(yintercept = threshold$mean - threshold$se, linetype = "dashed") +
-    geom_hline(yintercept = threshold$mean + threshold$se, linetype = "dashed") +
+    geom_hline(yintercept = threshold$mean - threshold$se,
+               linetype = "dashed") +
+    geom_hline(yintercept = threshold$mean + threshold$se,
+               linetype = "dashed") +
     # geom_errorbar(aes(ymin = mean_by_Alpha$q2_vals - sd_by_Alpha$q2_vals,
     #                   ymax = mean_by_Alpha$q2_vals + sd_by_Alpha$q2_vals),
     #               width = 0.1) +
-    scale_x_continuous(breaks = log2(mean_by_Alpha$rel_var), labels = log2(mean_by_Alpha$rel_var)) +
+    scale_x_continuous(breaks = log2(mean_by_Alpha$rel_var),
+                       labels = log2(mean_by_Alpha$rel_var)
+                       ) +
     labs(
       title = "Reconstruction accuracy, Q\U00B2 = f(\u03B1)",
       x = paste0("\u03B1", "=", expression(2^x)),

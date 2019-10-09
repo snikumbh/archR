@@ -1,6 +1,7 @@
 #' @title Getter function for labels of x- or y-ticks.
 #'
-#' @description A convenience function to provide the right set of x-tick labels for the image matrix representing the sequences.
+#' @description A convenience function to provide the right set of x-tick labels
+#'  for the image matrix representing the sequences.
 #'
 #' @param givenVec The vector of values for the x- or y-ticks.
 #' @param use_asis Use the vector \emph{as is}, i.e., all given values will
@@ -39,8 +40,9 @@ get_tick_labels <- function(givenVec, use_asis = T, at_every) {
 #' @param mark_seq_at_every Tickmarks for sequences, i.e., these are y-ticks.
 #' @param mark_pos_at_every Tickmarks for sequence positions, i.e., these are
 #' x-ticks. The tickmarks can be specified for every N-th position or every
-#' percentage N-th position. For every N-th position, simply specify the absolute
-#' positive value. For every percentage N-th position, specify 0.01 for 10\%.
+#' percentage N-th position. For every N-th position, simply specify the a
+#' bsolute positive value. For every percentage N-th position, specify 0.01 for
+#' 10\%.
 #' @param plot.title The title of the plot.
 #' @param savePDFfilename Name of the file which will be saved as PDF.
 #' @param verbose Default \code{0} which will not print any messages, or can be
@@ -53,14 +55,16 @@ get_tick_labels <- function(givenVec, use_asis = T, at_every) {
 #'
 represent_matrix_of_acgt <- function(givenMat,
                                      position_labels,
-                                     mark_seq_at_every = as.integer(ncol(givenMat) * 0.1), # percentage value, 10 as default
+                                     mark_seq_at_every =
+                                       as.integer(ncol(givenMat) * 0.1),
+                                     # percentage value, 10 as default
                                      mark_pos_at_every = 10,
                                      plot.title = "DNA Sequences",
                                      savePDFfilename = NULL,
                                      verbose = 0) {
   # givenMat is expected as a matrix of #Features x #Sequences
-  # WARNING: This seems to not work when pseudo-counts are added to the data matrix
-  # from generate_seq_info_matrix function
+  # WARNING: This seems to not work when pseudo-counts are added to the data
+  # matrix from generate_seq_info_matrix function
   #
   # Returns: No return value
   # nPositions <- nrow(givenMat)/4
@@ -72,7 +76,8 @@ represent_matrix_of_acgt <- function(givenMat,
     # print(dim(as.matrix(x)))
     this_givenMatrix <- matrix(x, nrow = length(sinuc), byrow = TRUE)
     rownames(this_givenMatrix) <- sinuc
-    new_mat <- matrix(rep(0, ncol(this_givenMatrix)), ncol = ncol(this_givenMatrix))
+    new_mat <- matrix(rep(0, ncol(this_givenMatrix)),
+                      ncol = ncol(this_givenMatrix))
     for (r in 1:4) {
       temp_mat <- this_givenMatrix
       temp_mat[-r, ] <- 0
@@ -94,15 +99,18 @@ represent_matrix_of_acgt <- function(givenMat,
   if (!is.null(savePDFfilename)) {
     pdf(savePDFfilename)
   }
-  # heatmap.2 solution is slow (available in `represent_matrix_of_acgt_heatmap2.R`),
+  # heatmap.2 solution is slow (available in `
+  # represent_matrix_of_acgt_heatmap2.R`),
   # we instead use heatmap3 which is fast
   #
   if (verbose > 0) {
     cat("Plotting\n")
   }
   # heatmap3 solution
-  seq_labels <- get_tick_labels(1:nSeqs, use_asis = F, at_every = mark_seq_at_every)
-  pos_labels <- get_tick_labels(position_labels, use_asis = T, at_every = mark_pos_at_every)
+  seq_labels <- get_tick_labels(1:nSeqs, use_asis = F,
+                                at_every = mark_seq_at_every)
+  pos_labels <- get_tick_labels(position_labels, use_asis = T,
+                                at_every = mark_pos_at_every)
   heatmap3::heatmap3(plot_mat,
     revC = T, # set this to T to plot starting from the top
     Colv = NA,
@@ -119,7 +127,8 @@ represent_matrix_of_acgt <- function(givenMat,
     labRow = seq_labels$label_val,
     # xtick = T,
     # add.expr = function(pos_labels=pos_labels, seq_labels=seq_labels) {
-    #                        axis(side=1, at = pos_labels$label_val, labels = pos_labels$label_val, tick = T)
+    #                        axis(side=1, at = pos_labels$label_val,
+    #                        labels = pos_labels$label_val, tick = T)
     #                        #axis(side=2, at = , labels = seq_labels, tick = T)
     #                       },
     legendfun = function() heatmap3::showLegend(
@@ -132,8 +141,10 @@ represent_matrix_of_acgt <- function(givenMat,
       ),
     useRaster = TRUE
   )
-  # axis(side=1, at = pos_labels$label_val, labels = pos_labels$label_val, tick = T)
-  # axis(side=2, at = seq_labels$label_ind, labels = seq_labels$label_val, tick = T)
+  # axis(side=1, at = pos_labels$label_val,
+  # labels = pos_labels$label_val, tick = T)
+  # axis(side=2, at = seq_labels$label_ind,
+  # labels = seq_labels$label_val, tick = T)
   if (!is.null(savePDFfilename)) {
     grDevices::dev.off()
   }

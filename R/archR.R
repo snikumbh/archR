@@ -5,8 +5,8 @@
 #'
 #'
 #' The archR package provides three categories of important functions:
-#' related to data preparation and manipulation, performing non-negative matrix factorization,
-#' performing clustering, and visualization-related functions.
+#' related to data preparation and manipulation, performing non-negative matrix
+#' factorization, performing clustering, and visualization-related functions.
 #'
 #' @section Functions for data preparation and manipulation:
 #' \itemize{

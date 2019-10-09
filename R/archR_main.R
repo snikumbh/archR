@@ -31,7 +31,8 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 length(outerChunksColl), " chunk(s) ===")
         nxtOuterChunksColl <- vector("list")
         intClustFactors <- NULL
-        for (outerChunkIdx in 1:length(outerChunksColl)) {
+        for (outerChunkIdx in seq_along(outerChunksColl)) {
+        # for (outerChunkIdx in 1:length(outerChunksColl)) {
             ###
             ###
             outerChunk <- outerChunksColl[[outerChunkIdx]]
@@ -47,7 +48,8 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                   intClustFactors <-
                       cbind(intClustFactors,
                             as.matrix(
-                                clustFactors[[test_itr]]$Factors[,outerChunkIdx]))
+                            clustFactors[[test_itr]]$Factors[,outerChunkIdx])
+                            )
                 } else {
                   intClustFactors <-
                       as.matrix(
@@ -63,7 +65,8 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 globFactors <- vector("list", length(innerChunksColl))
                 globClustAssignments <- vector("list", length(innerChunksColl))
                 ###
-                for (innerChunkIdx in 1:length(innerChunksColl)) {
+                for (innerChunkIdx in seq_along(innerChunksColl)) {
+                # for (innerChunkIdx in 1:length(innerChunksColl)) {
                   # print("=== inner chunk size: ===")
                   # print(length(innerChunksColl[[innerChunkIdx]]))
                   this_tss.seqs <- tss.seqs[, innerChunksColl[[innerChunkIdx]]]
@@ -100,7 +103,8 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 if (!is.null(intClustFactors)) {
                   intClustFactors <-
                       cbind(intClustFactors,
-                            get_factors_from_factor_clustering(globFactorsClustering,
+                            get_factors_from_factor_clustering(
+                                globFactorsClustering,
                                 globFactorsMat))
                 } else {
                   intClustFactors <-
@@ -108,8 +112,9 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                                                          globFactorsMat)
                 }
                 ### Manage collated cluster assignments
-                collatedClustAssignments <- collate_clusters(globFactorsClustering,
-                  globClustAssignments)
+                collatedClustAssignments <-
+                    collate_clusters(globFactorsClustering,
+                                     globClustAssignments)
                 ###
             }  ### IfElse doNotProcess outer chunk ENDS
             ###
@@ -122,7 +127,8 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
             ### Collect (append) clusters at current level
             nxtOuterChunksColl <- append(nxtOuterChunksColl,
                                          collatedClustAssignments)
-            message(paste0("Outer chunk ", outerChunkIdx, ", current total basis vectors: ",
+            message(paste0("Outer chunk ", outerChunkIdx,
+                           ", current total basis vectors: ",
                            ncol(intClustFactors)))
 
         }  ### for loop over outerChunksCollection ENDS
@@ -134,7 +140,8 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
         test_itr <- test_itr + 1
     }  # algorithm while loop ENDS
 
-    archRresult <- list(seqsClustLabels = seqsClustLabels, clustBasisVectors = clustFactors,
+    archRresult <- list(seqsClustLabels = seqsClustLabels,
+                        clustBasisVectors = clustFactors,
         config = config, call = match.call())
     message("=== archR exiting, returning result ===")
     return(archRresult)

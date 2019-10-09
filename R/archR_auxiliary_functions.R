@@ -1,7 +1,7 @@
 #' @title Get cluster labels for chosen level/iteration
 #'
-#' @description Given a seqsClustLabels, collect cluster labels for sequences at the
-#' chosen iteration/level.
+#' @description Given a seqsClustLabels, collect cluster labels for sequences at
+#'  the chosen iteration/level.
 #'
 #' @param given_seqsClustLabels from archR result object
 #' @param choose_levels choose a level/iteration
@@ -26,7 +26,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
         selectedLabels <- unlist(lapply(strsplit(given_seqsClustLabels,
                                                  split = splitChar),
             function(x) {
-                paste0(x[1:choose_levels], collapse = splitChar)
+                paste0(x[seq_len(choose_levels)], collapse = splitChar)
             }))
     }
     return(selectedLabels)
@@ -36,10 +36,10 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 
 map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
                                     iChunkIdx, flags) {
-    # clustOrderIdx IS clustering_sol_kmeans$reordering_idx the reorderingIdx is a
-    # nested list, i.e. a list holding list of seqs_ids belonging to one cluster
-    # together. Hence, length(this variable) gives #clusters samplesMatrix IS
-    # samplesMatrix
+    # clustOrderIdx IS clustering_sol_kmeans$reordering_idx the reorderingIdx is
+    #  a nested list, i.e. a list holding list of seqs_ids belonging to one
+    #  cluster together. Hence, length(this variable) gives #clusters
+    #  samplesMatrix IS samplesMatrix
     if (length(clustOrderIdx) == 1) {
 
         rightClusterOrders <- vector("list", length(clustOrderIdx))
@@ -50,7 +50,8 @@ map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
 
     } else if (length(clustOrderIdx) > 1) {
         rightClusterOrders <- vector("list", length(clustOrderIdx))
-        for (cluster_idx in 1:length(clustOrderIdx)) {
+        for (cluster_idx in seq_along(clustOrderIdx)) {
+        # for (cluster_idx in 1:length(clustOrderIdx)) {
             relevant_factor <-
                 which.max(rowMeans(
                 as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]])
@@ -96,11 +97,12 @@ collate_clusters <- function(hopachObj, globClustAssignments) {
         ###
         collatedClustAssignments <- vector("list", nClusters)
         ###
-        for (coll_cluster_idx in 1:length(collatedClustAssignments)) {
+        for (coll_cluster_idx in seq_along(collatedClustAssignments)) {
+        # for (coll_cluster_idx in 1:length(collatedClustAssignments)) {
             to_combine_this_itr <- clustSizes[coll_cluster_idx]
             leave_first <- 0
             if (coll_cluster_idx > 1) {
-                leave_first <- sum(clustSizes[1:(coll_cluster_idx - 1)])
+                leave_first <- sum(clustSizes[seq_len(coll_cluster_idx - 1)])
             }
             pick_this_itr <- elementsOrder[
                 (leave_first + 1):(leave_first + to_combine_this_itr)]
@@ -143,7 +145,8 @@ update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
     if (nClusters > 9) {
         message("More than 9 clusters")
     }
-    for (i in 1:length(collatedClustAssignments)) {
+    for (i in seq_along(collatedClustAssignments)) {
+    # for (i in 1:length(collatedClustAssignments)) {
         needUpdateIdx <- collatedClustAssignments[[i]]
         newSeqsClustLabels[needUpdateIdx] <- sapply(
             newSeqsClustLabels[needUpdateIdx],
@@ -176,7 +179,8 @@ prepare_chunks <- function(total_avail, reqdChunkSize, checkLength,
             print(chunkEnds)
         }
         preparedChunks <- vector("list", length(chunkStarts))
-        for (i in 1:length(chunkStarts)) {
+        for (i in seq_along(chunkStarts)) {
+        # for (i in 1:length(chunkStarts)) {
             preparedChunks[[i]] <- total_avail[chunkStarts[i]:chunkEnds[i]]
         }
     } else {

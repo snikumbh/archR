@@ -57,12 +57,12 @@ seqs_to_df <- function(seqs, position_labels, annClusters = NULL,
     } else if (sinuc_or_dinuc == "dinuc"){
         ## handling dinucleotides
         plot_df_list <-
-          lapply(1:length(seqs),
+          lapply(seq_along(seqs),
                  function(x){
                     x_split <- unlist(strsplit(seqs[x],
-                                               split=NULL))
-                    seq_len <- length(x_split)
-                    nucleotides <- unlist(lapply(1:(seq_len-1),
+                                               split = NULL))
+                    this_seq_len <- length(x_split)
+                    nucleotides <- unlist(lapply(seq_len(this_seq_len - 1),
                                                  function (y){
                                                    paste0(x_split[y],
                                                           x_split[y+1])
@@ -71,17 +71,17 @@ seqs_to_df <- function(seqs, position_labels, annClusters = NULL,
                                           )
                     temp_df <- as.data.frame(nucleotides,
                                              stringsAsFactors = FALSE)
-                    if(!is.null(annClusters)){
+                    if(!is.null(annClusters)) {
                        temp_df <- tibble::add_column(temp_df, annClusters =
                                                     annClusters[x])
                     }
                     ##
+                    position_labels_dinuc <-
+                      position_labels[seq_len(length(position_labels) - 1)]
                     temp_df <- tibble::add_column(temp_df,
-                                                  seq_id = x,
-                                                  positions =
-                                                    position_labels[1:(length(
-                                                      position_labels)-1)])
-                }
+                                         seq_id = x,
+                                         positions = position_labels_dinuc)
+                  }
                 )
     }
     plot_df <- data.table::rbindlist(plot_df_list)
@@ -92,7 +92,7 @@ seqs_to_df <- function(seqs, position_labels, annClusters = NULL,
 get_seq_cluster_breaks <- function(annClusters){
 
   clusterLevels <- levels(as.factor(annClusters))
-  interimBreaks <- vapply(1:length(clusterLevels), function(x){
+  interimBreaks <- vapply(seq_along(clusterLevels), function(x){
                           max(which(annClusters == clusterLevels[x]))
                           }, numeric(1))
   seqClustBreaks <- c(1, interimBreaks)
@@ -105,7 +105,7 @@ get_seq_cluster_breaks <- function(annClusters){
 #' @param k number of colors
 #' @importFrom grDevices col2rgb rgb
 .distinctColorPalette <- function(k) {
-    set.seed(123)
+    # set.seed(123)
     ColorSpace <- t(unique(col2rgb(scales::hue_pal(l = 60:100)(2e3))))
     km <- kmeans(ColorSpace, k, iter.max = 20)
     colors <- rgb(round(km$centers), maxColorValue = 255)
