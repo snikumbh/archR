@@ -10,7 +10,7 @@ bioc_packages:
     - BiocCheck
 
 before_install:
-  Rscript -e 'BiocManager::install("hopach", "BiocGenerics", update = TRUE)'
+  Rscript -e 'BiocManager::install(c("hopach", "BiocGenerics"), update = TRUE)'
 
 warnings_are_errors: true
 
