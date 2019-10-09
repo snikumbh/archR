@@ -1,7 +1,7 @@
 Type: Package
 Package: archR
 Title: Identify Different Architectures of Sequence Elements
-Version: 0.1.1
+Version: 0.99.3
 Authors@R: 
     person(given = "Sarvesh",
            family = "Nikumbh",
@@ -12,7 +12,7 @@ Description: Given a set of DNA sequences, the \code{archR} package enables
 License: GPL-3
 SystemRequirements: Python (>= 3.5), Scikit-learn (>= 0.21.2)
 Depends:
-    R (>= 3.1)
+    R (>= 3.5)
 Imports:
     BBmisc (>= 1.11),
     cluster,
@@ -50,6 +50,16 @@ Suggests:
     covr
 VignetteBuilder: 
     knitr
+biocViews: 
+    MotifDiscovery, 
+    GeneRegulation, 
+    MathematicalBiology, 
+    SystemsBiology,
+    Transcriptomics,
+    Genetics,
+    Clustering,
+    DimensionReduction,
+    FeatureExtraction
 Encoding: UTF-8
 LazyData: false
 RoxygenNote: 6.1.1
