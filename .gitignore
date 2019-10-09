@@ -8,3 +8,5 @@ inst/doc
 doc
 Meta
 .Rapp.history
+## Ignore travis config file
+^\.travis\.yml$
