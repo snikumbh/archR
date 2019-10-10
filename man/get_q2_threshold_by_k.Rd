@@ -13,6 +13,6 @@ get_q2_threshold_by_K(model_selectK)
 The \eqn{Q^2} threshold value.
 }
 \description{
-Get the threshold value for selection of \eqn{\alpha} by looking at
-cross-validation performance for K.
+Get the threshold value for selection of \eqn{\alpha} by
+looking at cross-validation performance for K.
 }

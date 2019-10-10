@@ -14,8 +14,8 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     ### Check if all_ok, all elements should have same length
     splitChar <- "-"
     elements_length <- unique(unlist(lapply(strsplit(given_seqsClustLabels,
-                                                     split = splitChar),
-        length)))
+                                                    split = splitChar),
+                                                    length)))
 
     assertthat::are_equal(length(elements_length), 1)
 
@@ -24,7 +24,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
                     present in cluster_labels(", elements_length, ")."))
     } else {
         selectedLabels <- unlist(lapply(strsplit(given_seqsClustLabels,
-                                                 split = splitChar),
+                                                split = splitChar),
             function(x) {
                 paste0(x[seq_len(choose_levels)], collapse = splitChar)
             }))
@@ -34,7 +34,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 
 ## =============================================================================
 
-map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
+.map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
                                     iChunkIdx, flags) {
     # clustOrderIdx IS clustering_sol_kmeans$reordering_idx the reorderingIdx is
     #  a nested list, i.e. a list holding list of seqs_ids belonging to one
@@ -61,11 +61,11 @@ map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
             }
             if (length(relevant_factor) > 1) {
                 if (flags$debugFlag) {
-                  print("Factor-mapping NOT OK")
+                    print("Factor-mapping NOT OK")
                 }
             } else {
                 if (flags$debugFlag) {
-                  print("Factor-mapping OK")
+                    print("Factor-mapping OK")
                 }
                 rightClusterOrders[[relevant_factor]] <-
                     iChunksColl[[iChunkIdx]][clustOrderIdx[[cluster_idx]]]
@@ -77,7 +77,7 @@ map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
 }
 ## =============================================================================
 
-collate_clusters <- function(hopachObj, globClustAssignments) {
+.collate_clusters <- function(hopachObj, globClustAssignments) {
     ### - Based on which factors are being combined (hopachObj), look at the
     ### globClustAssignments variable to combine the respective sequences
     ### together.
@@ -109,7 +109,7 @@ collate_clusters <- function(hopachObj, globClustAssignments) {
             #
             if (all(pick_this_itr <= length(globClustAssignments))) {
                 temp <- unlist(lapply(pick_this_itr, function(x) {
-                  globClustAssignments[[x]]
+                    globClustAssignments[[x]]
                 }))
                 collatedClustAssignments[[coll_cluster_idx]] <- temp
             } else {
@@ -119,9 +119,9 @@ collate_clusters <- function(hopachObj, globClustAssignments) {
                 resolve_these <- these_not_ok
                 collatedClustAssignments[[coll_cluster_idx]] <-
                     unlist(lapply(pick_this_itr[-these_not_ok],
-                  function(x) {
-                    globClustAssignments[[x]]
-                  }))
+                    function(x) {
+                        globClustAssignments[[x]]
+                    }))
             }
         }  # collation for loop ends
     }
@@ -129,8 +129,8 @@ collate_clusters <- function(hopachObj, globClustAssignments) {
 }
 ## =============================================================================
 
-update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
-                                  flags) {
+.update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
+                                    flags) {
     # print("=== updating clust labels ===")
     # print(collatedClustAssignments)
     # print("=== oldSeqLustLabels ===")
@@ -160,8 +160,8 @@ update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
 }
 ## =============================================================================
 
-prepare_chunks <- function(total_avail, reqdChunkSize, checkLength,
-                           flags = list(debugFlag = TRUE,
+.prepare_chunks <- function(total_avail, reqdChunkSize, checkLength,
+                            flags = list(debugFlag = TRUE,
     verboseFlag = TRUE, plotVerboseFlag = TRUE, timeFlag = TRUE)) {
     ### total_avail is the set of seq_ids to be chunked (not array indices)
     if (length(total_avail) > reqdChunkSize) {
@@ -192,19 +192,19 @@ prepare_chunks <- function(total_avail, reqdChunkSize, checkLength,
 }
 ## =============================================================================
 
-handle_clustering_of_factors <- function(globFactorsMat,
-                                         distMethod = "cosangle",
-                                         flags) {
+.handle_clustering_of_factors <- function(globFactorsMat,
+                                        distMethod = "cosangle",
+                                        flags) {
     ### Currently relying on HOPACH algorithm - Compute cosine similarities
     ### (values between 0-1) - Using HOPACH algorithm for clustering with chosen
     ###  distance measure (we currently use 'cosangle' distance measure)
     ###  globFactorsDistMat <- hopach::distancematrix(t(globFactorsMat),
     ###  d = distMethod)
     globFactorsDistMat <- compute_factor_distances(globFactorsMat,
-                                                   distMethod = distMethod)
+                                                distMethod = distMethod)
 
     doHopach <- hopach::msscheck(globFactorsDistMat, within = "mean",
-                                  between = "mean")
+                                between = "mean")
 
     if (doHopach[1] == 1 && ncol(globFactorsMat) > 2) {
         message("Error expected to occur now")
@@ -216,15 +216,19 @@ handle_clustering_of_factors <- function(globFactorsMat,
                                         clusters = "best", coll = "all",
                                         initord = "clust", mss = "mean",
                                         verbose = flags$verboseFlag)
-    if (flags$debugFlag || flags$verboseFlag) {
-        cat(paste0("Identified #clusters:",
-                   globFactorsHopach$clustering$k,
-            "\n"))
+    if (flags$debugFlag ||
+        flags$verboseFlag) {
+        cat(paste0(
+            "Identified #clusters:",
+            globFactorsHopach$clustering$k,
+            "\n"
+        ))
     }
     if (flags$plotVerboseFlag) {
         ### Order the medians, accordingly change order of the collated cluster
         ### assignments
-        medoidsIdx <- get_hopach_cluster_medoidsIdx(globFactorsHopach)
+        medoidsIdx <-
+            get_hopach_cluster_medoidsIdx(globFactorsHopach)
         print(medoidsIdx)
     }
     return(globFactorsHopach)

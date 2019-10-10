@@ -8,10 +8,12 @@ choose_clusters(givenMatrix, distMethod = "euclidean",
   clustMethod = "kmeans", nClusterValsTest = seq(3, 5))
 }
 \arguments{
-\item{givenMatrix}{A data matrix representing sequences along columns and their
+\item{givenMatrix}{A data matrix representing sequences along columns and
+their
 features aling the rows.}
 
-\item{distMethod}{The distance method to be used. Default is \code{euclidean}.
+\item{distMethod}{The distance method to be used. Default is
+\code{euclidean}.
 Takes all values that can be passed to the \code{dist} method from the
 \code{stats} package.}
 

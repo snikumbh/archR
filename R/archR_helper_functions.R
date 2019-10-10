@@ -1,22 +1,17 @@
 get_features_matrix <- function(nmfResultObj){
-
     return(nmfResultObj[[1]])
 }
 
 get_samples_matrix <- function(nmfResultObj){
-
     return(nmfResultObj[[2]])
-
 }
 
 get_hopach_cluster_medoidsIdx <- function(hopachObj){
-
     return(hopachObj$clustering$medoids)
 }
 
 
 get_dimers_from_alphabet <- function(alphabet){
-
     return(do.call(paste0, expand.grid(alphabet, alphabet)))
 }
 ## =============================================================================
@@ -40,19 +35,25 @@ get_dimers_from_alphabet <- function(alphabet){
 #' @param modSelLogFile give
 #' @param flags give
 #'
-#'
 #' @export
-archRSetConfig <- function(innerChunkSize = 500, kMin = 2,
-                           kMax = 8, cvFolds = 5, parallelize = TRUE,
-                           nCoresUse = 32, nIterationsUse = 200,
-                           seedVal = 10208090, alphaBase = 0, alphaPow = 1,
+archRSetConfig <- function(innerChunkSize = 500,
+                           kMin = 2,
+                           kMax = 8,
+                           cvFolds = 5,
+                           parallelize = TRUE,
+                           nCoresUse = 32,
+                           nIterationsUse = 200,
+                           seedVal = 10208090,
+                           alphaBase = 0,
+                           alphaPow = 1,
                            minSeqs = 25,
                            modSelLogFile = "log.txt",
-                           flags = list(debugFlag = FALSE, timeFlag = FALSE,
-                                        verboseFlag = TRUE,
-                                        plotVerboseFlag = FALSE)
-                           ){
-
+                           flags = list(
+                               debugFlag = FALSE,
+                               timeFlag = FALSE,
+                               verboseFlag = TRUE,
+                               plotVerboseFlag = FALSE
+                           )) {
     ### Configuration Params that can be set by user
     archRconfig <- NULL
     archRconfig <- list(
@@ -61,36 +62,39 @@ archRSetConfig <- function(innerChunkSize = 500, kMin = 2,
         nCoresUse = nCoresUse,
         nIterationsUse = nIterationsUse,
         seedVal = seedVal,
-        paramRanges = list(alphaBase = alphaBase,
-                           alphaPow = alphaPow,
-                           k_vals = seq(kMin, kMax, by = 1)
-                           ),
+        paramRanges = list(
+            alphaBase = alphaBase,
+            alphaPow = alphaPow,
+            k_vals = seq(kMin, kMax, by = 1)
+        ),
         innerChunkSize = innerChunkSize,
         modSelLogFile = modSelLogFile,
         minSeqs = minSeqs,
-        flags = list(debugFlag = FALSE,
-                     timeFlag = FALSE,
-                     verboseFlag = TRUE,
-                     plotVerboseFlag = FALSE)
+        flags = list(
+            debugFlag = FALSE,
+            timeFlag = FALSE,
+            verboseFlag = TRUE,
+            plotVerboseFlag = FALSE
+        )
     )
 }
 ## =============================================================================
 
-decide_process_outer_chunk <- function(minThreshold, lengthOfOC, kFoldsVal){
-
-    # Assert that minThreshold > 4*kFoldsVal
-    nFoldsCondition <- 4*kFoldsVal
-    base::stopifnot(minThreshold >= nFoldsCondition)
-    doNotProcess <- FALSE
-    if (lengthOfOC < minThreshold){
-        doNotProcess <- TRUE
-        print("Sorry, will not process this small a chunk!")
+.decide_process_outer_chunk <-
+    function(minThreshold, lengthOfOC, kFoldsVal) {
+        # Assert that minThreshold > 4*kFoldsVal
+        nFoldsCondition <- 4 * kFoldsVal
+        base::stopifnot(minThreshold >= nFoldsCondition)
+        doNotProcess <- FALSE
+        if (lengthOfOC < minThreshold) {
+            doNotProcess <- TRUE
+            print("Sorry, will not process this small a chunk!")
+        }
+        return(doNotProcess)
     }
-    return(doNotProcess)
-}
 ## =============================================================================
 
-decide_hopach <- function(globFactorsMat, distMethod = "cosangle",
+.decide_hopach <- function(globFactorsMat, distMethod = "cosangle",
                           withinMeasure = "mean"){
     ### Firstly:
     ### Very basically, if there are only two factors, we don't need HOPACH
@@ -105,22 +109,22 @@ decide_hopach <- function(globFactorsMat, distMethod = "cosangle",
     estClusters <- hopach::msscheck(globFactorsDistMat, within = "mean",
                             between = "mean")
     decision <- FALSE
-    if(ncol(globFactorsMat) > 2 && estClusters[1] > 1){
+    if (ncol(globFactorsMat) > 2 && estClusters[1] > 1) {
         message("Collating clusters from inner chunks")
         decision <- TRUE
     }
-    if(!decision) message("No collation of clusters from inner chunks")
+    if (!decision) message("No collation of clusters from inner chunks")
     return(decision)
 }
 ## =============================================================================
 
 
-compute_factor_distances <- function(factorsMat, distMethod = "cosangle"){
+.compute_factor_distances <- function(factorsMat, distMethod = "cosangle"){
     # Ensure entities to compare are along the rows, because
     # hopach::distancematrix computes distances between rows of a matrix.
     # Here, the factors are along the columns, and features along rows.
     # Therefore, check and change if necessary.
-    if(nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
+    if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
     distMat <- hopach::distancematrix(factorsMat, d = distMethod)
     ## distMat is a hopach hdist object
     assertthat::are_equal(distMat@Size, ncol(factorsMat))
@@ -130,7 +134,7 @@ compute_factor_distances <- function(factorsMat, distMethod = "cosangle"){
 ## =============================================================================
 
 
-get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
+.get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
     ###
     if(is.null(hopachObj)){
         return(globFactorsMat)
@@ -142,26 +146,13 @@ get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
 }
 ## =============================================================================
 
+.handle_chunk_w_NMF <- function(innerChunkIdx,
+                                innerChunksColl,
+                                this_tss.seqs,
+                                globFactors,
+                                globClustAssignments,
+                                config) {
 
-#
-
-#' @title
-#' Set archR run configuration
-#'
-#' @description samarth
-#'
-#' @param innerChunkIdx samarth
-#' @param innerChunksColl samarth
-#' @param this_tss.seqs samarth
-#' @param globFactors samarth
-#' @param globClustAssignments samarth
-#' @param config samarth
-#'
-#' @return NMF result on the given chunk
-#' @export
-handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
-                                     this_tss.seqs, globFactors,
-                                     globClustAssignments, config){
     ###
     ### On the given inner chunk,
     ### 1. perform model selection for #factors for NMF
@@ -171,51 +162,65 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
     ### 5. Store cluster assignments (globClustAssignments)
     ### 6. Return updated globFactors, globClustAssignments
     ###
-    if(config$flags$verboseFlag){
-                        cat(paste0("Working on chunk: ", innerChunkIdx,
-                                   " of ", length(innerChunksColl),
-                                   " (chunkSize: ",
-                                   ncol(this_tss.seqs), ") \n"))
+    if(config$flags$verboseFlag) {
+        cat(paste0(
+            "Working on chunk: ",
+            innerChunkIdx,
+            " of ",
+            length(innerChunksColl),
+            " (chunkSize: ",
+            ncol(this_tss.seqs),
+            ") \n"
+        ))
     }
     ###
     model_selectK <-
         cv_model_select_pyNMF(
-        X = this_tss.seqs,
-        param_ranges = config$paramRanges,
-        kFolds = config$kFolds,
-        # useSLURM = FALSE,
-        parallelDo = config$parallelize,
-        nCores = config$nCoresUse,
-        nIterations = config$nIterationsUse,
-        seed_val = config$seedVal,
-        logfile = config$modSelLogFile,
-        set_verbose = 0
-    )
-    if(config$flags$timeFlag){print(Sys.time() - start)}
+            X = this_tss.seqs,
+            param_ranges = config$paramRanges,
+            kFolds = config$kFolds,
+            # useSLURM = FALSE,
+            parallelDo = config$parallelize,
+            nCores = config$nCoresUse,
+            nIterations = config$nIterationsUse,
+            seed_val = config$seedVal,
+            logfile = config$modSelLogFile,
+            set_verbose = 0
+        )
+    if (config$flags$timeFlag) {
+        print(Sys.time() - start)
+    }
     ###
     best_k <- get_best_K(model_selectK)
     ###
-    if(config$flags$verboseFlag){
+    if (config$flags$verboseFlag) {
         cat(paste0("Best K for this subset: ", best_k, "\n"))
     }
-    if(config$flags$plotVerboseFlag){
+    if (config$flags$plotVerboseFlag) {
         q2_means_by_k_vals <-
-            get_q2_aggregates_chosen_var(model_selectK,
-                                         model_selectK$k_vals,
-                                         mean)
+            get_q2_aggregates_chosen_var(
+                model_selectK,
+                model_selectK$k_vals,
+                mean)
         Q2vsK <- plot_cv_K(q2_means_by_k_vals)
         print(Q2vsK)
     }
-    if(config$flags$verboseFlag || config$flags$debugFlag){
+    if (config$flags$verboseFlag ||
+        config$flags$debugFlag) {
         cat("Performing NMF with K =", best_k, "\n")
     }
     ###
-    if(config$flags$timeFlag){start <- Sys.time()}
+    if (config$flags$timeFlag) {
+        start <- Sys.time()
+    }
     ###
-    result <- perform_nmf_func(this_tss.seqs, nPatterns = as.integer(best_k),
-                               nIter = as.integer(1000), givenAlpha = 0,
-                               givenL1_ratio = 1,
-                               seed_val = as.integer(config$seedVal)
+    result <- perform_nmf_func(
+        this_tss.seqs,
+        nPatterns = as.integer(best_k),
+        nIter = as.integer(1000),
+        givenAlpha = 0,
+        givenL1_ratio = 1,
+        seed_val = as.integer(config$seedVal)
     )
     # if(config$flags$timeFlag){print(Sys.time() - start)}
     ###
@@ -228,7 +233,7 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
     ### Cluster sequences
     solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
                               nCluster = best_k)
-    if(config$flags$timeFlag){print(Sys.time() - start)}
+    if (config$flags$timeFlag) {print(Sys.time() - start)}
     ### Set the right cluster orders respective to the factor order in the chunk
     ### and, collect the clusters/cluster assignments for the global list
     ###
@@ -242,7 +247,7 @@ handle_chunk_w_NMF <- function(innerChunkIdx, innerChunksColl,
         )
     ###
     innerChunkNMFResult <- list(globFactors = globFactors,
-                             globClustAssignments = globClustAssignments)
+                                globClustAssignments = globClustAssignments)
     ###
     return(innerChunkNMFResult)
 }

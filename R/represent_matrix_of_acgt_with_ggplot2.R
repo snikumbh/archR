@@ -44,7 +44,8 @@ seqs_to_df <- function(seqs, position_labels, annClusters = NULL,
                             ## This is before adding other columns, because
                             ## The last state of the variable is returned
                             if(!is.null(annClusters)){
-                              temp_df <- tibble::add_column(temp_df, annClusters =
+                              temp_df <- tibble::add_column(temp_df,
+                                                            annClusters =
                                                               annClusters[x])
                             }
                             ##
@@ -226,9 +227,10 @@ represent_matrix_of_acgt_with_ggplot2 <- function(givenMat,
     )
   ###
   if(!is.null(annClusters)){
-      pCluster <- ggplot2::ggplot(data = plot_df, mapping = aes(x = 0,
-                                                      y = .data$seq_id,
-                                                      fill = .data$annClusters)) +
+      pCluster <- ggplot2::ggplot(data = plot_df,
+                                  mapping = aes(x = 0,
+                                  y = .data$seq_id,
+                                  fill = .data$annClusters)) +
         ggplot2::geom_tile() +
         ggplot2::theme_bw() +
         ggplot2::ylab(label = 'Clusters') +

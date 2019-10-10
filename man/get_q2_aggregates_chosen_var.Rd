@@ -11,8 +11,8 @@ get_q2_aggregates_chosen_var(x, chosen_var, chosen_func)
 
 \item{chosen_var}{The variable to aggregate over.}
 
-\item{chosen_func}{The aggregate function to use (should be a function already
-existing wihtin R). Possible values are: \code{mean} and \code{sd}.}
+\item{chosen_func}{The aggregate function to use (should be a function
+already existing wihtin R). Possible values are: \code{mean} and \code{sd}.}
 }
 \value{
 The mean of $Q^2$ values per the chosen variable

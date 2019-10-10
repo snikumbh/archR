@@ -2,8 +2,8 @@
 % Please edit documentation in R/prepare_data_from_FASTA.R
 \name{prepare_data_from_FASTA}
 \alias{prepare_data_from_FASTA}
-\title{Given a FASTA file, this function return a matrix with one-hot encoded asequences along
-the columns or the simply the raw sequences.}
+\title{Given a FASTA file, this function return a matrix with one-hot encoded
+sequences along the columns or the simply the raw sequences.}
 \usage{
 prepare_data_from_FASTA(inputFastaFilename, rawSeq = FALSE,
   sinuc_or_dinuc = "sinuc")
@@ -14,8 +14,8 @@ FASTA file.}
 
 \item{rawSeq}{TRUE or FALSE, set this to TRUE if you want the raw sequences.}
 
-\item{sinuc_or_dinuc}{character string, 'sinuc' or 'dinuc' to select for single or
-dinucleotide profiles.}
+\item{sinuc_or_dinuc}{character string, 'sinuc' or 'dinuc' to select for
+single or dinucleotide profiles.}
 }
 \value{
 A matrix of sequences represented with one-hot-encoding. Dimensions

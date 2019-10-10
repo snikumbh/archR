@@ -16,6 +16,6 @@ A numeric vector of the same saize as seqsClustLabels, with labels
 only up to the chosen iteration
 }
 \description{
-Given a seqsClustLabels, collect cluster labels for sequences at the
-chosen iteration/level.
+Given a seqsClustLabels, collect cluster labels for sequences at
+ the chosen iteration/level.
 }

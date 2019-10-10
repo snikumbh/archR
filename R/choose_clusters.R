@@ -4,9 +4,11 @@
 #' of the given data. The average silhoutte value is used for choosing the best
 #' suitable number of clusters.
 #'
-#' @param givenMatrix A data matrix representing sequences along columns and their
+#' @param givenMatrix A data matrix representing sequences along columns and
+#' their
 #' features aling the rows.
-#' @param distMethod The distance method to be used. Default is \code{euclidean}.
+#' @param distMethod The distance method to be used. Default is
+#' \code{euclidean}.
 #' Takes all values that can be passed to the \code{dist} method from the
 #' \code{stats} package.
 #' @param clustMethod The method used for clustering the data. Default is
@@ -19,19 +21,21 @@
 #' @importFrom stats dist kmeans hclust cutree
 #' @importFrom cluster silhouette
 #'
-choose_clusters <- function(givenMatrix, distMethod = "euclidean", clustMethod = "kmeans", 
-    nClusterValsTest = seq(3, 5)) {
-    # require(cluster) Default clustMethod: kmeans, other options: hclust?  Default
-    # distMethod: euclidean, other options: manhattan?
+choose_clusters <- function(givenMatrix, distMethod = "euclidean",
+                            clustMethod = "kmeans",
+                            nClusterValsTest = seq(3, 5)) {
+    # require(cluster) Default clustMethod: kmeans, other options: hclust?
+    # Default, distMethod: euclidean, other options: manhattan?
     chosenNClusterVal <- 0
-    # For consistency, the input argument matrix has sequences along columns, but we
+    # For consistency, the input argument matrix has sequences along columns,
+    # but we
     # need sequences along rows here.
     givenMat2 <- t(givenMatrix)
-    # 
+    #
     if (is.na(givenMatrix) && sum(dim(givenMatrix)) == 2) {
         stop("Empty matrix")
     }
-    # 
+    #
     if (distMethod == "euclidean") {
         distMat <- stats::dist(givenMat2, method = "euclidean")
     } else if (distMethod == "manhattan") {
@@ -44,16 +48,20 @@ choose_clusters <- function(givenMatrix, distMethod = "euclidean", clustMethod =
     } else if (any(nClusterValsTest > ncol(givenMatrix))) {
         stop("nClusters more than #sequences")
     } else {
-        silhouetteVals <- matrix(rep(c(-1, -1), length(nClusterValsTest)), ncol = 2, 
-            byrow = T)
+        silhouetteVals <- matrix(rep(c(-1, -1), length(nClusterValsTest)),
+                                 ncol = 2,
+                                 byrow = T)
         colnames(silhouetteVals) <- c("nClustVals", "Silhouette values")
         silhouetteVals[, 1] <- nClusterValsTest
-        # 
+        #
         if (clustMethod == "kmeans") {
             print("kmeans")
             start <- Sys.time()
             for (i in 1:length(nClusterValsTest)) {
-                kmeansRes <- suppressWarnings(stats::kmeans(givenMat2, centers = nClusterValsTest[i], 
+                kmeansRes <-
+                    suppressWarnings(stats::kmeans(
+                        givenMat2,
+                        centers = nClusterValsTest[i],
                   iter.max = 1000, nstart = 50, algorithm = "Lloyd"))
                 sils <- cluster::silhouette(kmeansRes$cluster, dist = distMat)
                 silhouetteVals[i, 2] <- mean(sils[, "sil_width"])
@@ -61,21 +69,24 @@ choose_clusters <- function(givenMatrix, distMethod = "euclidean", clustMethod =
             print(Sys.time() - start)
             # Report best value
             print(silhouetteVals)
-            chosenNClusterVal <- silhouetteVals[which.max(silhouetteVals[, 2]), 1]
-            # 
+            chosenNClusterVal <- silhouetteVals[
+                which.max(silhouetteVals[, 2]), 1]
+            #
         } else if (clustMethod == "hclust") {
             print("hclust")
             start <- Sys.time()
             for (i in 1:length(nClusterValsTest)) {
                 hclustRes <- hclust(distMat)
-                sils <- cluster::silhouette(cutree(hclustRes, nClusterValsTest[i]), 
+                sils <- cluster::silhouette(cutree(hclustRes,
+                                                   nClusterValsTest[i]),
                   dist = distMat)
                 silhouetteVals[i, 2] <- mean(sils[, "sil_width"])
             }
             print(Sys.time() - start)
             # Report best value
             print(silhouetteVals)
-            chosenNClusterVal <- silhouetteVals[which.max(silhouetteVals[, 2]), 1]
+            chosenNClusterVal <- silhouetteVals[
+                which.max(silhouetteVals[, 2]), 1]
         } else {
             stop("Wrong clustMethod passed. Takes 'kmeans'/'hclust'")
         }

@@ -18,6 +18,6 @@ A list of two elements: rowIDs and columnIDs for different cross-
 validation folds.
 }
 \description{
-This function generates the row and column indices for the cross-
-validation splits.
+This function generates the row and column indices for the
+cross-validation splits.
 }

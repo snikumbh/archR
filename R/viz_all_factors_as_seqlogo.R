@@ -1,7 +1,8 @@
 #' @title Visualize the factors in features matrix as a sequence logo
 #'
 #' @description Each factor in the given features matrix is separately
-#' represented as a sequence logo. Since each feature vector is a one-hot-encoded
+#' represented as a sequence logo. Since each feature vector is a
+#' one-hot-encoded
 #' DNA sequence, it is reshaped to have 4 rows and then visualized.
 #'
 #' @inheritParams viz_all_factors_in_combined_heatmaps_seqlogos

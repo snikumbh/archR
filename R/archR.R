@@ -1,4 +1,5 @@
-#' archR: A package for discovering different architectures of sequence elements
+#' archR: A package for discovering different architectures of sequence
+#' elements
 #'
 #' Given a set of DNA sequences, the \code{archR} package enables discovery of
 #' clusters of sequence with characteristic sequence architectures.

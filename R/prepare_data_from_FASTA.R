@@ -7,12 +7,14 @@
 #' @return The one-hot encoded sequence.
 #'
 one_hot_encode_sinuc <- function(givenSeq) {
-    # Input: A DNA seq as a vector of caharacters (A/C/G/T) Returns: A row matrix of
+    # Input: A DNA seq as a vector of caharacters (A/C/G/T)
+    # Returns: A row matrix of
     # size 4*seq_len
     dna_alphabet <- c("A", "C", "G", "T")
     seq_len <- length(givenSeq)
     if (seq_len > 0) {
-        one_hot_encoded <- matrix(rep(0, length(dna_alphabet) * seq_len), nrow = 1,
+        one_hot_encoded <- matrix(rep(0, length(dna_alphabet) * seq_len),
+            nrow = 1,
             byrow = T)
         # characters to match
         one_hot_encoded[, 0 * seq_len + which(givenSeq == dna_alphabet[1])] <- 1
@@ -35,44 +37,25 @@ one_hot_encode_sinuc <- function(givenSeq) {
 #' @return The one-hot encoded sequence.
 #'
 one_hot_encode_dinuc <- function(givenSeq) {
-    # Input: A DNA seq as a vector of caharacters (A/C/G/T) Returns: A row matrix of
+    # Input: A DNA seq as a vector of caharacters (A/C/G/T)
+    # Returns: A row matrix of
     # size 4*seq_len
     dna_alphabet <- c("A", "C", "G", "T")
-    dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet, dna_alphabet))
+    dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
+                                                      dna_alphabet))
     given_seq_len <- length(givenSeq)
     givenSeq_dinuc <- unlist(lapply(seq_len(given_seq_len - 1), function(x) {
         paste0(givenSeq[x], givenSeq[x + 1])
     }))
     if (given_seq_len > 0) {
-        one_hot_encoded_dinuc_profile <- matrix(rep(0, length(dna_alphabet_dinuc) *
+        one_hot_encoded_dinuc_profile <- matrix(
+            rep(0, length(dna_alphabet_dinuc) *
             given_seq_len), nrow = 1, byrow = T)
         #
         for (i in seq_along(dna_alphabet_dinuc)) {
-            one_hot_encoded_dinuc_profile[, (i - 1) * given_seq_len + which(givenSeq_dinuc ==
-                dna_alphabet_dinuc[i])] <- 1
+            one_hot_encoded_dinuc_profile[, (i - 1) * given_seq_len +
+                    which(givenSeq_dinuc == dna_alphabet_dinuc[i])] <- 1
         }
-        # # characters to match one_hot_encoded_dinuc_profile[, 0 * seq_len +
-        # which(givenSeq == dna_alphabet_dinuc[1])] <- 1 one_hot_encoded_dinuc_profile[, 1
-        # * seq_len + which(givenSeq == dna_alphabet_dinuc[2])] <- 1
-        # one_hot_encoded_dinuc_profile[, 2 * seq_len + which(givenSeq ==
-        # dna_alphabet_dinuc[3])] <- 1 one_hot_encoded_dinuc_profile[, 3 * seq_len +
-        # which(givenSeq == dna_alphabet_dinuc[4])] <- 1 # one_hot_encoded_dinuc_profile[,
-        # 4 * seq_len + which(givenSeq == dna_alphabet_dinuc[5])] <- 1
-        # one_hot_encoded_dinuc_profile[, 5 * seq_len + which(givenSeq ==
-        # dna_alphabet_dinuc[6])] <- 1 one_hot_encoded_dinuc_profile[, 6 * seq_len +
-        # which(givenSeq == dna_alphabet_dinuc[7])] <- 1 one_hot_encoded_dinuc_profile[, 7
-        # * seq_len + which(givenSeq == dna_alphabet_dinuc[8])] <- 1 #
-        # one_hot_encoded_dinuc_profile[, 8 * seq_len + which(givenSeq ==
-        # dna_alphabet_dinuc[9])] <- 1 one_hot_encoded_dinuc_profile[, 9 * seq_len +
-        # which(givenSeq == dna_alphabet_dinuc[10])] <- 1 one_hot_encoded_dinuc_profile[,
-        # 10 * seq_len + which(givenSeq == dna_alphabet_dinuc[11])] <- 1
-        # one_hot_encoded_dinuc_profile[, 11 * seq_len + which(givenSeq ==
-        # dna_alphabet_dinuc[12])] <- 1 # one_hot_encoded_dinuc_profile[, 12 * seq_len +
-        # which(givenSeq == dna_alphabet_dinuc[13])] <- 1 one_hot_encoded_dinuc_profile[,
-        # 13 * seq_len + which(givenSeq == dna_alphabet_dinuc[14])] <- 1
-        # one_hot_encoded_dinuc_profile[, 14 * seq_len + which(givenSeq ==
-        # dna_alphabet_dinuc[15])] <- 1 one_hot_encoded_dinuc_profile[, 15 * seq_len +
-        # which(givenSeq == dna_alphabet_dinuc[16])] <- 1
         return(one_hot_encoded_dinuc_profile)
     } else {
         stop("One-hot encoding: empty sequence found")
@@ -164,9 +147,11 @@ assert_attributes <- function(givenSeqs) {
         stop("Sequences are of different length\n")
         #
     } else if (any(!(char_levels %in% dna_alphabet))) {
-        # Check for non-alphabet characters stop('Non DNA-alphabet character in the
+        # Check for non-alphabet characters
+        # stop('Non DNA-alphabet character in the
         # sequences: ', char_levels, '\n')
-        warning("Non DNA-alphabet character in the sequences: ", char_levels, "\n")
+        warning("Non DNA-alphabet character in the sequences: ",
+                char_levels, "\n")
 
     } else {
         # All OK!
@@ -196,10 +181,12 @@ assert_attributes <- function(givenSeqs) {
 #' @return A matrix of sequences represented with one-hot-encoding. Dimensions
 #' of the matrix: 4*(sequence length) x number of sequences.
 #' @export
-prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE, sinuc_or_dinuc = "sinuc") {
+prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE,
+                                    sinuc_or_dinuc = "sinuc") {
     start <- Sys.time()
     if (file.exists(inputFastaFilename)) {
-        givenSeqs <- seqinr::read.fasta(inputFastaFilename, seqtype = "DNA", as.string = TRUE)
+        givenSeqs <- seqinr::read.fasta(inputFastaFilename, seqtype = "DNA",
+                                        as.string = TRUE)
     } else {
         stop("File not found, please check if it exists")
     }
@@ -212,7 +199,8 @@ prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE, sinuc_or
         assert_attributes(givenSeqs)
         print(length(givenSeqs))
         #
-        oheSeqs <- get_one_hot_encoded_seqs(givenSeqs, sinuc_or_dinuc = sinuc_or_dinuc)
+        oheSeqs <- get_one_hot_encoded_seqs(givenSeqs,
+                                            sinuc_or_dinuc = sinuc_or_dinuc)
         print(Sys.time() - start)
         return(t(oheSeqs))
     }

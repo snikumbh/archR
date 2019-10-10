@@ -1,4 +1,5 @@
-#' @title Visualize the features matrix in a paired heatmap and sequence logo plot
+#' @title Visualize the features matrix in a paired heatmap and sequence logo
+#' plot
 #'
 #' @description The given features matrix (with 4 rows) is represented as a
 #' heatmap followed by a sequence logo where the positions are aligned for
@@ -6,12 +7,16 @@
 #'
 #' @param featuresMatrix The features matrix output from NMF. Expected
 #' dimensionality: number of columns represent the number of factors from NMF,
-#' and the number of rows is 4 times the length of the sequences in the collection.
-#' @param plotMethod For \code{ggseqlogo}; either of "custom", "bits", or "probability".
+#' and the number of rows is 4 times the length of the sequences in the
+#' collection.
+#' @param plotMethod For \code{ggseqlogo}; either of "custom", "bits", or
+#' "probability".
 #' Default is "custom".
 #' @param position_labels Labels of the positions in the sequences.
-#' @param add_pseudo_counts Boolean, taking values TRUE/T or FALSE/F, default set
-#'  to FALSE. Setting it to TRUE will enable adding pseudo-counts to the features
+#' @param add_pseudo_counts Boolean, taking values TRUE/T or FALSE/F, default
+#' set
+#'  to FALSE. Setting it to TRUE will enable adding pseudo-counts to the
+#'  features
 #'  matrix.
 #' @param savePDFfilename Name of the file which will be saved as PDF
 #' (also provide the extension).
@@ -44,7 +49,8 @@ viz_all_factors_in_combined_heatmaps_seqlogos <-
             dna_alphabet <- c("A", "C", "G", "T")
             dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
                                                               dna_alphabet))
-            pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = F, scale = F)
+            pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = F,
+                                scale = F)
         } else if (sinuc_or_dinuc == "sinuc") {
             pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F, scale = F)
         }

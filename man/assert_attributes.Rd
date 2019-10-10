@@ -13,6 +13,7 @@ assert_attributes(givenSeqs)
 nothing. Only prints a warning to the screen.
 }
 \description{
-Assert the attributes of the sequences provided. This includes checking for
-(1) the length of the sequences, (2) characters in the sequences.
+Assert the attributes of the sequences provided. This includes
+checking for (1) the length of the sequences, (2) characters in the
+sequences.
 }

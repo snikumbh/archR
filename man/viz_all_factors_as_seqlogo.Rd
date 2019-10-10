@@ -11,16 +11,20 @@ viz_all_factors_as_seqlogo(featuresMatrix, plotMethod = "custom",
 \arguments{
 \item{featuresMatrix}{The features matrix output from NMF. Expected
 dimensionality: number of columns represent the number of factors from NMF,
-and the number of rows is 4 times the length of the sequences in the collection.}
+and the number of rows is 4 times the length of the sequences in the
+collection.}
 
-\item{plotMethod}{For \code{ggseqlogo}; either of "custom", "bits", or "probability".
+\item{plotMethod}{For \code{ggseqlogo}; either of "custom", "bits", or
+"probability".
 Default is "custom".}
 
 \item{position_labels}{Labels of the positions in the sequences.}
 
-\item{add_pseudo_counts}{Boolean, taking values TRUE/T or FALSE/F, default set
-to FALSE. Setting it to TRUE will enable adding pseudo-counts to the features
-matrix.}
+\item{add_pseudo_counts}{Boolean, taking values TRUE/T or FALSE/F, default
+set
+ to FALSE. Setting it to TRUE will enable adding pseudo-counts to the
+ features
+ matrix.}
 
 \item{savePDFfilename}{Name of the file which will be saved as PDF
 (also provide the extension).}
@@ -32,6 +36,7 @@ nothing.
 }
 \description{
 Each factor in the given features matrix is separately
-represented as a sequence logo. Since each feature vector is a one-hot-encoded
+represented as a sequence logo. Since each feature vector is a
+one-hot-encoded
 DNA sequence, it is reshaped to have 4 rows and then visualized.
 }

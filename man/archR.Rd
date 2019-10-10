@@ -4,7 +4,8 @@
 \name{archR}
 \alias{archR}
 \alias{archR-package}
-\title{archR: A package for discovering different architectures of sequence elements}
+\title{archR: A package for discovering different architectures of sequence
+elements}
 \usage{
 archR(config, tss.seqs, thresholdItr = 2)
 }
@@ -27,8 +28,8 @@ data set using archR.
 }
 \details{
 The archR package provides three categories of important functions:
-related to data preparation and manipulation, performing non-negative matrix factorization,
-performing clustering, and visualization-related functions.
+related to data preparation and manipulation, performing non-negative matrix
+factorization, performing clustering, and visualization-related functions.
 }
 \section{Functions for data preparation and manipulation}{
 

@@ -15,5 +15,6 @@ sparsify_mat(given_mat, threshold = 0.5)
 Sparsified matrix of same dimension
 }
 \description{
-This function sparsifies a given matrix below a given a threshold.
+This function sparsifies a given matrix below a given a
+threshold.
 }

@@ -20,8 +20,9 @@ sequences.}
 
 \item{mark_pos_at_every}{Tickmarks for sequence positions, i.e., these are
 x-ticks. The tickmarks can be specified for every N-th position or every
-percentage N-th position. For every N-th position, simply specify the absolute
-positive value. For every percentage N-th position, specify 0.01 for 10\%.}
+percentage N-th position. For every N-th position, simply specify the a
+bsolute positive value. For every percentage N-th position, specify 0.01 for
+10\%.}
 
 \item{plot.title}{The title of the plot.}
 

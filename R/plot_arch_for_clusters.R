@@ -11,10 +11,12 @@
 #' @param nCluster The number of clusters.
 #' @param clustering_sol The clustering solution as returned by
 #' \code{get_clusters} function.
-#' @param seqs For representing the sequences as an image (TO-DO: May not be needed).
+#' @param seqs For representing the sequences as an image
+#' (TO-DO: May not be needed).
 #' Default value is NULL when no image gets printed.
 #' @param position_labels Labels of the positions in the sequences. Used for
-#' visualization with function \code{viz_all_factors_in_combined_heatmaps_seqlogos}.
+#' visualization with function
+#' \code{viz_all_factors_in_combined_heatmaps_seqlogos}.
 #' @param add_pseudo_counts OK
 #' @param sinuc_or_dinuc 'sinuc' or 'dinuc'
 #' @param plotMethod 'custom' or 'bits', passed to ggseqlogo
@@ -116,18 +118,16 @@ plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
         # position_labels, plot.title =
         # paste0( clustering_sol$clust_sol$size[grp_ID], '
         # sequences in cluster '#, grp_ID ) ) } Plotting mean features
-        viz_all_factors_in_combined_heatmaps_seqlogos(meanFeat_in_block, plotMethod = plotMethod,
-            position_labels = position_labels, add_pseudo_counts = add_pseudo_counts,
+        viz_all_factors_in_combined_heatmaps_seqlogos(
+            meanFeat_in_block,
+            plotMethod = plotMethod,
+            position_labels = position_labels,
+            add_pseudo_counts = add_pseudo_counts,
             sinuc_or_dinuc = sinuc_or_dinuc)
         # viz_all_factors_in_combined_heatmaps_seqlogos(meanFeat_in_block,
         # plotMethod =
         # 'custom', position_labels = position_labels, add_pseudo_counts =
         # add_pseudo_counts)
-
-
-
-
-
     }
 
     return(architecture_features)

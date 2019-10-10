@@ -22,5 +22,6 @@ G, T) and the relevant number of columns (i.e., number of elements in given
 vector/4)
 }
 \description{
-The given matrix (or simply a vector) is reshaped to have four rows for four nucleotides and a relevant number of columns.
+The given matrix (or simply a vector) is reshaped to have four
+rows for four nucleotides and a relevant number of columns.
 }

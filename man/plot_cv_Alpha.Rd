@@ -7,8 +7,8 @@
 plot_cv_Alpha(model_selectAlpha, threshold = 0)
 }
 \arguments{
-\item{model_selectAlpha}{The return value from \code{\link{cv_model_select_pyNMF}}.
-This is used for \eqn{\alpha}.}
+\item{model_selectAlpha}{The return value from
+\code{\link{cv_model_select_pyNMF}}. This is used for \eqn{\alpha}.}
 
 \item{threshold}{The threshold to be applied when choosing the best
 performing value}
@@ -18,6 +18,6 @@ A ggplot object so you can simply call \code{print} or \code{save}
 on it later.
 }
 \description{
-Plot showing performance of different values of \eqn{\alpha} tested in
-cross-validation.
+Plot showing performance of different values of \eqn{\alpha}
+tested in cross-validation.
 }

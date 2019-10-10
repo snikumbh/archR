@@ -11,13 +11,16 @@ viz_all_factors_as_heatmap(featuresMatrix, position_labels = NA,
 \arguments{
 \item{featuresMatrix}{The features matrix output from NMF. Expected
 dimensionality: number of columns represent the number of factors from NMF,
-and the number of rows is 4 times the length of the sequences in the collection.}
+and the number of rows is 4 times the length of the sequences in the
+collection.}
 
 \item{position_labels}{Labels of the positions in the sequences.}
 
-\item{add_pseudo_counts}{Boolean, taking values TRUE/T or FALSE/F, default set
-to FALSE. Setting it to TRUE will enable adding pseudo-counts to the features
-matrix.}
+\item{add_pseudo_counts}{Boolean, taking values TRUE/T or FALSE/F, default
+set
+ to FALSE. Setting it to TRUE will enable adding pseudo-counts to the
+ features
+ matrix.}
 
 \item{savePDFfilename}{Name of the file which will be saved as PDF
 (also provide the extension).}

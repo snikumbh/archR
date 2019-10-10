@@ -19,7 +19,8 @@
 get_clusters <- function(givenMat, clustMethod, nCluster,
                          distMethod.hclust = "euclidean") {
     #
-    # For consistency, the input argument matrix has sequences along columns, but
+    # For consistency, the input argument matrix has sequences along columns,
+    # but
     # we need sequences along rows here.
     givenMat2 <- t(givenMat)
     nSeqs <- ncol(givenMat)
