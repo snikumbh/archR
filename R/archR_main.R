@@ -36,7 +36,7 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
             ###
             ###
             outerChunk <- outerChunksColl[[outerChunkIdx]]
-            doNotProcess <- decide_process_outer_chunk(config$minSeqs,
+            doNotProcess <- .decide_process_outer_chunk(config$minSeqs,
                                                        length(outerChunk),
                                                        config$kFolds)
             ###
@@ -58,7 +58,7 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 }
 
             } else {
-                innerChunksColl <- prepare_chunks(outerChunk,
+                innerChunksColl <- .prepare_chunks(outerChunk,
                                                   config$innerChunkSize,
                                                   length(outerChunk))
                 ###
@@ -70,7 +70,7 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                   # print("=== inner chunk size: ===")
                   # print(length(innerChunksColl[[innerChunkIdx]]))
                   this_tss.seqs <- tss.seqs[, innerChunksColl[[innerChunkIdx]]]
-                  thisNMFResult <- handle_chunk_w_NMF(innerChunkIdx,
+                  thisNMFResult <- .handle_chunk_w_NMF(innerChunkIdx,
                                                       innerChunksColl,
                                                       this_tss.seqs,
                                                       globFactors,
@@ -87,7 +87,7 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 ### CBind the factors from all inner chunks into one matrix
                 globFactorsMat <- do.call(cbind, globFactors)
                 ###
-                hopachDecision <- decide_hopach(globFactorsMat,
+                hopachDecision <- .decide_hopach(globFactorsMat,
                                                 distMethod = "cosangle",
                                                 withinMeasure = "mean")
                 ###
@@ -95,7 +95,7 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 if (hopachDecision) {
                   ### We need to cluster the factors
                   globFactorsClustering <-
-                      handle_clustering_of_factors(globFactorsMat,
+                      .handle_clustering_of_factors(globFactorsMat,
                                                    distMethod = "cosangle",
                                                    flags = config$flags)
                 }
@@ -103,23 +103,23 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 if (!is.null(intClustFactors)) {
                   intClustFactors <-
                       cbind(intClustFactors,
-                            get_factors_from_factor_clustering(
+                            .get_factors_from_factor_clustering(
                                 globFactorsClustering,
                                 globFactorsMat))
                 } else {
                   intClustFactors <-
-                      get_factors_from_factor_clustering(globFactorsClustering,
+                      .get_factors_from_factor_clustering(globFactorsClustering,
                                                          globFactorsMat)
                 }
                 ### Manage collated cluster assignments
                 collatedClustAssignments <-
-                    collate_clusters(globFactorsClustering,
+                    .collate_clusters(globFactorsClustering,
                                      globClustAssignments)
                 ###
             }  ### IfElse doNotProcess outer chunk ENDS
             ###
             seqsClustLabels <-
-                update_cluster_labels(seqsClustLabels,
+                .update_cluster_labels(seqsClustLabels,
                                       collatedClustAssignments =
                                           collatedClustAssignments,
                                       flags = config$flags)

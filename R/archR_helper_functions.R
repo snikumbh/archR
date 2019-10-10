@@ -6,7 +6,7 @@ get_samples_matrix <- function(nmfResultObj){
     return(nmfResultObj[[2]])
 }
 
-get_hopach_cluster_medoidsIdx <- function(hopachObj){
+.get_hopach_cluster_medoidsIdx <- function(hopachObj){
     return(hopachObj$clustering$medoids)
 }
 
@@ -103,7 +103,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     ### If #factors > 2, we could need/do HOPACH, but if the distances between
     ### the factors are more or less similarly large (similar range), such that
     ### there is really no cluster/grouping, drop the idea of using HOPACH.
-    globFactorsDistMat <- compute_factor_distances(globFactorsMat,
+    globFactorsDistMat <- .compute_factor_distances(globFactorsMat,
                                                    distMethod = distMethod)
     ### Hopach suggestion: use same measure for 'within' and 'between'
     estClusters <- hopach::msscheck(globFactorsDistMat, within = "mean",
@@ -139,7 +139,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     if(is.null(hopachObj)){
         return(globFactorsMat)
     } else {
-        hopachMedoids <- get_hopach_cluster_medoidsIdx(hopachObj)
+        hopachMedoids <- .get_hopach_cluster_medoidsIdx(hopachObj)
         return(as.matrix(globFactorsMat[ , hopachMedoids]))
     }
 
@@ -238,7 +238,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     ### and, collect the clusters/cluster assignments for the global list
     ###
     globClustAssignments[[innerChunkIdx]] <-
-        map_clusters_to_factors(
+        .map_clusters_to_factors(
             samplesMatrix = samplesMatrix,
             clustOrderIdx = solKmeans$reordering_idx,
             iChunksColl = innerChunksColl,

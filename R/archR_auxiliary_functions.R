@@ -200,7 +200,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     ###  distance measure (we currently use 'cosangle' distance measure)
     ###  globFactorsDistMat <- hopach::distancematrix(t(globFactorsMat),
     ###  d = distMethod)
-    globFactorsDistMat <- compute_factor_distances(globFactorsMat,
+    globFactorsDistMat <- .compute_factor_distances(globFactorsMat,
                                                 distMethod = distMethod)
 
     doHopach <- hopach::msscheck(globFactorsDistMat, within = "mean",
@@ -228,7 +228,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
         ### Order the medians, accordingly change order of the collated cluster
         ### assignments
         medoidsIdx <-
-            get_hopach_cluster_medoidsIdx(globFactorsHopach)
+            .get_hopach_cluster_medoidsIdx(globFactorsHopach)
         print(medoidsIdx)
     }
     return(globFactorsHopach)
