@@ -17,7 +17,7 @@ warnings_are_errors: true
 script:
     - R CMD build . --no-build-vignettes --no-manual
     - R CMD check *tar.gz --as-cran --timings --no-manual
-    - R CMD BiocCheck *tar.gz
+#    - R CMD BiocCheck *tar.gz
 
 notifications:
   email:
