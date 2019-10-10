@@ -25,11 +25,9 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-archR is an NMF-based unsupervised learning approach for identifying different 
-core promoter architectures. 
-We demonstrated that archR's simple algorithm based
-on chunking and iterative processing successfully uncovers hidden clusters 
-characterized by combinations of sequence motifs. 
+archR is a non-negative matrix factorization (NMF)-based unsupervised learning approach for identifying different core promoter architectures. 
+We demonstrated that archR's simple algorithm based on chunking and iterative processing successfully uncovers hidden clusters characterized by combinations 
+of sequence motifs. 
 To our knowledge, this is a novel application of NMF on sequence data where
 motifs, their positional specificities and complex inter-relationships, all are 
 simultaneously inferred from the data.
