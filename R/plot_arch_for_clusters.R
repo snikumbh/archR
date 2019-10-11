@@ -47,10 +47,9 @@ plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
     }
     if (length(nCluster) > 1) {
         stop("Expecting only one value for nCluster")
-    } else if (nCluster < 2)
-        {
-            stop("nCluster should be non-negative")
-        }
+    } else if (nCluster < 1) {
+        stop("nCluster should be non-negative")
+    }
     # else if (length(levels(as.factor(clustering_sol$clust_sol$cluster)))
     # != nCluster) {
     # stop('nCluster value and #Clusters in clustering_sol mismatch') }

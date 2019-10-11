@@ -28,14 +28,15 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL,
     stop("Empty matrix")
   }
   if (!(nrow(pwmMat) == 4)) {
-    if (!(nrow(pwmMat) == 16)) {
-        stop("Expecting a matrix with 4 or 8 rows corresponding to
-             DNA alphabet or dinucleotide prfiles respectively")
-    }
+    # if (!(nrow(pwmMat) == 16)) {
+        stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
+        # stop("Expecting a matrix with 4 or 8 rows corresponding to
+        #      DNA alphabet or dinucleotide prfiles respectively")
+    # }
   }
   #
   if (length(position_labels) < ncol(pwmMat)) {
-    warning(paste0(
+    stop(paste0(
       "Inadequate position labels supplied",
       ncol(pwmMat) - length(position_labels)
     ))
