@@ -4,8 +4,7 @@
 \alias{get_clusters}
 \title{Get a specified number of clusters from the given data.}
 \usage{
-get_clusters(givenMat, clustMethod, nCluster,
-  distMethod.hclust = "euclidean")
+get_clusters(givenMat, clustMethod, nCluster)
 }
 \arguments{
 \item{givenMat}{A data matrix representing sequences along columns and their
@@ -15,9 +14,6 @@ features aling the rows.}
 \code{kmeans}. The other value supported currently in \code{hclust}.}
 
 \item{nCluster}{The numebr of clusters to be extracted.}
-
-\item{distMethod.hclust}{If hclust is the chosen clustering method, provide
-the distance function to be used.}
 }
 \value{
 A list containing the clustering result \code{clust_sol}, and the
