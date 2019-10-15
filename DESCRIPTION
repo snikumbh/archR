@@ -27,7 +27,6 @@ Imports:
     MASS,
     rlang,
     matrixStats,
-    BiocGenerics,
     scales,
     assertthat,
     data.table,
@@ -42,8 +41,10 @@ Imports:
     tibble (>= 2.1.1),
     tidyr (>= 0.8.3),
     vctrs (>= 0.1.0),
+    ggpubr (>= 0.2.3),
     hopach (>= 2.42.0),
-    ggpubr (>= 0.2.3)
+    BiocGenerics,
+    Biostrings
 Suggests: 
     knitr (>= 1.22),
     rmarkdown (>= 1.12),
