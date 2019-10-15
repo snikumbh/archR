@@ -48,6 +48,7 @@ Suggests:
     rmarkdown (>= 1.12),
     testthat (>= 2.1.1),
     covr
+    vdiffr (>= 0.3.0)
 VignetteBuilder: 
     knitr
 biocViews: 
