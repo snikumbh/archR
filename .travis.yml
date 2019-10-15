@@ -14,7 +14,9 @@ addons:
   apt:
     packages:
       - python3.5
-      - python-scikit-learn
+      - python-numpy
+      - python-scipy
+      - python-sklearn
 
 
 before_install:
