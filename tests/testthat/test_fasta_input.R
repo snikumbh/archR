@@ -13,8 +13,8 @@ test_that("All same length", {
     "GGCATCATGC",
     "TCATCTAGAT"
   )
-  expect_error(assert_attributes(testSeqsNotOK), "different")
-  expect_message(assert_attributes(testSeqsOK), "OK")
+  expect_error(.assert_seq_attributes(testSeqsNotOK), "different")
+  expect_message(.assert_seq_attributes(testSeqsOK), "OK")
 })
 
 test_that("None with length zero", {
@@ -30,8 +30,8 @@ test_that("None with length zero", {
     "",
     ""
   )
-  expect_error(assert_attributes(testSeqsNotOK1), "zero")
-  expect_error(assert_attributes(testSeqsNotOK2), "zero")
+  expect_error(.assert_seq_attributes(testSeqsNotOK1), "zero")
+  expect_error(.assert_seq_attributes(testSeqsNotOK2), "zero")
 })
 
 
@@ -42,5 +42,5 @@ test_that("Only characters from DNA alphabet", {
     "GGCATCATGC",
     "TCATCTAGAT"
   )
-  expect_warning(assert_attributes(testSeqsNotOK1), "Non DNA-alphabet character")
+  expect_warning(.assert_seq_attributes(testSeqsNotOK1), "Non DNA-alphabet character")
 })
