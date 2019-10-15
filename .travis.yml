@@ -1,27 +1,24 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-cache:
-  packages: true
-r: 3.5.0
+sudo: false
+cache: packages
+
+r: 
+  - 3.5
+
 os:
     - linux
-bioc_packages:
-    - BiocCheck
+
+addons:
+  apt:
+    packages:
+      - python3.5
+      - python-scikit-learn
+
 
 before_install:
-  Rscript -e 'BiocManager::install(c("hopach", "BiocGenerics"), update = TRUE)'
+  Rscript -e 'BiocManager::install(c("hopach", "Biostrings", "BiocGenerics"), update = TRUE)'
 
 warnings_are_errors: true
-
-script:
-    - R CMD build . --no-build-vignettes --no-manual
-    - R CMD check *tar.gz --as-cran --timings --no-manual
-#    - R CMD BiocCheck *tar.gz
-
-notifications:
-  email:
-    on_success: change
-    on_failure: change
-
 
