@@ -7,6 +7,7 @@ cache: packages
 r: 
   - 3.5
 
+
 os:
     - linux
 
@@ -18,6 +19,7 @@ addons:
       - python-scipy
       - python-sklearn
 
+# Install Bioconductor dependencies
 bioc_packages:
   - BiocGenerics
   - Biostrings
@@ -25,3 +27,10 @@ bioc_packages:
 
 warnings_are_errors: true
 
+
+env:
+  global:
+  # don't treat missing suggested packages as error
+  - _R_CHECK_FORCE_SUGGESTS_=false
+  # switch off vdiffr by default
+  - VDIFFR_RUN_TESTS=false
