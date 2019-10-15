@@ -11,7 +11,9 @@ Description: Given a set of DNA sequences, the \code{archR} package enables
     discovery of clusters of sequence with characteristic sequence 
     architectures.
 License: GPL-3
-SystemRequirements: Python (>= 3.5), Scikit-learn (>= 0.21.2)
+URL: https://github.com/snikumbh/archR
+BugReports: https://github.com/snikumbh/archR/issues
+SystemRequirements: Python (>= 3.5), scikit-learn (>= 0.21.2)
 Depends:
     R (>= 3.5)
 Imports:

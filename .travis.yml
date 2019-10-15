@@ -18,9 +18,10 @@ addons:
       - python-scipy
       - python-sklearn
 
-
-before_install:
-  Rscript -e 'BiocManager::install(c("hopach", "Biostrings", "BiocGenerics"), update = TRUE)'
+bioc_packages:
+  - BiocGenerics
+  - Biostrings
+  - hopach
 
 warnings_are_errors: true
 
