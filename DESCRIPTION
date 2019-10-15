@@ -47,7 +47,7 @@ Suggests:
     knitr (>= 1.22),
     rmarkdown (>= 1.12),
     testthat (>= 2.1.1),
-    covr
+    covr,
     vdiffr (>= 0.3.0)
 VignetteBuilder: 
     knitr
