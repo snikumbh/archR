@@ -7,7 +7,7 @@
 get_one_hot_encoded_seqs(givenFastaSeqs, sinuc_or_dinuc = "sinuc")
 }
 \arguments{
-\item{givenFastaSeqs}{List of sequences.}
+\item{givenFastaSeqs}{A DNAStringSet object holding the given DNA sequences.}
 
 \item{sinuc_or_dinuc}{'sinuc' or 'dinuc'}
 }
