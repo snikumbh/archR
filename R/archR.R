@@ -12,7 +12,7 @@
 #' @section Functions for data preparation and manipulation:
 #' \itemize{
 #' \item \code{\link{prepare_data_from_FASTA}}
-#' \item \code{\link{make_sinuc_PWMs}}
+#' \item \code{\link{get_one_hot_encoded_seqs}}
 #' }
 #'
 #'

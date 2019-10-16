@@ -33,7 +33,7 @@ seqs_to_df <- function(seqs, position_labels, annClusters = NULL,
 
     if(sinuc_or_dinuc == "sinuc"){
         ## handling single nucleotides
-        plot_df_list <- lapply(1:length(seqs),
+        plot_df_list <- lapply(seq_along(seqs),
                           function(x) {
                             # given one hot encoded seq to str on nucleotides
                             str_seq <- seqs[x]
@@ -106,13 +106,13 @@ get_seq_cluster_breaks <- function(annClusters){
 #' @param k number of colors
 #' @importFrom grDevices col2rgb rgb
 .distinctColorPalette <- function(k) {
-    # set.seed(123)
-    ColorSpace <- t(unique(col2rgb(scales::hue_pal(l = 60:100)(2e3))))
-    km <- kmeans(ColorSpace, k, iter.max = 20)
-    colors <- rgb(round(km$centers), maxColorValue = 255)
-    return(colors)
+  # set.seed(123)
+  ColorSpace <-
+    t(unique(col2rgb(scales::hue_pal(l = 60:100)(2e3))))
+  km <- kmeans(ColorSpace, k, iter.max = 20)
+  colors <- rgb(round(km$centers), maxColorValue = 255)
+  return(colors)
 }
-
 
 
 #' @title Represent a Matrix of Sequences as an Image.

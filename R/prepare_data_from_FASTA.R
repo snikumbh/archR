@@ -1,11 +1,11 @@
-#' @title One-hot encode
-#'
-#' @description One-hot encode a given DNA sequence.
-#'
-#' @param givenSeq A single DNA sequence as character/string.
-#'
-#' @return The one-hot encoded sequence.
-#'
+# @title One-hot encode
+#
+# @description One-hot encode a given DNA sequence.
+#
+# @param givenSeq A single DNA sequence as character/string.
+#
+# @return The one-hot encoded sequence.
+#
 .one_hot_encode_sinuc <- function(givenSeq) {
     # Input: A DNA seq as a vector of caharacters (A/C/G/T)
     # Returns: A row matrix of
@@ -32,14 +32,14 @@
 }
 
 
-#' @title One-hot encode dinucleotide profiles
-#'
-#' @description One-hot encode the dinucleotide profile of a given DNA sequence.
-#'
-#' @param givenSeq A single sequence.
-#'
-#' @return The one-hot encoded sequence.
-#'
+# @title One-hot encode dinucleotide profiles
+#
+# @description One-hot encode the dinucleotide profile of a given DNA sequence.
+#
+# @param givenSeq A single sequence.
+#
+# @return The one-hot encoded sequence.
+#
 .one_hot_encode_dinuc <- function(givenSeq) {
     # Input: A DNA seq as a vector of caharacters (A/C/G/T)
     # Returns: A row matrix of
@@ -69,14 +69,14 @@
 
 
 
-#' @title One-hot decode
-#'
-#' @description One-hot decode a given one-hot encoded DNA sequence.
-#'
-#' @param oneHotEncodedSeqV A single one-hot encoded sequence vector.
-#'
-#' @return The one-hot decoded sequence of ACGTs.
-#'
+# @title One-hot decode
+#
+# @description One-hot decode a given one-hot encoded DNA sequence.
+#
+# @param oneHotEncodedSeqV A single one-hot encoded sequence vector.
+#
+# @return The one-hot decoded sequence of ACGTs.
+#
 .one_hot_decode <- function(oneHotEncodedSeqV) {
 
     dna_alphabet <- c("A", "C", "G", "T")
@@ -126,18 +126,18 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
 }
 
 
-#' @title Assert attributes of sequences
-#'
-#' @description Assert the attributes of the sequences provided. This includes
-#' checking for (1) the length of the sequences, (2) characters in the
-#' sequences.
-#'
-#' @param givenSeqs DNA sequences as a list.
-#'
-#'
-#' @return nothing. Only prints a warning to the screen.
-#' @importFrom Biostrings width
-#'
+# @title Assert attributes of sequences
+#
+# @description Assert the attributes of the sequences provided. This includes
+# checking for (1) the length of the sequences, (2) characters in the
+# sequences.
+#
+# @param givenSeqs DNA sequences as a list.
+#
+#
+# @return nothing. Only prints a warning to the screen.
+# @importFrom Biostrings width
+#
 .assert_seq_attributes <- function(givenSeqs) {
     # Check that all sequences are of same length
     seqs_split_as_list <-
@@ -196,7 +196,7 @@ prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE,
         givenSeqs <-
             Biostrings::readDNAStringSet(filepath = inputFastaFilename,
                                          format = "fasta",
-                                         use.names = TRUE)
+                                         use.names = FALSE)
         # givenSeqs <- seqinr::read.fasta(inputFastaFilename, seqtype = "DNA",
         #                                 as.string = TRUE)
     } else {
