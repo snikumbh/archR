@@ -31,7 +31,6 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     }
     return(selectedLabels)
 }
-
 ## =============================================================================
 
 .map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,

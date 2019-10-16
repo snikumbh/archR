@@ -1,15 +1,17 @@
 get_features_matrix <- function(nmfResultObj){
     return(nmfResultObj[[1]])
 }
+## =============================================================================
 
 get_samples_matrix <- function(nmfResultObj){
     return(nmfResultObj[[2]])
 }
+## =============================================================================
 
 .get_hopach_cluster_medoidsIdx <- function(hopachObj){
     return(hopachObj$clustering$medoids)
 }
-
+## =============================================================================
 
 get_dimers_from_alphabet <- function(alphabet){
     return(do.call(paste0, expand.grid(alphabet, alphabet)))
@@ -77,6 +79,8 @@ archRSetConfig <- function(innerChunkSize = 500,
                             plotVerboseFlag = FALSE
                         )
                     )
+
+    return(archRconfig)
 }
 ## =============================================================================
 
