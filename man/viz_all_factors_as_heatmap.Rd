@@ -5,7 +5,7 @@
 \title{Visualize the factors in features matrix as a heatmap plot}
 \usage{
 viz_all_factors_as_heatmap(featuresMatrix, position_labels = NA,
-  add_pseudo_counts = F, savePDFfilename = NULL,
+  add_pseudo_counts = FALSE, savePDFfilename = NULL,
   sinuc_or_dinuc = "sinuc")
 }
 \arguments{

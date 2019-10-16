@@ -6,8 +6,9 @@
 plot}
 \usage{
 viz_all_factors_in_combined_heatmaps_seqlogos(featuresMatrix,
-  plotMethod = "custom", position_labels = NA, add_pseudo_counts = F,
-  savePDFfilename = NULL, sinuc_or_dinuc = "sinuc")
+  plotMethod = "custom", position_labels = NA,
+  add_pseudo_counts = FALSE, savePDFfilename = NULL,
+  sinuc_or_dinuc = "sinuc")
 }
 \arguments{
 \item{featuresMatrix}{The features matrix output from NMF. Expected

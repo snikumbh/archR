@@ -5,7 +5,7 @@
 \title{Visualize the factors in features matrix as a sequence logo}
 \usage{
 viz_all_factors_as_seqlogo(featuresMatrix, plotMethod = "custom",
-  position_labels = NA, add_pseudo_counts = F,
+  position_labels = NA, add_pseudo_counts = FALSE,
   savePDFfilename = NULL, sinuc_or_dinuc = "sinuc")
 }
 \arguments{

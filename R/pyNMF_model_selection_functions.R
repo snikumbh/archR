@@ -316,7 +316,7 @@ cv_model_select_pyNMF <- function(X,
 generate_folds <- function(Xdims, kFolds, seed_val = 10208090) {
     # Xdims gives the dimensions of the matrix X
     # suppressPackageStartupMessages(require(cvTools, quietly = TRUE))
-    set.seed(seed_val)
+    # set.seed(seed_val)
     cvf_rows <- cvFolds(Xdims[1], K = kFolds, type = "random")
     cvf_cols <- cvFolds(Xdims[2], K = kFolds, type = "random")
     return(list(cvf_rows = cvf_rows, cvf_cols = cvf_cols))

@@ -14,11 +14,13 @@
 #' @import ggplot2
 #' @import ggseqlogo
 #'
-viz_all_factors_as_seqlogo <- function(featuresMatrix, plotMethod = "custom",
+viz_all_factors_as_seqlogo <- function(featuresMatrix,
+                                       plotMethod = "custom",
                                        position_labels = NA,
-                                        add_pseudo_counts = F,
+                                       add_pseudo_counts = FALSE,
                                        savePDFfilename = NULL,
-                                       sinuc_or_dinuc = "sinuc") {
+                                       sinuc_or_dinuc = "sinuc"
+) {
     # Visualize all basis factors (expected as columns of the given features
     # matrix) as seqlogos
     if (!is.matrix(featuresMatrix)) {
@@ -32,9 +34,9 @@ viz_all_factors_as_seqlogo <- function(featuresMatrix, plotMethod = "custom",
             dna_alphabet <- c("A", "C", "G", "T")
             dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
                                                               dna_alphabet))
-            pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = F)
+            pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = FALSE)
         } else if (sinuc_or_dinuc == "sinuc") {
-            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F)
+            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
         }
 
         p1 <- plot_ggseqlogo(pwmMat = pwm, plotMethod = plotMethod,

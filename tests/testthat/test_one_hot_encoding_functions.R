@@ -14,7 +14,7 @@ test_that("One-hot encoding is correctly done", {
     0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1,
     1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0
   ),
-  nrow = 2, byrow = T
+  nrow = 2, byrow = TRUE
   ))
   #
   givenAns1 <- .one_hot_encode_sinuc(testSeqsB[[1]])

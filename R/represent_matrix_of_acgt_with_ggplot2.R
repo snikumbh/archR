@@ -6,7 +6,7 @@
 #'
 #' @return A label vector that can be directly used for setting the tickmarks.
 #'
-get_tick_labels <- function(givenVec, use_asis = T, at_every) {
+get_tick_labels <- function(givenVec, use_asis = TRUE, at_every) {
   givenLength <- length(givenVec)
   label_vec <- rep("", givenLength)
   if (use_asis) {

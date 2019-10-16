@@ -5,9 +5,9 @@
 \alias{get_tick_labels}
 \title{Getter function for labels of x- or y-ticks.}
 \usage{
-get_tick_labels(givenVec, use_asis = T, at_every)
+get_tick_labels(givenVec, use_asis = TRUE, at_every)
 
-get_tick_labels(givenVec, use_asis = T, at_every)
+get_tick_labels(givenVec, use_asis = TRUE, at_every)
 }
 \arguments{
 \item{givenVec}{The vector of values for the x- or y-ticks.}

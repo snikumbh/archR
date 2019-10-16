@@ -37,46 +37,46 @@ get_dimers_from_alphabet <- function(alphabet){
 #'
 #' @export
 archRSetConfig <- function(innerChunkSize = 500,
-                           kMin = 2,
-                           kMax = 8,
-                           cvFolds = 5,
-                           parallelize = TRUE,
-                           nCoresUse = 32,
-                           nIterationsUse = 200,
-                           seedVal = 10208090,
-                           alphaBase = 0,
-                           alphaPow = 1,
-                           minSeqs = 25,
-                           modSelLogFile = "log.txt",
-                           flags = list(
+                            kMin = 2,
+                            kMax = 8,
+                            cvFolds = 5,
+                            parallelize = TRUE,
+                            nCoresUse = 32,
+                            nIterationsUse = 200,
+                            seedVal = 10208090,
+                            alphaBase = 0,
+                            alphaPow = 1,
+                            minSeqs = 25,
+                            modSelLogFile = "log.txt",
+                            flags = list(
                                debugFlag = FALSE,
                                timeFlag = FALSE,
                                verboseFlag = TRUE,
                                plotVerboseFlag = FALSE
-                           )) {
+                            )) {
     ### Configuration Params that can be set by user
     archRconfig <- NULL
     archRconfig <- list(
-        kFolds = cvFolds,
-        parallelize = parallelize,
-        nCoresUse = nCoresUse,
-        nIterationsUse = nIterationsUse,
-        seedVal = seedVal,
-        paramRanges = list(
-            alphaBase = alphaBase,
-            alphaPow = alphaPow,
-            k_vals = seq(kMin, kMax, by = 1)
-        ),
-        innerChunkSize = innerChunkSize,
-        modSelLogFile = modSelLogFile,
-        minSeqs = minSeqs,
-        flags = list(
-            debugFlag = FALSE,
-            timeFlag = FALSE,
-            verboseFlag = TRUE,
-            plotVerboseFlag = FALSE
-        )
-    )
+                        kFolds = cvFolds,
+                        parallelize = parallelize,
+                        nCoresUse = nCoresUse,
+                        nIterationsUse = nIterationsUse,
+                        seedVal = seedVal,
+                        paramRanges = list(
+                            alphaBase = alphaBase,
+                            alphaPow = alphaPow,
+                            k_vals = seq(kMin, kMax, by = 1)
+                        ),
+                        innerChunkSize = innerChunkSize,
+                        modSelLogFile = modSelLogFile,
+                        minSeqs = minSeqs,
+                        flags = list(
+                            debugFlag = FALSE,
+                            timeFlag = FALSE,
+                            verboseFlag = TRUE,
+                            plotVerboseFlag = FALSE
+                        )
+                    )
 }
 ## =============================================================================
 
@@ -94,8 +94,10 @@ archRSetConfig <- function(innerChunkSize = 500,
     }
 ## =============================================================================
 
-.decide_hopach <- function(globFactorsMat, distMethod = "cosangle",
-                          withinMeasure = "mean"){
+.decide_hopach <- function(globFactorsMat,
+                            distMethod = "cosangle",
+                            withinMeasure = "mean") {
+
     ### Firstly:
     ### Very basically, if there are only two factors, we don't need HOPACH
     ### clustering of factors

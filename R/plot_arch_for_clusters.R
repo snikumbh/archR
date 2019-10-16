@@ -29,7 +29,7 @@
 plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
                                    nCluster, clustering_sol, seqs = NULL,
                                    position_labels = NA, plotMethod = "custom",
-                                   add_pseudo_counts = F,
+                                   add_pseudo_counts = FALSE,
                                    sinuc_or_dinuc = "sinuc") {
     # print(length(levels(as.factor(clustering_sol$clust_sol$cluster))))
     # print(levels(as.factor(clustering_sol$clust_sol$cluster)))

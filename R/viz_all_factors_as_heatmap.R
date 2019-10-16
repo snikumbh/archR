@@ -11,7 +11,7 @@
 #' @export
 #'
 viz_all_factors_as_heatmap <- function(featuresMatrix, position_labels = NA,
-                                       add_pseudo_counts = F,
+                                       add_pseudo_counts = FALSE,
                                        savePDFfilename = NULL,
                                        sinuc_or_dinuc = "sinuc") {
     # Visualize all basis factors (expected as columns of the given features
@@ -25,7 +25,7 @@ viz_all_factors_as_heatmap <- function(featuresMatrix, position_labels = NA,
 
     if (sinuc_or_dinuc == "sinuc") {
         invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
-            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F)
+            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
             p1 <- plot_ggheatmap(pwmMat = pwm,
                                  position_labels = position_labels,
                                  savePDFfilename = savePDFfilename)
@@ -33,7 +33,7 @@ viz_all_factors_as_heatmap <- function(featuresMatrix, position_labels = NA,
         }))
     } else if (sinuc_or_dinuc == "dinuc") {
         invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
-            pwm <- make_dinuc_PWMs(x, add_pseudo_counts = F)
+            pwm <- make_dinuc_PWMs(x, add_pseudo_counts = FALSE)
             p1 <- plot_ggheatmap(pwmMat = pwm,
                                  position_labels = position_labels,
                                  savePDFfilename = savePDFfilename)

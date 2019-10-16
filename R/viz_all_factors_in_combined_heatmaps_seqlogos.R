@@ -33,7 +33,7 @@
 #' @import gridExtra
 viz_all_factors_in_combined_heatmaps_seqlogos <-
     function(featuresMatrix, plotMethod = "custom", position_labels = NA,
-             add_pseudo_counts = F, savePDFfilename = NULL,
+             add_pseudo_counts = FALSE, savePDFfilename = NULL,
              sinuc_or_dinuc = "sinuc") {
     # suppressMessages( require(cowplot) )
     # suppressMessages( require(gridExtra) )
@@ -49,10 +49,10 @@ viz_all_factors_in_combined_heatmaps_seqlogos <-
             dna_alphabet <- c("A", "C", "G", "T")
             dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
                                                               dna_alphabet))
-            pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = F,
-                                scale = F)
+            pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = FALSE,
+                                scale = FALSE)
         } else if (sinuc_or_dinuc == "sinuc") {
-            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = F, scale = F)
+            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE, scale = FALSE)
         }
         # pwm <- make_sinuc_PWMs(x, add_pseudo_counts = add_pseudo_counts,
         # scale = F)

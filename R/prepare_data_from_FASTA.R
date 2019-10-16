@@ -15,7 +15,7 @@
     if (seq_len > 0) {
         one_hot_encoded <- matrix(rep(0, length(dna_alphabet) * seq_len),
                                   nrow = 1,
-                                  byrow = T)
+                                  byrow = TRUE)
         # characters to match
         one_hot_encoded[, 0 * seq_len + which(givenSeq == dna_alphabet[1])] <-
             1
@@ -54,7 +54,7 @@
     if (given_seq_len > 0) {
         one_hot_encoded_dinuc_profile <- matrix(
             rep(0, length(dna_alphabet_dinuc) *
-            given_seq_len), nrow = 1, byrow = T)
+            given_seq_len), nrow = 1, byrow = TRUE)
         #
         for (i in seq_along(dna_alphabet_dinuc)) {
             one_hot_encoded_dinuc_profile[, (i - 1) * given_seq_len +
@@ -110,10 +110,12 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
             base::strsplit(as.character(givenFastaSeqs), split = NULL)
         if (length(seqs_split_as_list) > 0) {
             if (sinuc_or_dinuc == "sinuc") {
-                encoded_seqs <- lapply(seqs_split_as_list, .one_hot_encode_sinuc)
+                encoded_seqs <- lapply(seqs_split_as_list,
+                                       .one_hot_encode_sinuc)
             } else if (sinuc_or_dinuc == "dinuc") {
                 message("Generating dinucleotide profiles")
-                encoded_seqs <- lapply(seqs_split_as_list, .one_hot_encode_dinuc)
+                encoded_seqs <-
+                    lapply(seqs_split_as_list, .one_hot_encode_dinuc)
             }
             encoded_seqs <- do.call(rbind, encoded_seqs)
             return(t(encoded_seqs))
