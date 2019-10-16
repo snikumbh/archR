@@ -30,7 +30,7 @@
         stop("Empty or NULL found")
     }
 }
-
+## =============================================================================
 
 # @title One-hot encode dinucleotide profiles
 #
@@ -65,9 +65,7 @@
         stop("Empty or NULL found")
     }
 }
-
-
-
+## =============================================================================
 
 # @title One-hot decode
 #
@@ -93,6 +91,7 @@
     }
     return(paste0(decodedSeq, collapse = ""))
 }
+## =============================================================================
 
 #' @title Get One-Hot Encoded Sequences
 #'
@@ -124,7 +123,7 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
         stop("Empty or NULL found")
     }
 }
-
+## =============================================================================
 
 # @title Assert attributes of sequences
 #
@@ -166,7 +165,7 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
         message("Sequences OK, ", levels(length_vals)[1])
     }
 }
-
+## =============================================================================
 
 #' @title
 #' Given a FASTA file, this function return a matrix with one-hot encoded
@@ -216,3 +215,4 @@ prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE,
         return(oheSeqs)
     }
 }
+## =============================================================================
