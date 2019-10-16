@@ -27,10 +27,10 @@
 #' @importFrom stats quantile sd
 #' @importFrom BiocGenerics rowMeans
 plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
-                                   nCluster, clustering_sol, seqs = NULL,
-                                   position_labels = NA, plotMethod = "custom",
-                                   add_pseudo_counts = FALSE,
-                                   sinuc_or_dinuc = "sinuc") {
+                                    nCluster, clustering_sol, seqs = NULL,
+                                    position_labels = NA, plotMethod = "custom",
+                                    add_pseudo_counts = FALSE,
+                                    sinuc_or_dinuc = "sinuc") {
     # print(length(levels(as.factor(clustering_sol$clust_sol$cluster))))
     # print(levels(as.factor(clustering_sol$clust_sol$cluster)))
     if (!is.matrix(givenSamplesMatrix)) {
@@ -60,7 +60,7 @@ plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
         x <- dummy_samarth
     })
     #
-    for (grp_ID in 1:nCluster) {
+    for (grp_ID in seq_len(nCluster)) {
 
 
         select_block <-
@@ -81,8 +81,8 @@ plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
             new_meanFeat_in_block <- meanFeat_in_block
             new_medianFeat_in_block <- medianFeat_in_block
             new_meanFeat_in_block[meanFeat_in_block <
-                                      as.numeric(stats::quantile(
-                                          meanFeat_in_block,
+                                        as.numeric(stats::quantile(
+                                            meanFeat_in_block,
                 0.75))] <- 10^-5
             new_medianFeat_in_block[medianFeat_in_block <
                                         as.numeric(stats::quantile(
@@ -101,7 +101,7 @@ plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
             cluster_seqs <-
                 seqs[, clustering_sol$clust_sol$cluster == grp_ID]
         } else if (clustering_sol$clustType == "hclust" ||
-                   clustering_sol$clustType == "dbscan") {
+                    clustering_sol$clustType == "dbscan") {
             cluster_seqs <- seqs[, clustering_sol$clust_sol == grp_ID]
 
         }
@@ -144,12 +144,12 @@ get_seq_cluster_levels <- function(annClusters) {
 }
 
 plot_arch_for_clusters_new <- function(tss.seqs_raw, archRresult,
-                                       position_labels) {
+                                        position_labels) {
 
 
     # ggseqlogo::ggseqlogo(tss.seqs_raw[1:25])
     # length(archRresult$clustFactors)){
-    for (i in 1:2) {
+    for (i in seq_len(2)) {
         chosenLevelLabels <- collect_cluster_labels(archRresult$seqsClustLabels,
                                                     choose_levels = i +
             1)
@@ -160,7 +160,7 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw, archRresult,
         # print(cluster_levels)
         print("print now? samarth")
         pdf(fname, width = 11, height = 1.5)
-        samarth_invisible <- sapply(1:length(cluster_levels), function(x) {
+        samarth_invisible <- sapply(seq_along(cluster_levels), function(x) {
             relIdx <- which(chosenLevelLabels_sorted$x == cluster_levels[x])
             # print(relIdx)
             samarth_p <- ggseqlogo::ggseqlogo(tss.seqs_raw[relIdx])

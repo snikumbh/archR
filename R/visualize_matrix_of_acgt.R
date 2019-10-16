@@ -20,7 +20,7 @@
         label_vec[indices] <- values
     }
     return_val <-
-        list(label_ind = 1:givenLength, label_val = label_vec)
+        list(label_ind = seq_len(givenLength), label_val = label_vec)
     return(return_val)
 }
 ## =============================================================================
@@ -104,14 +104,13 @@
 #' @param k number of colors
 #' @importFrom grDevices col2rgb rgb
 .distinctColorPalette <- function(k) {
-    # set.seed(123)
     ColorSpace <-
         t(unique(col2rgb(scales::hue_pal(l = 60:100)(2e3))))
     km <- kmeans(ColorSpace, k, iter.max = 20)
     colors <- rgb(round(km$centers), maxColorValue = 255)
     return(colors)
 }
-
+## =============================================================================
 
 .setup_matrix_panel <- function(plot_df, position_breaks, sequence_breaks,
                                 plot.title, choose_colors){
@@ -152,7 +151,7 @@
         )
     return(pMatrix)
 }
-
+## =============================================================================
 
 .setup_cluster_panel <- function(plot_df, annClusters){
 
@@ -186,6 +185,8 @@
         ))))
     return(pCluster)
 }
+## =============================================================================
+
 
 #' @title Visualize a Matrix of Sequences as an Image.
 #'
@@ -231,48 +232,44 @@ visualize_matrix_of_acgt <-
                 saveFilename = "DNA_sequences_as_matrix",
                 fileType = "png",
                 verbose = 0) {
-    #
-    # Returns: No return value
+    ## Returns: No return value
     if (verbose > 0) { cat("Plotting\n") }
-    #
+    ##
     plot_df <- .seqs_to_df(
         givenMat,
         position_labels = position_labels,
         annClusters = annClusters,
         sinuc_or_dinuc = sinuc_or_dinuc
     )
-    #
-    # Position Breaks on axis
+    ## Position Breaks on axis
     position_levels <-
         as.numeric(levels(as.factor(plot_df$positions)))
     position_breaks <- position_levels[which(position_levels %% 5 == 0)]
     if (!(min(position_levels) %in% position_breaks)) {
         position_breaks <- c(1, position_breaks)
-
     }
-    # Seqeunce Breaks on axis
+    ## Seqeunce Breaks on axis
     sequence_levels <- as.numeric(levels(as.factor(plot_df$seq_id)))
     sequence_breaks <- which(sequence_levels %% 100 == 0)
     if (!(1 %in% sequence_breaks)) {
         sequence_breaks <- c(1, sequence_breaks)
     }
-    #
+    ##
     pMatrix <- .setup_matrix_panel(plot_df = plot_df,
                                    plot.title = plot.title,
                                    position_breaks = position_breaks,
                                    sequence_breaks = sequence_breaks,
                                    choose_colors = choose_colors)
-    ###
+    ##
     if (!is.null(annClusters)) {
         pCluster <- .setup_cluster_panel(plot_df, annClusters)
-        #
         final_p <-
-            ggpubr::ggarrange(pMatrix, pCluster, ncol = 2, heights = 1:1,
+            ggpubr::ggarrange(pMatrix, pCluster, ncol = 2, heights = c(1,1),
                               widths = c(8, 1.5), align = 'h')
     } else{
         final_p <- pMatrix
     }
-    #
+    ##
     if (!is.null(saveFilename)) {
         if (fileType == "pdf") {
             ggplot2::ggsave(paste0(saveFilename, ".pdf"), final_p,

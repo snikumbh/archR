@@ -58,14 +58,13 @@ get_q2_using_py <- function(x, seed_val, verbose = 0) {
     # print(file.path(paths_list_src_path, 'perform_nmf.py'))
     # source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
     # if(py_validate_xptr(perform_nmf_func)) {
-    nmf_submatrixD <- perform_nmf_func(
-        submatrixD,
-        nPatterns = as.integer(this_k),
-        nIter = as.integer(200),
-        givenAlpha = this_alpha,
-        givenL1_ratio = 1,
-        seed_val = as.integer(seed_val)
-    )
+    nmf_submatrixD <- perform_nmf_func(submatrixD,
+                                        nPatterns = as.integer(this_k),
+                                        nIter = as.integer(200),
+                                        givenAlpha = this_alpha,
+                                        givenL1_ratio = 1,
+                                        seed_val = as.integer(seed_val)
+                        )
     # }else{
     #   #Throw error
     # }
@@ -163,22 +162,19 @@ compute_q2 <- function(A, recA) {
 #' @importFrom parallel makeCluster stopCluster detectCores clusterEvalQ
 #' @importFrom parallel clusterExport
 cv_model_select_pyNMF <- function(X,
-                                  param_ranges,
-                                  kFolds = 5,
-                                  # useSLURM = TRUE,
-                                  parallelDo = FALSE,
-                                  nCores = NA,
-                                  nIterations = 20,
-                                  seed_val = 10208090,
-                                  logfile = "outfile.txt",
-                                  set_verbose = 1) {
-    # For Moore-Penrose pseudoinverse, load them on the clusters directly
-    # suppressPackageStartupMessages(library(MASS, quietly = TRUE))
-    #
+                                    param_ranges,
+                                    kFolds = 5,
+                                    # useSLURM = TRUE,
+                                    parallelDo = FALSE,
+                                    nCores = NA,
+                                    nIterations = 20,
+                                    seed_val = 10208090,
+                                    logfile = "outfile.txt",
+                                    set_verbose = 1) {
     if (!is.matrix(X)) {
         stop("X not of type matrix")
     }
-    #
+    ##
     if (kFolds < 3) {
         if (kFolds < 0) {
             stop("Number of cross-validation folds cannot be negative")
@@ -187,44 +183,36 @@ cv_model_select_pyNMF <- function(X,
         }
     } else if (kFolds > ncol(X)) {
         stop("CV folds should be less than or equal to #sequences.
-         Standard values: 5, 10.")
+                Standard values: 3, 5, 10.")
     }
-    # Check names in param_ranges list, the function relies on it below
+    ## Check names in param_ranges list, the function relies on it below
     if (length(setdiff(names(param_ranges), c("alphaPow", "alphaBase",
-                                              "k_vals"))) > 0) {
+                                                "k_vals"))) > 0) {
         stop(paste0(
             "Check param_ranges list, expecting three element names: ",
             c("alphaBase", "alphaPow", "k_vals")
         ))
     }
-
-    # Get cross-validation folds
+    ## Get cross-validation folds
     cvfolds <-
         generate_folds(dim(X), kFolds, seed_val = seed_val)
-
-    # Params to tune: alphaP, alphaA, #factors
-    # Tidyverse approach
+    ## Convert to data frame grid, tidyverse approach
+    ## Params to tune: alphaP, alphaA, #factors
     grid_search_params <- list(
         k_vals = param_ranges$k_vals,
         alpha = param_ranges$alphaBase ^ param_ranges$alphaPow,
-        fold = 1:kFolds,
-        iteration = 1:nIterations,
+        fold = seq_len(kFolds),
+        iteration = seq_len(nIterations),
         seed_val = seed_val,
         verbose = set_verbose
-        # paths_list_src_path = paths_list$src_path
-    ) %>% cross_df() # Convert to data frame grid
-    #
-    #
-    cat(paste0(
-        "Grid search: ",
-        nrow(grid_search_params),
-        " combinations\n"
-    ))
-    #
+    ) %>% cross_df()
+    ##
+    cat(paste0("Grid search: ", nrow(grid_search_params), " combinations\n"))
+    ##
     if (parallelDo) {
         cat(paste0("Opted: Parallel for grid search\n"))
         if (is.na(nCores)) {
-            # raise error or handle
+            ## raise error or handle
             print("'nCores' not specified, performing serial grid search")
             stop("Number of cores to use not specified")
         } else {
@@ -240,27 +228,16 @@ cv_model_select_pyNMF <- function(X,
         cl <-
             parallel::makeCluster(nCores, type = "FORK", outfile = logfile)
         parallel::clusterEvalQ(cl, suppressWarnings(require(MASS)))
-        # for pseudo-inverse using function `ginv`
+        ## for pseudo-inverse using function `ginv`
         parallel::clusterExport(
             cl = cl,
             varlist = c("get_q2_using_py", "compute_q2", "X", "cvfolds"),
             envir = environment()
         )
-        # q2_vals <- parallel::parRapply(cl=cl, grid_search_params,
-        # get_q2, seed_val)
-        #
-        # parRapply does not balance load dynamically.
-        # We observed many of the nodes lying idle (process mode S in htop)
-        # when a few of them were working. This happens because the indices
-        # have been split statically beforehand and assigned to each node.
-        # Using a load-balancing approach distributes jobs to each node after
-        # one assigned to it earlier has been completed. This way one would
-        # expect that nodes do not lie idle while there jobs running slowly
-        # on few other nodes.
-        #
+        ##
         q2_vals <-
             unlist(parallel::clusterApplyLB(cl = cl,
-                                            1:nrow(grid_search_params),
+                                            seq_len(nrow(grid_search_params)),
                                             function(i) {
                                                 get_q2_using_py(
                                                     grid_search_params[i,],
@@ -276,24 +253,19 @@ cv_model_select_pyNMF <- function(X,
         cat(paste0("Opted: Serial\n"))
         X <<- X
         cvfolds <<- cvfolds
-        # nCoresUse <<- nCores
-        q2_vals <-
-            unlist(
-                BBmisc::rowLapply(
-                    grid_search_params,
-                    get_q2_using_py,
-                    seed_val,
-                    verbose = set_verbose
-                )
-            )
+        q2_vals <- unlist(BBmisc::rowLapply(
+                            grid_search_params,
+                            get_q2_using_py,
+                            seed_val,
+                            verbose = set_verbose
+                            )
+                    )
     }
-    #
-    # The dummy copy for satisfying the constraint in rslurm.
-    # The filtered true copy maintained for downstream steps in the procedure
-    #
+    ## The dummy copy for satisfying the constraint in rslurm.
+    ## The filtered true copy maintained for downstream steps in the procedure
     grid_search_params <-
         dplyr::select(grid_search_params, k_vals, alpha, fold,
-                      iteration)
+                        iteration)
     grid_search_results <-
         tibble::add_column(grid_search_params, q2_vals)
     return(grid_search_results)

@@ -14,8 +14,8 @@
     seq_len <- length(givenSeq)
     if (seq_len > 0) {
         one_hot_encoded <- matrix(rep(0, length(dna_alphabet) * seq_len),
-                                  nrow = 1,
-                                  byrow = TRUE)
+                                    nrow = 1,
+                                    byrow = TRUE)
         # characters to match
         one_hot_encoded[, 0 * seq_len + which(givenSeq == dna_alphabet[1])] <-
             1
@@ -46,7 +46,7 @@
     # size 4*seq_len
     dna_alphabet <- c("A", "C", "G", "T")
     dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
-                                                      dna_alphabet))
+                                                        dna_alphabet))
     given_seq_len <- length(givenSeq)
     givenSeq_dinuc <- unlist(lapply(seq_len(given_seq_len - 1), function(x) {
         paste0(givenSeq[x], givenSeq[x + 1])
@@ -110,7 +110,7 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
         if (length(seqs_split_as_list) > 0) {
             if (sinuc_or_dinuc == "sinuc") {
                 encoded_seqs <- lapply(seqs_split_as_list,
-                                       .one_hot_encode_sinuc)
+                                        .one_hot_encode_sinuc)
             } else if (sinuc_or_dinuc == "dinuc") {
                 message("Generating dinucleotide profiles")
                 encoded_seqs <-
@@ -194,8 +194,8 @@ prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE,
     if (file.exists(inputFastaFilename)) {
         givenSeqs <-
             Biostrings::readDNAStringSet(filepath = inputFastaFilename,
-                                         format = "fasta",
-                                         use.names = FALSE)
+                                            format = "fasta",
+                                            use.names = FALSE)
         # givenSeqs <- seqinr::read.fasta(inputFastaFilename, seqtype = "DNA",
         #                                 as.string = TRUE)
     } else {

@@ -17,7 +17,7 @@
 #' @import ggplot2
 #' @import ggseqlogo
 plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
-                           position_labels = NULL, savePDFfilename = NULL) {
+                            position_labels = NULL, savePDFfilename = NULL) {
     # require(ggplot2) require(ggseqlogo)
     if (!is.matrix(pwmMat)) {
         stop("Expecting a matrix with 4 rows")
@@ -33,7 +33,7 @@ plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
         stop(paste0("Inadequate position labels supplied",
                     ncol(pwmMat) - length(position_labels)
                     )
-             )
+            )
     }
     #
     if (length(position_labels) > ncol(pwmMat)) {
@@ -58,8 +58,8 @@ plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
         # ggplot2::labs(title = plot.title)
         # +
         ggplot2::theme(axis.text.x = element_text(size = rel(0.5),
-                                                  angle = 90,
-                                                  hjust = 1),
+                                                    angle = 90,
+                                                    hjust = 1),
                         axis.text.y = element_text(size = rel(0.5)))
     # + ylim(0.0, 2.0)
     if (!is.null(savePDFfilename)) {

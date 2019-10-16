@@ -51,12 +51,12 @@ archRSetConfig <- function(innerChunkSize = 500,
                             minSeqs = 25,
                             modSelLogFile = "log.txt",
                             flags = list(
-                               debugFlag = FALSE,
-                               timeFlag = FALSE,
-                               verboseFlag = TRUE,
-                               plotVerboseFlag = FALSE
-                            )) {
-    ### Configuration Params that can be set by user
+                                debugFlag = FALSE,
+                                timeFlag = FALSE,
+                                verboseFlag = TRUE,
+                                plotVerboseFlag = FALSE)
+                            ) {
+    ## Configuration Params that can be set by user
     archRconfig <- NULL
     archRconfig <- list(
                         kFolds = cvFolds,
@@ -79,7 +79,6 @@ archRSetConfig <- function(innerChunkSize = 500,
                             plotVerboseFlag = FALSE
                         )
                     )
-
     return(archRconfig)
 }
 ## =============================================================================
@@ -101,17 +100,16 @@ archRSetConfig <- function(innerChunkSize = 500,
 .decide_hopach <- function(globFactorsMat,
                             distMethod = "cosangle",
                             withinMeasure = "mean") {
-
-    ### Firstly:
-    ### Very basically, if there are only two factors, we don't need HOPACH
-    ### clustering of factors
-    ### Secondly:
-    ### If #factors > 2, we could need/do HOPACH, but if the distances between
-    ### the factors are more or less similarly large (similar range), such that
-    ### there is really no cluster/grouping, drop the idea of using HOPACH.
+    ## Firstly:
+    ## Very basically, if there are only two factors, we don't need HOPACH
+    ## clustering of factors
+    ## Secondly:
+    ## If #factors > 2, we could need/do HOPACH, but if the distances between
+    ## the factors are more or less similarly large (similar range), such that
+    ## there is really no cluster/grouping, drop the idea of using HOPACH.
     globFactorsDistMat <- .compute_factor_distances(globFactorsMat,
-                                                   distMethod = distMethod)
-    ### Hopach suggestion: use same measure for 'within' and 'between'
+                                                    distMethod = distMethod)
+    ## Hopach suggestion: use same measure for 'within' and 'between'
     estClusters <- hopach::msscheck(globFactorsDistMat, within = "mean",
                             between = "mean")
     decision <- FALSE
@@ -126,29 +124,27 @@ archRSetConfig <- function(innerChunkSize = 500,
 
 
 .compute_factor_distances <- function(factorsMat, distMethod = "cosangle"){
-    # Ensure entities to compare are along the rows, because
-    # hopach::distancematrix computes distances between rows of a matrix.
+    ## Ensure that entities to compare are along the rows, because
     # Here, the factors are along the columns, and features along rows.
-    # Therefore, check and change if necessary.
+    ## hopach::distancematrix computes distances between rows of a matrix.
+    ## Therefore, check and change if necessary.
     if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
     distMat <- hopach::distancematrix(factorsMat, d = distMethod)
     ## distMat is a hopach hdist object
     assertthat::are_equal(distMat@Size, ncol(factorsMat))
-    ###
     return(distMat)
 }
 ## =============================================================================
 
 
 .get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
-    ###
-    if(is.null(hopachObj)){
+    ##
+    if (is.null(hopachObj)) {
         return(globFactorsMat)
     } else {
         hopachMedoids <- .get_hopach_cluster_medoidsIdx(hopachObj)
         return(as.matrix(globFactorsMat[ , hopachMedoids]))
     }
-
 }
 ## =============================================================================
 
@@ -158,34 +154,27 @@ archRSetConfig <- function(innerChunkSize = 500,
                                 globFactors,
                                 globClustAssignments,
                                 config) {
-
-    ###
-    ### On the given inner chunk,
-    ### 1. perform model selection for #factors for NMF
-    ### 2. Perform final NMF with chosen best_k (#Factors)
-    ### 3. Store factors (globFactors)
-    ### 4. Perform k-means clustering
-    ### 5. Store cluster assignments (globClustAssignments)
-    ### 6. Return updated globFactors, globClustAssignments
-    ###
-    if(config$flags$verboseFlag) {
-        cat(paste0(
-            "Working on chunk: ",
-            innerChunkIdx,
-            " of ",
-            length(innerChunksColl),
-            " (chunkSize: ",
-            ncol(this_tss.seqs),
-            ") \n"
-        ))
+    ##
+    ## On the given inner chunk,
+    ## 1. perform model selection for #factors for NMF
+    ## 2. Perform final NMF with chosen best_k (#Factors)
+    ## 3. Store factors (globFactors)
+    ## 4. Perform k-means clustering
+    ## 5. Store cluster assignments (globClustAssignments)
+    ## 6. Return updated globFactors, globClustAssignments
+    ##
+    if (config$flags$verboseFlag) {
+        cat(paste0("Working on chunk: ", innerChunkIdx, " of ",
+            length(innerChunksColl), " (chunkSize: ",
+            ncol(this_tss.seqs), ") \n")
+        )
     }
-    ###
+    ##
     model_selectK <-
         cv_model_select_pyNMF(
             X = this_tss.seqs,
             param_ranges = config$paramRanges,
             kFolds = config$kFolds,
-            # useSLURM = FALSE,
             parallelDo = config$parallelize,
             nCores = config$nCoresUse,
             nIterations = config$nIterationsUse,
@@ -193,21 +182,17 @@ archRSetConfig <- function(innerChunkSize = 500,
             logfile = config$modSelLogFile,
             set_verbose = 0
         )
-    if (config$flags$timeFlag) {
-        print(Sys.time() - start)
-    }
-    ###
+    if (config$flags$timeFlag) { print(Sys.time() - start) }
+    ##
     best_k <- get_best_K(model_selectK)
-    ###
+    ##
     if (config$flags$verboseFlag) {
         cat(paste0("Best K for this subset: ", best_k, "\n"))
     }
     if (config$flags$plotVerboseFlag) {
         q2_means_by_k_vals <-
-            get_q2_aggregates_chosen_var(
-                model_selectK,
-                model_selectK$k_vals,
-                mean)
+            get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals,
+                                            mean)
         Q2vsK <- plot_cv_K(q2_means_by_k_vals)
         print(Q2vsK)
     }
@@ -215,11 +200,9 @@ archRSetConfig <- function(innerChunkSize = 500,
         config$flags$debugFlag) {
         cat("Performing NMF with K =", best_k, "\n")
     }
-    ###
-    if (config$flags$timeFlag) {
-        start <- Sys.time()
-    }
-    ###
+    ##
+    if (config$flags$timeFlag) { start <- Sys.time() }
+    ##
     result <- perform_nmf_func(
         this_tss.seqs,
         nPatterns = as.integer(best_k),
@@ -228,21 +211,19 @@ archRSetConfig <- function(innerChunkSize = 500,
         givenL1_ratio = 1,
         seed_val = as.integer(config$seedVal)
     )
-    # if(config$flags$timeFlag){print(Sys.time() - start)}
-    ###
+    if (config$flags$timeFlag) { print(Sys.time() - start) }
+    ##
     featuresMatrix <- get_features_matrix(result)
     samplesMatrix <- get_samples_matrix(result)
-    ###
-    ### Collect factors for global list
+    ##
+    ## Collect factors for global list
     globFactors[[innerChunkIdx]] <- featuresMatrix
-    ###
-    ### Cluster sequences
+    ## Cluster sequences
     solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
-                              nCluster = best_k)
+                                nCluster = best_k)
     if (config$flags$timeFlag) {print(Sys.time() - start)}
-    ### Set the right cluster orders respective to the factor order in the chunk
-    ### and, collect the clusters/cluster assignments for the global list
-    ###
+    ## Set the right cluster orders respective to the factor order in the chunk
+    ## and, collect the clusters/cluster assignments for the global list
     globClustAssignments[[innerChunkIdx]] <-
         .map_clusters_to_factors(
             samplesMatrix = samplesMatrix,
@@ -251,10 +232,10 @@ archRSetConfig <- function(innerChunkSize = 500,
             iChunkIdx = innerChunkIdx,
             flags = config$flags
         )
-    ###
+    ##
     innerChunkNMFResult <- list(globFactors = globFactors,
                                 globClustAssignments = globClustAssignments)
-    ###
+    ##
     return(innerChunkNMFResult)
 }
 ## =============================================================================
