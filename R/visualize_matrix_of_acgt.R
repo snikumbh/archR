@@ -99,10 +99,10 @@
 ## =============================================================================
 
 
-# @title samarth
-# @description samarth
-# @param k number of colors
-# @importFrom grDevices col2rgb rgb
+#' @title samarth
+#' @description samarth
+#' @param k number of colors
+#' @importFrom grDevices col2rgb rgb
 .distinctColorPalette <- function(k) {
     # set.seed(123)
     ColorSpace <-
@@ -173,7 +173,7 @@
             expand = c(0.01, 0.01),
             trans = "reverse",
             position = "right",
-            breaks = get_seq_cluster_breaks(annClusters)
+            breaks = .get_seq_cluster_breaks(annClusters)
         ) +
         ggplot2::scale_x_continuous(
             expand = c(0.0, 0.0),

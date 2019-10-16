@@ -48,7 +48,7 @@ factorization, performing clustering, and visualization-related functions.
 \item \code{\link{viz_all_factors_as_seqlogo}}
 \item \code{\link{viz_all_factors_in_combined_heatmaps_seqlogos}}
 \item \code{\link{plot_arch_for_clusters}}
-\item \code{\link{represent_matrix_of_acgt_with_ggplot2}}
+\item \code{\link{visualize_matrix_of_acgt}}
 }
 }
 

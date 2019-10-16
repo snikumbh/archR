@@ -93,8 +93,7 @@ tssSeqs_raw <- tssSeqsOriginal_raw[changedOrder]
 
 ```{r plot-seqs, echo=TRUE, fig.height=6, fig.width=5}
 # Represent sequences as heatmap
-visualize_matrix_of_acgt(as.character(tssSeqs_raw),
-                        position_labels = positions, 
+visualize_matrix_of_acgt(as.character(tssSeqs_raw), position_labels = positions, 
                         saveFilename = NULL)
 ```
 
