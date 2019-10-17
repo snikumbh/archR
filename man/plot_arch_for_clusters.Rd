@@ -6,7 +6,7 @@
 \usage{
 plot_arch_for_clusters(givenSamplesMatrix, givenFeaturesMatrix, nCluster,
   clustering_sol, seqs = NULL, position_labels = NA,
-  plotMethod = "custom", add_pseudo_counts = F,
+  plotMethod = "custom", add_pseudo_counts = FALSE,
   sinuc_or_dinuc = "sinuc")
 }
 \arguments{
@@ -19,11 +19,13 @@ plot_arch_for_clusters(givenSamplesMatrix, givenFeaturesMatrix, nCluster,
 \item{clustering_sol}{The clustering solution as returned by
 \code{get_clusters} function.}
 
-\item{seqs}{For representing the sequences as an image (TO-DO: May not be needed).
+\item{seqs}{For representing the sequences as an image
+(TO-DO: May not be needed).
 Default value is NULL when no image gets printed.}
 
 \item{position_labels}{Labels of the positions in the sequences. Used for
-visualization with function \code{viz_all_factors_in_combined_heatmaps_seqlogos}.}
+visualization with function
+\code{viz_basis_vectors_in_combined_heatmaps_seqlogos}.}
 
 \item{plotMethod}{'custom' or 'bits', passed to ggseqlogo}
 
