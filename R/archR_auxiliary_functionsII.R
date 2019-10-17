@@ -89,9 +89,13 @@ archRSetConfig <- function(innerChunkSize = 500,
         nFoldsCondition <- 4 * kFoldsVal
         base::stopifnot(minThreshold >= nFoldsCondition)
         doNotProcess <- FALSE
-        if (lengthOfOC < minThreshold) {
-            doNotProcess <- TRUE
-            print("Sorry, will not process this small a chunk!")
+        if (lengthOfOC > 0) {
+            if (lengthOfOC < minThreshold) {
+                doNotProcess <- TRUE
+                message("Sorry, will not process this small a chunk!")
+            }
+        } else {
+            warning("Outer chunk of size 0")
         }
         return(doNotProcess)
     }
