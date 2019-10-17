@@ -34,7 +34,8 @@ motifs, their positional specificities and complex inter-relationships, all are
 simultaneously inferred from the data.
 
 # Installation
-```archR``` can be installed as follows.
+_archR_ is currently made available via Github; thus use the following procedure
+for installing _archR_.
 ```{r archR-install, echo=TRUE, eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("snikumbh/archR", build_vignettes = TRUE)
@@ -168,10 +169,10 @@ For each sequence, _archR_ provides the cluster label for the sequence in each
 iteration separated by a hyphen. 
 This is similar to labelling nodes in a tree, in which the label for any node 
 denotes the path from the root to that node traversing intermediate nodes.
-For example, cluster label for a sequence can look like "0-3-1-2". Here, "0" is 
-denotes the root (all data), the sequence was assigned to cluster 3 in the 
+For example, cluster label for a sequence can look like "0-3-1-2". Here, "0"  
+denotes the root (all sequences), the sequence was assigned to cluster 3 in the 
 first iteration (among all sequences in the data set), then to cluster 1 in the 
-second iteration (among sequences in cluster 3 from first iteration), and 
+second iteration (among sequences in cluster 3 from the first iteration), and 
 subsequently, to cluster 2 in the final iteration.
 For instance, below are the cluster labels for the first few sequences in the 
 data.
@@ -277,6 +278,6 @@ embarrasingly parallelizable case, this issue is alleviated. There are already
 provisions in _archR_ to choose parallelization for speeding up computations.
 
 # Session Info
-```{r session_info, include=TRUE, echo=FALSE, results='markup'}
+```{r session_info, include=TRUE, echo=TRUE, results='markup'}
 sessionInfo()
 ```
