@@ -121,12 +121,13 @@ tssSeqs_raw <- tssSeqsOriginal_raw[changedOrder]
 
 ```{r plot-seqs, echo=TRUE, fig.height=6, fig.width=5}
 # Visualize original and randomized sequence matrix
-visualize_matrix_of_acgt(as.character(tssSeqsOriginal_raw), 
+archR::viz_matrix_of_acgt(as.character(tssSeqsOriginal_raw), 
                           position_labels = positions, 
                           saveFilename = NULL, 
                           plot.title = "Original Sequences")
 
-visualize_matrix_of_acgt(as.character(tssSeqs_raw), position_labels = positions, 
+archR::viz_matrix_of_acgt(as.character(tssSeqs_raw), 
+                          position_labels = positions, 
                           saveFilename = NULL, 
                           plot.title = "Randomized Sequences")
 
@@ -209,30 +210,30 @@ These per-iteration basis vectors are available from the `archRresult` object
 (see above Section).
 
 ```{r viz-BV-1, echo=TRUE, fig.height=2, fig.width=25}
-viz_all_factors_as_seqlogo(archRresult$clustBasisVectors[[1]]$basisVectors,
+archR::viz_basis_vectors_as_seqlogo(archRresult$clustBasisVectors[[1]]$basisVectors,
                             position_labels = positions,
                             plotMethod = "bits")
 
-viz_all_factors_as_heatmap(archRresult$clustBasisVectors[[1]]$basisVectors,
+archR::viz_basis_vectors_as_heatmap(archRresult$clustBasisVectors[[1]]$basisVectors,
                            position_labels = positions)
 ```
 
 
 ```{r viz-BV-2, fig.height=2, fig.width=25, echo=TRUE}
-archR::viz_all_factors_as_seqlogo(
+archR::viz_basis_vectors_as_seqlogo(
   archRresult$clustBasisVectors[[2]]$basisVectors,
   position_labels = positions,
   plotMethod = "bits"
 )
 
-archR::viz_all_factors_as_heatmap(
+archR::viz_basis_vectors_as_heatmap(
   archRresult$clustBasisVectors[[2]]$basisVectors,
   position_labels = positions)
 ```
 
 
 ```{r visualize-basis-vectors-combined, echo=TRUE, fig.height=4, fig.width=25}
-archR::viz_all_factors_in_combined_heatmaps_seqlogos(
+archR::viz_basis_vectors_in_combined_heatmaps_seqlogos(
   archRresult$clustBasisVectors[[2]]$basisVectors,
   position_labels = positions,
   plotMethod = "bits"
@@ -243,12 +244,12 @@ the call to `ggseqlogo`. The possible values are `custom`, `bits`.
 
 The clustered output from _archR_ can again be visualized as a matrix. Simply 
 sort the sequences based on the cluster labels assigned to them and call 
-`archR::visualize_matrix_of_acgt` with the sorted order as shown.
+`archR::viz_matrix_of_acgt` with the sorted order as shown.
 ```{r visualize-clusters, echo=TRUE, fig.height=6, fig.width=5, eval=FALSE}
 sorted_order <- 
   sort(collect_cluster_labels(archRresult$seqsClustLabels, choose_levels = 3),
                     index.return = TRUE)
-archR::visualize_matrix_of_acgt(as.character(tssSeqs_raw[sorted_order$ix]), 
+archR::viz_matrix_of_acgt(as.character(tssSeqs_raw[sorted_order$ix]), 
                          position_labels = positions,
                          annClusters = sorted_order$x,
                          saveFilename = NULL)
@@ -276,6 +277,6 @@ embarrasingly parallelizable case, this issue is alleviated. There are already
 provisions in _archR_ to choose parallelization for speeding up computations.
 
 # Session Info
-```{r session_info, include=TRUE, echo=TRUE, results='markup'}
+```{r session_info, include=TRUE, echo=FALSE, results='markup'}
 sessionInfo()
 ```

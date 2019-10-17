@@ -1,21 +1,21 @@
-#' @title Get a specified number of clusters from the given data.
-#'
-#' @description Get the specified number of clusters from the given data using
-#' the chosen clusering method.
-#'
-#' @param givenMat A data matrix representing sequences along columns and their
-#' features aling the rows.
-#' @param clustMethod The method used for clustering the data. Default is
-#' \code{kmeans}. The other value supported currently in \code{hclust}.
-#' @param nCluster The numebr of clusters to be extracted.
-#'
-#' @return A list containing the clustering result \code{clust_sol}, and the
-#' reordered indices \code{reordering_idx}.
-#' @importFrom stats dist kmeans hclust
-#'
+# @title Get a specified number of clusters from the given data.
+#
+# @description Get the specified number of clusters from the given data using
+# the chosen clusering method.
+#
+# @param givenMat A data matrix representing sequences along columns and their
+# features aling the rows.
+# @param clustMethod The method used for clustering the data. Default is
+# \code{kmeans}. The other value supported currently in \code{hclust}.
+# @param nCluster The numebr of clusters to be extracted.
+#
+# @return A list containing the clustering result \code{clust_sol}, and the
+# reordered indices \code{reordering_idx}.
+# @importFrom stats kmeans
+#
 get_clusters <- function(givenMat, clustMethod, nCluster) {
-    # For consistency, the input argument matrix has sequences along columns,
-    # but we need sequences along rows here.
+    ## For consistency, the input argument matrix has sequences along columns,
+    ## but we need sequences along rows here.
     givenMat2 <- t(givenMat)
     nSeqs <- ncol(givenMat)
     if (is.na(givenMat) && sum(dim(givenMat)) == 2) {
@@ -32,10 +32,10 @@ get_clusters <- function(givenMat, clustMethod, nCluster) {
         stop("nClusters more than #sequences")
     } else if (nCluster == 1) {
         kmeans_result <- NULL
-        # reorder sequences in the matrix by clusters
+        ## reorder sequences in the matrix by clusters
         reordering_idx <- vector("list", 1)
         reordering_idx[[1]] <- seq_len(nSeqs)
-        #
+        ##
         return(
             list(
                 clustType = "kmeans",
@@ -55,11 +55,11 @@ get_clusters <- function(givenMat, clustMethod, nCluster) {
                     algorithm = "Lloyd"
                 )
             )
-            # reorder sequences in the matrix by clusters
+            ## reorder sequences in the matrix by clusters
             reordering_idx <-
                 lapply(seq_len(nCluster), function(x)
                     which(kmeans_result$cluster == x))
-            #
+            ##
             return(
                 list(
                     clustType = "kmeans",
@@ -72,5 +72,4 @@ get_clusters <- function(givenMat, clustMethod, nCluster) {
             stop("Wrong clustMethod passed. Takes only 'kmeans' as argument")
         }
     }
-    #
 }

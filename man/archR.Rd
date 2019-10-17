@@ -44,11 +44,11 @@ factorization, performing clustering, and visualization-related functions.
 \itemize{
 \item \code{\link{plot_ggseqlogo}}
 \item \code{\link{plot_ggheatmap}}
-\item \code{\link{viz_all_factors_as_heatmap}}
-\item \code{\link{viz_all_factors_as_seqlogo}}
-\item \code{\link{viz_all_factors_in_combined_heatmaps_seqlogos}}
+\item \code{\link{viz_basis_vectors_as_heatmap}}
+\item \code{\link{viz_basis_vectors_as_seqlogo}}
+\item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 \item \code{\link{plot_arch_for_clusters}}
-\item \code{\link{visualize_matrix_of_acgt}}
+\item \code{\link{viz_matrix_of_acgt}}
 }
 }
 

@@ -25,7 +25,7 @@ Default value is NULL when no image gets printed.}
 
 \item{position_labels}{Labels of the positions in the sequences. Used for
 visualization with function
-\code{viz_all_factors_in_combined_heatmaps_seqlogos}.}
+\code{viz_basis_vectors_in_combined_heatmaps_seqlogos}.}
 
 \item{plotMethod}{'custom' or 'bits', passed to ggseqlogo}
 

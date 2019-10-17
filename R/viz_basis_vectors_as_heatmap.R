@@ -4,16 +4,16 @@
 #' represented as a heatmap. Since each feeature vector is a one-hot-encoded DNA
 #'  sequence, it is reshaped to have 4 rows and then visualized.
 #'
-#' @inheritParams viz_all_factors_in_combined_heatmaps_seqlogos
+#' @inheritParams viz_basis_vectors_in_combined_heatmaps_seqlogos
 #'
 #' @return nothing.
 
 #' @export
 #'
-viz_all_factors_as_heatmap <- function(featuresMatrix, position_labels = NA,
-                                       add_pseudo_counts = FALSE,
-                                       savePDFfilename = NULL,
-                                       sinuc_or_dinuc = "sinuc") {
+viz_basis_vectors_as_heatmap <- function(featuresMatrix, position_labels = NA,
+                                        add_pseudo_counts = FALSE,
+                                        savePDFfilename = NULL,
+                                        sinuc_or_dinuc = "sinuc") {
     # Visualize all basis factors (expected as columns of the given features
     # matrix) as heatmaps
     if (!is.matrix(featuresMatrix)) {
@@ -27,16 +27,16 @@ viz_all_factors_as_heatmap <- function(featuresMatrix, position_labels = NA,
         invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
             pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
             p1 <- plot_ggheatmap(pwmMat = pwm,
-                                 position_labels = position_labels,
-                                 savePDFfilename = savePDFfilename)
+                                    position_labels = position_labels,
+                                    savePDFfilename = savePDFfilename)
             base::suppressMessages(print(p1))
         }))
     } else if (sinuc_or_dinuc == "dinuc") {
         invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
             pwm <- make_dinuc_PWMs(x, add_pseudo_counts = FALSE)
             p1 <- plot_ggheatmap(pwmMat = pwm,
-                                 position_labels = position_labels,
-                                 savePDFfilename = savePDFfilename)
+                                    position_labels = position_labels,
+                                    savePDFfilename = savePDFfilename)
             base::suppressMessages(print(p1))
         }))
     }

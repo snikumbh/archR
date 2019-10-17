@@ -205,8 +205,8 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
         ))
     }
     if (flags$plotVerboseFlag) {
-        ### Order the medians, accordingly change order of the collated cluster
-        ### assignments
+        ## Order the medians, accordingly change order of the collated cluster
+        ## assignments
         medoidsIdx <-
             .get_hopach_cluster_medoidsIdx(globFactorsHopach)
         print(medoidsIdx)

@@ -171,7 +171,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     }
     ##
     model_selectK <-
-        cv_model_select_pyNMF(
+        .cv_model_select_pyNMF(
             X = this_tss.seqs,
             param_ranges = config$paramRanges,
             kFolds = config$kFolds,
@@ -184,16 +184,16 @@ archRSetConfig <- function(innerChunkSize = 500,
         )
     if (config$flags$timeFlag) { print(Sys.time() - start) }
     ##
-    best_k <- get_best_K(model_selectK)
+    best_k <- .get_best_K(model_selectK)
     ##
     if (config$flags$verboseFlag) {
         cat(paste0("Best K for this subset: ", best_k, "\n"))
     }
     if (config$flags$plotVerboseFlag) {
         q2_means_by_k_vals <-
-            get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals,
+            .get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals,
                                             mean)
-        Q2vsK <- plot_cv_K(q2_means_by_k_vals)
+        Q2vsK <- .plot_cv_K(q2_means_by_k_vals)
         print(Q2vsK)
     }
     if (config$flags$verboseFlag ||

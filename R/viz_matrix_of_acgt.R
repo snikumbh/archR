@@ -26,61 +26,61 @@
 ## =============================================================================
 
 .seqs_to_df <- function(seqs, position_labels, annClusters = NULL,
-                       sinuc_or_dinuc = "sinuc") {
-    # handling single- and di-nucleotides separately
+                        sinuc_or_dinuc = "sinuc") {
+    ## handling single- and di-nucleotides separately
     if (sinuc_or_dinuc == "sinuc") {
         plot_df_list <- lapply(seq_along(seqs),
-                               function(x) {
-                                   str_seq <- seqs[x]
-                                   nucleotides <- unlist(strsplit(str_seq,
-                                                                  split = NULL))
-                                   temp_df <-
-                                       as.data.frame(nucleotides,
-                                                     stringsAsFactors = FALSE)
-                                   ## This is before adding other columns,
-                                   ## because the last state of the variable
-                                   ## is returned
-                                   if (!is.null(annClusters)) {
-                                       temp_df <-
-                                           tibble::add_column(temp_df,
+                                function(x) {
+                                    str_seq <- seqs[x]
+                                    nucleotides <- unlist(strsplit(str_seq,
+                                                                split = NULL))
+                                    temp_df <-
+                                        as.data.frame(nucleotides,
+                                                    stringsAsFactors = FALSE)
+                                    ## This is before adding other columns,
+                                    ## because the last state of the variable
+                                    ## is returned
+                                    if (!is.null(annClusters)) {
+                                        temp_df <-
+                                            tibble::add_column(temp_df,
                                                             annClusters =
                                                             annClusters[x])
-                                   }
-                                   ##
-                                   temp_df <-
-                                       tibble::add_column(temp_df,
+                                    }
+                                    ##
+                                    temp_df <-
+                                        tibble::add_column(temp_df,
                                                         seq_id = x,
                                                         positions =
                                                         position_labels)
-                               })
+                                })
     } else if (sinuc_or_dinuc == "dinuc") {
-        # handling dinucleotides
+        ## handling dinucleotides
         plot_df_list <-
             lapply(seq_along(seqs),
-                   function(x) {
-                       x_split <- unlist(strsplit(seqs[x],
-                                                  split = NULL))
-                       this_seq_len <- length(x_split)
-                       nucleotides <-
-                           unlist(lapply(seq_len(this_seq_len - 1),
-                                         function(y) {
-                                             paste0(x_split[y],
+                    function(x) {
+                        x_split <- unlist(strsplit(seqs[x],
+                                                split = NULL))
+                        this_seq_len <- length(x_split)
+                        nucleotides <-
+                            unlist(lapply(seq_len(this_seq_len - 1),
+                                        function(y) {
+                                            paste0(x_split[y],
                                                     x_split[y + 1])
-                                         }))
-                       temp_df <- as.data.frame(nucleotides,
+                                        }))
+                        temp_df <- as.data.frame(nucleotides,
                                                 stringsAsFactors = FALSE)
-                       if (!is.null(annClusters)) {
-                           temp_df <- tibble::add_column(temp_df, annClusters =
-                                                             annClusters[x])
-                       }
-                       ##
-                       position_labels_dinuc <-
-                           position_labels[seq_len(length(position_labels) - 1)]
-                       temp_df <-
-                           tibble::add_column(temp_df,
+                        if (!is.null(annClusters)) {
+                            temp_df <- tibble::add_column(temp_df, annClusters =
+                                                                annClusters[x])
+                        }
+                        ##
+                        position_labels_dinuc <-
+                        position_labels[seq_len(length(position_labels) - 1)]
+                        temp_df <-
+                            tibble::add_column(temp_df,
                                             seq_id = x,
                                             positions = position_labels_dinuc)
-                   })
+                    })
     }
     plot_df <- data.table::rbindlist(plot_df_list)
     return(plot_df)
@@ -99,15 +99,15 @@
 ## =============================================================================
 
 
-#' @title samarth
-#' @description samarth
-#' @param k number of colors
-#' @importFrom grDevices col2rgb rgb
+# @title samarth
+# @description samarth
+# @param k number of colors
+# @importFrom grDevices col2rgb rgb
 .distinctColorPalette <- function(k) {
     ColorSpace <-
-        t(unique(col2rgb(scales::hue_pal(l = 60:100)(2e3))))
-    km <- kmeans(ColorSpace, k, iter.max = 20)
-    colors <- rgb(round(km$centers), maxColorValue = 255)
+        t(unique(grDevices::col2rgb(scales::hue_pal(l = 60:100)(2e3))))
+    km <- stats::kmeans(ColorSpace, k, iter.max = 20)
+    colors <- grDevices::rgb(round(km$centers), maxColorValue = 255)
     return(colors)
 }
 ## =============================================================================
@@ -119,8 +119,8 @@
         data = plot_df,
         mapping = aes(
             x = .data$positions,
-            # Here, 'positions' is the column_name.
-            # Do not change it to position_labels
+            ## Here, 'positions' is the column_name.
+            ## Do not change it to position_labels
             y = .data$seq_id,
             fill = .data$nucleotides
         )) +
@@ -217,12 +217,12 @@
 #' @export
 #' @importFrom grDevices dev.off pdf colorRampPalette
 #' @importFrom rlang .data
-visualize_matrix_of_acgt <-
+viz_matrix_of_acgt <-
     function(givenMat,
                 position_labels,
                 sinuc_or_dinuc = "sinuc",
                 choose_colors = c("A" = "darkgreen", "C" = "blue",
-                                  "G" = "orange", "T" = "red"),
+                                    "G" = "orange", "T" = "red"),
                 annClusters = NULL,
                 mark_seq_at_every =
                     as.integer(ncol(givenMat) * 0.1),
@@ -256,16 +256,16 @@ visualize_matrix_of_acgt <-
     }
     ##
     pMatrix <- .setup_matrix_panel(plot_df = plot_df,
-                                   plot.title = plot.title,
-                                   position_breaks = position_breaks,
-                                   sequence_breaks = sequence_breaks,
-                                   choose_colors = choose_colors)
+                                    plot.title = plot.title,
+                                    position_breaks = position_breaks,
+                                    sequence_breaks = sequence_breaks,
+                                    choose_colors = choose_colors)
     ##
     if (!is.null(annClusters)) {
         pCluster <- .setup_cluster_panel(plot_df, annClusters)
         final_p <-
             ggpubr::ggarrange(pMatrix, pCluster, ncol = 2, heights = c(1,1),
-                              widths = c(8, 1.5), align = 'h')
+                                widths = c(8, 1.5), align = 'h')
     } else{
         final_p <- pMatrix
     }
