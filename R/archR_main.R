@@ -120,7 +120,7 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
             nxtOuterChunksColl <- append(nxtOuterChunksColl,
                                         collatedClustAssignments)
             message(paste0("Outer chunk ", outerChunkIdx,
-                            ", current total basis vectors: ",
+                            " done, current total basis vectors: ",
                             ncol(intClustFactors)))
         }  ### for loop over outerChunksCollection ENDS
         clustFactors[[test_itr + 1]] <-
@@ -128,10 +128,10 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
                 basisVectors = intClustFactors)
         outerChunksColl <- nxtOuterChunksColl
         test_itr <- test_itr + 1
-    }  # algorithm while loop ENDS
+    }  ## algorithm while loop ENDS
     archRresult <- list(seqsClustLabels = seqsClustLabels,
                         clustBasisVectors = clustFactors,
         config = config, call = match.call())
     message("=== archR exiting, returning result ===")
     return(archRresult)
-}  #archR function ENDS
+}  ## archR function ENDS
