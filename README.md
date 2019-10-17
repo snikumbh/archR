@@ -24,8 +24,11 @@ devtools::install_github("snikumbh/archR", build_vignettes = TRUE)
 
 ### Usage
 ```r
+# load package
+library(archR)
+
 # tssSeqs holds the one-hot encoded input matrix of all sequences
-tssSeqs <- prepare_data_from_FASTA(inputFastaFilename)
+tssSeqs <- archR::prepare_data_from_FASTA(inputFastaFilename)
 
 # Set archR configuration
 thisConfig <- archR::archRSetConfig(innerChunkSize = 500,
@@ -36,7 +39,6 @@ thisConfig <- archR::archRSetConfig(innerChunkSize = 500,
 archRresult <- archR::archR(config = thisConfig, 
                             tss.seqs = tssSeqs)
 ```
-
 
 ## Troubleshooting Installation
 
