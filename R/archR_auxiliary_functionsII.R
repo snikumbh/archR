@@ -96,7 +96,7 @@ archRSetConfig <- function(innerChunkSize = 500,
             }
         } else {
             #doNotProcess <- TRUE
-            warning("WARNING: Outer chunk of size 0")
+            message("WARNING: Outer chunk of size 0")
         }
         return(doNotProcess)
     }
