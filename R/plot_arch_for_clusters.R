@@ -151,8 +151,7 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw, archRresult,
     # length(archRresult$clustFactors)){
     for (i in seq_len(2)) {
         chosenLevelLabels <- collect_cluster_labels(archRresult$seqsClustLabels,
-                                                    choose_levels = i +
-            1)
+                                                    choose_levels = i + 1)
         chosenLevelLabels_sorted <- sort(chosenLevelLabels, index.return = TRUE)
         # print(chosenLevelLabels_sorted)
         fname <- paste0("samarth_trial_Level", i, "_architectures.pdf")
@@ -160,7 +159,8 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw, archRresult,
         # print(cluster_levels)
         print("print now? samarth")
         pdf(fname, width = 11, height = 1.5)
-        samarth_invisible <- sapply(seq_along(cluster_levels), function(x) {
+        samarth_invisible <- vapply(seq_along(cluster_levels),
+                function(x) {
             relIdx <- which(chosenLevelLabels_sorted$x == cluster_levels[x])
             # print(relIdx)
             samarth_p <- ggseqlogo::ggseqlogo(tss.seqs_raw[relIdx])

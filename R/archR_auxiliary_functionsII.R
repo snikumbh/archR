@@ -37,6 +37,7 @@ get_dimers_from_alphabet <- function(alphabet){
 #' @param modSelLogFile give
 #' @param flags give
 #'
+#' @return a list with all params for archR set
 #' @export
 archRSetConfig <- function(innerChunkSize = 500,
                             kMin = 2,

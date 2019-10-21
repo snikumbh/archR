@@ -490,7 +490,7 @@
     cat("Plotting Q2 as a function of alpha")
     p1 <-
         ggplot2::ggplot(mean_by_Alpha, aes(x = log2(rlang::.data$rel_var),
-                                           y = rlang::.data$q2_vals)) +
+                                            y = rlang::.data$q2_vals)) +
         ggplot2::geom_point() +
         ggplot2::geom_line() +
         ggplot2::geom_hline(yintercept = threshold$mean - threshold$se,

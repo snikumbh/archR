@@ -23,8 +23,6 @@ Imports:
     ggplot2 (>= 3.1.1),
     ggseqlogo (>= 0.1),
     gridExtra (>= 2.3),
-    heatmap3 (>= 1.1.6),
-    magrittr (>= 1.5),
     MASS,
     rlang,
     matrixStats,

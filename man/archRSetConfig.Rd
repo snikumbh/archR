@@ -38,6 +38,9 @@ archRSetConfig(innerChunkSize = 500, kMin = 2, kMax = 8,
 
 \item{flags}{give}
 }
+\value{
+a list with all params for archR set
+}
 \description{
 this will set the configuration
 }

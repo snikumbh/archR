@@ -139,11 +139,11 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     }
     for (i in seq_along(collatedClustAssignments)) {
         needUpdateIdx <- collatedClustAssignments[[i]]
-        newSeqsClustLabels[needUpdateIdx] <- sapply(
+        newSeqsClustLabels[needUpdateIdx] <- vapply(
             newSeqsClustLabels[needUpdateIdx],
             function(x) {
                 paste0(c(x, toString(i)), collapse = "-")
-            })
+            }, character(1))
     }
     return(newSeqsClustLabels)
 }
