@@ -1,4 +1,4 @@
-#' @title Visualize the factors in features matrix as a heatmap plot
+#' @title Visualize the NMF basis vectors as a heatmap
 #'
 #' @description Each factor in the given features matrix is separately
 #' represented as a heatmap. Since each feeature vector is a one-hot-encoded DNA
@@ -7,7 +7,10 @@
 #' @inheritParams viz_basis_vectors_in_combined_heatmaps_seqlogos
 #'
 #' @return nothing.
-
+#' @family visualization functions
+#' @seealso \code{\link{viz_basis_vectors_as_seqlogo}} for plotting only as
+#' sequence logos, \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
+#' for plotting combined heatmaps and sequence logos.
 #' @export
 #'
 viz_basis_vectors_as_heatmap <- function(featuresMatrix, position_labels = NA,

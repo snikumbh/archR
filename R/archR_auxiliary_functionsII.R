@@ -19,23 +19,39 @@ get_dimers_from_alphabet <- function(alphabet){
 ## =============================================================================
 
 #' @title
-#' Set archR run configuration in this function
+#' Set archR run configuration
 #'
-#' @description this will set the configuration
+#' @description This function sets the configuration for `archR`.
 #'
-#' @param innerChunkSize give
-#' @param kMin give
-#' @param kMax give
-#' @param cvFolds give
-#' @param parallelize give
-#' @param nCoresUse give
-#' @param nIterationsUse give
-#' @param seedVal give
-#' @param alphaBase give
-#' @param alphaPow give
-#' @param minSeqs give
-#' @param modSelLogFile give
-#' @param flags give
+#' @param innerChunkSize Numeric. Specify the size of the inner chunks of
+#' sequences.
+#' @param kMin Numeric. Specify the minimum of the range of values to be tested
+#' for number of NMF basis vectors.
+#' @param kMax Numeric. Specify the maximum of the range of values to be tested
+#' for number of NMF basis vectors.
+#' @param cvFolds Numeric. Specify the number of cross-validation folds used for
+#'  model selection.
+#' @param parallelize Logical. Specify whether to parallelize the procedure.
+#' @param nCoresUse The number of cores to be used when `parallelize` is set to
+#' TRUE.
+#' @param nIterationsUse Specify the number of bootstrapped iterations to be
+#' performed with NMF.
+#' @param seedVal Specify the seed value for reproducibility.
+#' @param alphaBase,alphaPow Specify the base value and the power for computing
+#' 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
+#' Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
+#' @param minSeqs Specify the minimum number of sequences, such that any
+#' cluster/chunk of size less than or equal to it will not further
+#' processed/clustered.
+#' @param modSelLogFile Specify a name for the file where model selection logs
+#' will be wrtten.
+#' @param flags List with four Logical elements as detailed.
+#' \describe{
+#'   \item{debugFlag}{Whether debug information for the run is printed}
+#'   \item{verboseFlag}{Whether verbose information for the run is printed}
+#'   \item{plotVerboseFlag}{Whether verbose plotting is performed for the run}
+#'   \item{timeFlag}{Whether timing information is printed for the run}
+#' }
 #'
 #' @return a list with all params for archR set
 #' @export

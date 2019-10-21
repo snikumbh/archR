@@ -1,4 +1,4 @@
-#' @title Visualize the features matrix in a paired heatmap and sequence logo
+#' @title Visualize the NMF basis vectors in a paired heatmap and sequence logo
 #' plot
 #'
 #' @description The given features matrix (with 4 rows) is represented as a
@@ -25,7 +25,10 @@
 #' @return nothing
 #'
 #' @export
-#'
+#' @family visualization functions
+#' @seealso \code{\link{viz_basis_vectors_as_heatmap}} for plotting only as
+#' heatmaps, \code{\link{viz_basis_vectors_as_seqlogo}} for plotting only as
+#' sequence logos.
 #' @importFrom dplyr mutate
 #' @importFrom reshape2 melt
 #' @import ggplot2

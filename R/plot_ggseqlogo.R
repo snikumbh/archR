@@ -13,7 +13,8 @@
 #' on it later. If \code{savePDFfilename} is given, it is also saved and the
 #' \code{ggplot} object returned.
 #' @export
-#'
+#' @family visualization functions
+#' @seealso \code{\link{plot_ggheatmap}} for plotting PWMs as heatmaps
 #' @import ggplot2
 #' @import ggseqlogo
 plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",

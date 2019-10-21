@@ -1,4 +1,4 @@
-#' @title Visualize the factors in features matrix as a sequence logo
+#' @title Visualize the NMF basis vectors as a sequence logo
 #'
 #' @description Each factor in the given features matrix is separately
 #' represented as a sequence logo. Since each feature vector is a
@@ -8,9 +8,11 @@
 #' @inheritParams viz_basis_vectors_in_combined_heatmaps_seqlogos
 #'
 #' @return nothing.
-#'
+#' @family visualization functions
 #' @export
-#'
+#' @seealso \code{\link{viz_basis_vectors_as_heatmap}} for plotting only as
+#' heatmap, \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
+#' for plotting combined heatmaps and sequence logos.
 #' @import ggplot2
 #' @import ggseqlogo
 #'

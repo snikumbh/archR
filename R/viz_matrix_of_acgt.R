@@ -115,7 +115,7 @@
 .setup_matrix_panel <- function(plot_df, position_breaks, sequence_breaks,
                                 plot.title, choose_colors){
 
-    pMatrix <- ggplot2::ggplot(
+    panelMatrix <- ggplot2::ggplot(
         data = plot_df,
         mapping = aes(
             x = .data$positions,
@@ -149,13 +149,13 @@
             ),
             axis.text.y = element_text(size = rel(0.9))
         )
-    return(pMatrix)
+    return(panelMatrix)
 }
 ## =============================================================================
 
 .setup_cluster_panel <- function(plot_df, annClusters){
 
-    pCluster <- ggplot2::ggplot(
+    panelClusters <- ggplot2::ggplot(
         data = plot_df,
         mapping = aes(
             x = 0,
@@ -183,7 +183,7 @@
         ggplot2::scale_fill_manual(values = .distinctColorPalette(length(levels(
             as.factor(annClusters)
         ))))
-    return(pCluster)
+    return(panelClusters)
 }
 ## =============================================================================
 
@@ -204,15 +204,23 @@
 #' absolute positive value. For every percentage N-th position, specify 0.01 for
 #'  10\%.
 #' @param plot.title The title of the plot.
-#' @param saveFilename Name of the file which will be saved as PDF.
-#' @param fileType give file type.
-#' @param sinuc_or_dinuc Specify single- or dinucleotide profiles.
-#' @param annClusters Give annotation clusters.
-#' @param choose_colors OK.
+#' @param saveFilename Name of the file in which the plot will be saved. Default
+#' filename used 'DNA_sequences_as_matrix'. Specify `NULL` if show plot on
+#' screen.
+#' @param fileType Specify file type. Default filetype is 'png'. This is ignored
+#'  if `saveFilename` is set to `NULL`.
+#' @param sinuc_or_dinuc Specify whether single- or di-nucleotide profiles are
+#' to be visualized.
+#' @param annClusters Provide cluster information for annotation on the matrix.
+#' Format is same as the `$ix` variable from output of `base::sort`.
+#' @param choose_colors Specify a color scheme for the alphabet as a list.
+#' Default is the color scheme for DNA sequences, i.e., c(A = "darkgreen",
+#' C = "blue", G = "orange", T = "red")
 #' @param verbose Default \code{0} which will not print any messages, or can be
 #' set to \code{1} which will print messages.
 #'
 #' @return nothing.
+#' @family visualization functions
 #'
 #' @export
 #' @importFrom grDevices dev.off pdf colorRampPalette

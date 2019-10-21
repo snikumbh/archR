@@ -150,8 +150,8 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 ## =============================================================================
 
 .prepare_chunks <- function(total_avail, reqdChunkSize, checkLength,
-                            flags = list(debugFlag = TRUE,
-    verboseFlag = TRUE, plotVerboseFlag = TRUE, timeFlag = TRUE)) {
+                            flags = list(debugFlag = FALSE,
+    verboseFlag = TRUE, plotVerboseFlag = FALSE, timeFlag = FALSE)) {
     ## total_avail is the set of seq_ids to be chunked (not array indices)
     if (length(total_avail) > reqdChunkSize) {
         chunkStarts <- seq(1, length(total_avail), by = reqdChunkSize)
@@ -163,7 +163,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
             chunkStarts <- chunkStarts[-c(length(chunkStarts))]
             chunkEnds[length(chunkEnds)] <- checkLength
         }
-        if (flags$debugFlag) {
+        if (flags$verboseFlag) {
             print(chunkStarts)
             print(chunkEnds)
         }

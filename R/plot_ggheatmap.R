@@ -12,7 +12,8 @@
 #' on it later. If \code{savePDFfilename} is given, it is also saved and the
 #' \code{ggplot} object returned.
 #' @export
-#'
+#' @family visualization functions
+#' @seealso \code{\link{plot_ggseqlogo}} for plotting PWMs as sequence logos
 #' @importFrom dplyr mutate
 #' @importFrom reshape2 melt
 #' @importFrom tibble add_column
