@@ -243,3 +243,14 @@ archRSetConfig <- function(innerChunkSize = 500,
     return(innerChunkNMFResult)
 }
 ## =============================================================================
+
+
+assert_OK_for_nextIteration <- function(nxtOuterChunksColl) {
+    ## Check any chunk of zero-length?
+    if (any(lapply(nxtOuterChunksColl, length) == 0)) {
+        message("WARNING: Chunks for next iteration have a problem")
+        stop(which(lapply(nxtOuterChunksColl, length) == 0),
+                " have zero lengths")
+    }
+
+}

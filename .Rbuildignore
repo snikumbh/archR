@@ -3,8 +3,9 @@
 data-raw
 ^data-raw$
 ^Meta$
-^docs
-^\.gitignore
+^docs$
+^errors-and-possible-resolutions.txt$
+^\.gitignore$
 ^\.travis\.yml$
 ^codecov\.yml$
 ^\.covrignore$

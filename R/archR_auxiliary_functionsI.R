@@ -39,33 +39,39 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     ## is a nested list, i.e. a list holding list of seqs_ids belonging to one
     ## cluster together. Hence, length(this variable) gives #clusters
     ## samplesMatrix IS samplesMatrix
+    rightClusterOrders <- vector("list", length(clustOrderIdx))
     if (length(clustOrderIdx) == 1) {
         ##
-        rightClusterOrders <- vector("list", length(clustOrderIdx))
         rightClusterOrders[[1]] <- iChunksColl[[iChunkIdx]][clustOrderIdx[[1]]]
         return(rightClusterOrders)
         ##
     } else if (length(clustOrderIdx) > 1) {
-        rightClusterOrders <- vector("list", length(clustOrderIdx))
+        ##
         for (cluster_idx in seq_along(clustOrderIdx)) {
             relevant_factor <-
                 which.max(rowMeans(
                 as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]])
                 ))
-            if (flags$debugFlag) {
-                print(relevant_factor)
-            }
             if (length(relevant_factor) > 1) {
                 if (flags$debugFlag) {
                     print("Factor-mapping NOT OK")
+                    print(relevant_factor)
                 }
             } else {
                 if (flags$debugFlag) {
                     print("Factor-mapping OK")
+                    print(relevant_factor)
                 }
                 rightClusterOrders[[relevant_factor]] <-
                     iChunksColl[[iChunkIdx]][clustOrderIdx[[cluster_idx]]]
             }
+        }
+        ## Check if any factor got left out?
+        ## i.e. no seqs assigned to its cluster
+        if (any(lapply(rightClusterOrders, length) == 0)) {
+            thisGotLeftOut <- which(lapply(rightClusterOrders, length) == 0)
+            message("WARNING: Factor(s) got no sequences assigned: ",
+                    thisGotLeftOut)
         }
         return(rightClusterOrders)
     }

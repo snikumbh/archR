@@ -126,6 +126,7 @@ archR <- function(config, tss.seqs, thresholdItr = 2) {
         clustFactors[[test_itr + 1]] <-
             list(nBasisVectors = ncol(intClustFactors),
                 basisVectors = intClustFactors)
+        assert_OK_for_nextIteration(nxtOuterChunksColl)
         outerChunksColl <- nxtOuterChunksColl
         test_itr <- test_itr + 1
     }  ## algorithm while loop ENDS
