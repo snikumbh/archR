@@ -19,11 +19,15 @@ sequences.}
 
 \item{position_labels}{Labels of the positions in the sequences.}
 
-\item{sinuc_or_dinuc}{Specify single- or dinucleotide profiles.}
+\item{sinuc_or_dinuc}{Specify whether single- or di-nucleotide profiles are
+to be visualized.}
 
-\item{choose_colors}{OK.}
+\item{choose_colors}{Specify a color scheme for the alphabet as a list.
+Default is the color scheme for DNA sequences, i.e., c(A = "darkgreen",
+C = "blue", G = "orange", T = "red")}
 
-\item{annClusters}{Give annotation clusters.}
+\item{annClusters}{Provide cluster information for annotation on the matrix.
+Format is same as the `$ix` variable from output of `base::sort`.}
 
 \item{mark_seq_at_every}{Tickmarks for sequences, i.e., these are y-ticks.}
 
@@ -35,9 +39,12 @@ absolute positive value. For every percentage N-th position, specify 0.01 for
 
 \item{plot.title}{The title of the plot.}
 
-\item{saveFilename}{Name of the file which will be saved as PDF.}
+\item{saveFilename}{Name of the file in which the plot will be saved. Default
+filename used 'DNA_sequences_as_matrix'. Specify `NULL` if show plot on
+screen.}
 
-\item{fileType}{give file type.}
+\item{fileType}{Specify file type. Default filetype is 'png'. This is ignored
+if `saveFilename` is set to `NULL`.}
 
 \item{verbose}{Default \code{0} which will not print any messages, or can be
 set to \code{1} which will print messages.}
@@ -49,3 +56,11 @@ nothing.
 The data matrix is expected to have features alogn the rows and
 sequences along the columns.
 }
+\seealso{
+Other visualization functions: \code{\link{plot_ggheatmap}},
+  \code{\link{plot_ggseqlogo}},
+  \code{\link{viz_basis_vectors_as_heatmap}},
+  \code{\link{viz_basis_vectors_as_seqlogo}},
+  \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
+}
+\concept{visualization functions}

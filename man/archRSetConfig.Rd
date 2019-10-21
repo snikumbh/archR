@@ -2,7 +2,7 @@
 % Please edit documentation in R/archR_auxiliary_functionsII.R
 \name{archRSetConfig}
 \alias{archRSetConfig}
-\title{Set archR run configuration in this function}
+\title{Set archR run configuration}
 \usage{
 archRSetConfig(innerChunkSize = 500, kMin = 2, kMax = 8,
   cvFolds = 5, parallelize = TRUE, nCoresUse = 32,
@@ -12,35 +12,50 @@ archRSetConfig(innerChunkSize = 500, kMin = 2, kMax = 8,
   plotVerboseFlag = FALSE))
 }
 \arguments{
-\item{innerChunkSize}{give}
+\item{innerChunkSize}{Numeric. Specify the size of the inner chunks of
+sequences.}
 
-\item{kMin}{give}
+\item{kMin}{Numeric. Specify the minimum of the range of values to be tested
+for number of NMF basis vectors.}
 
-\item{kMax}{give}
+\item{kMax}{Numeric. Specify the maximum of the range of values to be tested
+for number of NMF basis vectors.}
 
-\item{cvFolds}{give}
+\item{cvFolds}{Numeric. Specify the number of cross-validation folds used for
+model selection.}
 
-\item{parallelize}{give}
+\item{parallelize}{Logical. Specify whether to parallelize the procedure.}
 
-\item{nCoresUse}{give}
+\item{nCoresUse}{The number of cores to be used when `parallelize` is set to
+TRUE.}
 
-\item{nIterationsUse}{give}
+\item{nIterationsUse}{Specify the number of bootstrapped iterations to be
+performed with NMF.}
 
-\item{seedVal}{give}
+\item{seedVal}{Specify the seed value for reproducibility.}
 
-\item{alphaBase}{give}
+\item{alphaBase, alphaPow}{Specify the base value and the power for computing
+'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
+Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.}
 
-\item{alphaPow}{give}
+\item{minSeqs}{Specify the minimum number of sequences, such that any
+cluster/chunk of size less than or equal to it will not further
+processed/clustered.}
 
-\item{minSeqs}{give}
+\item{modSelLogFile}{Specify a name for the file where model selection logs
+will be wrtten.}
 
-\item{modSelLogFile}{give}
-
-\item{flags}{give}
+\item{flags}{List with four Logical elements as detailed.
+\describe{
+  \item{debugFlag}{Whether debug information for the run is printed}
+  \item{verboseFlag}{Whether verbose information for the run is printed}
+  \item{plotVerboseFlag}{Whether verbose plotting is performed for the run}
+  \item{timeFlag}{Whether timing information is printed for the run}
+}}
 }
 \value{
 a list with all params for archR set
 }
 \description{
-this will set the configuration
+This function sets the configuration for `archR`.
 }

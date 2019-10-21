@@ -2,7 +2,7 @@
 % Please edit documentation in R/viz_basis_vectors_as_seqlogo.R
 \name{viz_basis_vectors_as_seqlogo}
 \alias{viz_basis_vectors_as_seqlogo}
-\title{Visualize the factors in features matrix as a sequence logo}
+\title{Visualize the NMF basis vectors as a sequence logo}
 \usage{
 viz_basis_vectors_as_seqlogo(featuresMatrix, plotMethod = "custom",
   position_labels = NA, add_pseudo_counts = FALSE,
@@ -40,3 +40,15 @@ represented as a sequence logo. Since each feature vector is a
 one-hot-encoded
 DNA sequence, it is reshaped to have 4 rows and then visualized.
 }
+\seealso{
+\code{\link{viz_basis_vectors_as_heatmap}} for plotting only as
+heatmap, \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
+for plotting combined heatmaps and sequence logos.
+
+Other visualization functions: \code{\link{plot_ggheatmap}},
+  \code{\link{plot_ggseqlogo}},
+  \code{\link{viz_basis_vectors_as_heatmap}},
+  \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}},
+  \code{\link{viz_matrix_of_acgt}}
+}
+\concept{visualization functions}

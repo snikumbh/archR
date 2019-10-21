@@ -26,3 +26,13 @@ on it later. If \code{savePDFfilename} is given, it is also saved and the
 \description{
 Visualize a given (PWM) matrix as a sequence logo
 }
+\seealso{
+\code{\link{plot_ggheatmap}} for plotting PWMs as heatmaps
+
+Other visualization functions: \code{\link{plot_ggheatmap}},
+  \code{\link{viz_basis_vectors_as_heatmap}},
+  \code{\link{viz_basis_vectors_as_seqlogo}},
+  \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}},
+  \code{\link{viz_matrix_of_acgt}}
+}
+\concept{visualization functions}

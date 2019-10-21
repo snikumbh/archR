@@ -2,7 +2,7 @@
 % Please edit documentation in R/viz_basis_vectors_as_heatmap.R
 \name{viz_basis_vectors_as_heatmap}
 \alias{viz_basis_vectors_as_heatmap}
-\title{Visualize the factors in features matrix as a heatmap plot}
+\title{Visualize the NMF basis vectors as a heatmap}
 \usage{
 viz_basis_vectors_as_heatmap(featuresMatrix, position_labels = NA,
   add_pseudo_counts = FALSE, savePDFfilename = NULL,
@@ -35,3 +35,15 @@ Each factor in the given features matrix is separately
 represented as a heatmap. Since each feeature vector is a one-hot-encoded DNA
  sequence, it is reshaped to have 4 rows and then visualized.
 }
+\seealso{
+\code{\link{viz_basis_vectors_as_seqlogo}} for plotting only as
+sequence logos, \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
+for plotting combined heatmaps and sequence logos.
+
+Other visualization functions: \code{\link{plot_ggheatmap}},
+  \code{\link{plot_ggseqlogo}},
+  \code{\link{viz_basis_vectors_as_seqlogo}},
+  \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}},
+  \code{\link{viz_matrix_of_acgt}}
+}
+\concept{visualization functions}
