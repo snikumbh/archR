@@ -204,9 +204,8 @@
 #' absolute positive value. For every percentage N-th position, specify 0.01 for
 #'  10\%.
 #' @param plot.title The title of the plot.
-#' @param saveFilename Name of the file in which the plot will be saved. Default
-#' filename used 'DNA_sequences_as_matrix'. Specify `NULL` if show plot on
-#' screen.
+#' @param saveFilename Name of the file in which the plot will be saved.
+#' Default `NULL`, shows plot on screen.
 #' @param fileType Specify file type. Default filetype is 'png'. This is ignored
 #'  if `saveFilename` is set to `NULL`.
 #' @param sinuc_or_dinuc Specify whether single- or di-nucleotide profiles are
@@ -237,7 +236,7 @@ viz_matrix_of_acgt <-
                 # percentage value, 10 as default
                 mark_pos_at_every = 10,
                 plot.title = "DNA Sequences",
-                saveFilename = "DNA_sequences_as_matrix",
+                saveFilename = NULL,
                 fileType = "png",
                 verbose = 0) {
     ## Returns: No return value
