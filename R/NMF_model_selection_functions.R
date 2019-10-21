@@ -222,7 +222,7 @@
         cl <-
             parallel::makeCluster(nCores, type = "FORK", outfile = logfile)
         parallel::clusterEvalQ(cl, suppressWarnings(require(MASS,
-                                                            quietly = FALSE)))
+                                                            quietly = TRUE)))
         ## ^for pseudo-inverse using function `ginv`
         parallel::clusterExport(
             cl = cl,
