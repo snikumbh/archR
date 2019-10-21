@@ -91,8 +91,8 @@ one-hot encoded representation, i.e., sequences are arranged along the columns.
 inputFastaFilename <- system.file("extdata", "example_data.fa", 
                                   package = "archR", 
                                   mustWork = TRUE)
-tssSeqsOriginal <- prepare_data_from_FASTA(inputFastaFilename)
-tssSeqsOriginal_raw <- prepare_data_from_FASTA(inputFastaFilename, 
+tssSeqsOriginal <- archR::prepare_data_from_FASTA(inputFastaFilename)
+tssSeqsOriginal_raw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
                                                rawSeq = TRUE)
 nSeqs <- ncol(tssSeqsOriginal)
 positions <- seq(1,200)
@@ -105,7 +105,7 @@ If you already have a `BiocStrings::DNAStringSet` object, you can use the
 object.
 ```{r load-example-data-2, echo=TRUE, eval=TRUE}
 # Creation of one-hot encoded data matrix from a DNAStringSet object
-tssSeqs_direct <- get_one_hot_encoded_seqs(tssSeqsOriginal_raw)
+tssSeqs_direct <- archR::get_one_hot_encoded_seqs(tssSeqsOriginal_raw)
 identical(tssSeqs_direct, tssSeqsOriginal)
 ```
 
@@ -211,20 +211,23 @@ These per-iteration basis vectors are available from the `archRresult` object
 (see above Section).
 
 ```{r viz-BV-1, echo=TRUE, fig.height=2, fig.width=25}
-archR::viz_basis_vectors_as_seqlogo(archRresult$clustBasisVectors[[1]]$basisVectors,
-                            position_labels = positions,
-                            plotMethod = "bits")
+archR::viz_basis_vectors_as_seqlogo(
+    archRresult$clustBasisVectors[[1]]$basisVectors,
+    position_labels = positions,
+    plotMethod = "bits"
+)
 
-archR::viz_basis_vectors_as_heatmap(archRresult$clustBasisVectors[[1]]$basisVectors,
-                           position_labels = positions)
+archR::viz_basis_vectors_as_heatmap(
+    archRresult$clustBasisVectors[[1]]$basisVectors,
+    position_labels = positions)
 ```
 
 
 ```{r viz-BV-2, fig.height=2, fig.width=25, echo=TRUE}
 archR::viz_basis_vectors_as_seqlogo(
-  archRresult$clustBasisVectors[[2]]$basisVectors,
-  position_labels = positions,
-  plotMethod = "bits"
+    archRresult$clustBasisVectors[[2]]$basisVectors,
+    position_labels = positions,
+    plotMethod = "bits"
 )
 
 archR::viz_basis_vectors_as_heatmap(
