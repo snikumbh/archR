@@ -219,8 +219,7 @@
                 stop("nCores > number of individual computations. Stopping ")
             }
         }
-        cl <-
-            parallel::makeCluster(nCores, type = "FORK", outfile = logfile)
+        cl <- parallel::makeCluster(nCores, type = "FORK", outfile = logfile)
         parallel::clusterEvalQ(cl, suppressWarnings(require(MASS,
                                                             quietly = TRUE)))
         ## ^for pseudo-inverse using function `ginv`
