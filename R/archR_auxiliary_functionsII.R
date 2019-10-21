@@ -96,7 +96,8 @@ archRSetConfig <- function(innerChunkSize = 500,
                 message("Sorry, will not process this small a chunk!")
             }
         } else {
-            warning("Outer chunk of size 0")
+            #doNotProcess <- TRUE
+            message("WARNING: Outer chunk of size 0")
         }
         return(doNotProcess)
     }
@@ -130,7 +131,7 @@ archRSetConfig <- function(innerChunkSize = 500,
 
 .compute_factor_distances <- function(factorsMat, distMethod = "cosangle"){
     ## Ensure that entities to compare are along the rows, because
-    # Here, the factors are along the columns, and features along rows.
+    ## Here, the factors are along the columns, and features along rows.
     ## hopach::distancematrix computes distances between rows of a matrix.
     ## Therefore, check and change if necessary.
     if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)

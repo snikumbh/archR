@@ -7,9 +7,13 @@ cache: packages
 r: 
   - 3.5
 
-
 os:
     - linux
+
+# safelist
+branches:
+  only:
+  - master
 
 addons:
   apt:
