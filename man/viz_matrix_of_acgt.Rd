@@ -9,8 +9,7 @@ viz_matrix_of_acgt(givenMat, position_labels, sinuc_or_dinuc = "sinuc",
   "red"), annClusters = NULL,
   mark_seq_at_every = as.integer(ncol(givenMat) * 0.1),
   mark_pos_at_every = 10, plot.title = "DNA Sequences",
-  saveFilename = "DNA_sequences_as_matrix", fileType = "png",
-  verbose = 0)
+  saveFilename = NULL, fileType = "png", verbose = 0)
 }
 \arguments{
 \item{givenMat}{The data matrix describing the set of sequences to be
@@ -39,9 +38,8 @@ absolute positive value. For every percentage N-th position, specify 0.01 for
 
 \item{plot.title}{The title of the plot.}
 
-\item{saveFilename}{Name of the file in which the plot will be saved. Default
-filename used 'DNA_sequences_as_matrix'. Specify `NULL` if show plot on
-screen.}
+\item{saveFilename}{Name of the file in which the plot will be saved.
+Default `NULL`, shows plot on screen.}
 
 \item{fileType}{Specify file type. Default filetype is 'png'. This is ignored
 if `saveFilename` is set to `NULL`.}
