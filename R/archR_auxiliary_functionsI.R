@@ -6,7 +6,7 @@
 #' @param given_seqsClustLabels from archR result object
 #' @param choose_levels choose a level/iteration
 #'
-#' @return A numeric vector of the same saize as seqsClustLabels, with labels
+#' @return A numeric vector of the same size as seqsClustLabels, with labels
 #' only up to the chosen iteration
 #' @export
 #'
@@ -33,15 +33,51 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 }
 ## =============================================================================
 
+# @title Map clusters to factors
+#
+# @description This function maps the clusters with the corresponding factors
+#  factors <--> clusters; meaning if there are 5 clusters and 5 factors, which
+#  cluster corresponds to which factor is assigned by this function.
+#  It takes as input the clusters, and returns the correct order of the
+#  clusters.
+#
+# @param samplesMatrix A matrix. Samples matrix from solving NMF
+# @param clustOrderIdx A nested list similar to reordering_idx from kmeans
+# @param iChunksColl A list
+# @param iChunkIdx A numeric
+# @param flags List with four fixed elements. flags param in archR config
+#
+# @return A list that can be assigned as an element in globClustAssignments
 .map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
                                     iChunkIdx, flags) {
     ## clustOrderIdx IS clustering_sol_kmeans$reordering_idx, the reorderingIdx
     ## is a nested list, i.e. a list holding list of seqs_ids belonging to one
-    ## cluster together. Hence, length(this variable) gives #clusters
-    ## samplesMatrix IS samplesMatrix
+    ## cluster together. Hence, length(this variable) gives #clusters.
+    ## samplesMatrix IS samplesMatrix.
+    ##
+    ## Make checks
+    .assert_archR_samplesMatrix(samplesMatrix)
+    ##
+    if (!is.list(clustOrderIdx)) {
+        stop("Mapping clusters to factors, cluster orders is not a list")
+    } else if (!is.vector(clustOrderIdx[[1]])) {
+            stop("Mapping clusters to factors, cluster orders is not a vector")
+    }
+    ## check iChunksColl and iChunkIdx
+    if (!is.null(iChunksColl) && length(iChunksColl) < 1) {
+        stop("Mapping clusters to factors, expecting inner chunks as a
+                list of length > 0")
+    }
+    if (!is.null(iChunkIdx) && !is.numeric(iChunkIdx) && iChunkIdx > 0) {
+        stop("Mapping clusters to factors, expecting inner chunk index as a
+             numeric > 0")
+    }
+    ##
+    .assert_archR_flags(flags)
+    ##
     rightClusterOrders <- vector("list", length(clustOrderIdx))
     if (length(clustOrderIdx) == 1) {
-        ##
+        ## Special case
         rightClusterOrders[[1]] <- iChunksColl[[iChunkIdx]][clustOrderIdx[[1]]]
         return(rightClusterOrders)
         ##
@@ -54,13 +90,13 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
                 ))
             if (length(relevant_factor) > 1) {
                 if (flags$debugFlag) {
-                    print("Factor-mapping NOT OK")
-                    print(relevant_factor)
+                    message("Multiple basis vectors attained max.")
+                    message(relevant_factor)
                 }
             } else {
                 if (flags$debugFlag) {
-                    print("Factor-mapping OK")
-                    print(relevant_factor)
+                    message("Factor-mapping OK")
+                    message(relevant_factor)
                 }
                 rightClusterOrders[[relevant_factor]] <-
                     iChunksColl[[iChunkIdx]][clustOrderIdx[[cluster_idx]]]
@@ -71,6 +107,8 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
         if (any(lapply(rightClusterOrders, length) == 0)) {
             thisGotLeftOut <- which(lapply(rightClusterOrders, length) == 0)
             message("WARNING: Factor(s) got no sequences assigned: ",
+                    thisGotLeftOut)
+            warning("WARNING: Factor(s) got no sequences assigned: ",
                     thisGotLeftOut)
         }
         return(rightClusterOrders)
@@ -149,40 +187,78 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 }
 ## =============================================================================
 
-.prepare_chunks <- function(total_avail, reqdChunkSize, checkLength,
+# @title Prepare chunks out of given set of sequences (sequence IDs)
+# @param total_set set of sequences to be chunked
+# @param reqdChunkSize the given chunk size
+# @param flags Specify the flags from the config param set for archR
+#
+# @return A list with chunks of sequences (sequence IDs) as its elements
+.prepare_chunks <- function(total_set, reqdChunkSize,
                             flags = list(debugFlag = FALSE,
-    verboseFlag = TRUE, plotVerboseFlag = FALSE, timeFlag = FALSE)) {
-    ## total_avail is the set of seq_ids to be chunked (not array indices)
-    if (length(total_avail) > reqdChunkSize) {
-        chunkStarts <- seq(1, length(total_avail), by = reqdChunkSize)
-        chunkEnds <- seq(reqdChunkSize, length(total_avail), by = reqdChunkSize)
+                                        verboseFlag = TRUE,
+                                        plotVerboseFlag = FALSE,
+                                        timeFlag = FALSE)
+                            ) {
+    ## total_set is the set of seq_ids to be chunked (not array indices)
+    if (is.null(total_set)) {
+        stop("Preparing chunks, 'total_set' is NULL")
+    }
+    chunkLength <- length(total_set)
+    if (chunkLength == 0) {
+        stop("Preparing chunks, length of 'total_set' is 0")
+    }
+    .assert_archR_innerChunkSize_independent(reqdChunkSize)
+    .assert_archR_flags(flags)
+    ##
+    if (chunkLength > reqdChunkSize) {
+        chunkStarts <- seq(1, chunkLength, by = reqdChunkSize)
+        chunkEnds <- seq(reqdChunkSize, chunkLength, by = reqdChunkSize)
         if (length(chunkStarts) > length(chunkEnds)) {
-            if (flags$debugFlag) {
-                print("Chunk starts/ends altered")
+            if ((chunkLength - chunkStarts[length(chunkStarts)]) >
+                round(0.5*reqdChunkSize)) {
+                chunkEnds <- append(chunkEnds, chunkLength)
+            } else {
+                chunkStarts <- chunkStarts[-length(chunkStarts)]
+                chunkEnds[length(chunkEnds)] <- chunkLength
             }
-            chunkStarts <- chunkStarts[-c(length(chunkStarts))]
-            chunkEnds[length(chunkEnds)] <- checkLength
         }
-        if (flags$verboseFlag) {
+        if (flags$debugFlag) {
             print(chunkStarts)
             print(chunkEnds)
         }
         preparedChunks <- vector("list", length(chunkStarts))
         for (i in seq_along(chunkStarts)) {
-            preparedChunks[[i]] <- total_avail[chunkStarts[i]:chunkEnds[i]]
+            preparedChunks[[i]] <- total_set[chunkStarts[i]:chunkEnds[i]]
         }
     } else {
         preparedChunks <- vector("list", 1)
-        preparedChunks[[1]] <- total_avail
+        preparedChunks[[1]] <- total_set
+    }
+    if (length(preparedChunks) < 1) {
+        stop("Preparing chunks, length was 0")
     }
     return(preparedChunks)
 
 }
 ## =============================================================================
 
+# @title Handle clustering of NMF factors
+#
+# @param globFactorsMat Specify the NMF factors as a matrix with the individual
+# factors along the columns.
+# @param distMethod Specify the distance measure to be used. Default is cosine
+# measure.
+# @param flags Specify the flags from the config param set for archR
+#
+# @return hopach object
 .handle_clustering_of_factors <- function(globFactorsMat,
                                         distMethod = "cosangle",
-                                        flags) {
+                                        flags = list(debugFlag = FALSE,
+                                                    verboseFlag = TRUE,
+                                                    plotVerboseFlag = FALSE,
+                                                    timeFlag = FALSE)
+                                        ) {
+    .assert_archR_flags(flags)
     ## Currently relying on HOPACH algorithm - Compute cosine similarities
     ## (values between 0-1) - Using HOPACH algorithm for clustering with chosen
     ##  distance measure (we currently use 'cosangle' distance measure)

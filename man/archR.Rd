@@ -7,14 +7,16 @@
 \title{archR: A package for discovering different architectures of sequence
 elements}
 \usage{
-archR(config, tss.seqs, thresholdItr = 2)
+archR(config, seqsMat, thresholdItr = 2)
 }
 \arguments{
 \item{config}{archR configuration object}
 
-\item{tss.seqs}{sequences}
+\item{seqsMat}{A matrix. A matrix of one-hot encoded sequences with sequences
+along columns}
 
-\item{thresholdItr}{number of iterations to perform}
+\item{thresholdItr}{numeric. Specify the number of iterations to perform.
+Default is 2}
 }
 \value{
 Object of class archR (or at the moment, a list of lists)
@@ -23,8 +25,7 @@ Object of class archR (or at the moment, a list of lists)
 Given a set of DNA sequences, the \code{archR} package enables discovery of
 clusters of sequence with characteristic sequence architectures.
 
-Set archR configuration and call this function to process a
-data set using archR.
+Call this function to process a data set using archR.
 }
 \details{
 The archR package provides three categories of important functions:

@@ -152,7 +152,6 @@
 #
 # @return A tibble of grid_search_results
 #
-# @importFrom magrittr %>%
 # @importFrom purrr cross_df
 # @importFrom parallel makeCluster stopCluster detectCores clusterEvalQ
 # @importFrom parallel clusterExport
@@ -182,15 +181,11 @@
     ## Check names in param_ranges list, the function relies on it below
     if (length(setdiff(names(param_ranges), c("alphaPow", "alphaBase",
                                                 "k_vals"))) > 0) {
-        stop(paste0(
-            "Check param_ranges list, expecting three element names: ",
-            c("alphaBase", "alphaPow", "k_vals")
-        ))
+        stop("Expected elements in param ranges: alphaBase, alphaPow, k_vals")
     }
     ## Get cross-validation folds
-    cvfolds <-
-        .generate_folds(dim(X), kFolds, seed_val = seed_val)
-    ## Convert to data frame grid, tidyverse approach
+    cvfolds <- .generate_folds(dim(X), kFolds, seed_val = seed_val)
+    ## Convert to data frame grid
     ## Params to tune: alphaP, alphaA, #factors
     grid_search_params <- purrr::cross_df(list(
         k_vals = param_ranges$k_vals,
@@ -201,14 +196,13 @@
         verbose = set_verbose
     ))
     ##
-    cat(paste0("Grid search: ", nrow(grid_search_params), " combinations\n"))
+    message("Grid search: ", nrow(grid_search_params), " combinations")
     ##
     if (parallelDo) {
-        cat(paste0("Opted: Parallel for grid search\n"))
+        message("Opted: Parallel for grid search")
         if (is.na(nCores)) {
             ## raise error or handle
-            print("'nCores' not specified, performing serial grid search")
-            stop("Number of cores to use not specified")
+            stop("'parallelize' is TRUE, but 'nCores' not specified")
         } else {
             if (nCores <= parallel::detectCores()) {
                 cat(paste0("No. of cores: ", nCores, "\n"))

@@ -62,7 +62,7 @@ test_that("Handles erroneous names in param_ranges list", {
       param_ranges = testParamRanges,
       kFolds = testKFolds
     ),
-    "Check param_ranges list"
+    "Expected elements in param ranges: alphaBase, alphaPow, k_vals"
   )
 })
 

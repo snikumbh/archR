@@ -12,7 +12,7 @@ collect_cluster_labels(given_seqsClustLabels, choose_levels = 1)
 \item{choose_levels}{choose a level/iteration}
 }
 \value{
-A numeric vector of the same saize as seqsClustLabels, with labels
+A numeric vector of the same size as seqsClustLabels, with labels
 only up to the chosen iteration
 }
 \description{

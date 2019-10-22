@@ -1,13 +1,23 @@
+## Getter function to fetch the features matrix from NMF result object
+## (from python)
 get_features_matrix <- function(nmfResultObj){
-    return(nmfResultObj[[1]])
+    return(as.matrix(nmfResultObj[[1]]))
 }
 ## =============================================================================
 
+## Getter function to fetch the samples matrix from NMF result object
+## (from python)
 get_samples_matrix <- function(nmfResultObj){
-    return(nmfResultObj[[2]])
+    return(as.matrix(nmfResultObj[[2]]))
 }
 ## =============================================================================
 
+## @title Get hopach cluster medoids
+##
+## @description Fetch the cluster medoids from hopach clustering result object
+##
+## @param hopachObj
+##
 .get_hopach_cluster_medoidsIdx <- function(hopachObj){
     return(hopachObj$clustering$medoids)
 }
@@ -100,11 +110,27 @@ archRSetConfig <- function(innerChunkSize = 500,
 }
 ## =============================================================================
 
-.decide_process_outer_chunk <-
-    function(minThreshold, lengthOfOC, kFoldsVal) {
+
+## @title Decide processing of outer chunk based on its size
+##
+## @description Function to make the decision on whether the given (outer) chunk should be
+## processed
+## @param minThreshold Numeric. This is the minSeqs param from archR config
+## @param lengthOfOC Numeric. This is the length of the outer chunk
+## @param kFoldsVal Numeric. This is the kFolds param in archR config
+##
+## If the lengthOfOC == 0, STOP
+## If the minThreshold < 4*kFolds, STOP
+## If the lengthOfOC < minThreshold, DO NOT PROCESS/return TRUE
+##
+.decide_process_outer_chunk <- function(minThreshold, lengthOfOC, kFoldsVal) {
         # Assert that minThreshold > 4*kFoldsVal
         nFoldsCondition <- 4 * kFoldsVal
-        base::stopifnot(minThreshold >= nFoldsCondition)
+        .assert_archR_minSeqs_independent(minThreshold)
+        if (minThreshold < nFoldsCondition) {
+            stop("'minSeqs' should be at least 4*'kFolds'")
+        }
+        # base::stopifnot(minThreshold >= nFoldsCondition)
         doNotProcess <- FALSE
         if (lengthOfOC > 0) {
             if (lengthOfOC < minThreshold) {
@@ -112,8 +138,8 @@ archRSetConfig <- function(innerChunkSize = 500,
                 message("Sorry, will not process this small a chunk!")
             }
         } else {
-            #doNotProcess <- TRUE
-            message("WARNING: Outer chunk of size 0")
+            # doNotProcess <- TRUE
+            stop("Outer chunk of size 0")
         }
         return(doNotProcess)
     }
@@ -158,7 +184,16 @@ archRSetConfig <- function(innerChunkSize = 500,
 }
 ## =============================================================================
 
-
+# @title Get factors from factor clustering (hopach object)
+#
+# @description Returns the cluster medoid factors from hopach clustering of
+# NMF factors
+#
+# @param hopachObj The hopach object holding hopach result
+# @param globFactorsMat The global factors matrix
+#
+# @return If hopach object is not null, returns only the cluster medoid factors
+# as a matrix, else, returns the complete factors matrix
 .get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
     ##
     if (is.null(hopachObj)) {
@@ -170,105 +205,104 @@ archRSetConfig <- function(innerChunkSize = 500,
 }
 ## =============================================================================
 
+## @title Process a chunk wih NMF
+##
+##
+## On the given inner chunk,
+## 1. perform model selection for #factors for NMF
+## 2. Perform final NMF with chosen best_k (#Factors)
+## 3. Store factors (globFactors)
+## 4. Fetch clusters using k-means clustering
+##      - assign clusters <--> factors
+## 5. Store cluster assignments (globClustAssignments)
+## 6. Return updated globFactors, globClustAssignments
+##
+## - innerChunkIdx is needed to appropriately index into the global variables:
+##    globFactors and globClustAssignments
+## - globClustAssignments variable is updated inside the function to
+## additionally hold new ones
+## - Similarly, globFactors variable is updated inside the function to
+## additionally hold new ones
 .handle_chunk_w_NMF <- function(innerChunkIdx,
                                 innerChunksColl,
-                                this_tss.seqs,
+                                this_mat,
                                 globFactors,
                                 globClustAssignments,
                                 config) {
     ##
-    ## On the given inner chunk,
-    ## 1. perform model selection for #factors for NMF
-    ## 2. Perform final NMF with chosen best_k (#Factors)
-    ## 3. Store factors (globFactors)
-    ## 4. Perform k-means clustering
-    ## 5. Store cluster assignments (globClustAssignments)
-    ## 6. Return updated globFactors, globClustAssignments
+    .assert_archR_flags(config$flags)
     ##
     if (config$flags$verboseFlag) {
-        cat(paste0("Working on chunk: ", innerChunkIdx, " of ",
-            length(innerChunksColl), " (chunkSize: ",
-            ncol(this_tss.seqs), ") \n")
-        )
+        message("Working on chunk: ", innerChunkIdx, " of ",
+                length(innerChunksColl), " [chunkSize: ", ncol(this_mat), "]")
     }
     ##
+    if (is.null(this_mat) || !is.matrix(this_mat)) {
+        stop("Input matrix to model selection procedure is NULL or not a
+            matrix")
+    }
+    ############################### For fetching factors
     model_selectK <-
         .cv_model_select_pyNMF(
-            X = this_tss.seqs,
-            param_ranges = config$paramRanges,
-            kFolds = config$kFolds,
-            parallelDo = config$parallelize,
-            nCores = config$nCoresUse,
-            nIterations = config$nIterationsUse,
-            seed_val = config$seedVal,
-            logfile = config$modSelLogFile,
+            X = this_mat, param_ranges = config$paramRanges,
+            kFolds = config$kFolds, parallelDo = config$parallelize,
+            nCores = config$nCoresUse, nIterations = config$nIterationsUse,
+            seed_val = config$seedVal, logfile = config$modSelLogFile,
             set_verbose = 0
         )
-    if (config$flags$timeFlag) { print(Sys.time() - start) }
+    if (config$flags$timeFlag) { message(Sys.time() - start) }
     ##
     best_k <- .get_best_K(model_selectK)
     ##
     if (config$flags$verboseFlag) {
-        cat(paste0("Best K for this subset: ", best_k, "\n"))
+        message("Best K for this subset: ", best_k)
     }
     if (config$flags$plotVerboseFlag) {
-        q2_means_by_k_vals <-
-            .get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals,
-                                            mean)
+        q2_means_by_k_vals <- .get_q2_aggregates_chosen_var(
+                            model_selectK, model_selectK$k_vals, mean)
         Q2vsK <- .plot_cv_K(q2_means_by_k_vals)
         print(Q2vsK)
     }
-    if (config$flags$verboseFlag ||
-        config$flags$debugFlag) {
-        cat("Performing NMF with K =", best_k, "\n")
+    if (config$flags$verboseFlag || config$flags$debugFlag) {
+        message("Performing NMF with K = ", best_k)
     }
     ##
     if (config$flags$timeFlag) { start <- Sys.time() }
     ##
-    result <- perform_nmf_func(
-        this_tss.seqs,
-        nPatterns = as.integer(best_k),
-        nIter = as.integer(1000),
-        givenAlpha = 0,
-        givenL1_ratio = 1,
+    result <- perform_nmf_func(this_mat, nPatterns = as.integer(best_k),
+        nIter = as.integer(1000), givenAlpha = 0, givenL1_ratio = 1,
         seed_val = as.integer(config$seedVal)
-    )
+        )
     if (config$flags$timeFlag) { print(Sys.time() - start) }
     ##
     featuresMatrix <- get_features_matrix(result)
     samplesMatrix <- get_samples_matrix(result)
     ##
     ## Collect factors for global list
-    globFactors[[innerChunkIdx]] <- featuresMatrix
+    # message("SAMARTH ::: ", is.matrix(featuresMatrix))
+    # globFactors[[innerChunkIdx]] <- featuresMatrix
+    ############################### For fetching sequence clusters
     ## Cluster sequences
     solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
                                 nCluster = best_k)
     if (config$flags$timeFlag) {print(Sys.time() - start)}
     ## Set the right cluster orders respective to the factor order in the chunk
     ## and, collect the clusters/cluster assignments for the global list
-    globClustAssignments[[innerChunkIdx]] <-
+    # globClustAssignments[[innerChunkIdx]] <-
+    forGlobClustAssignments <-
         .map_clusters_to_factors(
             samplesMatrix = samplesMatrix,
             clustOrderIdx = solKmeans$reordering_idx,
-            iChunksColl = innerChunksColl,
-            iChunkIdx = innerChunkIdx,
-            flags = config$flags
-        )
+            iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx,
+            flags = config$flags)
     ##
-    innerChunkNMFResult <- list(globFactors = globFactors,
-                                globClustAssignments = globClustAssignments)
+    innerChunkNMFResult <- list(forGlobFactors = featuresMatrix,
+                                forGlobClustAssignments =
+                                    forGlobClustAssignments)
     ##
     return(innerChunkNMFResult)
 }
 ## =============================================================================
 
 
-assert_OK_for_nextIteration <- function(nxtOuterChunksColl) {
-    ## Check any chunk of zero-length?
-    if (any(lapply(nxtOuterChunksColl, length) == 0)) {
-        message("WARNING: Chunks for next iteration have a problem")
-        stop(which(lapply(nxtOuterChunksColl, length) == 0),
-                " have zero lengths")
-    }
 
-}
