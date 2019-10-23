@@ -38,3 +38,9 @@ env:
   - _R_CHECK_FORCE_SUGGESTS_=false
   # switch off vdiffr by default
   - VDIFFR_RUN_TESTS=false
+
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
