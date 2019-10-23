@@ -388,10 +388,13 @@
 ## Function to check validity of NMFresult from .handle_chunk_w_NMF function
 ## Expected to be:
 ## 1. not NULL
-## 2. Nested list w elements 'globFactors' & 'globClustAssignments', also as lists
-## themselves
+## 2. a list w elements 'forGlobFactors' (a matrix) & 'forGlobClustAssignments'
+## (a list)
 ## 3.
 .assert_archR_NMFresult <- function(NMFresultObj) {
+    if (is.null(NMFresultObj)) {
+        stop("NMF result object is NULL")
+    }
     expNames <- c("forGlobFactors", "forGlobClustAssignments")
     matchNames <- names(NMFresultObj) %in% expNames
     if (!all(matchNames)) {
@@ -415,3 +418,33 @@
     }
 }
 
+## Functions to check validity of seqsClustLabels
+## Expected to be:
+## 1. not NULL
+## 2. non-empty vector
+## 3. all entries in the vector of same lengths
+.assert_archR_seqsClustLabels <- function(seqsClustLabels) {
+    if (is.null(seqsClustLabels)) {
+        stop("Cluster labels for sequences NULL")
+    }
+    if (is.vector(seqsClustLabels) && length(seqsClustLabels) == 0) {
+        stop("Expecting cluster labels for sequences as a non-empty vector")
+    }
+}
+
+## Functions to check validity of seqsClustLabels at the end of an iteration
+## Expected to be:
+## 1. general assertions passing
+## 2. all entries in the vector of same lengths
+.assert_archR_seqsClustLabels_at_end <- function(seqsClustLabels) {
+    splitChar <- "-"
+    one <- 1
+    .assert_archR_seqsClustLabels(seqsClustLabels)
+    all_lengths <- unlist(lapply(strsplit(seqsClustLabels,
+                                          split = splitChar),
+                                 length))
+    check_length <- length(unique(all_lengths))
+    if (check_length != one) {
+        stop("Cluster labels for sequences have different lengths")
+    }
+}

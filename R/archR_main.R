@@ -80,20 +80,22 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
                         thisNMFResult$forGlobClustAssignments
                 }
                 ## for loop over innerChunksColl ENDS
-                ## need globFactors, globClustAssignments
+                ## We need globFactors, globClustAssignments
+                ## Single unlist of globClustAssignments brings together
+                ## clusters from different innerChunks into one collection
                 globClustAssignments <- unlist(globClustAssignments,
                                                 recursive = FALSE)
-                ##
                 ## CBind the factors from all inner chunks into one matrix
                 globFactorsMat <- do.call(cbind, globFactors)
-                ##
+                ## These factors collected from all innerChunks may need
+                ## clustering
                 hopachDecision <- .decide_hopach(globFactorsMat,
                                                 distMethod = "cosangle",
                                                 withinMeasure = "mean")
                 ##
                 globFactorsClustering <- NULL
                 if (hopachDecision) {
-                    ## We need to cluster the factors
+                    ## Cluster the factors using hopach
                     globFactorsClustering <-
                         .handle_clustering_of_factors(globFactorsMat,
                                                     distMethod = "cosangle",
@@ -118,8 +120,7 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
                 ##
             }  ## IfElse doNotProcess outer chunk ENDS
             ##
-            seqsClustLabels <-
-                .update_cluster_labels(seqsClustLabels,
+            seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
                                         collatedClustAssignments =
                                             collatedClustAssignments,
                                         flags = config$flags)
@@ -127,12 +128,11 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
             ## Collect (append) clusters at current level
             nxtOuterChunksColl <- append(nxtOuterChunksColl,
                                         collatedClustAssignments)
-            message(paste0("Outer chunk ", outerChunkIdx,
-                            " done, current total basis vectors: ",
-                            ncol(intClustFactors)))
+            message("Outer chunk ", outerChunkIdx,
+            " done, current total basis vectors: ", ncol(intClustFactors))
         }  ### for loop over outerChunksCollection ENDS
-        clustFactors[[test_itr + 1]] <-
-            list(nBasisVectors = ncol(intClustFactors),
+        clustFactors[[test_itr + 1]] <- list(
+                nBasisVectors = ncol(intClustFactors),
                 basisVectors = intClustFactors)
         .assert_archR_OK_for_nextIteration(nxtOuterChunksColl)
         outerChunksColl <- nxtOuterChunksColl
@@ -140,7 +140,7 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
     }  ## algorithm while loop ENDS
     archRresult <- list(seqsClustLabels = seqsClustLabels,
                         clustBasisVectors = clustFactors,
-        config = config, call = match.call())
+                        config = config, call = match.call())
     message("=== archR exiting, returning result ===")
     return(archRresult)
 }  ## archR function ENDS

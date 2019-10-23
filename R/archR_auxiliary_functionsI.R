@@ -12,23 +12,24 @@
 #'
 collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     ## Check if all_ok, all elements should have same length
+    .assert_archR_seqsClustLabels_at_end(given_seqsClustLabels)
     splitChar <- "-"
     elements_length <- unique(unlist(lapply(strsplit(given_seqsClustLabels,
                                                     split = splitChar),
                                                     length)))
-
-    assertthat::are_equal(length(elements_length), 1)
-
     if (choose_levels > elements_length) {
-        stop(paste0("choose_levels(", choose_levels, ") greater than levels
-                    present in cluster_labels(", elements_length, ")."))
+        stop("Choose_levels (", choose_levels,
+        ") greater than levels present in cluster_labels(",
+        elements_length, ").")
     } else {
         selectedLabels <- unlist(lapply(strsplit(given_seqsClustLabels,
                                                 split = splitChar),
-            function(x) {
-                paste0(x[seq_len(choose_levels)], collapse = splitChar)
-            }))
+                                        function(x) {
+                                            paste0(x[seq_len(choose_levels)],
+                                                collapse = splitChar)
+                                        }))
     }
+    .assert_archR_seqsClustLabels_at_end(selectedLabels)
     return(selectedLabels)
 }
 ## =============================================================================
@@ -108,25 +109,30 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
             thisGotLeftOut <- which(lapply(rightClusterOrders, length) == 0)
             message("WARNING: Factor(s) got no sequences assigned: ",
                     thisGotLeftOut)
-            warning("WARNING: Factor(s) got no sequences assigned: ",
-                    thisGotLeftOut)
         }
         return(rightClusterOrders)
     }
 }
 ## =============================================================================
 
+
+## @title Collate clusters
+##
+## @param hopachObj A hopach object which is a special list with elements
+## having fixed names
+## @param globClustAssignments A list
+##
+## @return collatedClustAssignments A list
 .collate_clusters <- function(hopachObj, globClustAssignments) {
     ## Based on which factors are being combined (hopachObj), look at the
     ## globClustAssignments variable to combine the respective sequences
     ## together.
     if (is.null(hopachObj)) {
-        # When HOPACH not performed, the global_cluster_assingments variable
-        # holds a list of lists, so we should flatten it with unlist()
+        ## When HOPACH clustering was not performed, the globClustAssingments
+        ## variable is directly assigned
         collatedClustAssignments <- globClustAssignments
-        ##
     } else {
-        ##
+        ## When HOPACH clustering was performed, liase with the hopachObj
         nClusters <- hopachObj$clustering$k
         clustSizes <- hopachObj$clustering$sizes
         elementsOrder <- hopachObj$clustering$order
@@ -154,9 +160,9 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
                 resolve_these <- these_not_ok
                 collatedClustAssignments[[coll_cluster_idx]] <-
                     unlist(lapply(pick_this_itr[-these_not_ok],
-                    function(x) {
-                        globClustAssignments[[x]]
-                    }))
+                            function(x) {globClustAssignments[[x]]}
+                            )
+                    )
             }
         }  ## collation for loop ends
     }
@@ -164,25 +170,37 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 }
 ## =============================================================================
 
+## @title Update labels of sequences in a cluster
+## @param oldSeqsClustLabels
+##
+## @param collatedClustAssignments
+## @param flags List. Flags variable from archR config
+##
+## @return newSeqsClustLabels Vector os clustLabels
 .update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
                                     flags) {
+    .assert_archR_seqsClustLabels(oldSeqsClustLabels)
+    .assert_archR_flags(flags)
     nClusters <- length(collatedClustAssignments)
     if (flags$verboseFlag) {
-        cat("Updating sequence cluster labels\n")
-        cat(paste0("#Clusters: ", length(collatedClustAssignments), "\n"))
+        message("Updating sequence cluster labels")
+        message("#Clusters: ", nClusters)
     }
+    ## This was needed when cluster labels had no separator. May be removed now.
+    ## if (nClusters > 9) {
+    ##     warning("More than 9 clusters")
+    ## }
     newSeqsClustLabels <- oldSeqsClustLabels
-    if (nClusters > 9) {
-        message("More than 9 clusters")
-    }
     for (i in seq_along(collatedClustAssignments)) {
         needUpdateIdx <- collatedClustAssignments[[i]]
-        newSeqsClustLabels[needUpdateIdx] <- vapply(
-            newSeqsClustLabels[needUpdateIdx],
-            function(x) {
-                paste0(c(x, toString(i)), collapse = "-")
-            }, character(1))
+        newSeqsClustLabels[needUpdateIdx] <-
+            vapply(newSeqsClustLabels[needUpdateIdx],
+                    function(x) {
+                        paste0(c(x, toString(i)), collapse = "-")
+                    }, character(1)
+                )
     }
+    .assert_archR_seqsClustLabels(newSeqsClustLabels)
     return(newSeqsClustLabels)
 }
 ## =============================================================================
@@ -258,19 +276,17 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
                                                     plotVerboseFlag = FALSE,
                                                     timeFlag = FALSE)
                                         ) {
+    .assert_archR_featuresMatrix(globFactorsMat)
     .assert_archR_flags(flags)
-    ## Currently relying on HOPACH algorithm - Compute cosine similarities
-    ## (values between 0-1) - Using HOPACH algorithm for clustering with chosen
-    ##  distance measure (we currently use 'cosangle' distance measure)
+    ##
     globFactorsDistMat <- .compute_factor_distances(globFactorsMat,
                                                 distMethod = distMethod)
-    ##
-    doHopach <- hopach::msscheck(globFactorsDistMat, within = "mean",
-                                between = "mean")
-
-    if (doHopach[1] == 1 && ncol(globFactorsMat) > 2) {
-        message("Error expected to occur now")
-    }
+    ## These lines were put for additional caution/check. May not be needed now.
+    ## doHopach <- hopach::msscheck(globFactorsDistMat, within = "mean",
+    ##                             between = "mean")
+    ## if (doHopach[1] == 1 && ncol(globFactorsMat) > 2) {
+    ##     message("Error expected to occur now")
+    ## }
     ##
     globFactorsHopach <- hopach::hopach(data = t(globFactorsMat),
                                         dmat = globFactorsDistMat,
@@ -280,11 +296,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
                                         verbose = flags$verboseFlag)
     if (flags$debugFlag ||
         flags$verboseFlag) {
-        cat(paste0(
-            "Identified #clusters:",
-            globFactorsHopach$clustering$k,
-            "\n"
-        ))
+        message("Identified #clusters: ", globFactorsHopach$clustering$k)
     }
     if (flags$plotVerboseFlag) {
         ## Order the medians, accordingly change order of the collated cluster

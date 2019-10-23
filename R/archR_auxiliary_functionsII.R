@@ -145,6 +145,18 @@ archRSetConfig <- function(innerChunkSize = 500,
     }
 ## =============================================================================
 
+## This function makes the decision whether hopach-based processing should be
+## performed (or will work)
+##
+## @param globFactorsMat A matrix object holding all factors as columns
+## @param distMethod character A string specifying the method used for computing
+## distance measure. Default 'cosangle'. Currently, 'cosangle' gives best
+## results, so there are no other options here.
+## @param withinMeasure character A string specifying whether "mean" or "median"
+## should be used to compare between cluster dissimilarity. See more details in
+## hopach.
+##
+## @return Logical TRUE/FALSE
 .decide_hopach <- function(globFactorsMat,
                             distMethod = "cosangle",
                             withinMeasure = "mean") {
@@ -170,12 +182,19 @@ archRSetConfig <- function(innerChunkSize = 500,
 }
 ## =============================================================================
 
-
+## @param factorsMat A matrix holding the factors along the columns
+## @param distMethod character A string specifying the distance measure to computed.
+## Default value 'cosangle'
+##
+## @return distance matrix from hopach (hdist object)
 .compute_factor_distances <- function(factorsMat, distMethod = "cosangle"){
     ## Ensure that entities to compare are along the rows, because
     ## Here, the factors are along the columns, and features along rows.
     ## hopach::distancematrix computes distances between rows of a matrix.
     ## Therefore, check and change if necessary.
+    .assert_archR_featuresMatrix(factorsMat)
+    ## hopach::distancematrix function requires vectors along rows. Distances
+    ## are computed between row vectors
     if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
     distMat <- hopach::distancematrix(factorsMat, d = distMethod)
     ## distMat is a hopach hdist object
@@ -196,6 +215,7 @@ archRSetConfig <- function(innerChunkSize = 500,
 # as a matrix, else, returns the complete factors matrix
 .get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
     ##
+    .assert_archR_featuresMatrix(globFactorsMat)
     if (is.null(hopachObj)) {
         return(globFactorsMat)
     } else {
@@ -278,10 +298,9 @@ archRSetConfig <- function(innerChunkSize = 500,
     featuresMatrix <- get_features_matrix(result)
     samplesMatrix <- get_samples_matrix(result)
     ##
-    ## Collect factors for global list
-    # message("SAMARTH ::: ", is.matrix(featuresMatrix))
-    # globFactors[[innerChunkIdx]] <- featuresMatrix
-    ############################### For fetching sequence clusters
+    ## Will collect this as factors for global list
+    ###############################
+    ## For fetching sequence clusters from samplesMat
     ## Cluster sequences
     solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
                                 nCluster = best_k)
@@ -303,6 +322,3 @@ archRSetConfig <- function(innerChunkSize = 500,
     return(innerChunkNMFResult)
 }
 ## =============================================================================
-
-
-

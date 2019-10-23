@@ -152,9 +152,7 @@ thisConfig <- archR::archRSetConfig(innerChunkSize = 500,
 
 ```{r call-archR, echo=TRUE}
 # Call archR
-ncol(tssSeqs)
-archRresult <- archR::archR(config = thisConfig, 
-                            seqsMat = tssSeqs)
+archRresult <- archR::archR(config = thisConfig, seqsMat = tssSeqs)
 ```
 ```{r setup-timing-end, echo=FALSE, eval=TRUE}
 print(Sys.time() - sTime)
