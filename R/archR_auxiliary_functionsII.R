@@ -1,5 +1,6 @@
 ## Getter function to fetch the features matrix from NMF result object
 ## (from python)
+##Dependency on python script perform_nmf.py
 get_features_matrix <- function(nmfResultObj){
     return(as.matrix(nmfResultObj[[1]]))
 }
@@ -7,6 +8,7 @@ get_features_matrix <- function(nmfResultObj){
 
 ## Getter function to fetch the samples matrix from NMF result object
 ## (from python)
+## Dependency on python script perform_nmf.py
 get_samples_matrix <- function(nmfResultObj){
     return(as.matrix(nmfResultObj[[2]]))
 }
@@ -18,6 +20,7 @@ get_samples_matrix <- function(nmfResultObj){
 ##
 ## @param hopachObj
 ##
+## Dependency on hopach package
 .get_hopach_cluster_medoidsIdx <- function(hopachObj){
     return(hopachObj$clustering$medoids)
 }
@@ -219,6 +222,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     if (is.null(hopachObj)) {
         return(globFactorsMat)
     } else {
+        .assert_archR_hopachObj(hopachObj, test_null = FALSE)
         hopachMedoids <- .get_hopach_cluster_medoidsIdx(hopachObj)
         return(as.matrix(globFactorsMat[ , hopachMedoids]))
     }
@@ -246,10 +250,7 @@ archRSetConfig <- function(innerChunkSize = 500,
 .handle_chunk_w_NMF <- function(innerChunkIdx,
                                 innerChunksColl,
                                 this_mat,
-                                globFactors,
-                                globClustAssignments,
                                 config) {
-    ##
     .assert_archR_flags(config$flags)
     ##
     if (config$flags$verboseFlag) {
@@ -307,7 +308,6 @@ archRSetConfig <- function(innerChunkSize = 500,
     if (config$flags$timeFlag) {print(Sys.time() - start)}
     ## Set the right cluster orders respective to the factor order in the chunk
     ## and, collect the clusters/cluster assignments for the global list
-    # globClustAssignments[[innerChunkIdx]] <-
     forGlobClustAssignments <-
         .map_clusters_to_factors(
             samplesMatrix = samplesMatrix,
@@ -315,10 +315,32 @@ archRSetConfig <- function(innerChunkSize = 500,
             iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx,
             flags = config$flags)
     ##
+    .assert_archR_featuresMatrix(featuresMatrix)
+    .assert_archR_globClustAssignments(forGlobClustAssignments)
     innerChunkNMFResult <- list(forGlobFactors = featuresMatrix,
                                 forGlobClustAssignments =
                                     forGlobClustAssignments)
     ##
     return(innerChunkNMFResult)
+}
+## =============================================================================
+
+
+## @title Setup the clustFactors list element for archR result object
+##
+## @description Function to set up the clustFactors variable for archR result
+## object. Having a separate dedicated function enables seamless future changes.
+##
+## @param intClustFactors A matrix holding all factors from the just concluded
+## iteration along the columns.
+##
+## @return A list with 2 elements having fixed element names. They are
+## 'nBasisVectors':  This is the number of basis vectors (for easy info access)
+##  and
+## 'basisVectors': This is the matrix of basis vectors (intClustFactors itself)
+.setup_clustFactors_for_archR_result <- function(intClustFactors) {
+    returnList <- list(nBasisVectors = ncol(intClustFactors),
+                        basisVectors = intClustFactors)
+    return(returnList)
 }
 ## =============================================================================

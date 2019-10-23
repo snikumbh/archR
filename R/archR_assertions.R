@@ -13,8 +13,8 @@
         stop("flags variable is not a list")
     } else {
         matchNames <- names(flags) %in% expNames
-        if (!all(matchNames)) {
-            stop("Unexpected names in flags variable")
+        if (is.null(names(flags)) && !all(matchNames)) {
+            stop("Unexpected names or no elements in flags variable")
         } else {
             ## test all are set to logical values
             all_logical <- unlist(lapply(flags, is.logical))
@@ -77,18 +77,20 @@
     if (!is.matrix(featuresMatrix)) {
         stop("Expected a matrix, found otherwise")
     } else {
+        if (any(is.na(featuresMatrix))) {
+            stop("Factors have NA")
+        }
         if (ncol(featuresMatrix) < 1) {
             stop("0 columns (sequences) in samplesMatrix")
         }
         if (ncol(featuresMatrix) == check_ncols) {
             stop("Check matrix, 'ncols' is: ", check_ncols)
         }
-        # if () {
-        # matElements <-
-        # if () {
-        #     stop("")
-        # }
-        # }
+        if (all(featuresMatrix == 0)) {
+            ## This will lead to an error if hopach is performed, hence throwing
+            ## error
+            stop("WARNING: All zeroes as factors")
+        }
     }
 }
 ## =============================================================================
@@ -372,18 +374,20 @@
 
 ## We need to write functions to sanity check the important variables
 ## throughout the archR algorithm. These are:
-## -- globFactors
-## -- globFactorsClustering
-## -- globClustAssignments
-## -- outerChunk
-## -- outerChunksColl
-## -- innerChunksColl
-## -- intClustFactors
-## -- clustFactors
-## -- seqsClustLabels
-## -- collatedClustAssignments
+## -- globFactors Matrix
+## -- globFactorsClustering Hopach Object
+## -- globClustAssignments List
+## -- outerChunk Matrix?
+## -- outerChunksColl List
+## -- innerChunksColl List
+## -- intClustFactors Matrix
+## -- clustFactors Matrix
+## -- seqsClustLabels Vector
+## -- collatedClustAssignments List
 ## --
 ##
+## =============================================================================
+
 
 ## Function to check validity of NMFresult from .handle_chunk_w_NMF function
 ## Expected to be:
@@ -417,8 +421,10 @@
         }
     }
 }
+## =============================================================================
 
-## Functions to check validity of seqsClustLabels
+
+## Function to check validity of seqsClustLabels
 ## Expected to be:
 ## 1. not NULL
 ## 2. non-empty vector
@@ -432,7 +438,7 @@
     }
 }
 
-## Functions to check validity of seqsClustLabels at the end of an iteration
+## Function to check validity of seqsClustLabels at the end of an iteration
 ## Expected to be:
 ## 1. general assertions passing
 ## 2. all entries in the vector of same lengths
@@ -448,3 +454,92 @@
         stop("Cluster labels for sequences have different lengths")
     }
 }
+## =============================================================================
+
+
+
+## Function to check validity of hopach object for usability with archR
+## Expected to be:
+## 1. not NULL
+## 2. a nested list w/ one element named 'clustering' which is also a list
+## 3. The 'clustering' further has 3 elements: '$k', '$sizes' and '$order'
+.assert_archR_hopachObj <- function(hopachObj, test_null = TRUE) {
+    expNames <- c("clustering")
+    expNames2 <- c("k", "sizes", "order")
+    if (test_null) {
+        if (is.null(hopachObj)) {
+           stop("Hopach object is NULL")
+        }
+    }
+    if (!is.list(hopachObj)) {
+        stop("Check hopach object, need a list with element 'clustering'")
+    } else if (is.list(hopachObj) && expNames %in% names(hopachObj)) {
+        if (!all(expNames2 %in% names(hopachObj$clustering))) {
+            stop("For archR, the element 'clustering' in hopach object should",
+            " have elements named  'k', 'sizes' and 'order'")
+        }
+    }
+
+}
+## =============================================================================
+
+
+## Function to check validity of lists in general
+## Expected to be:
+## 1. not NULL
+## 2. a list
+## 3. Not have any 0-length element
+
+.assert_archR_list_properties <- function(listVar) {
+    returnMessage <- "SAMARTH"
+    if (is.null(listVar)) {
+        returnMessage <- "NULL"
+    }
+    if (!is.list(listVar)) {
+       returnMessage <- "Nlist"
+    } else {
+        check_lengths <- lapply(listVar, length)
+        if (any(check_lengths == 0)) {
+           returnMessage <- "0LengthEntry"
+        }
+    }
+    return(returnMessage)
+}
+## =============================================================================
+
+
+
+.assert_archR_globClustAssignments <- function(given_var) {
+    returnMessage <- .assert_archR_list_properties(given_var)
+    if (returnMessage == "NULL") {
+        stop("Cluster assignments variable is NULL")
+    }
+    if (returnMessage == "Nlist") {
+        stop("Cluster assignments variable is not a list")
+    }
+    if (returnMessage == "0LengthEntry") {
+        stop("Cluster assignments variable has a 0-length entry")
+    }
+}
+## =============================================================================
+
+
+## Function to check consistency of nSeqs in clustLabels variable and in
+## clustAssignments variable
+## Expected to be:
+## 1. Ensure list variable is OK and seqsClustLabels is OK
+## 2. holding same number of sequences (the variable lengths)
+##
+.assert_archR_consistent_nSeqs_w_clusters <- function(seqsClustLabels,
+                                                    clustAssignments) {
+
+    .assert_archR_seqsClustLabels(seqsClustLabels)
+    .assert_archR_globClustAssignments(clustAssignments)
+    nSeqs_in_labels <- length(seqsClustLabels)
+    nSeqs_in_assignments <- length(unlist(clustAssignments))
+    if (!nSeqs_in_labels == nSeqs_in_assignments) {
+        stop("Number of sequences in seqsClustLabels and clustAssignments not",
+            " equal")
+    }
+}
+## =============================================================================

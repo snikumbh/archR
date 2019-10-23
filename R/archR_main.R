@@ -71,8 +71,6 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
                     thisNMFResult <- .handle_chunk_w_NMF(innerChunkIdx,
                                                         innerChunksColl,
                                                         this_seqsMat,
-                                                        globFactors,
-                                                        globClustAssignments,
                                                         config)
                     .assert_archR_NMFresult(thisNMFResult)
                     globFactors[[innerChunkIdx]] <- thisNMFResult$forGlobFactors
@@ -121,19 +119,21 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
             }  ## IfElse doNotProcess outer chunk ENDS
             ##
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
-                                        collatedClustAssignments =
-                                            collatedClustAssignments,
-                                        flags = config$flags)
+                                                collatedClustAssignments,
+                                                flags = config$flags)
             ##
             ## Collect (append) clusters at current level
             nxtOuterChunksColl <- append(nxtOuterChunksColl,
                                         collatedClustAssignments)
             message("Outer chunk ", outerChunkIdx,
-            " done, current total basis vectors: ", ncol(intClustFactors))
-        }  ### for loop over outerChunksCollection ENDS
-        clustFactors[[test_itr + 1]] <- list(
-                nBasisVectors = ncol(intClustFactors),
-                basisVectors = intClustFactors)
+            " done, \ncurrent total basis vectors: ", ncol(intClustFactors),
+            "\ncurrent total chunks for next iteration: ",
+            length(nxtOuterChunksColl))
+        }  ## for loop over outerChunksCollection ENDS
+        ##
+        clustFactors[[test_itr + 1]] <-
+            .setup_clustFactors_for_archR_result(intClustFactors)
+        ##
         .assert_archR_OK_for_nextIteration(nxtOuterChunksColl)
         outerChunksColl <- nxtOuterChunksColl
         test_itr <- test_itr + 1

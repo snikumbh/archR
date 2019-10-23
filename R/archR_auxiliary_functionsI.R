@@ -127,12 +127,14 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     ## Based on which factors are being combined (hopachObj), look at the
     ## globClustAssignments variable to combine the respective sequences
     ## together.
+    .assert_archR_globClustAssignments(globClustAssignments)
     if (is.null(hopachObj)) {
         ## When HOPACH clustering was not performed, the globClustAssingments
         ## variable is directly assigned
         collatedClustAssignments <- globClustAssignments
     } else {
         ## When HOPACH clustering was performed, liase with the hopachObj
+        .assert_archR_hopachObj(hopachObj, test_null = FALSE)
         nClusters <- hopachObj$clustering$k
         clustSizes <- hopachObj$clustering$sizes
         elementsOrder <- hopachObj$clustering$order
@@ -178,9 +180,15 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 ##
 ## @return newSeqsClustLabels Vector os clustLabels
 .update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
-                                    flags) {
+                                    flags = list(debugFlag = FALSE,
+                                                 verboseFlag = TRUE,
+                                                 plotVerboseFlag = FALSE,
+                                                 timeFlag = FALSE)) {
     .assert_archR_seqsClustLabels(oldSeqsClustLabels)
+    .assert_archR_globClustAssignments(collatedClustAssignments)
     .assert_archR_flags(flags)
+    # .assert_archR_consistent_nSeqs_w_clusters(oldSeqsClustLabels,
+    #                                     collatedClustAssignments)
     nClusters <- length(collatedClustAssignments)
     if (flags$verboseFlag) {
         message("Updating sequence cluster labels")
