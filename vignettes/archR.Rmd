@@ -38,15 +38,15 @@ _archR_ is currently made available via Github; thus use the following procedure
 for installing _archR_.
 ```{r archR-install, echo=TRUE, eval=FALSE}
 # install.packages("devtools")
-if (!requireNamespace("archR", quietly = TRUE)) {
-    devtools::install_github("snikumbh/archR", build_vignettes = TRUE)
-}
+#if (!requireNamespace("archR", quietly = TRUE)) {
+devtools::install_github("snikumbh/archR", build_vignettes = TRUE)
+#}
 ```
 
 # Working with archR
 ```{r setup-two, echo=TRUE}
 # Load archR
-library(archR)
+# library(archR)
 #
 reticulate::source_python(system.file("python/perform_nmf.py",
                                           package = "archR",
