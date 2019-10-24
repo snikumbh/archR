@@ -69,7 +69,7 @@ get_dimers_from_alphabet <- function(alphabet){
 #' @return a list with all params for archR set
 #' @export
 archRSetConfig <- function(innerChunkSize = 500,
-                            kMin = 1,
+                            kMin = 2,
                             kMax = 8,
                             cvFolds = 5,
                             parallelize = FALSE,
