@@ -69,25 +69,25 @@ plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
         mean_patt_in_block <-
             as.matrix(BiocGenerics::rowMeans(select_block))
         # asmatrix creates a column vector
-        median_patt_in_block <-
-            as.matrix(matrixStats::rowMedians(select_block))
+        # median_patt_in_block <-
+        #     as.matrix(matrixStats::rowMedians(select_block))
 
         if (ncol(givenFeaturesMatrix) == nrow(mean_patt_in_block)) {
             meanFeat_in_block <- givenFeaturesMatrix %*% mean_patt_in_block
-            medianFeat_in_block <- givenFeaturesMatrix %*% median_patt_in_block
+            # medianFeat_in_block <- givenFeaturesMatrix %*% median_patt_in_block
             #
 
             #
             new_meanFeat_in_block <- meanFeat_in_block
-            new_medianFeat_in_block <- medianFeat_in_block
+            # new_medianFeat_in_block <- medianFeat_in_block
             new_meanFeat_in_block[meanFeat_in_block <
                                         as.numeric(stats::quantile(
                                             meanFeat_in_block,
                 0.75))] <- 10^-5
-            new_medianFeat_in_block[medianFeat_in_block <
-                                        as.numeric(stats::quantile(
-                                            medianFeat_in_block,
-                0.75))] <- 10^-5
+            # new_medianFeat_in_block[medianFeat_in_block <
+            #                             as.numeric(stats::quantile(
+            #                                 medianFeat_in_block,
+            #     0.75))] <- 10^-5
             #
             architecture_features[[grp_ID]] <- as.vector(t(meanFeat_in_block))
             #

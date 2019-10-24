@@ -29,11 +29,8 @@
 #' @seealso \code{\link{viz_basis_vectors_as_heatmap}} for plotting only as
 #' heatmaps, \code{\link{viz_basis_vectors_as_seqlogo}} for plotting only as
 #' sequence logos.
-#' @importFrom dplyr mutate
-#' @importFrom reshape2 melt
 #' @import ggplot2
 #' @import ggseqlogo
-#' @import gridExtra
 viz_basis_vectors_in_combined_heatmaps_seqlogos <-
     function(featuresMatrix, plotMethod = "custom", position_labels = NA,
                 add_pseudo_counts = FALSE, savePDFfilename = NULL,
@@ -61,6 +58,9 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
             position_labels = position_labels,
             savePDFfilename = savePDFfilename
         )
+        p1 + theme(
+            plot.margin = grid::unit(c(0, 0, 0, 0), "mm")
+        )
         ## Seqlogo below
         p2 <- plot_ggseqlogo(
             pwmMat = pwm,
@@ -72,7 +72,17 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
         p2 + theme(
             plot.margin = grid::unit(c(0, 0, 0, 0), "mm")
         )
-        gridExtra::grid.arrange(p1, p2)
+        final_p <- ggpubr::ggarrange(p1, p2, ncol = 1, heights = c(1,1),
+                            widths = c(1,1), align = 'v')
+        ##
+        if (!is.null(savePDFfilename)) {
+            if (file.exists(savePDFfilename)) {
+                warning("File exists, will overwrite")
+            }
+            ggplot2::ggsave(final_p, device = "pdf", width = 20, height = 2.5)
+        } else {
+            base::suppressMessages(print(final_p))
+        }
     }))
 }
 ## =============================================================================

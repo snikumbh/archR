@@ -82,6 +82,8 @@
                                             positions = position_labels_dinuc)
                     })
     }
+    ## data.table can go to Suggests, and I can implement a solution that works
+    ## in the absence of data.table
     plot_df <- data.table::rbindlist(plot_df_list)
     return(plot_df)
 }
@@ -287,6 +289,5 @@ viz_matrix_of_acgt <-
         }
     } else{
         print(final_p)
-
     }
 }

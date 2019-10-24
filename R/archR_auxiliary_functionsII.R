@@ -69,12 +69,12 @@ get_dimers_from_alphabet <- function(alphabet){
 #' @return a list with all params for archR set
 #' @export
 archRSetConfig <- function(innerChunkSize = 500,
-                            kMin = 2,
+                            kMin = 1,
                             kMax = 8,
                             cvFolds = 5,
-                            parallelize = TRUE,
-                            nCoresUse = 32,
-                            nIterationsUse = 200,
+                            parallelize = FALSE,
+                            nCoresUse = NA,
+                            nIterationsUse = 500,
                             seedVal = 10208090,
                             alphaBase = 0,
                             alphaPow = 1,
@@ -116,8 +116,9 @@ archRSetConfig <- function(innerChunkSize = 500,
 
 ## @title Decide processing of outer chunk based on its size
 ##
-## @description Function to make the decision on whether the given (outer) chunk should be
-## processed
+## @description Function to make the decision on whether the given (outer)
+## chunk should be processed
+##
 ## @param minThreshold Numeric. This is the minSeqs param from archR config
 ## @param lengthOfOC Numeric. This is the length of the outer chunk
 ## @param kFoldsVal Numeric. This is the kFolds param in archR config
@@ -186,7 +187,8 @@ archRSetConfig <- function(innerChunkSize = 500,
 ## =============================================================================
 
 ## @param factorsMat A matrix holding the factors along the columns
-## @param distMethod character A string specifying the distance measure to computed.
+## @param distMethod character A string specifying the distance measure to
+## be computed.
 ## Default value 'cosangle'
 ##
 ## @return distance matrix from hopach (hdist object)
@@ -201,7 +203,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
     distMat <- hopach::distancematrix(factorsMat, d = distMethod)
     ## distMat is a hopach hdist object
-    assertthat::are_equal(distMat@Size, ncol(factorsMat))
+    stopifnot(distMat@Size == nrow(factorsMat))
     return(distMat)
 }
 ## =============================================================================

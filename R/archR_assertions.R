@@ -122,8 +122,7 @@
 ## 1. independently valid (see f .assert_archR_minSeqs_independent)
 ## 2. < #given sequences
 ##
-.assert_archR_minSeqs_in_tandem <- function(minSeqs_var,
-                                                   given_seqs_size) {
+.assert_archR_minSeqs_in_tandem <- function(minSeqs_var, given_seqs_size) {
     .assert_archR_minSeqs_independent(minSeqs_var)
     if (minSeqs_var > given_seqs_size) {
         stop("'minSeqs' is > number of input sequences.
@@ -226,7 +225,7 @@
     if (any(lapply(nxtOuterChunksColl, length) == 0)) {
         message("WARNING: Chunks for next iteration have a problem")
         stop(which(lapply(nxtOuterChunksColl, length) == 0),
-             " have zero lengths")
+                " have zero lengths")
     }
 
 }
@@ -342,8 +341,8 @@
 ## 3.
 .assert_archR_config <- function(config_var, given_seqs_size) {
     expNames <- c("kFolds", "parallelize", "nCoresUse", "nIterationsUse",
-                  "seedVal", "paramRanges", "innerChunkSize", "modSelLogFile",
-                  "minSeqs", "flags")
+                    "seedVal", "paramRanges", "innerChunkSize", "modSelLogFile",
+                    "minSeqs", "flags")
     if (is.null(config_var)) {
         stop("'config' is NULL")
     }
@@ -447,8 +446,8 @@
     one <- 1
     .assert_archR_seqsClustLabels(seqsClustLabels)
     all_lengths <- unlist(lapply(strsplit(seqsClustLabels,
-                                          split = splitChar),
-                                 length))
+                                            split = splitChar),
+                                    length))
     check_length <- length(unique(all_lengths))
     if (check_length != one) {
         stop("Cluster labels for sequences have different lengths")
@@ -468,7 +467,7 @@
     expNames2 <- c("k", "sizes", "order")
     if (test_null) {
         if (is.null(hopachObj)) {
-           stop("Hopach object is NULL")
+            stop("Hopach object is NULL")
         }
     }
     if (!is.list(hopachObj)) {
@@ -489,18 +488,18 @@
 ## 1. not NULL
 ## 2. a list
 ## 3. Not have any 0-length element
-
+##
 .assert_archR_list_properties <- function(listVar) {
     returnMessage <- "SAMARTH"
     if (is.null(listVar)) {
         returnMessage <- "NULL"
     }
     if (!is.list(listVar)) {
-       returnMessage <- "Nlist"
+        returnMessage <- "Nlist"
     } else {
         check_lengths <- lapply(listVar, length)
         if (any(check_lengths == 0)) {
-           returnMessage <- "0LengthEntry"
+            returnMessage <- "0LengthEntry"
         }
     }
     return(returnMessage)

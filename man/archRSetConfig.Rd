@@ -4,9 +4,9 @@
 \alias{archRSetConfig}
 \title{Set archR run configuration}
 \usage{
-archRSetConfig(innerChunkSize = 500, kMin = 2, kMax = 8,
-  cvFolds = 5, parallelize = TRUE, nCoresUse = 32,
-  nIterationsUse = 200, seedVal = 10208090, alphaBase = 0,
+archRSetConfig(innerChunkSize = 500, kMin = 1, kMax = 8,
+  cvFolds = 5, parallelize = FALSE, nCoresUse = NA,
+  nIterationsUse = 500, seedVal = 10208090, alphaBase = 0,
   alphaPow = 1, minSeqs = 25, modSelLogFile = "log.txt",
   flags = list(debugFlag = FALSE, timeFlag = FALSE, verboseFlag = TRUE,
   plotVerboseFlag = FALSE))

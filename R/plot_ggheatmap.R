@@ -14,7 +14,6 @@
 #' @export
 #' @family visualization functions
 #' @seealso \code{\link{plot_ggseqlogo}} for plotting PWMs as sequence logos
-#' @importFrom dplyr mutate
 #' @importFrom reshape2 melt
 #' @importFrom tibble add_column
 #' @import ggplot2
@@ -29,44 +28,38 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL,
         stop("Empty matrix")
     }
     if (!(nrow(pwmMat) == 4)) {
-        # if (!(nrow(pwmMat) == 16)) {
-        stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
-        # stop("Expecting a matrix with 4 or 8 rows corresponding to
-        #      DNA alphabet or dinucleotide prfiles respectively")
-        # }
+        stop("Expecting a matrix with 4 rows corresponding to DNA chars ",
+                "'A', 'C', 'G', 'T'")
     }
-    #
+    ##
     if (length(position_labels) < ncol(pwmMat)) {
         stop(paste0(
             "Inadequate position labels supplied",
             ncol(pwmMat) - length(position_labels)
         ))
     }
-    #
+    ##
     if (length(position_labels) > ncol(pwmMat)) {
         stop(paste0(
             "Overabundant position labels supplied",
             length(position_labels) - ncol(pwmMat)
         ))
     }
-    #
-    # Convert pwmMat to df, heatmap by ggplot-way
+    ##
+    ## Convert pwmMat to df, heatmap by ggplot-way
     pwmMat_df <- as.data.frame(pwmMat)
 
     pwmMat_df <- add_column(pwmMat_df, Nucleotides = rownames(pwmMat_df))
 
-    # pwmMat_df <- mutate(pwmMat_df, Nucleotides = rownames(pwmMat_df))
-    # colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
-    # WHY THE HELL IS THIS THIS WAY?
     colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
-    #
+    ##
     pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars = c("Nucleotides"),
                                     variable.name = "positions")
-    #
+    ##
     p1 <- ggplot2::ggplot(data = pwmMat_df_for_ggheatmap, mapping = aes(
         x = positions,
-        # Here, 'positions' is the column_name, see previous statement.
-        # Do not change it to position_labels
+        ## Here, 'positions' is the column_name, see previous statement.
+        ## Do not change it to position_labels
         y = Nucleotides,
         fill = value
     )) +
@@ -74,9 +67,9 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL,
         ggplot2::theme_bw() +
         ggplot2::xlab(label = "Positions") +
         ggplot2::scale_fill_gradient2(
-            name = "", # "Loading",
-            low = "white", # "#FFFFFF",
-            mid = "white", # FFFFFF",
+            name = "",
+            low = "white",
+            mid = "white",
             high = "#012345"
         ) +
         ggplot2::coord_fixed(ratio = 2.0, clip = "on") +
@@ -85,9 +78,6 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL,
             legend.justification = "center",
             axis.text.x = element_text(size = rel(0.5), angle = 90, hjust = 1)
         )
-    # theme_update(legend.position = "top",
-    #              legend.justification = "center"
-    #              )
 
     if (!is.null(savePDFfilename)) {
         if (file.exists(savePDFfilename)) {
@@ -97,23 +87,4 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL,
     }
     return(p1)
 }
-# test
-# position_labels <- seq(5)
-# pwmMat <- matrix(rnorm(20), nrow=4)
-# rownames(pwmMat) <- c('a', 'c', 'g', 't')
-# pwmMat_df <- as.data.frame(pwmMat)
-# #
-# pwmMat_df <- mutate(pwmMat_df, Nucleotides = rownames(pwmMat_df))
-# colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
-# #
-# pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars=c("Nucleotides"),
-# variable.name = "positions")
-#
-# p1 <- ggplot(data = pwmMat_df_for_ggheatmap, mapping = aes(x = positions,
-#                                        y = Nucleotides,
-#                                        fill = value)) +
-#                       geom_tile() +
-#                       theme_bw() +
-#                       xlab(label = "Positions")
-# print(p1)
-#
+

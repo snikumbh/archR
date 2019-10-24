@@ -9,7 +9,8 @@ test_that("Matrix has 4 rows", {
   testPositionLabels <- seq(25)
   expect_error(
     plot_ggheatmap(testPwmMat, position_labels = testPositionLabels),
-    "Expecting a matrix with 4 rows corresponding to DNA alphabet"
+    paste0("Expecting a matrix with 4 rows corresponding to DNA chars ",
+    "'A', 'C', 'G', 'T'")
   )
 })
 

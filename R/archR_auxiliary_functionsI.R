@@ -71,7 +71,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
     }
     if (!is.null(iChunkIdx) && !is.numeric(iChunkIdx) && iChunkIdx > 0) {
         stop("Mapping clusters to factors, expecting inner chunk index as a
-             numeric > 0")
+                numeric > 0")
     }
     ##
     .assert_archR_flags(flags)
@@ -181,9 +181,9 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 ## @return newSeqsClustLabels Vector os clustLabels
 .update_cluster_labels <- function(oldSeqsClustLabels, collatedClustAssignments,
                                     flags = list(debugFlag = FALSE,
-                                                 verboseFlag = TRUE,
-                                                 plotVerboseFlag = FALSE,
-                                                 timeFlag = FALSE)) {
+                                                verboseFlag = TRUE,
+                                                plotVerboseFlag = FALSE,
+                                                timeFlag = FALSE)) {
     .assert_archR_seqsClustLabels(oldSeqsClustLabels)
     .assert_archR_globClustAssignments(collatedClustAssignments)
     .assert_archR_flags(flags)
@@ -280,7 +280,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 .handle_clustering_of_factors <- function(globFactorsMat,
                                         distMethod = "cosangle",
                                         flags = list(debugFlag = FALSE,
-                                                    verboseFlag = TRUE,
+                                                    verboseFlag = FALSE,
                                                     plotVerboseFlag = FALSE,
                                                     timeFlag = FALSE)
                                         ) {

@@ -39,7 +39,6 @@ viz_basis_vectors_as_seqlogo <- function(featuresMatrix,
         } else if (sinuc_or_dinuc == "sinuc") {
             pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
         }
-
         p1 <- plot_ggseqlogo(pwmMat = pwm, plotMethod = plotMethod,
                                 position_labels = position_labels,
                                 savePDFfilename = savePDFfilename)
