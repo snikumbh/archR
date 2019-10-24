@@ -72,8 +72,6 @@
 ## =============================================================================
 
 
-
-
 # @title Compute \eqn{Q^2} Value
 #
 # @description Computes the reconstruction accuracy, \eqn{Q^2}, given the
