@@ -28,7 +28,7 @@
         cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which == test_fold]
     test_cols <-
         cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which == test_fold]
-
+    ##
     ## Split data matrix X -- separate the training and test parts
     ##        _      _
     ##   X = |  A  B  |
@@ -36,7 +36,6 @@
     ##
     ## Reconstruct A, by performing NMF on D
     ## More details in Owen and Perry, Annals of Statistics, 2009
-    ## for (itr in seq(100)) {
     new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
     X <- X[, new_ord]
     ##
@@ -46,19 +45,8 @@
     submatrixC <- X[train_rows, test_cols]
 
     ## NMF on submatrixD
-    ## Setup params
-    ## NMF call
-    ## Using python/scikit-learn NMF
-
-    ## new_ord <- sample(ncol(submatrixD), ncol(submatrixD))
-    ## submatrixD <- submatrixD[ , new_ord]
-    ##
-    ## Sourcing perform_nmf_func, see:
-    ## https://rstudio.github.io/reticulate/reference/py_is_null_xptr.html
-    ##
-    ## print(file.path(paths_list_src_path, 'perform_nmf.py'))
-    ## source_python(file.path(paths_list_src_path, 'perform_nmf.py'))
-    ## if(py_validate_xptr(perform_nmf_func)) {
+    ## 1. Setup params
+    ## 2. NMF call, using python/scikit-learn NMF
     nmf_submatrixD <- perform_nmf_func(submatrixD,
                                         nPatterns = as.integer(this_k),
                                         nIter = as.integer(200),
@@ -66,27 +54,19 @@
                                         givenL1_ratio = 1,
                                         seed_val = as.integer(seed_val)
                         )
-    ## }else{
-    ##   #Throw error
-    ## }
-    ##
     D_W <- nmf_submatrixD[[1]]
     D_H <- nmf_submatrixD[[2]]
-    #
+    ##
     reconstructed_submatrixA <-
         submatrixB %*% MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% submatrixC
     ##
     if (verbose == 1) {
         cat(paste("INFO-END", x["k_vals"], x["alpha"], "\n", sep = ","))
     } else {
-        ## if (itr %% 5 == 0) cat(",", itr)
-        ## if (itr %% 50 == 0) cat(paste(itr, ", "))
         ## cat(",")
     }
     ##
     q2 <- .compute_q2(submatrixA, reconstructed_submatrixA)
-    ## }
-    ## return(mean(unlist(q2)))
     return(q2)
 }
 ## =============================================================================
