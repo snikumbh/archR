@@ -46,7 +46,7 @@ get_dimers_from_alphabet <- function(alphabet){
 #'  model selection.
 #' @param parallelize Logical. Specify whether to parallelize the procedure.
 #' @param nCoresUse The number of cores to be used when `parallelize` is set to
-#' TRUE.
+#' TRUE. If `parallelize` is FALSE, nCoresUse is ignored.
 #' @param nIterationsUse Specify the number of bootstrapped iterations to be
 #' performed with NMF.
 #' @param seedVal Specify the seed value for reproducibility.
@@ -104,6 +104,7 @@ archRSetConfig <- function(innerChunkSize = 500,
                         minSeqs = minSeqs,
                         flags = flags
                     )
+    .assert_archR_config(archRconfig)
     return(archRconfig)
 }
 ## =============================================================================

@@ -182,7 +182,7 @@
 ## If parallelize is TRUE, nCoresUse is expected to be:
 ## 1. not NULL
 ## 2. numeric and > 0
-.assert_archR_parallization_params <- function(par_var, nCores_var) {
+.assert_archR_parallelization_params <- function(par_var, nCores_var) {
     if (is.null(par_var)) {
         stop("'parallelize' is NULL, expected LOGICAL")
     }
@@ -194,7 +194,7 @@
         if (is.null(nCores_var)) {
             stop("'nCoresUse' is NULL")
         }
-        if (!is.numeric(nCores_var)) {
+        if (!is.numeric(nCores_var) || nCores_var < 1) {
             stop("'nCoresUse' should be numeric and > 0 and < available #cores")
         }
         if (nCores_var > parallel::detectCores()) {
@@ -339,7 +339,7 @@
 ## 1. A list with fixed set of names
 ## 2. Individual element assertions should pass
 ## 3.
-.assert_archR_config <- function(config_var, given_seqs_size) {
+.assert_archR_config <- function(config_var, given_seqs_size = NA) {
     expNames <- c("kFolds", "parallelize", "nCoresUse", "nIterationsUse",
                     "seedVal", "paramRanges", "innerChunkSize", "modSelLogFile",
                     "minSeqs", "flags")
@@ -354,14 +354,16 @@
             stop("Check names of elements in 'config'")
         }
         .assert_archR_kFolds_independent(config_var$kFolds)
-        .assert_archR_kFolds_in_tandem(config_var$kFolds, given_seqs_size)
         .assert_archR_innerChunkSize_independent(config_var$innerChunkSize)
-        .assert_archR_innerChunkSize_in_tandem(config_var$innerChunkSize,
-                                                given_seqs_size)
+        if (!is.na(given_seqs_size)) {
+            .assert_archR_kFolds_in_tandem(config_var$kFolds, given_seqs_size)
+            .assert_archR_innerChunkSize_in_tandem(config_var$innerChunkSize,
+                                                    given_seqs_size)
+            .assert_archR_minSeqs_in_tandem(config_var$minSeqs, given_seqs_size)
+        }
         .assert_archR_minSeqs_independent(config_var$minSeqs)
-        .assert_archR_minSeqs_in_tandem(config_var$minSeqs, given_seqs_size)
         .assert_archR_model_selection_params(config_var$paramRanges)
-        .assert_archR_parallization_params(config_var$parallelize,
+        .assert_archR_parallelization_params(config_var$parallelize,
                                             config_var$nCoresUse)
         .assert_archR_nIterations(config_var$nIterationsUse)
         .assert_archR_flags(config_var$flags)
