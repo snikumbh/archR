@@ -87,7 +87,7 @@
     q2 <- .compute_q2(submatrixA, reconstructed_submatrixA)
     ## }
     ## return(mean(unlist(q2)))
-    return (q2)
+    return(q2)
 }
 ## =============================================================================
 
@@ -205,7 +205,7 @@
             stop("'parallelize' is TRUE, but 'nCores' not specified")
         } else {
             if (nCores <= parallel::detectCores()) {
-                cat(paste0("No. of cores: ", nCores, "\n"))
+                message("No. of cores: ", nCores)
             } else {
                 stop("Specified more than available cores. Stopping ")
             }
@@ -232,13 +232,13 @@
                                                     seed_val,
                                                     verbose = set_verbose)
                                             }))
-        cat("Stopping cluster...")
+        message("Stopping cluster...")
         parallel::stopCluster(cl)
-        cat("done!\n")
+        message("done!\n")
     }
     if (!parallelDo) {
         # TO-DO: check params passed to rowLapply
-        cat(paste0("Opted: Serial\n"))
+        message("Opted: Serial")
         X <<- X
         cvfolds <<- cvfolds
         q2_vals <- unlist(BBmisc::rowLapply(
@@ -372,51 +372,6 @@
 ## =============================================================================
 
 
-# @title Get Best \eqn{\alpha}.
-#
-# @description Get the best performing value of \eqn{\alpha}.
-#
-# @param for_alpha The return value from \code{\link{.cv_model_select_pyNMF}}.
-# This is used for \eqn{\alpha}.
-# @param for_k The return value from \code{\link{.cv_model_select_pyNMF}}.
-# This is used for K.
-# @param min_or_max Specify whether min or max is to be used as the condition
-# to choose one when multiple values satisfy the threshold.
-#
-# @return The best performing value of \eqn{\alpha}.
-.get_best_alpha <- function(for_alpha, for_k, min_or_max = min) {
-    #
-    # Use the one standard error rule
-    # Value of alpha that has a reconstruction err not
-    # more than 1 std.err of the mean q2 for best k at
-    # alpha = 0
-    #
-    q2_threshold <- .get_q2_threshold_by_K(for_k)
-    #
-    cat(paste0("Q2 threshold, mean: ", q2_threshold$mean, "\n"))
-    averagesA <-
-        .get_q2_aggregates_chosen_var(for_alpha, for_alpha$alpha, mean)
-    #
-    idx_best_alpha <-
-        which(unlist(averagesA["q2_vals"]) > q2_threshold$mean)
-    #
-    if (length(idx_best_alpha) > 1) {
-        cat("IF")
-        cat("Choosing the highest alpha: ")
-        # Choose one (the highest -- max value) if many satisfy threshold
-        cat(averagesA[idx_best_alpha, "alpha"])
-        best_alpha <-
-            min_or_max(as.numeric(averagesA[idx_best_alpha, "alpha"]))
-    } else {
-        cat("ELSE")
-        print(idx_best_alpha)
-        print(averagesA)
-        best_alpha <- averagesA[idx_best_alpha, "alpha"]
-    }
-    return(best_alpha)
-}
-## =============================================================================
-
 # @title Plot Cross-Validation Performance of K
 #
 # @description Plot showing performance of different values of K tested in
@@ -449,55 +404,6 @@
         ggplot2::labs(
             title = "Reconstruction accuracy, Q\U00B2 = f(#Factors)",
             x = "#Factors (K)",
-            y = paste0("Reconstruction accuracy (Q\U00B2)")
-        )
-    return(p1)
-}
-## =============================================================================
-
-
-# @title Plot Cross-Validation Performance of \eqn{\alpha}
-#
-# @description Plot showing performance of different values of \eqn{\alpha}
-# tested in cross-validation.
-#
-# @param model_selectAlpha The return value from
-# \code{\link{.cv_model_select_pyNMF}}. This is used for \eqn{\alpha}.
-# @param threshold The threshold to be applied when choosing the best
-# performing value
-#
-# @return A ggplot object so you can simply call \code{print} or \code{save}
-# on it later.
-#
-# @import ggplot2
-# @importFrom rlang .data
-# @importFrom stats sd
-.plot_cv_Alpha <- function(model_selectAlpha, threshold = 0.0) {
-    ## Using ggplot to plot
-    mean_by_Alpha <- .get_q2_aggregates_chosen_var(model_selectAlpha,
-                                                    model_selectAlpha$alpha,
-                                                    base::mean)
-    sd_by_Alpha <- .get_q2_aggregates_chosen_var(model_selectAlpha,
-                                                    model_selectAlpha$alpha,
-                                                    stats::sd)
-    se_by_Alpha <- sd_by_Alpha / sqrt(nrow(sd_by_Alpha))
-    cat("Plotting Q2 as a function of alpha")
-    p1 <-
-        ggplot2::ggplot(mean_by_Alpha, aes(x = log2(rlang::.data$rel_var),
-                                            y = rlang::.data$q2_vals)) +
-        ggplot2::geom_point() +
-        ggplot2::geom_line() +
-        ggplot2::geom_hline(yintercept = threshold$mean - threshold$se,
-                    linetype = "dashed") +
-        ggplot2::geom_hline(yintercept = threshold$mean + threshold$se,
-                    linetype = "dashed") +
-        ggplot2::scale_x_continuous(
-            breaks = log2(mean_by_Alpha$rel_var),
-            labels = log2(mean_by_Alpha$rel_var)
-        ) +
-        ggplot2::labs(
-            title = "Reconstruction accuracy, Q\U00B2 = f(\u03B1)",
-            x = paste0("\u03B1", "=", expression(2 ^ x)),
             y = paste0("Reconstruction accuracy (Q\U00B2)")
         )
     return(p1)
