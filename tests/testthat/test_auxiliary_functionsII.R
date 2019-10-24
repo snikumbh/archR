@@ -28,16 +28,16 @@ test_that("get_factors_from_factor_clustering handles NA in
 })
 
 
-test_that("handle_chunk_w_NMF handles invalid nCores", {
-    innerChunkIdx <- -1
-    tempList <- vector("list", 5)
-    innerChunksColl <- lapply(seq_along(tempList),
-                              function(x){
-                                  tempList[[x]] <- round(10*runif(5))
-                              })
-    this_mat <- matrix(rep(0,1000), ncol = 5)
-    config <- archRSetConfig(parallelize = TRUE, nCoresUse = 32)
-    expect_error(.handle_chunk_w_NMF(innerChunkIdx, innerChunksColl,
-                                     this_mat, config),
-                 "Specified more than available cores. Stopping ")
-})
+# test_that("handle_chunk_w_NMF handles invalid nCores", {
+#     innerChunkIdx <- -1
+#     tempList <- vector("list", 5)
+#     innerChunksColl <- lapply(seq_along(tempList),
+#                               function(x){
+#                                   tempList[[x]] <- round(10*runif(5))
+#                               })
+#     this_mat <- matrix(rep(0,1000), ncol = 5)
+#     config <- archRSetConfig(parallelize = TRUE, nCoresUse = -32)
+#     expect_error(.handle_chunk_w_NMF(innerChunkIdx, innerChunksColl,
+#                                      this_mat, config),
+#                  "Specified more than available cores. Stopping ")
+# })
