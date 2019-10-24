@@ -102,12 +102,7 @@ archRSetConfig <- function(innerChunkSize = 500,
                         innerChunkSize = innerChunkSize,
                         modSelLogFile = modSelLogFile,
                         minSeqs = minSeqs,
-                        flags = list(
-                            debugFlag = FALSE,
-                            timeFlag = FALSE,
-                            verboseFlag = TRUE,
-                            plotVerboseFlag = FALSE
-                        )
+                        flags = flags
                     )
     return(archRconfig)
 }
