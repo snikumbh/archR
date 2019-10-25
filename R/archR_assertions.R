@@ -66,7 +66,7 @@
 ## Expected to be
 ## - not NULL
 ## - A matrix
-## - ncol > 0, nrow > 0
+## - ncol > 0, nrow > 0, nrow %% 4 == 0
 ## - ncol depends on number of factors of NMF
 ## - ? It has only 0s and 1s
 .assert_archR_featuresMatrix <- function(featuresMatrix) {
@@ -90,6 +90,9 @@
             ## This will lead to an error if hopach is performed, hence throwing
             ## error
             stop("WARNING: All zeroes as factors")
+        }
+        if ((nrow(featuresMatrix) %% 4) != 0) {
+            stop("#Rows in featuresMatrix not a multiple of 4")
         }
     }
 }
