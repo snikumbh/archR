@@ -107,8 +107,8 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
         ## i.e. no seqs assigned to its cluster
         if (any(lapply(rightClusterOrders, length) == 0)) {
             thisGotLeftOut <- which(lapply(rightClusterOrders, length) == 0)
-            message("WARNING: Factor(s) got no sequences assigned: ",
-                    thisGotLeftOut)
+            warning(c("Factor(s) got no sequences assigned: ",
+                    thisGotLeftOut), immediate. = TRUE)
         }
         return(rightClusterOrders)
     }

@@ -81,7 +81,7 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL,
 
     if (!is.null(savePDFfilename)) {
         if (file.exists(savePDFfilename)) {
-            warning("File exists, will overwrite")
+            warning("File exists, will overwrite", immediate. = TRUE)
         }
         ggplot2::ggsave(p1, device = "pdf", width = 20, height = 2.5)
     }

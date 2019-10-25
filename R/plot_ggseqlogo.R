@@ -65,7 +65,7 @@ plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
     # + ylim(0.0, 2.0)
     if (!is.null(savePDFfilename)) {
         if (file.exists(savePDFfilename)) {
-            warning("File exists, will overwrite")
+            warning("File exists, will overwrite", immediate. = TRUE)
         }
         ggsave(p1, device = "pdf", width = 25, height = 0.5)
     }

@@ -157,8 +157,8 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
     } else if (any(!(char_levels %in% dna_alphabet))) {
         # Check for non-alphabet characters
         # Raise either an error or just warn!
-        warning("Non DNA-alphabet character in the sequences: ",
-                char_levels, "\n")
+        warning(c("Non DNA-alphabet character in the sequences: ",
+                char_levels), immediate. = TRUE)
 
     } else {
         # All OK!

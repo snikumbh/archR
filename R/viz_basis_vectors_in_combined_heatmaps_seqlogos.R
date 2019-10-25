@@ -77,7 +77,7 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
         ##
         if (!is.null(savePDFfilename)) {
             if (file.exists(savePDFfilename)) {
-                warning("File exists, will overwrite")
+                warning("File exists, will overwrite", immediate. = TRUE)
             }
             ggplot2::ggsave(final_p, device = "pdf", width = 20, height = 2.5)
         } else {
