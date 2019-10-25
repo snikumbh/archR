@@ -27,7 +27,7 @@ model selection.}
 \item{parallelize}{Logical. Specify whether to parallelize the procedure.}
 
 \item{nCoresUse}{The number of cores to be used when `parallelize` is set to
-TRUE.}
+TRUE. If `parallelize` is FALSE, nCoresUse is ignored.}
 
 \item{nIterationsUse}{Specify the number of bootstrapped iterations to be
 performed with NMF.}
