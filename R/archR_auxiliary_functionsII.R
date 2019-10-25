@@ -273,6 +273,12 @@ archRSetConfig <- function(innerChunkSize = 500,
     ##
     best_k <- .get_best_K(model_selectK)
     ##
+    if (best_k == max(config$paramRanges$k_vals)) {
+        warning(c("Best K for this subset == 'kMax'.",
+                "Consider selecting a larger 'kMax' value and, perhaps, ",
+                "further increasing 'nIterationsUse'"),
+                immediate. = TRUE)
+    }
     if (config$flags$verboseFlag) {
         message("Best K for this subset: ", best_k)
     }
