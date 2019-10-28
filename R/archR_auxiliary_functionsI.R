@@ -4,28 +4,29 @@
 #'  the chosen iteration/level.
 #'
 #' @param given_seqsClustLabels from archR result object
-#' @param choose_levels choose a level/iteration
+#' @param chooseLevel choose a level/iteration. This value is number of
+#' iterations + 1
 #'
 #' @return A numeric vector of the same size as seqsClustLabels, with labels
 #' only up to the chosen iteration
 #' @export
 #'
-collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
+collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     ## Check if all_ok, all elements should have same length
     .assert_archR_seqsClustLabels_at_end(given_seqsClustLabels)
     splitChar <- "-"
     elements_length <- unique(unlist(lapply(strsplit(given_seqsClustLabels,
                                                     split = splitChar),
                                                     length)))
-    if (choose_levels > elements_length) {
-        stop("Choose_levels (", choose_levels,
+    if (chooseLevel > elements_length) {
+        stop("Choose_levels (", chooseLevel,
         ") greater than levels present in cluster_labels(",
         elements_length, ").")
     } else {
         selectedLabels <- unlist(lapply(strsplit(given_seqsClustLabels,
                                                 split = splitChar),
                                         function(x) {
-                                            paste0(x[seq_len(choose_levels)],
+                                            paste0(x[seq_len(chooseLevel)],
                                                 collapse = splitChar)
                                         }))
     }
@@ -108,7 +109,7 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
         if (any(lapply(rightClusterOrders, length) == 0)) {
             thisGotLeftOut <- which(lapply(rightClusterOrders, length) == 0)
             warning(c("Factor(s) got no sequences assigned: ",
-                    thisGotLeftOut), immediate. = TRUE)
+                    paste0(thisGotLeftOut, sep="-")), immediate. = TRUE)
         }
         return(rightClusterOrders)
     }
@@ -317,10 +318,82 @@ collect_cluster_labels <- function(given_seqsClustLabels, choose_levels = 1) {
 }
 ## =============================================================================
 
-# final_adjustment_of_ordering <- function(archRresult) {
-#     # Finally, arrange clusters from processed outer chunks.
-#
-#
-#
-# }
+#' Keep this internal or external function?
+#' @description We use hclust/hierarchical clustering for reordering archR
+#' clusters
+#'
+#' @title Reorder archR clustering at the current last level
+#'
+#' @param archRresult The archRresult object
+#'
+#' @return Ordering returned from hclust
+#' @keywords internal
+#' @importFrom stats hclust dist
+reorder_archRresult <- function(archRresult) {
+    # Depends on archRresult object having a fixed set of names.
+    # We need to .assert them
+    # Finally, arrange clusters from processed outer chunks.
+    #  using hclust
+    lastLevel <- length(archRresult$clustBasisVectors)
+    temp_hclust <-
+        stats::hclust(stats::dist(
+            t(archRresult$clustBasisVectors[[lastLevel]]$basisVectors)),
+                             method = "ave")
+    new_order <- temp_hclust$order
+    # Fetch original seqClustLabels as a list
+    origSeqsClustersAsList <- get_seqs_clusters_in_a_list(
+                        archRresult$seqsClustLabels,
+                        chooseLevel = lastLevel + 1)
+    if (length(new_order) != length(origSeqsClustersAsList)) {
+        stop("SAMARTH: Error")
+    }
+    ## arrange by the new ordering
+    newSeqsClusters <- lapply(new_order, function(x){
+                                            origSeqsClustersAsList[[x]]
+                                            }
+                            )
+    newSeqsClustLabels <- unlist(lapply(
+                                    seq_along(newSeqsClusters),
+                                    function(x){
+                                        rep(x, length(newSeqsClusters[[x]]))
+                                    }
+                                )
+                            )
+    ##
+    newClustBasisVectors <-
+        archRresult$clustBasisVectors[[lastLevel]]$basisVectors[, new_order]
+    ##
+    new_field <- list(seqsClusters = newSeqsClusters,
+                        clustBasisVectors = newClustBasisVectors)
+    ##
+    archRresult$final <- new_field
+    ##
+    return(archRresult)
+}
+## =============================================================================
+
+#' @title Retrieve sequence clusters as a list
+#'
+#' @param seqsClustLabels Sequences with cluster labels as in the archR result
+#' object
+#' @param chooseLevel Specify the level (archR iteration) at which sequence
+#' clusters are to be reported. Default is 1.
+#'
+#' @return A list holding sequence clusters
+get_seqs_clusters_in_a_list <- function(seqsClustLabels, chooseLevel = 1){
+
+    chosenLevelLabels <- collect_cluster_labels(seqsClustLabels,
+                                                chooseLevel = chooseLevel)
+    clusterLevels <- levels(as.factor(chosenLevelLabels))
+    # message(length(clusterLevels),
+    #         " clusters identified by labels: ",
+    #         paste0(clusterLevels, sep = "**"))
+    seqs_clusters_as_a_list <- sapply(seq_along(clusterLevels),
+                                        function(x){
+                                            which(chosenLevelLabels ==
+                                                    clusterLevels[x])
+                                    })
+
+    return(seqs_clusters_as_a_list)
+}
 ## =============================================================================

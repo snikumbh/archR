@@ -4,12 +4,13 @@
 \alias{collect_cluster_labels}
 \title{Get cluster labels for chosen level/iteration}
 \usage{
-collect_cluster_labels(given_seqsClustLabels, choose_levels = 1)
+collect_cluster_labels(given_seqsClustLabels, chooseLevel = 1)
 }
 \arguments{
 \item{given_seqsClustLabels}{from archR result object}
 
-\item{choose_levels}{choose a level/iteration}
+\item{chooseLevel}{choose a level/iteration. This value is number of
+iterations + 1}
 }
 \value{
 A numeric vector of the same size as seqsClustLabels, with labels

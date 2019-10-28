@@ -138,9 +138,14 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
         outerChunksColl <- nxtOuterChunksColl
         test_itr <- test_itr + 1
     }  ## algorithm while loop ENDS
-    archRresult <- list(seqsClustLabels = seqsClustLabels,
+    ##
+    temp_archRresult <- list(seqsClustLabels = seqsClustLabels,
                         clustBasisVectors = clustFactors,
                         config = config, call = match.call())
+    ## reordering returns the result object with an additional field
+    message("Reordering archR clusters")
+    archRresult <- reorder_archRresult(temp_archRresult)
+    ##
     message("=== archR exiting, returning result ===")
     return(archRresult)
 }  ## archR function ENDS

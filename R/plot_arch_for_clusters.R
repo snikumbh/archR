@@ -151,7 +151,7 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw, archRresult,
     # length(archRresult$clustFactors)){
     for (i in seq_len(2)) {
         chosenLevelLabels <- collect_cluster_labels(archRresult$seqsClustLabels,
-                                                    choose_levels = i + 1)
+                                                    chooseLevel = i + 1)
         chosenLevelLabels_sorted <- sort(chosenLevelLabels, index.return = TRUE)
         # print(chosenLevelLabels_sorted)
         fname <- paste0("samarth_trial_Level", i, "_architectures.pdf")
