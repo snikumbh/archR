@@ -34,7 +34,7 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
             ##
             outerChunk <- outerChunksColl[[outerChunkIdx]]
             ## Make a decision to process based on size of chunk
-            message("Deciding whether to process next chunk?")
+            message("Deciding whether to process chunk?")
             doNotProcess <- .decide_process_outer_chunk(config$minSeqs,
                                                         length(outerChunk),
                                                         config$kFolds)
@@ -49,13 +49,13 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
                 collatedClustAssignments <- list(outerChunk)
                 if (!is.null(intClustFactors)) {
                     intClustFactors <- cbind(intClustFactors,
-                            as.matrix(
-                            clustFactors[[test_itr]]$Factors[, outerChunkIdx])
-                            )
+                        as.matrix(
+                        clustFactors[[test_itr]]$basisVectors[, outerChunkIdx])
+                        )
                 } else {
                     intClustFactors <- as.matrix(
-                            clustFactors[[test_itr]]$Factors[, outerChunkIdx]
-                            )
+                        clustFactors[[test_itr]]$basisVectors[, outerChunkIdx]
+                        )
                 }
             } else {
                 message("Yes")
@@ -120,6 +120,7 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
                 ##
             }  ## IfElse doNotProcess outer chunk ENDS
             ##
+            .assert_archR_globClustAssignments(collatedClustAssignments)
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
                                                 collatedClustAssignments,
                                                 flags = config$flags)
@@ -130,7 +131,7 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
             message("Outer chunk ", outerChunkIdx,
             " done, \ncurrent total basis vectors: ", ncol(intClustFactors),
             "\ncurrent total chunks for next iteration: ",
-            length(nxtOuterChunksColl))
+            length(nxtOuterChunksColl), "\n")
         }  ## for loop over outerChunksCollection ENDS
         ##
         clustFactors[[test_itr + 1]] <-
