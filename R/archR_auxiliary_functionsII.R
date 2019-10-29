@@ -135,7 +135,8 @@ archRSetConfig <- function(innerChunkSize = 500,
         if (lengthOfOC > 0) {
             if (lengthOfOC < minThreshold) {
                 doNotProcess <- TRUE
-                message("Sorry, will not process this small a chunk!")
+                message("Sorry, will not process this small a chunk: ",
+                        lengthOfOC)
             }
         } else {
             # doNotProcess <- TRUE
@@ -275,8 +276,9 @@ archRSetConfig <- function(innerChunkSize = 500,
     ##
     if (best_k == max(config$paramRanges$k_vals)) {
         warning(c("Best K for this subset == 'kMax'.",
-                "Consider selecting a larger 'kMax' value and, perhaps, ",
-                "further increasing 'nIterationsUse'"),
+                "Consider selecting a larger 'kMax' value, or\n",
+                "smaller innerChunkSize, or\n",
+                "perhaps, further increasing 'nIterationsUse'"),
                 immediate. = TRUE)
     }
     if (config$flags$verboseFlag) {
@@ -289,7 +291,7 @@ archRSetConfig <- function(innerChunkSize = 500,
         print(Q2vsK)
     }
     if (config$flags$verboseFlag || config$flags$debugFlag) {
-        message("Performing NMF with K = ", best_k)
+        message("Performing NMF with K = ", best_k, "\n")
     }
     ##
     if (config$flags$timeFlag) { start <- Sys.time() }
@@ -307,6 +309,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     ###############################
     ## For fetching sequence clusters from samplesMat
     ## Cluster sequences
+    message("Fetching clusters")
     solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
                                 nCluster = best_k)
     if (config$flags$timeFlag) {print(Sys.time() - start)}

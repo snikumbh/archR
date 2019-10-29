@@ -34,6 +34,7 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
             ##
             outerChunk <- outerChunksColl[[outerChunkIdx]]
             ## Make a decision to process based on size of chunk
+            message("Deciding whether to process next chunk?")
             doNotProcess <- .decide_process_outer_chunk(config$minSeqs,
                                                         length(outerChunk),
                                                         config$kFolds)
@@ -49,7 +50,7 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
                 if (!is.null(intClustFactors)) {
                     intClustFactors <- cbind(intClustFactors,
                             as.matrix(
-                            clustFactors[[test_itr]]$Factors[,outerChunkIdx])
+                            clustFactors[[test_itr]]$Factors[, outerChunkIdx])
                             )
                 } else {
                     intClustFactors <- as.matrix(
@@ -57,6 +58,7 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
                             )
                 }
             } else {
+                message("Yes")
                 innerChunksColl <- .prepare_chunks(outerChunk,
                                                     config$innerChunkSize)
                 ## Maintain these in a list, for collation later when

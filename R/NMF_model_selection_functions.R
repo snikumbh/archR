@@ -212,7 +212,7 @@
                                             }))
         message("Stopping cluster...")
         parallel::stopCluster(cl)
-        message("done!\n")
+        message("done!")
     }
     if (!parallelDo) {
         # TO-DO: check params passed to rowLapply
