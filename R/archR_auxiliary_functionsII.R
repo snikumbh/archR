@@ -253,7 +253,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     .assert_archR_flags(config$flags)
     ##
     if (config$flags$verboseFlag) {
-        message("Working on chunk: ", innerChunkIdx, " of ",
+        message("Working on inner chunk: ", innerChunkIdx, " of ",
                 length(innerChunksColl), " [chunkSize: ", ncol(this_mat), "]")
     }
     ##
@@ -290,9 +290,9 @@ archRSetConfig <- function(innerChunkSize = 500,
         Q2vsK <- .plot_cv_K(q2_means_by_k_vals)
         print(Q2vsK)
     }
-    if (config$flags$verboseFlag || config$flags$debugFlag) {
-        message("Performing NMF with K = ", best_k, "\n")
-    }
+    # if (config$flags$verboseFlag || config$flags$debugFlag) {
+    #     message("Performing NMF with K = ", best_k)
+    # }
     ##
     if (config$flags$timeFlag) { start <- Sys.time() }
     ##
