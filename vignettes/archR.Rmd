@@ -145,7 +145,7 @@ sTime <- Sys.time()
 ```
 ```{r setup-archR-config, echo=TRUE}
 # Set archR configuration
-thisConfig <- archR::archRSetConfig(innerChunkSize = 500,
+thisConfig <- archR::archRSetConfig(innerChunkSize = 200,
                                     kMin = 2, kMax = 8, parallelize = FALSE, 
                                     cvFolds = 3, nIterationsUse = 10,
                                     nCoresUse = NA, seedVal = 10208090)
