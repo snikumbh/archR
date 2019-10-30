@@ -182,9 +182,10 @@
             labels = NULL,
             breaks = NULL
         ) +
-        ggplot2::scale_fill_manual(values = .distinctColorPalette(length(levels(
-            as.factor(annClusters)
-        ))))
+        ggplot2::scale_fill_manual(
+            values = .distinctColorPalette(length(levels(
+                as.factor(annClusters)
+                ))))
     return(panelClusters)
 }
 ## =============================================================================
