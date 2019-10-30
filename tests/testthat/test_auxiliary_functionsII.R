@@ -53,19 +53,31 @@ test_that("get_hopach_cluster_medoidsIdx handles null hopach object", {
     fMat <- matrix(rep(runif(1),1000), ncol = 5)
     expect_error(.get_hopach_cluster_medoidsIdx(hopachObj),
                  "Hopach object is NULL")
+    ## Make hopach object to test
+
 })
 
 
-test_that("NMF results OK", {
+test_that("NMF result from py script OK", {
     nmfList <- vector("list", 2)
     samplesMat <- matrix(rep(runif(1),1000), ncol = 5)
     featuresMat <- matrix(rep(runif(1),1000), nrow = 5)
+    expect_error(get_features_matrix(nmfList), "0LengthEntry")
     nmfList[[1]] <- featuresMat
-    expect_equal(get_samples_matrix(nmfList), "0LengthEntry")
+    expect_error(get_samples_matrix(nmfList), "0LengthEntry")
     nmfList[[2]] <- samplesMat
     expect_equal(get_samples_matrix(nmfList), samplesMat)
     expect_equal(get_features_matrix(nmfList), featuresMat)
 })
+
+
+test_that("getting dimers works", {
+    expect_error(get_dimers_from_alphabet(NULL))
+    expect_equal(get_dimers_from_alphabet(c(1,0)), c("11", "01", "10", "00"))
+})
+
+
+
 
 test_that("get_factors_from_factor_clustering handles null hopach object", {
     hopachObj <- NULL

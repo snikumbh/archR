@@ -29,14 +29,44 @@ test_that("collate_clusters handles empty globClustAssignments", {
 test_that("update_cluster_labels handles empty collatedClustAssignments", {
     seqsClustLabels <- rep("0-1-2-3", 25)
     tempList <- vector("list", 5)
-    globClustAssignments <- lapply(seq_along(tempList),
+    globClustAssignmentsErr <- lapply(seq_along(tempList),
                                    function(x){
                                        if ( x != 3) {
                                            tempList[[x]] <- round(10*runif(5))
                                        }
                                    })
-    expect_error(.update_cluster_labels(seqsClustLabels, globClustAssignments),
+    expect_error(.update_cluster_labels(seqsClustLabels,
+                                        globClustAssignmentsErr),
                  "Cluster assignments variable has a 0-length entry")
+    toyFlags <- list(debugFlag = NULL,
+                        plotVerboseFlag = FALSE,
+                        verboseFlag = FALSE,
+                        timeFlag = TRUE)
+    toyClustLabels <- seqsClustLabels
+    set.seed(1234)
+    collection <- sample.int(25)
+    idx <- rep(1:5,5)
+    globClustAssignments <- lapply(seq_along(tempList),
+                                   function(x){
+                                        tempList[[x]] <- collection[idx == x]
+                                   })
+    expect_error(.update_cluster_labels(seqsClustLabels, globClustAssignments,
+                                        toyFlags),
+                    "Expected only LOGICAL values in flag variable,
+                        found otherwise")
+    toyFlags$debugFlag <- FALSE
+    toyFlags$verboseFlag <- FALSE
+    samarth <- c("0-1-2-3-2", "0-1-2-3-4", "0-1-2-3-1", "0-1-2-3-3",
+                 "0-1-2-3-3", "0-1-2-3-1", "0-1-2-3-5", "0-1-2-3-2",
+                 "0-1-2-3-5", "0-1-2-3-3", "0-1-2-3-1", "0-1-2-3-4",
+                 "0-1-2-3-1", "0-1-2-3-4", "0-1-2-3-2", "0-1-2-3-1",
+                 "0-1-2-3-4", "0-1-2-3-2", "0-1-2-3-5", "0-1-2-3-5",
+                 "0-1-2-3-3", "0-1-2-3-4", "0-1-2-3-5", "0-1-2-3-3",
+                 "0-1-2-3-2")
+    expect_equal(.update_cluster_labels(toyClustLabels, globClustAssignments,
+                                        toyFlags),
+                 samarth
+                 )
 })
 
 
@@ -67,7 +97,7 @@ test_that("prepare_chunks handles negative chunkSize", {
 
 
 
-test_that("handle_clustering_of_factors handles all-zero featuresMatrix/factors", {
+test_that("clustering of factors handles all-zero featuresMatrix", {
 
     fMat <- matrix(rep(0,1000), ncol = 5)
     expect_error(.handle_clustering_of_factors(fMat),
@@ -75,12 +105,12 @@ test_that("handle_clustering_of_factors handles all-zero featuresMatrix/factors"
 })
 
 
-test_that("handle_clustering_of_factors handles NA in featuresMatrix/factors", {
+test_that("handle_clustering_of_factors handles NA in featuresMatrix", {
 
     fMat <- matrix(rep(0,1000), ncol = 5)
     fMat[2,2] <- NA
     expect_error(.handle_clustering_of_factors(fMat),
-                   "Factors have NA")
+                    "Factors have NA")
 })
 
 test_that("handle_clustering_of_factors handles improper flags", {
@@ -88,7 +118,7 @@ test_that("handle_clustering_of_factors handles improper flags", {
     fMat <- matrix(rep(0,1000), ncol = 5)
     fMat[2,2] <- NA
     expect_error(.handle_clustering_of_factors(fMat, flags = list()),
-                 "")
+                    "")
 })
 
 
