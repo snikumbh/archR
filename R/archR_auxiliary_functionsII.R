@@ -3,7 +3,7 @@
 ##Dependency on python script perform_nmf.py
 get_features_matrix <- function(nmfResultObj){
     returnVal <- .assert_archR_list_properties(nmfResultObj)
-    if (returnVal != "SAMARTH") return(returnVal)
+    if (returnVal != "SAMARTH") stop(returnVal)
     else return(as.matrix(nmfResultObj[[1]]))
 }
 ## =============================================================================
@@ -13,7 +13,7 @@ get_features_matrix <- function(nmfResultObj){
 ## Dependency on python script perform_nmf.py
 get_samples_matrix <- function(nmfResultObj){
     returnVal <- .assert_archR_list_properties(nmfResultObj)
-    if (returnVal != "SAMARTH") return(returnVal)
+    if (returnVal != "SAMARTH") stop(returnVal)
     else return(as.matrix(nmfResultObj[[2]]))
 }
 ## =============================================================================
@@ -32,7 +32,11 @@ get_samples_matrix <- function(nmfResultObj){
 ## =============================================================================
 
 get_dimers_from_alphabet <- function(alphabet){
-    return(do.call(paste0, expand.grid(alphabet, alphabet)))
+    if (!is.null(alphabet)) {
+        return(do.call(paste0, expand.grid(alphabet, alphabet)))
+    } else {
+        stop("Expecting non-NULL alphabet")
+    }
 }
 ## =============================================================================
 
