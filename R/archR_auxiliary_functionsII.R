@@ -2,7 +2,9 @@
 ## (from python)
 ##Dependency on python script perform_nmf.py
 get_features_matrix <- function(nmfResultObj){
-    return(as.matrix(nmfResultObj[[1]]))
+    returnVal <- .assert_archR_list_properties(nmfResultObj)
+    if (returnVal != "SAMARTH") return(returnVal)
+    else return(as.matrix(nmfResultObj[[1]]))
 }
 ## =============================================================================
 
@@ -10,7 +12,9 @@ get_features_matrix <- function(nmfResultObj){
 ## (from python)
 ## Dependency on python script perform_nmf.py
 get_samples_matrix <- function(nmfResultObj){
-    return(as.matrix(nmfResultObj[[2]]))
+    returnVal <- .assert_archR_list_properties(nmfResultObj)
+    if (returnVal != "SAMARTH") return(returnVal)
+    else return(as.matrix(nmfResultObj[[2]]))
 }
 ## =============================================================================
 
@@ -22,6 +26,7 @@ get_samples_matrix <- function(nmfResultObj){
 ##
 ## Dependency on hopach package
 .get_hopach_cluster_medoidsIdx <- function(hopachObj){
+    .assert_archR_hopachObj(hopachObj, test_null = TRUE)
     return(hopachObj$clustering$medoids)
 }
 ## =============================================================================
@@ -128,7 +133,7 @@ archRSetConfig <- function(innerChunkSize = 500,
         nFoldsCondition <- 4 * kFoldsVal
         .assert_archR_minSeqs_independent(minThreshold)
         if (minThreshold < nFoldsCondition) {
-            stop("'minSeqs' should be at least 4*'kFolds'")
+            stop("'minSeqs' should be at least 4 times 'kFolds'")
         }
         # base::stopifnot(minThreshold >= nFoldsCondition)
         doNotProcess <- FALSE
@@ -275,7 +280,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     best_k <- .get_best_K(model_selectK)
     ##
     if (best_k == max(config$paramRanges$k_vals)) {
-        warning(c("Best K for this subset == 'kMax'.",
+        warning(c("Best K for this subset == 'kMax'. ",
                 "Consider selecting a larger 'kMax' value, or\n",
                 "smaller innerChunkSize, or\n",
                 "perhaps, further increasing 'nIterationsUse'"),

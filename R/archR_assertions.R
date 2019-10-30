@@ -13,12 +13,12 @@
         stop("flags variable is not a list")
     } else {
         matchNames <- names(flags) %in% expNames
-        if (is.null(names(flags)) && !all(matchNames)) {
+        if (is.null(names(flags)) || !all(matchNames)) {
             stop("Unexpected names or no elements in flags variable")
         } else {
             ## test all are set to logical values
             all_logical <- unlist(lapply(flags, is.logical))
-            if (any(all_logical) == FALSE) {
+            if (!all(all_logical)) {
                 stop("Expected only LOGICAL values in flag variable,
                         found otherwise")
             }
@@ -169,8 +169,8 @@
         if (kFolds_var < 3) {
             stop("Set at least 3 cross-validation folds")
         } else if (kFolds_var > given_seqs_size) {
-            stop("CV folds should be less than or equal to #sequences.\n
-                Standard values: 3, 5, 10.")
+            stop("CV folds should be less than or equal to #sequences. ",
+                "Standard values: 3, 5, 10.")
         }
     }
 }
@@ -227,13 +227,32 @@
     ## Check if any chunk in the collection is of zero-length?
     if (any(lapply(nxtOuterChunksColl, length) == 0)) {
         message("WARNING: Chunks for next iteration have a problem")
-        stop(which(lapply(nxtOuterChunksColl, length) == 0),
-                " have zero lengths")
+        stop("Index ",
+             which(lapply(nxtOuterChunksColl, length) == 0),
+                " of zero length")
     }
-
 }
 ## =============================================================================
 
+
+## Function to check properties of thresholdItr set by user
+## Expected to be
+## 1. not NULL
+## 2. A numeric
+## 3. > 0
+##
+.assert_archR_thresholdIteration <- function(given_val) {
+    ## Check if it is NULL
+    if (is.null(given_val)) {
+        stop("Threshold iteration is NULL")
+    }
+    if (is.numeric(given_val) && given_val >= 0) {
+        ## OK
+    } else {
+        stop("Expecting threshold iteration to be numeric and > 0")
+    }
+}
+## =============================================================================
 
 
 ## Function to check properties of paramRanges used for model selection w/ NMF

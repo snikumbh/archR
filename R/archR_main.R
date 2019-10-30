@@ -14,6 +14,7 @@
 archR <- function(config, seqsMat, thresholdItr = 2) {
     ## Make checks for params in configuration
     .assert_archR_config(config, ncol(seqsMat))
+    .assert_archR_thresholdIteration(thresholdItr)
     ## ** To continue archR from an earlier run (further levels downstream)
     ## 1. Initializations of seqClustLabels, Factors etc should be
     ## appropriately handled.**
