@@ -129,7 +129,8 @@ archR <- function(config, seqsMat, thresholdItr = 2) {
             ## Collect (append) clusters at current level
             nxtOuterChunksColl <- append(nxtOuterChunksColl,
                                         collatedClustAssignments)
-            message("Outer chunk ", outerChunkIdx,
+            message("Outer chunk ", outerChunkIdx, " of ",
+            length(outerChunksColl), " [Level ", test_itr, "]",
             " done, \ncurrent total basis vectors: ", ncol(intClustFactors),
             "\ncurrent total chunks for next iteration: ",
             length(nxtOuterChunksColl), "\n")
