@@ -191,6 +191,15 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     # .assert_archR_consistent_nSeqs_w_clusters(oldSeqsClustLabels,
     #                                     collatedClustAssignments)
     nClusters <- length(collatedClustAssignments)
+    ## When #clusters > 9, we use LETTERS as cluster labels instead of numbers
+    ## 10, 11, 12 and so.
+    candidateClustLabels <- c(as.character(1:9))
+    if (nClusters > 9) {
+        candidateClustLabels <- c(candidateClustLabels,
+                                    LETTERS[1:(nClusters -
+                                            length(candidateClustLabels))]
+                                )
+    }
     if (flags$verboseFlag) {
         message("Updating sequence cluster labels")
         message("#Clusters: ", nClusters)
@@ -200,12 +209,12 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     ##     warning("More than 9 clusters")
     ## }
     newSeqsClustLabels <- oldSeqsClustLabels
-    for (i in seq_along(collatedClustAssignments)) {
+    for (i in seq_len(nClusters)) {
         needUpdateIdx <- collatedClustAssignments[[i]]
         newSeqsClustLabels[needUpdateIdx] <-
             vapply(newSeqsClustLabels[needUpdateIdx],
                     function(x) {
-                        paste0(c(x, toString(i)), collapse = "-")
+                        paste0(c(x, candidateClustLabels[i]), collapse = "-")
                     }, character(1)
                 )
     }
@@ -352,10 +361,13 @@ reorder_archRresult <- function(archRresult) {
                                             origSeqsClustersAsList[[x]]
                                             }
                             )
+    ## the labels should be set as.character
     newSeqsClustLabels <- unlist(lapply(
                                     seq_along(newSeqsClusters),
                                     function(x){
+                                        as.character(
                                         rep(x, length(newSeqsClusters[[x]]))
+                                        )
                                     }
                                 )
                             )
@@ -364,6 +376,7 @@ reorder_archRresult <- function(archRresult) {
         archRresult$clustBasisVectors[[lastLevel]]$basisVectors[, new_order]
     ##
     new_field <- list(seqsClusters = newSeqsClusters,
+                        seqsClustLabels = newSeqsClustLabels,
                         clustBasisVectors = newClustBasisVectors)
     ##
     archRresult$final <- new_field
@@ -380,6 +393,7 @@ reorder_archRresult <- function(archRresult) {
 #' clusters are to be reported. Default is 1.
 #'
 #' @return A list holding sequence clusters
+#' @export
 get_seqs_clusters_in_a_list <- function(seqsClustLabels, chooseLevel = 1){
 
     chosenLevelLabels <- collect_cluster_labels(seqsClustLabels,
