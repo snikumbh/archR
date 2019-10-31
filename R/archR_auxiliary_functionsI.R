@@ -192,14 +192,17 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     #                                     collatedClustAssignments)
     nClusters <- length(collatedClustAssignments)
     ## When #clusters > 9, we use LETTERS as cluster labels instead of numbers
-    ## 10, 11, 12 and so.
-    candidateClustLabels <- c(as.character(1:9))
-    if (nClusters > 9) {
-        candidateClustLabels <- c(candidateClustLabels,
-                                    LETTERS[1:(nClusters -
-                                            length(candidateClustLabels))]
-                                )
-    }
+    ## 10, 11, 12 and so. -- This does not work when nClusters > 50 or 100 or
+    ## so.
+    ## Instead, use numerics w/ as.character and pre-sort to have them in the
+    ## order that will be returned by levels (in get_seqs_clusters_in_list fn)
+    candidateClustLabels <- sort(as.character(seq_len(nClusters)))
+    # if (nClusters > 9) {
+    #     candidateClustLabels <- c(candidateClustLabels,
+    #                                 LETTERS[1:(nClusters -
+    #                                         length(candidateClustLabels))]
+    #                             )
+    # }
     if (flags$verboseFlag) {
         message("Updating sequence cluster labels")
         message("#Clusters: ", nClusters)
