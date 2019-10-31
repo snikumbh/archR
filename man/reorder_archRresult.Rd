@@ -19,4 +19,3 @@ clusters
 \details{
 Keep this internal or external function?
 }
-\keyword{internal}
