@@ -197,12 +197,6 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     ## Instead, use numerics w/ as.character and pre-sort to have them in the
     ## order that will be returned by levels (in get_seqs_clusters_in_list fn)
     candidateClustLabels <- sort(as.character(seq_len(nClusters)))
-    # if (nClusters > 9) {
-    #     candidateClustLabels <- c(candidateClustLabels,
-    #                                 LETTERS[1:(nClusters -
-    #                                         length(candidateClustLabels))]
-    #                             )
-    # }
     if (flags$verboseFlag) {
         message("Updating sequence cluster labels")
         message("#Clusters: ", nClusters)

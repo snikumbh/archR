@@ -82,6 +82,20 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
 # })
 
 
+
+test_that("get seq clusters as list works fine", {
+    seqsClustLabels <- c("0-1-2-3", "0-1-2-3", "0-2-2-3", "0-2-2-3", "0-2-2-3",
+                         "0-3-2-3", "0-4-2-3", "0-5-2-3", "0-6-2-3", "0-6-2-3",
+                         "0-7-2-3", "0-8-2-3", "0-9-2-3", "0-A-2-3", "0-A-2-3",
+                         "0-B-2-3", "0-B-2-3", "0-C-2-3", "0-D-2-3", "0-D-2-3",
+                         "0-D-2-3", "0-D-2-3", "0-D-2-3", "0-D-2-3", "0-E-2-3")
+    expAns <- 14
+    expect_equal(length(get_seqs_clusters_in_a_list(seqsClustLabels, 4)), 14)
+})
+
+
+
+
 test_that("prepare_chunks handles negative chunkSize", {
     seqsClustLabels <- rep("0-1-2-3", 20)
     tempList <- vector("list", 5)
