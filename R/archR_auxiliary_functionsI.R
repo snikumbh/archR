@@ -336,8 +336,9 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
 #' @param archRresult The archRresult object
 #'
 #' @return Ordering returned from hclust
-#' @keywords internal
+#'
 #' @importFrom stats hclust dist
+#' @export
 reorder_archRresult <- function(archRresult) {
     # Depends on archRresult object having a fixed set of names.
     # We need to .assert them
@@ -354,6 +355,12 @@ reorder_archRresult <- function(archRresult) {
                         archRresult$seqsClustLabels,
                         chooseLevel = lastLevel + 1)
     if (length(new_order) != length(origSeqsClustersAsList)) {
+        print("===== SAMARTH SAMARTH =====")
+        print(archRresult$seqsClustLabels)
+        print(origSeqsClustersAsList)
+        print(length(origSeqsClustersAsList))
+        print(new_order)
+        print(length(new_order))
         stop("SAMARTH: Error")
     }
     ## arrange by the new ordering
