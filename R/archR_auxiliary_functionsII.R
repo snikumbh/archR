@@ -330,6 +330,17 @@ archRSetConfig <- function(innerChunkSize = 500,
             clustOrderIdx = solKmeans$reordering_idx,
             iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx,
             flags = config$flags)
+    ## Try using the following approach:
+    ## Instead of using kmeans to cluster the smaples in the samplesMatrix,
+    ## let the basis vectors define the different clusters, and simply assign a
+    ## sample to the cluster marked by the basis vector that is ranked first in
+    ## terms of the amplitudes.
+    forGlobClustAssignments <- .assign_samples_to_clusters(
+                                        samplesMatrix = samplesMatrix,
+                                        iChunksColl = innerChunksColl,
+                                        iChunkIdx = innerChunkIdx
+                                )
+    ##
     ##
     .assert_archR_featuresMatrix(featuresMatrix)
     .assert_archR_globClustAssignments(forGlobClustAssignments)

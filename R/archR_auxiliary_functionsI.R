@@ -35,6 +35,36 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
 }
 ## =============================================================================
 
+# @title Assign samples to clusters
+#
+# @param samplesMatrix
+#
+# @return Similar to .map_clusters_to_factors, A list that can be assigned as
+# an element in globClustAssignments
+#
+.assign_samples_to_clusters <- function(samplesMatrix, iChunksColl,
+                                        iChunkIdx) {
+    .assert_archR_samplesMatrix(samplesMatrix)
+    nClusters = nrow(samplesMatrix)
+    returnClusterAsList <- vector("list", nClusters)
+    ## Fetch the cluster memberships for each sample (along the columns)
+    clustMemberships <- apply(samplesMatrix, 2, which.max)
+    if (length(unique(clustMemberships)) != nClusters) {
+        print(unique(clustMemberships))
+        print(length(unique(clustMemberships)))
+        print(nClusters)
+        stop("Basis vector that got no sequences assigned: ",
+             setdiff( unique(clustMemberships), seq_len(nClusters)))
+    } else {
+        for (i in seq_along(returnClusterAsList)) {
+            returnClusterAsList[[i]] <-
+                iChunksColl[[iChunkIdx]][clustMemberships == i]
+        }
+        return(returnClusterAsList)
+    }
+}
+
+
 # @title Map clusters to factors
 #
 # @description This function maps the clusters with the corresponding factors
