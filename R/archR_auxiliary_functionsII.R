@@ -319,17 +319,17 @@ archRSetConfig <- function(innerChunkSize = 500,
     ## For fetching sequence clusters from samplesMat
     ## Cluster sequences
     message("Fetching clusters")
-    solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
-                                nCluster = best_k)
-    if (config$flags$timeFlag) {print(Sys.time() - start)}
-    ## Set the right cluster orders respective to the factor order in the chunk
-    ## and, collect the clusters/cluster assignments for the global list
-    forGlobClustAssignments <-
-        .map_clusters_to_factors(
-            samplesMatrix = samplesMatrix,
-            clustOrderIdx = solKmeans$reordering_idx,
-            iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx,
-            flags = config$flags)
+    # solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
+    #                             nCluster = best_k)
+    # if (config$flags$timeFlag) {print(Sys.time() - start)}
+    # ## Set the right cluster orders respective to the factor order in the chunk
+    # ## and, collect the clusters/cluster assignments for the global list
+    # forGlobClustAssignments <-
+    #     .map_clusters_to_factors(
+    #         samplesMatrix = samplesMatrix,
+    #         clustOrderIdx = solKmeans$reordering_idx,
+    #         iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx,
+    #         flags = config$flags)
     ## Try using the following approach:
     ## Instead of using kmeans to cluster the smaples in the samplesMatrix,
     ## let the basis vectors define the different clusters, and simply assign a
