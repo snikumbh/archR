@@ -15,13 +15,13 @@ alignRight <- function (x) {
     tags$div(style="float:right", x)
 }
 
-header <- dashboardHeader(title = paste0("archR v", packageVersion("archR")))
+header <- dashboardHeader(title = paste0("seqarchR v", packageVersion("seqarchR")))
 
 sidebar <- dashboardSidebar(width = "200px",
     sidebarMenu(
         id = "performAction",
         menuItem("Process New Data", tabName = "processNew"),
-        menuItem("Analyze Existing archR Result",
+        menuItem("Analyze Existing seqarchR Result",
                  tabName = "analyzeExisting")
     )
 )

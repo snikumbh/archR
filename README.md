@@ -1,7 +1,7 @@
 
 Note: _This package is currently under development. So, please bear with me while I put the final blocks together. Thanks for your understanding!_ 
 
-# archR
+# seqarchR
 <!-- badges: start -->
 
 [![Lifecycle:
@@ -22,25 +22,25 @@ This package requires the Python module scikit-learn. See installation instructi
 
 ```r
 # install.packages("devtools")
-devtools::install_github("snikumbh/archR", build_vignettes = TRUE)
+remotes::install_github("snikumbh/archR", build_vignettes = TRUE)
 ``` 
 
 
 ### Usage
 ```r
 # load package
-library(archR)
+library(seqarchR)
 
 # tssSeqs holds the one-hot encoded input matrix of all sequences
 tssSeqs <- archR::prepare_data_from_FASTA(inputFastaFilename)
 
 # Set archR configuration
-thisConfig <- archR::archRSetConfig(innerChunkSize = 500,
+thisConfig <- seqarchR::archRSetConfig(innerChunkSize = 500,
                                     kMin = 1, kMax = 8, 
 				    parallelize = TRUE, nCores = 4,
 		                    cvFolds = 3, nIterationsUse = 100)
 # Call archR
-archRresult <- archR::archR(config = thisConfig, 
+archRresult <- seqarchR::archR(config = thisConfig, 
                             tss.seqs = tssSeqs)
 ```
 
@@ -52,4 +52,4 @@ archRresult <- archR::archR(config = thisConfig,
  - getting reticulate to work
 
 # Contact
-Comments, suggestions, enquiries/requests are welcome! Feel free to email sarvesh.nikumbh@gmail.com or [create an new issue](https://github.com/snikumbh/archR/issues/new)
+Comments, suggestions, enquiries/requests are welcome! Feel free to email sarvesh.nikumbh@gmail.com or [create an new issue](https://github.com/snikumbh/seqarchR/issues/new)
