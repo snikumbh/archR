@@ -22,7 +22,7 @@ This package requires the Python module scikit-learn. See installation instructi
 
 ```r
 # install.packages("devtools")
-remotes::install_github("snikumbh/archR", build_vignettes = TRUE)
+remotes::install_github("snikumbh/seqarchR", build_vignettes = FALSE)
 ``` 
 
 
