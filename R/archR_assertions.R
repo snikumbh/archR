@@ -91,9 +91,10 @@
             ## error
             stop("WARNING: All zeroes as factors")
         }
-        if ((nrow(featuresMatrix) %% 4) != 0) {
-            stop("#Rows in featuresMatrix not a multiple of 4")
-        }
+        # Commented for low-dimensional representation
+        # if ((nrow(featuresMatrix) %% 4) != 0) {
+        #     stop("#Rows in featuresMatrix not a multiple of 4")
+        # }
     }
 }
 ## =============================================================================
@@ -362,9 +363,11 @@
 ## 2. Individual element assertions should pass
 ## 3.
 .assert_archR_config <- function(config_var, given_seqs_size = NA) {
-    expNames <- c("kFolds", "parallelize", "nCoresUse", "nIterationsUse",
-                    "seedVal", "paramRanges", "innerChunkSize", "modSelLogFile",
-                    "minSeqs", "flags")
+    ##TODO: Check assertions for new args modSelType, tol and bound
+    expNames <- c("modSelType", "tol", "bound", "kFolds",
+                  "parallelize", "nCoresUse", "nIterationsUse", #"seedVal",
+                  "paramRanges", "innerChunkSize", "modSelLogFile", "minSeqs",
+                  "flags", "checkpointing")
     if (is.null(config_var)) {
         stop("'config' is NULL")
     }

@@ -10,3 +10,7 @@ Meta
 .Rapp.history
 ## Ignore travis config file
 ^\.travis\.yml$
+vignettes/*.png
+vignettes/*.pdf
+vignettes/*.out
+vignettes/*.rds

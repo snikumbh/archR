@@ -143,29 +143,79 @@ get_seq_cluster_levels <- function(annClusters) {
     return(clusterLevels)
 }
 
-plot_arch_for_clusters_new <- function(tss.seqs_raw, archRresult,
-                                        position_labels) {
+plot_arch_for_clusters_new <- function(tss.seqs_raw,
+                                        list_of_elements,
+                                        position_labels,
+                                        xt_freq = 1,
+                                        PDFfname = "archR_sequence_architectures.pdf") {
+    if(!is.null(PDFfname)) {
+        pdf(file=PDFfname, width = 11, height = 2)
+    }
+    # seqs_clusters_as_list <- get_seqs_clusters_in_a_list(archRresult_clust_labels)
+    seqs_clusters_as_list <- list_of_elements
+    cluster_lengths <- unlist(lapply(seqs_clusters_as_list, length))
+    cumsums_of_cluster_lengths <- cumsum(cluster_lengths)
+    cluster_names <- sort(as.character(seq_along(seqs_clusters_as_list)))
+    for (i in seq_along(seqs_clusters_as_list)) {
+        ##
+        if(i > 1){
+            startN <- 1 + cumsums_of_cluster_lengths[i-1]
+        }else{
+            startN <- 1
+        }
+        endN <- cumsums_of_cluster_lengths[i]
+        plot_title <- paste0("(", i , "/", length(seqs_clusters_as_list), ") Arch `",
+                             cluster_names[i], "': ",
+                             length(seqs_clusters_as_list[[i]]),
+                             " sequences (",  startN, "-",  endN, ")" )
+        message(plot_title)
+        ##
+        samarth_p <- plot_ggseqlogo_of_seqs(seqs = tss.seqs_raw[ seqs_clusters_as_list[[i]] ],
+                                            position_labels = position_labels,
+                                            xt_freq = xt_freq,
+                                            title = plot_title)
+        ##
+        suppressMessages(print(samarth_p))
 
-
-    # ggseqlogo::ggseqlogo(tss.seqs_raw[1:25])
-    # length(archRresult$clustFactors)){
-    for (i in seq_len(2)) {
-        chosenLevelLabels <- collect_cluster_labels(archRresult$seqsClustLabels,
-                                                    chooseLevel = i + 1)
-        chosenLevelLabels_sorted <- sort(chosenLevelLabels, index.return = TRUE)
-        # print(chosenLevelLabels_sorted)
-        fname <- paste0("samarth_trial_Level", i, "_architectures.pdf")
-        cluster_levels <- get_seq_cluster_levels(chosenLevelLabels)
-        # print(cluster_levels)
-        print("print now? samarth")
-        pdf(fname, width = 11, height = 1.5)
-        samarth_invisible <- vapply(seq_along(cluster_levels),
-                function(x) {
-            relIdx <- which(chosenLevelLabels_sorted$x == cluster_levels[x])
-            # print(relIdx)
-            samarth_p <- ggseqlogo::ggseqlogo(tss.seqs_raw[relIdx])
-            print(samarth_p)
-        })
+    }
+    if(!is.null(PDFfname)) {
         dev.off()
     }
+}
+
+plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 1,
+                                       title = "TITLE"){
+
+    nPos <- length(position_labels)
+    xtick_cal <- seq(0, nPos, by = xt_freq)
+    xtick_cal[1] <- 1
+    xtick_cal[length(xtick_cal)] <- nPos
+
+    samarth_p <-
+        ggseqlogo::ggseqlogo(
+            as.character(seqs),
+            seq_type = "dna",
+            method = "bits"
+        ) +
+        ggplot2::theme_linedraw() +
+        ggplot2::theme(axis.text.x = element_text(size = rel(0.7),
+                                                  angle = 90,
+                                                  hjust = 1),
+                       axis.text.y = element_text(size = rel(0.8)),
+                       panel.grid = element_blank()
+        ) +
+        # ggplot2::scale_x_continuous(breaks = seq_len(length(position_labels)),
+        #                             labels = position_labels,
+        #                             expand = expansion(mult = c(0, 0))) +
+        ## Add additional bold tick labels
+        ggplot2::scale_x_continuous(breaks = xtick_cal,
+                                    labels = position_labels[xtick_cal],
+                                    expand = expansion(mult = c(0, 0))) +
+
+        ggplot2::ylim(0.0, 2.0) +
+        ggplot2::ggtitle(title)
+        message("Plot title:", title)
+
+
+    samarth_p
 }

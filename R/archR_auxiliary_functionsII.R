@@ -1,3 +1,41 @@
+##
+handle_dir_creation <- function(givenODir, flags = list(debugFlag = FALSE,
+                                                        verboseFlag = FALSE,
+                                                        plotFlag = FALSE,
+                                                        timeFlag = FALSE)){
+    if(dir.exists(givenODir)){
+        if(flags$verboseFlag) {
+            message("-- Directory exists: -- ")
+            message(givenODir)
+            message("-- Changing name to: -- ")
+        }
+        allExistingDirs <- list.dirs(path = dirname(givenODir),
+                                     recursive = FALSE)
+        dirsThatMatch <- grep(pattern = basename(givenODir), allExistingDirs,
+                              value = TRUE)
+        ## Suffix an integer, because directory with given name (oDir)
+        ## exists for length(dirsThatMatch) times
+        name_suffix <- length(dirsThatMatch)
+        givenODir <- paste(givenODir, name_suffix, sep = "_")
+        while(dir.exists(givenODir)){
+            name_suffix <- name_suffix + 1
+            givenODir <- paste(givenODir, name_suffix, sep = "_")
+        }
+        if(flags$verboseFlag) {
+            message(givenODir)
+        }
+    }
+    retVal <- dir.create(paste0(givenODir, "/"), showWarnings = TRUE)
+    stopifnot(retVal)
+    returnODirName <- paste0(givenODir, "/")
+    if(flags$verboseFlag) {
+        message("-- Directory created for writing results -- ")
+    }
+    returnODirName
+}
+
+
+
 ## Getter function to fetch the features matrix from NMF result object
 ## (from python)
 ##Dependency on python script perform_nmf.py
@@ -51,6 +89,11 @@ get_dimers_from_alphabet <- function(alphabet){
 #' for number of NMF basis vectors.
 #' @param kMax Numeric. Specify the maximum of the range of values to be tested
 #' for number of NMF basis vectors.
+#' @param modSelType Character. Specify the model selection strategy to be used.
+#' @param tol Numeric. Specify the tolerance value as criterion for choosing the
+#' most appropriate number of NMF factors.
+#' @param bound Numeric. Specify the lower bound value as criterion for choosing
+#' the most appropriate number of NMF factors.
 #' @param cvFolds Numeric. Specify the number of cross-validation folds used for
 #'  model selection.
 #' @param parallelize Logical. Specify whether to parallelize the procedure.
@@ -58,7 +101,6 @@ get_dimers_from_alphabet <- function(alphabet){
 #' TRUE. If `parallelize` is FALSE, nCoresUse is ignored.
 #' @param nIterationsUse Specify the number of bootstrapped iterations to be
 #' performed with NMF.
-#' @param seedVal Specify the seed value for reproducibility.
 #' @param alphaBase,alphaPow Specify the base value and the power for computing
 #' 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
 #' Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
@@ -67,6 +109,8 @@ get_dimers_from_alphabet <- function(alphabet){
 #' processed/clustered.
 #' @param modSelLogFile Specify a name for the file where model selection logs
 #' will be wrtten.
+#' @param checkpoint Logical. Specify whether to write intermediate checkpoints
+#' to disk as RDS files. Default is TRUE.
 #' @param flags List with four Logical elements as detailed.
 #' \describe{
 #'   \item{debugFlag}{Whether debug information for the run is printed}
@@ -80,15 +124,18 @@ get_dimers_from_alphabet <- function(alphabet){
 archRSetConfig <- function(innerChunkSize = 500,
                             kMin = 2,
                             kMax = 8,
+                            modSelType = "stability", #other options "cv"
+                            tol = 10^-4,
+                            bound = 10^-8,
                             cvFolds = 5,
                             parallelize = FALSE,
                             nCoresUse = NA,
                             nIterationsUse = 500,
-                            seedVal = 10208090,
                             alphaBase = 0,
                             alphaPow = 1,
                             minSeqs = 25,
                             modSelLogFile = "log.txt",
+                            checkpointing = TRUE,
                             flags = list(
                                 debugFlag = FALSE,
                                 timeFlag = FALSE,
@@ -98,11 +145,13 @@ archRSetConfig <- function(innerChunkSize = 500,
     ## Configuration Params that can be set by user
     archRconfig <- NULL
     archRconfig <- list(
+                        modSelType = modSelType,
+                        tol = tol,
+                        bound = bound,
                         kFolds = cvFolds,
                         parallelize = parallelize,
                         nCoresUse = nCoresUse,
                         nIterationsUse = nIterationsUse,
-                        seedVal = seedVal,
                         paramRanges = list(
                             alphaBase = alphaBase,
                             alphaPow = alphaPow,
@@ -110,6 +159,7 @@ archRSetConfig <- function(innerChunkSize = 500,
                         ),
                         innerChunkSize = innerChunkSize,
                         modSelLogFile = modSelLogFile,
+                        checkpointing = checkpointing,
                         minSeqs = minSeqs,
                         flags = flags
                     )
@@ -184,35 +234,81 @@ archRSetConfig <- function(innerChunkSize = 500,
                             between = "mean")
     decision <- FALSE
     if (ncol(globFactorsMat) > 2 && estClusters[1] > 1) {
-        message("Collating clusters from inner chunks")
+        message("Collating clusters")
         decision <- TRUE
     }
-    if (!decision) message("No collation of clusters from inner chunks")
+    if (!decision) message("No collation of clusters")
     return(decision)
 }
 ## =============================================================================
 
 ## @param factorsMat A matrix holding the factors along the columns
 ## @param distMethod character A string specifying the distance measure to
-## be computed.
-## Default value 'cosangle'
+## be computed. Values are: 'modNW' for modified Needleman Wunsch, and any
+## distance measure that is possible with HOPACH
+##
+## Default value 'modNW'
 ##
 ## @return distance matrix from hopach (hdist object)
-.compute_factor_distances <- function(factorsMat, distMethod = "cosangle"){
-    ## Ensure that entities to compare are along the rows, because
-    ## Here, the factors are along the columns, and features along rows.
-    ## hopach::distancematrix computes distances between rows of a matrix.
-    ## Therefore, check and change if necessary.
+.compute_factor_distances <- function(factorsMat, distMethod = "modNW"){
+    ## Assumption: Each column is a factor
     .assert_archR_featuresMatrix(factorsMat)
-    ## hopach::distancematrix function requires vectors along rows. Distances
-    ## are computed between row vectors
-    if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
-    distMat <- hopach::distancematrix(factorsMat, d = distMethod)
-    ## distMat is a hopach hdist object
-    stopifnot(distMat@Size == nrow(factorsMat))
-    return(distMat)
+    if(distMethod == "modNW"){
+        ## Turn the factors which are vectors into a 2D matrix of
+        ## dinucs x positions
+        dim_names <- get_dimers_from_alphabet(c("A", "C", "G", "T"))
+        nPositions <- nrow(factorsMat)/length(dim_names)
+        ##
+        factorsMatList_as2D <- lapply(1:ncol(factorsMat),
+                        function(x){matrix(factorsMat[,x],
+                                       nrow = nrow(factorsMat)/nPositions,
+                                       byrow = TRUE,
+                                       dimnames = list(dim_names))
+                        })
+        ##
+        factorsMatList_asPFMs <- lapply(1:length(factorsMatList_as2D),
+            function(x){
+                sinucSparse <- collapse_into_sinuc_matrix(
+                                given_feature_mat = as.matrix(factorsMat[,x]),
+                                dinuc_mat = factorsMatList_as2D[[x]],
+                                feature_names = dim_names)
+                sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
+                                nrow = 4, byrow = FALSE,
+                                dimnames = list(rownames(sinucSparse)))
+            })
+        ##
+        lenPFMs <- length(factorsMatList_asPFMs)
+        scoresMat <- matrix(rep(0, lenPFMs*lenPFMs),
+                                 nrow = lenPFMs)
+        rownames(scoresMat) <- seq(1:nrow(scoresMat))
+        colnames(scoresMat) <- seq(1:ncol(scoresMat))
+
+        # relScoresMat <- scoresMat
+
+        for(i in seq_len(lenPFMs)){
+            for(j in seq_len(lenPFMs)){
+                temp <- TFBSTools::PFMSimilarity(factorsMatList_asPFMs[[i]],
+                                                 factorsMatList_asPFMs[[j]])
+                scoresMat[i,j] <- temp["score"]
+                # relScoresMat[i,j] <- temp["relScore"]
+            }
+        }
+        ## currently we use scoresMat, so we only return that
+        distMat <- max(scoresMat) - scoresMat
+        return(distMat)
+    } else{
+        ## hopach::distancematrix function requires vectors along rows. Distances
+        ## are computed between row vectors
+        if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
+        hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
+        ## hopachDistMat is a hopach hdist object
+        stopifnot(hopachDistMat@Size == nrow(factorsMat))
+        return(hopachDistMat)
+    }
+
 }
 ## =============================================================================
+
 
 # @title Get factors from factor clustering (hopach object)
 #
@@ -237,6 +333,23 @@ archRSetConfig <- function(innerChunkSize = 500,
 }
 ## =============================================================================
 
+
+## for hierarchical clustering object
+.get_factors_from_factor_clustering2 <- function(listObj, globFactorsMat){
+    ##
+    .assert_archR_featuresMatrix(globFactorsMat)
+    if (is.null(listObj)) {
+        return(globFactorsMat)
+    } else {
+        # .assert_archR_hopachObj(hopachObj, test_null = FALSE)
+        # hopachMedoids <- .get_hopach_cluster_medoidsIdx(hopachObj)
+        medoids <- unlist(lapply(listObj, function(x){x[1]}))
+        return(as.matrix(globFactorsMat[ , medoids]))
+    }
+}
+## =============================================================================
+
+
 ## @title Process a chunk wih NMF
 ##
 ##
@@ -255,93 +368,144 @@ archRSetConfig <- function(innerChunkSize = 500,
 ## additionally hold new ones
 ## - Similarly, globFactors variable is updated inside the function to
 ## additionally hold new ones
-.handle_chunk_w_NMF <- function(innerChunkIdx,
-                                innerChunksColl,
-                                this_mat,
-                                config) {
+.handle_chunk_w_NMF2 <- function(innerChunkIdx,
+                                 innerChunksColl,
+                                 this_mat,
+                                 monolinear = FALSE,
+                                 cgfglinear = TRUE,
+                                 coarse_step = 10,
+                                 askParsimony = TRUE,
+                                 config){
+
     .assert_archR_flags(config$flags)
     ##
-    if (config$flags$verboseFlag) {
-        message("Working on inner chunk: ", innerChunkIdx, " of ",
-                length(innerChunksColl), " [chunkSize: ", ncol(this_mat), "]")
-    }
-    ##
-    if (is.null(this_mat) || !is.matrix(this_mat)) {
+
+    if (is.null(this_mat) || !is.matrix(this_mat) &&
+        !is(this_mat, "dgCMatrix")) {
         stop("Input matrix to model selection procedure is NULL or not a
             matrix")
     }
-    ############################### For fetching factors
-    model_selectK <-
-        .cv_model_select_pyNMF(
+    ##
+    if(config$modSelType == "cv"){
+        if(config$flags$debugFlag) {
+            message("Performing cross validation-based model selection")
+        }
+        best_k <- .cv_model_select_pyNMF2(
+                X = this_mat, param_ranges = config$paramRanges,
+                kFolds = config$kFolds, parallelDo = config$parallelize,
+                nCores = config$nCoresUse, nIterations = config$nIterationsUse,
+                logfile = config$modSelLogFile,
+                set_verbose = 0, returnBestK = TRUE, #monolinear = monolinear,
+                cgfglinear = cgfglinear, coarse_step = coarse_step,
+                askParsimony = askParsimony
+            )
+    }
+    #########################
+    if(config$modSelType == "stability"){
+        if(config$flags$debugFlag) {
+            message("Performing stability-based model selection")
+        }
+        best_k <- .stability_model_select_pyNMF2(
             X = this_mat, param_ranges = config$paramRanges,
-            kFolds = config$kFolds, parallelDo = config$parallelize,
-            nCores = config$nCoresUse, nIterations = config$nIterationsUse,
-            seed_val = config$seedVal, logfile = config$modSelLogFile,
-            set_verbose = 0
+            parallelDo = config$parallelize, nCores = config$nCoresUse,
+            nIterations = config$nIterationsUse,
+            # logfile = config$modSelLogFile,
+            tol = config$tol, bound = config$bound,
+            flags = config$flags, returnBestK = TRUE, bootstrap = TRUE
         )
-    if (config$flags$timeFlag) { message(Sys.time() - start) }
-    ##
-    best_k <- .get_best_K(model_selectK)
-    ##
+    }
+    #########################
     if (best_k == max(config$paramRanges$k_vals)) {
-        warning(c("Best K for this subset == 'kMax'. ",
-                "Consider selecting a larger 'kMax' value, or\n",
-                "smaller innerChunkSize, or\n",
-                "perhaps, further increasing 'nIterationsUse'"),
+        warning(c("WARNING: Best K for this subset == 'kMax'. ",
+                  "Consider selecting a larger 'kMax' value, or\n",
+                  "smaller innerChunkSize, or\n",
+                  "perhaps, further increasing 'nIterationsUse'\n"),
                 immediate. = TRUE)
     }
     if (config$flags$verboseFlag) {
         message("Best K for this subset: ", best_k)
     }
-    if (config$flags$plotVerboseFlag) {
-        q2_means_by_k_vals <- .get_q2_aggregates_chosen_var(
-                            model_selectK, model_selectK$k_vals, mean)
-        Q2vsK <- .plot_cv_K(q2_means_by_k_vals)
-        print(Q2vsK)
-    }
-    # if (config$flags$verboseFlag || config$flags$debugFlag) {
-    #     message("Performing NMF with K = ", best_k)
-    # }
+
     ##
     if (config$flags$timeFlag) { start <- Sys.time() }
     ##
-    result <- perform_nmf_func(this_mat, nPatterns = as.integer(best_k),
-        nIter = as.integer(1000), givenAlpha = 0, givenL1_ratio = 1,
-        seed_val = as.integer(config$seedVal)
-        )
-    if (config$flags$timeFlag) { print(Sys.time() - start) }
-    ##
-    featuresMatrix <- get_features_matrix(result)
-    samplesMatrix <- get_samples_matrix(result)
-    ##
-    ## Will collect this as factors for global list
-    ###############################
-    ## For fetching sequence clusters from samplesMat
-    ## Cluster sequences
-    message("Fetching clusters")
-    # solKmeans <- get_clusters(samplesMatrix, clustMethod = "kmeans",
-    #                             nCluster = best_k)
-    # if (config$flags$timeFlag) {print(Sys.time() - start)}
-    # ## Set the right cluster orders respective to the factor order in the chunk
-    # ## and, collect the clusters/cluster assignments for the global list
-    # forGlobClustAssignments <-
-    #     .map_clusters_to_factors(
-    #         samplesMatrix = samplesMatrix,
-    #         clustOrderIdx = solKmeans$reordering_idx,
-    #         iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx,
-    #         flags = config$flags)
-    ## Try using the following approach:
-    ## Instead of using kmeans to cluster the smaples in the samplesMatrix,
-    ## let the basis vectors define the different clusters, and simply assign a
-    ## sample to the cluster marked by the basis vector that is ranked first in
-    ## terms of the amplitudes.
-    forGlobClustAssignments <- .assign_samples_to_clusters(
-                                        samplesMatrix = samplesMatrix,
-                                        iChunksColl = innerChunksColl,
-                                        iChunkIdx = innerChunkIdx
-                                )
-    ##
-    ##
+    if (best_k >= 1) {
+        ## For fetching sequence clusters from samplesMat
+        ## Cluster sequences
+        ## New strategy, perform nRuns for bestK and use only the best one
+        nRuns <- config$nIterationsUse
+        if(config$flags$verboseFlag) {
+            message("Fetching ", best_k, " clusters")
+            # message("Fetching ", best_k, " clusters from best of ",
+            #         nRuns," of NMF")
+        }
+
+        featuresMatrixList <- vector("list", nRuns)
+        samplesMatrixList <- vector("list", nRuns)
+        new_ord <- vector("list", nRuns)
+        nmf_nRuns_list <- .perform_multiple_NMF_runs(X = this_mat,
+                                             kVal = best_k,
+                                             alphaVal = 0,
+                                             parallelDo = config$parallelize,
+                                             nCores = config$nCoresUse,
+                                             nRuns = nRuns,
+                                             bootstrap = TRUE)
+        featuresMatrixList <- lapply(nmf_nRuns_list$nmf_result_list,
+                                     function(x){
+                                         get_features_matrix(x)
+                                     })
+        samplesMatrixList <- lapply(nmf_nRuns_list$nmf_result_list,
+                                    function(x){
+                                        get_samples_matrix(x)
+                                    })
+        ##
+        new_ord <- nmf_nRuns_list$new_ord
+        ## Get reconstruction accuracies for them
+        bestQ2 <- -1
+        for (nR in 1:nRuns){
+            ##A <- this_mat[, new_ord[[nR]]]
+            A <- this_mat
+            recA <- as.matrix(featuresMatrixList[[nR]]) %*%
+                as.matrix(samplesMatrixList[[nR]])
+            this_q2 <- .compute_q2(as.matrix(A), recA)
+            if(this_q2 > bestQ2){
+                bestQ2 <- this_q2
+                bestFeatMat <- featuresMatrixList[[nR]]
+                bestSampMat <- samplesMatrixList[[nR]]
+                bestOrd <- new_ord[[nR]]
+            }
+        }
+        if (config$flags$debugFlag) {
+            message("Best Q2 giving run found: ", bestQ2)
+        }
+        ##
+        featuresMatrix <- bestFeatMat
+        samplesMatrix <- bestSampMat
+        # ## When order was chainging:
+        # ## put samples matrix back in order it should be
+        tempM <- bestSampMat
+        samplesMatrix <- matrix(rep(NA, length(tempM)), nrow = nrow(tempM))
+        samplesMatrix[ ,bestOrd] <- tempM
+        #####
+        if (config$flags$debugFlag) {
+            message("Fetching ", best_k," cluster(s) w/ NMF scores")
+        }
+        clusterMembershipsForSamples <-
+            .get_cluster_memberships_per_run(
+                samplesMatrix = samplesMatrix,
+                iChunksColl = innerChunksColl,
+                iChunkIdx = innerChunkIdx)
+        forGlobClustAssignments <- .assign_samples_to_clusters(
+            clusterMembershipsVec =
+                clusterMembershipsForSamples,
+            nClusters = best_k,
+            iChunkIdx = innerChunkIdx,
+            iChunksColl = innerChunksColl)
+        ###############
+        #
+    } else if (best_k < 1) {
+        stop("Error in chosen number of factors: ", best_k)
+    }
     .assert_archR_featuresMatrix(featuresMatrix)
     .assert_archR_globClustAssignments(forGlobClustAssignments)
     innerChunkNMFResult <- list(forGlobFactors = featuresMatrix,
@@ -351,6 +515,15 @@ archRSetConfig <- function(innerChunkSize = 500,
     return(innerChunkNMFResult)
 }
 ## =============================================================================
+
+
+
+.getMeanOfListOfMatrices <- function(listOfMats) {
+    # Currently, assume all matrices have same dimensions
+    # if discrepancy in dimensions, throws error "non-conformable arrays"
+    meanMat <- Reduce("+", listOfMats)/length(listOfMats)
+    return(meanMat)
+}
 
 
 ## @title Setup the clustFactors list element for archR result object
@@ -371,3 +544,77 @@ archRSetConfig <- function(innerChunkSize = 500,
     return(returnList)
 }
 ## =============================================================================
+
+
+reportArchFromResult <- function(archRresult, chooseLevel = NULL) {
+    # INput archRresult
+    # Output: architectures as sequence logos
+    # Algorithm key points:
+    # 1. Use cross_correlation and similarity measures from TFBSTools package
+    # Stepwise algorithm:
+    # 1. Get sequences in different clusters (at a given level/iteration; default: final iteration)
+    # 2. Generate their sequence logos/PWMs
+    # 3. Collect distinct PWMs as architectures in a archCollection object (list)
+    # 4. Return the archCollection object (list of PWMs/sequence logos)
+    if(is.null(chooseLevel)){
+        # type is list, hence length
+        chosenLevel <- length(archRresult$clustBasisVectors)
+    }
+    seqs_clusters_as_list_ordered <-
+        get_seqs_clusters_in_a_list(archRresult$seqsClustLabels[[chosenLevel]])
+    nClusters <- length(seqs_clusters_as_list_ordered)
+
+    reportArch <- list()
+    clusterPWMs <- vector("list", length(seqs_clusters_as_list_ordered))
+
+    for(i in seq_along(seqs_clusters_as_list_ordered)){
+        clusterPWMs[[i]] <- TFBSTools::toPWM(chen_tss.seqs_raw[seqs_clusters_as_list_ordered[[i]]],
+                            type="prob")
+    }
+    # Fetch similarity scores of all pairs
+    sims <- matrix(rep(0, nClusters*nClusters), nrow = nClusters, byrow = TRUE)
+    for(i in seq_along(clusterPWMs)){
+        for(j in i:length(clusterPWMs))
+        sims[i,j] <- TFBSTools::PWMSimilarity(clusterPWMs[[i]], clusterPWMs[[j]],
+                                   method="Euclidean")
+    }
+
+
+
+}
+
+
+intermediateResultsPlot <- function(seqsClustLabels, tss.seqs_raw = NULL,
+                                    positions = NULL, iterVal = 0, fname = NULL){
+## This function plots and prints resulting clusters -- the sequence image
+## matrix (PNG file) and the sequence logos (PDF file).
+## Input arguments: vector (size:nseqs) of cluster labels for sequence (for given iteration)
+## Output: Nothing returned, files written to disk at specified location (fname)
+##
+sorted_order <- sort(seqsClustLabels, index.return = TRUE)
+
+##
+seqs_clusters_as_list_ordered <- get_seqs_clusters_in_a_list(seqsClustLabels)
+message("=== Intermediate Result ===")
+message("Generating unannotated map of clustered sequences...")
+image_fname <- paste0(fname, "ClusteringImage_Iteration", iterVal)
+message("Sequence clustering image written to: ", image_fname, ".png")
+viz_matrix_of_acgt_image(rawSeqs =  as.character(tss.seqs_raw[sorted_order$ix]),
+                        position_labels = positions,
+                        savefilename = image_fname,
+                        fwidth = 450,
+                        fheight = 900,
+                        xt_freq = 5,
+                        yt_freq = 100)
+
+##
+message("Generating architectures for clusters of sequences...")
+arch_fname <- paste0(fname, "Architecture_SequenceLogos_Iteration", iterVal, ".pdf")
+message("Architectures written to: ", arch_fname)
+plot_arch_for_clusters_new(
+    tss.seqs_raw,
+    list_of_elements = seqs_clusters_as_list_ordered,
+    position_labels = positions,
+    PDFfname = arch_fname)
+
+}

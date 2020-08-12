@@ -30,6 +30,7 @@ plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
         stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
     }
     #
+    print(ncol(pwmMat))
     if (length(position_labels) < ncol(pwmMat)) {
         stop(paste0("Inadequate position labels supplied",
                     ncol(pwmMat) - length(position_labels)
@@ -61,8 +62,8 @@ plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
         ggplot2::theme(axis.text.x = element_text(size = rel(0.5),
                                                     angle = 90,
                                                     hjust = 1),
-                        axis.text.y = element_text(size = rel(0.5)))
-    # + ylim(0.0, 2.0)
+                        axis.text.y = element_text(size = rel(0.5))) +
+        ggplot2::ylim(0.0, 2.0)
     if (!is.null(savePDFfilename)) {
         if (file.exists(savePDFfilename)) {
             warning("File exists, will overwrite", immediate. = TRUE)

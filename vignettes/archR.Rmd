@@ -25,31 +25,36 @@ knitr::opts_chunk$set(
 
 # Introduction
 _archR_ is a non-negative matrix factorization (NMF)-based unsupervised 
-learning approach for identifying different (core promoter) sequence 
-architectures. We demonstrate in this vignette that archR's simple algorithm 
-based on chunking and iterative processing successfully uncovers hidden 
-clusters characterized by combinations of sequence motifs. 
+learning approach for identifying different core promoter sequence 
+architectures. 
+_archR_ implements an algorithm based on chunking and iterative 
+processing. 
+While matrix factorization approaches (and their applications) are known to 
+scale poorly for large amounts of data, this approach enables scalable 
+processing of large number of sequences.
 To our knowledge, this is a novel application of NMF on sequence data where
 motifs, their positional specificities and complex inter-relationships, all are 
 simultaneously inferred from the data.
+
+
+This vignette demonstrates archR's usage. 
+
 
 # Installation
 _archR_ is currently made available via Github; thus use the following procedure
 for installing _archR_.
 ```{r archR-install, echo=TRUE, eval=FALSE}
 # install.packages("devtools")
-devtools::install_github("snikumbh/archR", build_vignettes = TRUE)
+# remotes::install_github("snikumbh/archR", build_vignettes = TRUE)
 ```
 
 # Working with archR
 ```{r setup-two, echo=TRUE}
 # Load archR
-library(archR)
-#
-reticulate::source_python(system.file("python/perform_nmf.py",
-                                          package = "archR",
-                                          mustWork = TRUE)
-                          )
+#library(archR)
+devtools::load_all()
+
+# Set seed for reproducibility
 seed_val <- 11992288
 set.seed(seed_val)
 
@@ -58,10 +63,11 @@ set.seed(seed_val)
 ## Synthetic data explained
 
 In order to demonstrate the efficacy of _archR_, we use _archR_ to cluster DNA 
-sequences in a synthetic data set generated as follows. A set of 1000 simulated 
-DNA sequences was generated, each 200 nucleotides long and with uniform 
-probability for all nucleotides. These sequences have four clusters in them, 
-each with 250 sequences. The profiles of the four clusters are:
+sequences in a synthetic data set which was generated as follows. 
+A set of 1000 simulated DNA sequences was generated, each 200 nucleotides long 
+and with uniform probability for all nucleotides. 
+These sequences have four clusters in them, each with 250 sequences. 
+The profiles of the four clusters are:
 
 
 | Cluster | Characteristic Motifs | Motif Occurrence Position | #Sequences 
@@ -79,7 +85,9 @@ All the motifs across the clusters were planted with a mutation rate of 0.
 
 ## Feature representation
 
-We use one-hot encoding to represent each sequence in the data set. 
+We use one-hot encoding to represent the dinucleotide profiles of each sequence 
+in the data set.
+
 
 The function `prepare_data_from_FASTA` provides with the functionality to 
 produce one-hot encoded DNA sequences stored in a FASTA file.
@@ -92,11 +100,16 @@ one-hot encoded representation, i.e., sequences are arranged along the columns.
 inputFastaFilename <- system.file("extdata", "example_data.fa", 
                                   package = "archR", 
                                   mustWork = TRUE)
-tssSeqsOriginal <- archR::prepare_data_from_FASTA(inputFastaFilename)
-tssSeqsOriginal_raw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
+
+# Specifying dinuc generates dinucleotide features
+inputSeqsMat <- archR::prepare_data_from_FASTA(inputFastaFilename,
+                                                  sinuc_or_dinuc = "dinuc")
+
+inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
                                                rawSeq = TRUE)
-nSeqs <- ncol(tssSeqsOriginal)
-positions <- seq(1,200)
+
+nSeqs <- ncol(inputSeqsMat)
+positions <- seq(1,100)
 sinuc <- c('A', 'C', 'G', 'T')
 
 ```
@@ -106,32 +119,22 @@ If you already have a `BiocStrings::DNAStringSet` object, you can use the
 object.
 ```{r load-example-data-2, echo=TRUE, eval=TRUE}
 # Creation of one-hot encoded data matrix from a DNAStringSet object
-tssSeqs_direct <- archR::get_one_hot_encoded_seqs(tssSeqsOriginal_raw)
-identical(tssSeqs_direct, tssSeqsOriginal)
+inputSeqs_direct <- archR::get_one_hot_encoded_seqs(inputSeqsRaw, 
+                                                  sinuc_or_dinuc = "dinuc")
+identical(inputSeqs_direct, inputSeqsMat)
 ```
 
-The FASTA file contained the sequences ordered according to the clusters, hence 
-we shuffle them prior to processing with _archR_.
-```{r shuffle-data, eval=TRUE, echo=TRUE}
-# Randomize the sequence order
-changedOrder <- sample.int(nSeqs, nSeqs, replace = FALSE)
-tssSeqs <- tssSeqsOriginal[ , changedOrder]
-tssSeqs_raw <- tssSeqsOriginal_raw[changedOrder]
-```
 
 ## Visualize sequences as an image
 
 ```{r plot-seqs, echo=TRUE, fig.height=6, fig.width=5}
-# Visualize original and randomized sequence matrix
-archR::viz_matrix_of_acgt(as.character(tssSeqsOriginal_raw), 
-                          position_labels = positions, 
-                          saveFilename = NULL, 
-                          plot.title = "Original Sequences")
+# Visualize the sequences in a image matrix where the bases are assigned fixed
+# colors
 
-archR::viz_matrix_of_acgt(as.character(tssSeqs_raw), 
+archR::viz_matrix_of_acgt_image(as.character(inputSeqsRaw), 
                           position_labels = positions, 
-                          saveFilename = NULL, 
-                          plot.title = "Randomized Sequences")
+                          savefilename = NULL
+                          )
 
 ```
 
@@ -139,62 +142,55 @@ archR::viz_matrix_of_acgt(as.character(tssSeqs_raw),
 ## Calling _archR_
 
 
-
-```{r setup-timing, echo=FALSE, eval=TRUE}
-sTime <- Sys.time()
-```
-```{r setup-archR-config, echo=TRUE}
+```{r setup-archR-config-call, echo=TRUE}
 # Set archR configuration
-thisConfig <- archR::archRSetConfig(innerChunkSize = 200,
-                                    kMin = 2, kMax = 8, parallelize = FALSE, 
-                                    cvFolds = 3, nIterationsUse = 10,
-                                    nCoresUse = NA, seedVal = 10208090)
-str(thisConfig)
+archRconfig <- archR::archRSetConfig(
+        parallelize = TRUE,
+        nCoresUse = 4,
+        nIterationsUse = 100,
+        kMin = 1,
+        kMax = 20,
+        modSelType = "stability",
+        tol = 10^-4,
+        bound = 10^-8,
+        innerChunkSize = 500,
+        flags = list(debugFlag = FALSE, timeFlag = TRUE, verboseFlag = TRUE,
+                     plotVerboseFlag = FALSE)
+)
+
+
+#
+### Call/Run archR
+perform_iters <- 2
+archRresult <- archR::archR(config = archRconfig,
+                               seqsMat = inputSeqsMat,
+                               seqsRaw = inputSeqsRaw,
+                               seqsPositions = positions,
+                               thresholdItr = perform_iters)
+
 ```
 
-```{r call-archR, echo=TRUE}
-# Call archR
-archRresult <- archR::archR(config = thisConfig, seqsMat = tssSeqs)
-```
-```{r setup-timing-end, echo=FALSE, eval=TRUE}
-print(Sys.time() - sTime)
-```
+
 
 ## Understanding the result object from _archR_
 
 In the current version, _archR_ naively returns a result object which is a list 
 of lists.
 The elements include: (a) the sequence cluster labels per iteration; (b) the 
-collection of NMF basis vectors per iteration; (c) the configuration setting 
-used; and (d) the call itself.
+collection of NMF basis vectors per iteration; (c) the raw sequences provided; 
+(d) the configuration setting used; and (e) the call itself.
 
-### Sequence cluster labels
-For each sequence, _archR_ provides the cluster label for the sequence in each 
-iteration separated by a hyphen. 
-This is similar to labelling nodes in a tree, in which the label for any node 
-denotes the path from the root to that node traversing intermediate nodes.
-For example, cluster label for a sequence can look like "0-3-1-2". Here, "0"  
-denotes the root (all sequences), the sequence was assigned to cluster 3 in the 
-first iteration (among all sequences in the data set), then to cluster 1 in the 
-second iteration (among sequences in cluster 3 from the first iteration), and 
-subsequently, to cluster 2 in the final iteration.
-For instance, below are the cluster labels for the first few sequences in the 
-data.
-```{r archR-result-seqs-clust-labels}
-head(archRresult$seqsClustLabels)
 
-```
 
 ### NMF basis vectors
 _archR_ also stores the NMF basis vectors corresponding to each cluster in 
-every iteration in the lust variable `clustBasisVectors`. `clustBasisVectors` 
+every iteration in the variable `clustBasisVectors`. `clustBasisVectors` 
 is a numbered list corresponding to the number of iterations performed.
 This is then again a list holding two pieces of information: the number of 
 basis vectors (`nBasisVectors`/`numeric`) and the basis vectors 
 (`basisVectors`/`matrix`).
 
 ```{r archR-result-clust-factors}
-# archRresult$clustFactors
 
 # Basis vectors at iteration 2
 archRresult$clustBasisVectors[[2]]$nBasisVectors
@@ -208,60 +204,64 @@ head(archRresult$clustBasisVectors[[2]]$basisVectors)
 In this section we demonstrate how to visualize results from _archR_. 
 One can visualize the NMF basis vectors as well as the sequence clusters.
 
-### Visualizing NMF basis vectors at any iteration
-We can visualize the basis vectors corresponding to each cluster at any 
-iteration. 
-These per-iteration basis vectors are available from the `archRresult` object 
-(see above Section).
+<!-- ### Visualizing NMF basis vectors at any iteration -->
+<!-- We can visualize the basis vectors corresponding to each cluster at any  -->
+<!-- iteration.  -->
+<!-- These per-iteration basis vectors are available from the `archRresult` object  -->
+<!-- (see above Section). -->
 
-```{r viz-BV-1, echo=TRUE, fig.height=2, fig.width=25}
-archR::viz_basis_vectors_as_seqlogo(
-    archRresult$clustBasisVectors[[1]]$basisVectors,
-    position_labels = positions,
-    plotMethod = "bits"
-)
+<!-- ```{r viz-BV-1, echo=TRUE, fig.height=2, fig.width=25} -->
+<!-- archR::viz_basis_vectors_as_seqlogo( -->
+<!--     archRresult$clustBasisVectors[[1]]$basisVectors, -->
+<!--     position_labels = positions, -->
+<!--     plotMethod = "bits" -->
+<!-- ) -->
 
-archR::viz_basis_vectors_as_heatmap(
-    archRresult$clustBasisVectors[[1]]$basisVectors,
-    position_labels = positions)
-```
-
-
-```{r viz-BV-2, fig.height=2, fig.width=25, echo=TRUE}
-archR::viz_basis_vectors_as_seqlogo(
-    archRresult$clustBasisVectors[[2]]$basisVectors,
-    position_labels = positions,
-    plotMethod = "bits"
-)
-
-archR::viz_basis_vectors_as_heatmap(
-  archRresult$clustBasisVectors[[2]]$basisVectors,
-  position_labels = positions)
-```
+<!-- archR::viz_basis_vectors_as_heatmap( -->
+<!--     archRresult$clustBasisVectors[[1]]$basisVectors, -->
+<!--     position_labels = positions) -->
+<!-- ``` -->
 
 
-```{r visualize-basis-vectors-combined, echo=TRUE, fig.height=4, fig.width=25}
-archR::viz_basis_vectors_in_combined_heatmaps_seqlogos(
-  archRresult$clustBasisVectors[[2]]$basisVectors,
-  position_labels = positions, plotMethod = "bits", savePDFfilename = NULL
-)
-```
-The `plotMethod` argument to functions producing sequence logos is supplied to 
-the call to `ggseqlogo`. The possible values are `custom`, `bits`.
+<!-- ```{r viz-BV-2, fig.height=2, fig.width=25, echo=TRUE} -->
+<!-- archR::viz_basis_vectors_as_seqlogo( -->
+<!--     archRresult$clustBasisVectors[[2]]$basisVectors, -->
+<!--     position_labels = positions, -->
+<!--     plotMethod = "bits" -->
+<!-- ) -->
+
+<!-- archR::viz_basis_vectors_as_heatmap( -->
+<!--   archRresult$clustBasisVectors[[2]]$basisVectors, -->
+<!--   position_labels = positions) -->
+<!-- ``` -->
+
+
+
+<!-- ```{r visualize-basis-vectors-combined, echo=TRUE, fig.height=4, fig.width=25} -->
+<!-- archR::viz_basis_vectors_in_combined_heatmaps_seqlogos( -->
+<!--   archRresult$clustBasisVectors[[2]]$basisVectors, -->
+<!--   position_labels = positions, plotMethod = "bits", savePDFfilename = NULL -->
+<!-- ) -->
+<!-- ``` -->
+<!-- The `plotMethod` argument to functions producing sequence logos is supplied to  -->
+<!-- the call to `ggseqlogo`. The possible values are `custom`, `bits`. -->
+
 
 The clustered output from _archR_ can again be visualized as a matrix. Simply 
 sort the sequences based on the cluster labels assigned to them and call 
 `archR::viz_matrix_of_acgt` with the sorted order as shown.
-```{r visualize-clusters, echo=TRUE, fig.height=6, fig.width=5, eval=FALSE}
-sorted_order <- 
-  sort(collect_cluster_labels(archRresult$seqsClustLabels, choose_levels = 3),
-                    index.return = TRUE)
-archR::viz_matrix_of_acgt(as.character(tssSeqs_raw[sorted_order$ix]), 
+```{r visualize-clusters, echo=TRUE, fig.height=6, fig.width=5, eval=TRUE}
+
+itr <- 1
+seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
+sorted_order <- sort(seqsClustLabels, index.return = TRUE)
+
+
+archR::viz_matrix_of_acgt_image(as.character(inputSeqsRaw[sorted_order$ix]), 
                          position_labels = positions,
-                         annClusters = sorted_order$x,
-                         saveFilename = NULL)
+                         savefilename = NULL)
 ```
-![_archR_ result on example data w/ clusters](./archR-result-example-data.png)
+<!-- ![_archR_ result on example data w/ clusters](./archR-result-example-data.png) -->
 
 
 The output in Figure 1 was generated by performing 100 bootstrapped iterations, 

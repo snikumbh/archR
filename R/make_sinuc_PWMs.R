@@ -70,3 +70,31 @@ make_dinuc_PWMs <- function(givenMatrix, add_pseudo_counts = TRUE,
         return(this_givenMatrix)
     }
 }
+
+
+## Collapse the dinucleotide matrix to single nucleotide
+collapse_into_sinuc_matrix <- function(given_feature_mat, dinuc_mat, feature_names){
+    # Collapse the matrix of dinuc features into sinuc features
+    # When V is (#seqs x features)
+    # sinuc_feature_mat <-  matrix(rep(0, 4*ncol(given_feature_mat)),
+    #                              nrow=4, ncol=ncol(given_feature_mat))
+    # When V is (features x #seqs)
+
+    sinuc_feature_mat <-  matrix(rep(1, nrow(given_feature_mat)),
+                                 nrow=4, ncol=nrow(given_feature_mat)/length(feature_names) )
+
+    ##useMat <- make_dinuc_PWMs(given_feature_mat, scale = FALSE, add_pseudo_counts = FALSE)
+    useMat <- dinuc_mat
+
+    rownames(sinuc_feature_mat) <- c('A', 'C', 'G', 'T')
+    splitted_names <- strsplit(feature_names, "")
+
+
+    for( i in 1:length(splitted_names)){
+        for (j in 1:(ncol(dinuc_mat)-1)){
+            sinuc_feature_mat[splitted_names[[i]][1], j] <- sinuc_feature_mat[splitted_names[[i]][1], j] + 5*useMat[i,j]
+            sinuc_feature_mat[splitted_names[[i]][2], j+1] <- sinuc_feature_mat[splitted_names[[i]][2], j+1] + 5*useMat[i,j]
+        }
+    }
+    return(sinuc_feature_mat)
+}
