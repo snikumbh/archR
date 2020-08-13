@@ -1,4 +1,6 @@
-##
+#' @title Handle directory creation
+#'
+#' @export
 handle_dir_creation <- function(givenODir, flags = list(debugFlag = FALSE,
                                                         verboseFlag = FALSE,
                                                         plotFlag = FALSE,
