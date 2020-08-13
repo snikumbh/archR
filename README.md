@@ -31,17 +31,47 @@ remotes::install_github("snikumbh/archR", build_vignettes = FALSE)
 # load package
 library(archR)
 
-# tssSeqs holds the one-hot encoded input matrix of all sequences
-tssSeqs <- archR::prepare_data_from_FASTA(inputFastaFilename)
+
+# Creation of one-hot encoded data matrix from FASTA file
+# You can use your own FASTA file instead
+inputFastaFilename <- system.file("extdata", "example_data.fa", 
+                                  package = "archR", 
+                                  mustWork = TRUE)
+
+# Specifying dinuc generates dinucleotide features
+inputSeqsMat <- archR::prepare_data_from_FASTA(inputFastaFilename,
+                                                  sinuc_or_dinuc = "dinuc")
+
+inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
+                                               rawSeq = TRUE)
+
+nSeqs <- ncol(inputSeqsMat)
+positions <- seq(1,100)
+sinuc <- c('A', 'C', 'G', 'T')
 
 # Set archR configuration
-thisConfig <- archR::archRSetConfig(innerChunkSize = 500,
-                                    kMin = 1, kMax = 8, 
-				    parallelize = TRUE, nCores = 4,
-		                    cvFolds = 3, nIterationsUse = 100)
-# Call archR
-archRresult <- archR::archR(config = thisConfig, 
-                            tss.seqs = tssSeqs)
+archRconfig <- archR::archRSetConfig(
+        parallelize = TRUE,
+        nCoresUse = 4,
+        nIterationsUse = 100,
+        kMin = 1,
+        kMax = 20,
+        modSelType = "stability",
+        tol = 10^-4,
+        bound = 10^-8,
+        innerChunkSize = 500,
+        flags = list(debugFlag = FALSE, timeFlag = TRUE, verboseFlag = TRUE,
+                     plotVerboseFlag = FALSE)
+
+#
+### Call/Run archR
+perform_iters <- 2
+archRresult <- archR::archR(config = archRconfig,
+                               seqsMat = inputSeqsMat,
+                               seqsRaw = inputSeqsRaw,
+                               seqsPositions = positions,
+                               thresholdItr = perform_iters)
+
 ```
 
 ## Troubleshooting Installation
