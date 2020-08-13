@@ -61,4 +61,5 @@ biocViews:
     FeatureExtraction
 Encoding: UTF-8
 LazyData: false
+StagedInstall: false
 RoxygenNote: 7.1.1
