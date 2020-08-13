@@ -50,6 +50,7 @@ positions <- seq(1,100)
 sinuc <- c('A', 'C', 'G', 'T')
 
 # Set archR configuration
+# Most arguments have default values
 archRconfig <- archR::archRSetConfig(
         parallelize = TRUE,
         nCoresUse = 4,
