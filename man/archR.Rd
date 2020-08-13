@@ -3,11 +3,21 @@
 \docType{package}
 \name{archR}
 \alias{archR}
-\alias{archR-package}
 \title{archR: A package for discovering different architectures of sequence
 elements}
 \usage{
-archR(config, seqsMat, thresholdItr = 2)
+archR(
+  config,
+  seqsMat,
+  seqsRaw,
+  seqsPositions = NULL,
+  thresholdItr = 3,
+  setParsimony = c(FALSE, FALSE, FALSE),
+  setOCollation = c(TRUE, FALSE, FALSE),
+  fresh = TRUE,
+  UseOC = NULL,
+  oDir = NULL
+)
 }
 \arguments{
 \item{config}{archR configuration object}

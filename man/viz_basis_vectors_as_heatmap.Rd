@@ -4,9 +4,13 @@
 \alias{viz_basis_vectors_as_heatmap}
 \title{Visualize the NMF basis vectors as a heatmap}
 \usage{
-viz_basis_vectors_as_heatmap(featuresMatrix, position_labels = NA,
-  add_pseudo_counts = FALSE, savePDFfilename = NULL,
-  sinuc_or_dinuc = "sinuc")
+viz_basis_vectors_as_heatmap(
+  featuresMatrix,
+  position_labels = NA,
+  add_pseudo_counts = FALSE,
+  savePDFfilename = NULL,
+  sinuc_or_dinuc = "sinuc"
+)
 }
 \arguments{
 \item{featuresMatrix}{The features matrix output from NMF. Expected
@@ -40,10 +44,11 @@ represented as a heatmap. Since each feeature vector is a one-hot-encoded DNA
 sequence logos, \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 for plotting combined heatmaps and sequence logos.
 
-Other visualization functions: \code{\link{plot_ggheatmap}},
-  \code{\link{plot_ggseqlogo}},
-  \code{\link{viz_basis_vectors_as_seqlogo}},
-  \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}},
-  \code{\link{viz_matrix_of_acgt}}
+Other visualization functions: 
+\code{\link{plot_ggheatmap}()},
+\code{\link{plot_ggseqlogo}()},
+\code{\link{viz_basis_vectors_as_seqlogo}()},
+\code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()},
+\code{\link{viz_matrix_of_acgt}()}
 }
 \concept{visualization functions}

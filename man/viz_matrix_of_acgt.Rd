@@ -4,12 +4,19 @@
 \alias{viz_matrix_of_acgt}
 \title{Visualize a Matrix of Sequences as an Image.}
 \usage{
-viz_matrix_of_acgt(givenMat, position_labels, sinuc_or_dinuc = "sinuc",
-  choose_colors = c(A = "darkgreen", C = "blue", G = "orange", T =
-  "red"), annClusters = NULL,
+viz_matrix_of_acgt(
+  givenMat,
+  position_labels,
+  sinuc_or_dinuc = "sinuc",
+  choose_colors = c(A = "darkgreen", C = "blue", G = "orange", T = "red"),
+  annClusters = NULL,
   mark_seq_at_every = as.integer(ncol(givenMat) * 0.1),
-  mark_pos_at_every = 10, plot.title = "DNA Sequences",
-  saveFilename = NULL, fileType = "png", verbose = 0)
+  mark_pos_at_every = 10,
+  plot.title = "DNA Sequences",
+  saveFilename = NULL,
+  fileType = "png",
+  verbose = 0
+)
 }
 \arguments{
 \item{givenMat}{The data matrix describing the set of sequences to be
@@ -55,10 +62,11 @@ The data matrix is expected to have features alogn the rows and
 sequences along the columns.
 }
 \seealso{
-Other visualization functions: \code{\link{plot_ggheatmap}},
-  \code{\link{plot_ggseqlogo}},
-  \code{\link{viz_basis_vectors_as_heatmap}},
-  \code{\link{viz_basis_vectors_as_seqlogo}},
-  \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
+Other visualization functions: 
+\code{\link{plot_ggheatmap}()},
+\code{\link{plot_ggseqlogo}()},
+\code{\link{viz_basis_vectors_as_heatmap}()},
+\code{\link{viz_basis_vectors_as_seqlogo}()},
+\code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()}
 }
 \concept{visualization functions}

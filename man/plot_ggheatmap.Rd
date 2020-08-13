@@ -26,10 +26,11 @@ The given matrix is plotted as a heatmap using \code{ggplot2}'s
 \seealso{
 \code{\link{plot_ggseqlogo}} for plotting PWMs as sequence logos
 
-Other visualization functions: \code{\link{plot_ggseqlogo}},
-  \code{\link{viz_basis_vectors_as_heatmap}},
-  \code{\link{viz_basis_vectors_as_seqlogo}},
-  \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}},
-  \code{\link{viz_matrix_of_acgt}}
+Other visualization functions: 
+\code{\link{plot_ggseqlogo}()},
+\code{\link{viz_basis_vectors_as_heatmap}()},
+\code{\link{viz_basis_vectors_as_seqlogo}()},
+\code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()},
+\code{\link{viz_matrix_of_acgt}()}
 }
 \concept{visualization functions}

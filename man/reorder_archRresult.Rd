@@ -4,7 +4,18 @@
 \alias{reorder_archRresult}
 \title{Reorder archR clustering at the current last level}
 \usage{
-reorder_archRresult(archRresult)
+reorder_archRresult(
+  archRresult,
+  iteration = 3,
+  clustMethod = "hc",
+  linkage = "average",
+  distMethod = "euclid",
+  regularize = TRUE,
+  topN = 10,
+  returnOrder = FALSE,
+  position_agnostic_dist = FALSE,
+  config
+)
 }
 \arguments{
 \item{archRresult}{The archRresult object}

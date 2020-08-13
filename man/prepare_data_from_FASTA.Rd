@@ -5,8 +5,11 @@
 \title{Given a FASTA file, this function return a matrix with one-hot encoded
 sequences along the columns or the simply the raw sequences.}
 \usage{
-prepare_data_from_FASTA(inputFastaFilename, rawSeq = FALSE,
-  sinuc_or_dinuc = "sinuc")
+prepare_data_from_FASTA(
+  inputFastaFilename,
+  rawSeq = FALSE,
+  sinuc_or_dinuc = "sinuc"
+)
 }
 \arguments{
 \item{inputFastaFilename}{Provide the name (with complete path) of the input

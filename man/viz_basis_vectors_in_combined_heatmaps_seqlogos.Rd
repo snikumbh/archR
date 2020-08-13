@@ -6,10 +6,14 @@
 \title{Visualize the NMF basis vectors in a paired heatmap and sequence logo
 plot}
 \usage{
-viz_basis_vectors_in_combined_heatmaps_seqlogos(featuresMatrix,
-  plotMethod = "custom", position_labels = NA,
-  add_pseudo_counts = FALSE, savePDFfilename = NULL,
-  sinuc_or_dinuc = "sinuc")
+viz_basis_vectors_in_combined_heatmaps_seqlogos(
+  featuresMatrix,
+  plotMethod = "custom",
+  position_labels = NA,
+  add_pseudo_counts = FALSE,
+  savePDFfilename = NULL,
+  sinuc_or_dinuc = "sinuc"
+)
 }
 \arguments{
 \item{featuresMatrix}{The features matrix output from NMF. Expected
@@ -47,10 +51,11 @@ better visualization.
 heatmaps, \code{\link{viz_basis_vectors_as_seqlogo}} for plotting only as
 sequence logos.
 
-Other visualization functions: \code{\link{plot_ggheatmap}},
-  \code{\link{plot_ggseqlogo}},
-  \code{\link{viz_basis_vectors_as_heatmap}},
-  \code{\link{viz_basis_vectors_as_seqlogo}},
-  \code{\link{viz_matrix_of_acgt}}
+Other visualization functions: 
+\code{\link{plot_ggheatmap}()},
+\code{\link{plot_ggseqlogo}()},
+\code{\link{viz_basis_vectors_as_heatmap}()},
+\code{\link{viz_basis_vectors_as_seqlogo}()},
+\code{\link{viz_matrix_of_acgt}()}
 }
 \concept{visualization functions}

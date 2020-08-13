@@ -4,10 +4,17 @@
 \alias{plot_arch_for_clusters}
 \title{Plot the sequence architectures of the sequence clusters.}
 \usage{
-plot_arch_for_clusters(givenSamplesMatrix, givenFeaturesMatrix, nCluster,
-  clustering_sol, seqs = NULL, position_labels = NA,
-  plotMethod = "custom", add_pseudo_counts = FALSE,
-  sinuc_or_dinuc = "sinuc")
+plot_arch_for_clusters(
+  givenSamplesMatrix,
+  givenFeaturesMatrix,
+  nCluster,
+  clustering_sol,
+  seqs = NULL,
+  position_labels = NA,
+  plotMethod = "custom",
+  add_pseudo_counts = FALSE,
+  sinuc_or_dinuc = "sinuc"
+)
 }
 \arguments{
 \item{givenSamplesMatrix}{The samples matrix resulting for NMF.}

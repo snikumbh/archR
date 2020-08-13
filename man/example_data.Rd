@@ -4,12 +4,14 @@
 \name{example_data}
 \alias{example_data}
 \title{Example data matrix}
-\format{A data frame with 53940 rows and 10 variables:
+\format{
+A data frame with 53940 rows and 10 variables:
 \describe{
   \item{price}{price, in US dollars}
   \item{carat}{weight of the diamond, in carats}
   ...
-}}
+}
+}
 \usage{
 example_data
 }

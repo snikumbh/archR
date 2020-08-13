@@ -4,12 +4,25 @@
 \alias{archRSetConfig}
 \title{Set archR run configuration}
 \usage{
-archRSetConfig(innerChunkSize = 500, kMin = 2, kMax = 8,
-  cvFolds = 5, parallelize = FALSE, nCoresUse = NA,
-  nIterationsUse = 500, seedVal = 10208090, alphaBase = 0,
-  alphaPow = 1, minSeqs = 25, modSelLogFile = "log.txt",
-  flags = list(debugFlag = FALSE, timeFlag = FALSE, verboseFlag = TRUE,
-  plotVerboseFlag = FALSE))
+archRSetConfig(
+  innerChunkSize = 500,
+  kMin = 2,
+  kMax = 8,
+  modSelType = "stability",
+  tol = 10^-4,
+  bound = 10^-8,
+  cvFolds = 5,
+  parallelize = FALSE,
+  nCoresUse = NA,
+  nIterationsUse = 500,
+  alphaBase = 0,
+  alphaPow = 1,
+  minSeqs = 25,
+  modSelLogFile = "log.txt",
+  checkpointing = TRUE,
+  flags = list(debugFlag = FALSE, timeFlag = FALSE, verboseFlag = TRUE, plotVerboseFlag
+    = FALSE)
+)
 }
 \arguments{
 \item{innerChunkSize}{Numeric. Specify the size of the inner chunks of
@@ -21,6 +34,14 @@ for number of NMF basis vectors.}
 \item{kMax}{Numeric. Specify the maximum of the range of values to be tested
 for number of NMF basis vectors.}
 
+\item{modSelType}{Character. Specify the model selection strategy to be used.}
+
+\item{tol}{Numeric. Specify the tolerance value as criterion for choosing the
+most appropriate number of NMF factors.}
+
+\item{bound}{Numeric. Specify the lower bound value as criterion for choosing
+the most appropriate number of NMF factors.}
+
 \item{cvFolds}{Numeric. Specify the number of cross-validation folds used for
 model selection.}
 
@@ -31,8 +52,6 @@ TRUE. If `parallelize` is FALSE, nCoresUse is ignored.}
 
 \item{nIterationsUse}{Specify the number of bootstrapped iterations to be
 performed with NMF.}
-
-\item{seedVal}{Specify the seed value for reproducibility.}
 
 \item{alphaBase, alphaPow}{Specify the base value and the power for computing
 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
@@ -52,6 +71,9 @@ will be wrtten.}
   \item{plotVerboseFlag}{Whether verbose plotting is performed for the run}
   \item{timeFlag}{Whether timing information is printed for the run}
 }}
+
+\item{checkpoint}{Logical. Specify whether to write intermediate checkpoints
+to disk as RDS files. Default is TRUE.}
 }
 \value{
 a list with all params for archR set

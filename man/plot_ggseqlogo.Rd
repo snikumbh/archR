@@ -4,8 +4,12 @@
 \alias{plot_ggseqlogo}
 \title{Visualize a given (PWM) matrix as a sequence logo}
 \usage{
-plot_ggseqlogo(pwmMat, plotMethod = "custom", position_labels = NULL,
-  savePDFfilename = NULL)
+plot_ggseqlogo(
+  pwmMat,
+  plotMethod = "custom",
+  position_labels = NULL,
+  savePDFfilename = NULL
+)
 }
 \arguments{
 \item{pwmMat}{Matrix (usually a PWM, but can be any non-normalized matrix) to
@@ -29,10 +33,11 @@ Visualize a given (PWM) matrix as a sequence logo
 \seealso{
 \code{\link{plot_ggheatmap}} for plotting PWMs as heatmaps
 
-Other visualization functions: \code{\link{plot_ggheatmap}},
-  \code{\link{viz_basis_vectors_as_heatmap}},
-  \code{\link{viz_basis_vectors_as_seqlogo}},
-  \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}},
-  \code{\link{viz_matrix_of_acgt}}
+Other visualization functions: 
+\code{\link{plot_ggheatmap}()},
+\code{\link{viz_basis_vectors_as_heatmap}()},
+\code{\link{viz_basis_vectors_as_seqlogo}()},
+\code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()},
+\code{\link{viz_matrix_of_acgt}()}
 }
 \concept{visualization functions}
