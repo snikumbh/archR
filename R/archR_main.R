@@ -383,8 +383,8 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                 complTime <- format(as.numeric(Sys.time() - archRStartTime,
                                                units = "mins"), digits = 3)
                 archRComplTime <- paste(complTime, "mins ")
+                message(archRComplTime, archRComplMsg)
             }
-            message(archRComplTime, archRComplMsg)
         }
         ##
         ## test_itr was updated here
