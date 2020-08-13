@@ -196,7 +196,7 @@ archR_slurm_call <- function(f, params, jobname = NA, global_objects = NULL,
 #'   contains the information on job elements still in queue, and
 #'   \code{log} contains the console/error logs.
 #' @export
-archR_get_job_status <- function(slr_job, dirName) {
+archR_get_job_status <- function(slr_job) {
 
     if (!(class(slr_job) == "slurm_job")) stop("input must be a slurm_job")
 
@@ -208,11 +208,17 @@ archR_get_job_status <- function(slr_job, dirName) {
     completed <- nrow(queue) == 0
 
     # Get output logs
-    tmpdir <- dirName #paste0("_rslurm_", slr_job$jobname)
-    out_files <- file.path(tmpdir, paste0("slurm_", 0:(slr_job$nodes - 1), ".out"))
-    logs <- vapply(out_files,
-                   function(outf) paste(readLines(outf), collapse = "\n"),
-                   "")
+    # tmpdir <- paste0("_rslurm_", slr_job$jobname)
+    # out_files <- file.path(tmpdir, paste0("slurm_", 0:(slr_job$nodes - 1), ".out"))
+    # logs <- vapply(out_files,
+    #                function(outf) paste(readLines(outf), collapse = "\n"),
+    #                "")
+    # ---
+    # Author: Sarvesh
+    # Date: 2020-08-13
+    # The above lines are commented as we are not using the log information
+    # from this object anyway
+    logs <- ""
 
     job_status <- list(completed = completed, queue = queue, log = logs)
     class(job_status) <- "slurm_job_status"

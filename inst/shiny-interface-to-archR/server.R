@@ -539,8 +539,7 @@ observeEvent(input$callArchR, {
                         #                " directory _rslurm_", input$jobName))
                     }else{
 
-                        statusText <- archR::archR_get_job_status(sl_job,
-                                                                  job_dir)
+                        statusText <- archR::archR_get_job_status(sl_job)
                         # message(paste0("Submitted batch job ",
                         #                statusText$queue$JOBID))
                         ##
