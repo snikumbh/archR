@@ -3,11 +3,39 @@
 #'
 #' @description Call this function to process a data set using archR.
 #'
-#' @param config archR configuration object
-#' @param seqsMat A matrix. A matrix of one-hot encoded sequences with sequences
-#' along columns
-#' @param thresholdItr numeric. Specify the number of iterations to perform.
-#' Default is 2
+#' @param config archR configuration object as returned by
+#' \code{\link{archRSetConfig()}}. This is a required argument.
+#' @param seqsMat A matrix of one-hot encoded sequences with sequences along
+#' columns. This is a required argument.
+#' @param seqRaw A Biostrings::DNAStringSet object. The FASTA sequences as a
+#' DNAStringSet object. This argument required argument.
+#' @param seqsPositions Vector. Specify the tick labels for sequence positions.
+#' Default is NULL.
+#' @param thresholdItr Numeric. Specify the number of iterations to perform.
+#' Default is 3.
+#' @param setParsimony Logical vector. Specify if model selection by
+#' cross-validation should prefer parsimonious solutions. Not required when
+#' stability-based model selection is chosen. Length of the vector should match
+#' number of threshold iterations specified in thresholdItr argument. TRUE
+#' denotes parsimony is followed, FALSE otherwise.
+#' @param setOCollation Logical vector. Specify for every iteration of archR
+#' if collation of clusters from outer chunks should be performed. TRUE denotes
+#' clusters are collated, FALSE otherwise.
+#' @param fresh Logical. Specify if this is (not) a fresh run. Because
+#' archR enables checkpointing, it is possible to perform additional iterations
+#' using an existing archR result (or a checkpoint) object. See UseOC argument.
+#' For example, when processing a set of FASTA sequences, if an earlier call
+#' to archR performed two iterations, and now you wish to perform a third,
+#' arguments fresh and UseOC can be used. Simply set fresh to FALSE and assign
+#' the sequence clusters or iteration two from the earlier result to UseOC.
+#' @param UseOC List. Clusters from an earlier iteration of archR or archR
+#' result.
+#' Warning: This has not been rigorously tested yet (v0.99.4).
+#' @param oDir Character. Specify the output directory with its path. archR
+#' will create this directory. If a directory with the given name exists at the
+#' given location, archR will add a suffix to the directory name. This
+#' change is reported to the user. Default is NULL. When NULL, just the result
+#' is returned, and no plots or checkpoints or result is written to disk.
 #'
 #' @importFrom parallel makeCluster setDefaultCluster stopCluster
 #'

@@ -2,6 +2,7 @@
 
 export(archR)
 export(archRSetConfig)
+export(archR_get_job_status)
 export(archR_slurm_call)
 export(collect_cluster_labels)
 export(get_one_hot_encoded_seqs)
@@ -37,3 +38,4 @@ importFrom(stats,hclust)
 importFrom(stats,quantile)
 importFrom(stats,sd)
 importFrom(tibble,add_column)
+importFrom(utils,read.table)

@@ -7,9 +7,9 @@
 archRSetConfig(
   innerChunkSize = 500,
   kMin = 2,
-  kMax = 8,
+  kMax = 20,
   modSelType = "stability",
-  tol = 10^-4,
+  tol = 10^-3,
   bound = 10^-8,
   cvFolds = 5,
   parallelize = FALSE,
@@ -34,35 +34,44 @@ for number of NMF basis vectors.}
 \item{kMax}{Numeric. Specify the maximum of the range of values to be tested
 for number of NMF basis vectors.}
 
-\item{modSelType}{Character. Specify the model selection strategy to be used.}
+\item{modSelType}{Character. Specify the model selection strategy to be used.
+Default is 'stability'. Another optoin is 'cv' short for cross-validation.
+Warning: The cross-validation approach can be time consuming and
+computationally expensive than the stabiilty-based approach. The CV approach
+may be deprecatde in the near future.}
 
 \item{tol}{Numeric. Specify the tolerance value as criterion for choosing the
-most appropriate number of NMF factors.}
+most appropriate number of NMF factors. Default is 1e-03.}
 
 \item{bound}{Numeric. Specify the lower bound value as criterion for choosing
-the most appropriate number of NMF factors.}
+the most appropriate number of NMF factors. Default is 1e-08.}
 
 \item{cvFolds}{Numeric. Specify the number of cross-validation folds used for
-model selection.}
+model selection. Only used when modSelType is set to 'cv'.}
 
-\item{parallelize}{Logical. Specify whether to parallelize the procedure.}
+\item{parallelize}{Logical. Specify whether to parallelize the procedure.
+Note that running archR serially can be time consuming. Consider
+parallelizing with at least 2 or 4 cores. If Slurm is available, archR's
+graphical user interface, accessed with \code{\link{runArchRUI}}, provides
+a way to provide all input data, set archR configuration, and directly
+submit/monitor slurm jobs.
+#' @param nCoresUse The number of cores to be used when `parallelize` is set
+to TRUE. If `parallelize` is FALSE, nCoresUse is ignored.}
 
-\item{nCoresUse}{The number of cores to be used when `parallelize` is set to
-TRUE. If `parallelize` is FALSE, nCoresUse is ignored.}
-
-\item{nIterationsUse}{Specify the number of bootstrapped iterations to be
-performed with NMF.}
+\item{nIterationsUse}{Numeric. Specify the number of bootstrapped iterations
+to be performed with NMF.}
 
 \item{alphaBase, alphaPow}{Specify the base value and the power for computing
 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
-Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.}
+Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
+Warning: To be deprecated.}
 
-\item{minSeqs}{Specify the minimum number of sequences, such that any
-cluster/chunk of size less than or equal to it will not further
+\item{minSeqs}{Numeric. Specify the minimum number of sequences, such that
+any cluster/chunk of size less than or equal to it will not be further
 processed/clustered.}
 
 \item{modSelLogFile}{Specify a name for the file where model selection logs
-will be wrtten.}
+will be wrtten. Warning: To be deprecated.}
 
 \item{flags}{List with four Logical elements as detailed.
 \describe{
@@ -73,7 +82,8 @@ will be wrtten.}
 }}
 
 \item{checkpoint}{Logical. Specify whether to write intermediate checkpoints
-to disk as RDS files. Default is TRUE.}
+to disk as RDS files. Default is TRUE. Checkpoints and the final result are
+saved to disk provided the oDir argument is set in \code{\link{archR}}.}
 }
 \value{
 a list with all params for archR set
