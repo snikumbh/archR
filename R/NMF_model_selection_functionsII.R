@@ -110,7 +110,7 @@
         ##
         prev_amari <- this_amari
     }
-    if(flags$debugFlag) {sam_scores %>% print(n = Inf)}
+    # if(flags$debugFlag) {sam_scores %>% print(n = Inf)}
     if(returnBestK){
         ##
         return(bestK)
