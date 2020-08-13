@@ -2,8 +2,6 @@
 # Define server logic to process input ----
 server <- function(input, output, session) {
 
-# shinyFiles::shinyDirChoose(input, id = 'folder', updateFreq = 0,
-#                roots=c(wd="."))
 
 getConfigDF <- function(namesList, valuesList, ifDefaultList){
     if(!is.null(ifDefaultList)){
@@ -541,7 +539,8 @@ observeEvent(input$callArchR, {
                         #                " directory _rslurm_", input$jobName))
                     }else{
 
-                        statusText <- rslurm::get_job_status(sl_job)
+                        statusText <- archR::archR_get_job_status(sl_job,
+                                                                  job_dir)
                         # message(paste0("Submitted batch job ",
                         #                statusText$queue$JOBID))
                         ##
@@ -628,7 +627,7 @@ observeEvent(input$callArchR, {
 
 jobStatusTable <- function(sl_job, submitTorF){
     if(submitTorF){
-        statusText <- rslurm::get_job_status(slr_job = sl_job)
+        statusText <- archR::archR_get_job_status(slr_job = sl_job)
         return(statusText$queue)
     }else{
         return(NULL)
@@ -647,48 +646,48 @@ jobStatusTable <- function(sl_job, submitTorF){
 # })
 
 observeEvent(input$reset, {
-    str(input$resetSelect)
+    # str(input$resetSelect)
     if(any("all" == input$resetSelect)){
         resetAll <- TRUE
-        message("Updating  all")
+        # message("Updating  all")
     }
     if(resetAll || any("innerChunkSize" == input$resetSelect)){
-        message("Updating  chunk size")
+        # message("Updating  chunk size")
         updateNumericInput(session, inputId = "innerChunkSize", value = 500)
     }
     if(resetAll || any("kMax" == input$resetSelect)){
-        message("Updating  kMax")
+        # message("Updating  kMax")
         updateNumericInput(session, inputId = "kMax", value = 20)
     }
     if(resetAll || any("modSelType" == input$resetSelect)){
-        message("Updating  modSelType")
+        # message("Updating  modSelType")
         updateRadioButtons(session, inputId = "modSelType",
                             selected = "stability")
     }
     if(resetAll || any("tol" == input$resetSelect)){
-        message("Updating  tolerance")
+        # message("Updating  tolerance")
         updateSliderInput(session, "tol", value = -3)
     }
     if(resetAll || any("bound" == input$resetSelect)){
-        message("Updating  bound")
+        # message("Updating  bound")
         updateSliderInput(session, "bound", value = -8)
     }
     if(resetAll || any("cvFolds" == input$resetSelect)){
-        message("Updating  cv folds")
+        # message("Updating  cv folds")
         updateSelectInput(session, inputId = "cvFolds", selected = 5)
     }
     if(resetAll || any("nIterationsUse" == input$resetSelect)){
-        message("Updating  nIterationsIse")
+        # message("Updating  nIterationsIse")
         updateNumericInput(session, inputId = "nIterationsUse",
                            value = 100)
     }
     if(resetAll || any("thresholdsItr" == input$resetSelect)){
-        message("Updating  thresholdsItr")
+        # message("Updating  thresholdsItr")
         updateNumericInput(session, inputId = "thresholdsItr",
                             value = 3)
     }
     if(resetAll || any("resultLocation" == input$resetSelect)){
-        message("Updating resultLocation")
+        # message("Updating resultLocation")
         updateTextInput(session, inputId = "resultLocation",
                         value = "./archR_run")
     }

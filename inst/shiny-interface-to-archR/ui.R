@@ -9,7 +9,6 @@ library(rslurm)
 options(shiny.maxRequestSize = 25*1024^2)
 
 
-# devtools::load_all()
 
 alignRight <- function (x) {
     tags$div(style="float:right", x)
