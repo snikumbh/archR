@@ -12,6 +12,10 @@
 )
 }
 \arguments{
+\item{seqs}{The sequences to converted to mayrix}
+
+\item{position_labels}{Labels for the axis denoting sequence positions}
+
 \item{annClusters}{For later, when clusters are to be annotated}
 
 \item{sinuc_or_dinuc}{For later, maybe}

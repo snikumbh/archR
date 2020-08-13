@@ -3,8 +3,8 @@
 #'
 #' @description This function converts a DNAStringSet object into a numeric
 #' matrix
-#' @param seqs
-#' @param position_labels
+#' @param seqs The sequences to converted to mayrix
+#' @param position_labels Labels for the axis denoting sequence positions
 #' @param annClusters For later, when clusters are to be annotated
 #' @param sinuc_or_dinuc For later, maybe
 .seqs_to_mat <- function(seqs, position_labels, annClusters = NULL,
