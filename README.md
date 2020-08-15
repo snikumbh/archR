@@ -79,15 +79,8 @@ archRresult <- archR::archR(config = archRconfig,
 
 ## Troubleshooting Installation
 
-- Error during installation (with `remotes::install_github` or `devtools::install_github`
- - If the error occurs during `** testing if installed package can be loaded`, try adding the `--no-test-load` option as
-   `remotes::install_github("snikumbh/archR", INSTALL_opts = c("--no-test-load"))`
+1. Error during installation (with `remotes::install_github` or `devtools::install_github`. If the error occurs during `** testing if installed package can be loaded`, try adding the `--no-test-load` option as `remotes::install_github("snikumbh/archR", INSTALL_opts = c("--no-test-load"))`
 
-
-- List some points or link to already known issues reported/resolved
-- Possible problems: 
- - installing Python module scikit-learn 
- - getting reticulate to work
 
 # Contact
 Comments, suggestions, enquiries/requests are welcome! Feel free to email sarvesh.nikumbh@gmail.com or [create an new issue](https://github.com/snikumbh/archR/issues/new)
