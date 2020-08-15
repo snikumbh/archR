@@ -13,8 +13,8 @@ header <- shinydashboard::dashboardHeader(title = paste0("archR v", packageVersi
 sidebar <- shinydashboard::dashboardSidebar(width = "200px",
     shinydashboard::sidebarMenu(
         id = "performAction",
-        menuItem("Process New Data", tabName = "processNew"),
-        menuItem("Analyze Existing archR Result",
+        shinydashboard::menuItem("Process New Data", tabName = "processNew"),
+        shinydashboard::menuItem("Analyze Existing archR Result",
                  tabName = "analyzeExisting")
     )
 )
