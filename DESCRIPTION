@@ -42,6 +42,9 @@ Imports:
     Biostrings
 Suggests:
     shiny,
+    shinyjs,
+    shinydashboard,
+    shinycssloaders,
     knitr (>= 1.22),
     rmarkdown (>= 1.12),
     testthat (>= 2.1.1),
