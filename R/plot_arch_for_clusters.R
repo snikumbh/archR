@@ -191,7 +191,7 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw,
 #'
 #' @param seqs Collection of sequences as a Biostrings::DNAStringSet object.
 #' @param position_labels Numeric vector of labels for sequence positions.
-#' This should be the samelength as the width of the given sequences.
+#' This should be the same length as the width of the given sequences.
 #' @param xt_freq Specify the frequency of the x-axis ticks.
 #' @param title The title for the plot
 #'
