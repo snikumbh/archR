@@ -368,7 +368,8 @@ body <- shinydashboard::dashboardBody(
                              # Include clarifying text ----
                              helpText("About this tab: View a brief summary ",
                                       "of the archR result file provided. ",
-                                       "Includes #iterations, and")
+                                       "Includes #iterations, and # clusters ",
+                                       "per iteration.")
                          ),
                          br(),
                         tableOutput("dataSummary")),
