@@ -197,7 +197,7 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw,
 #'
 #' @export
 plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 1,
-                                       title = "TITLE"){
+                                       title = "Title"){
 
     nPos <- length(position_labels)
     xtick_cal <- seq(0, nPos, by = xt_freq)
