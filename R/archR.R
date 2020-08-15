@@ -9,6 +9,8 @@
 #' related to data preparation and manipulation, performing non-negative matrix
 #' factorization, performing clustering, and visualization-related functions.
 #'
+#' @importFrom methods as is canCoerce
+#'
 #' @section Functions for data preparation and manipulation:
 #' \itemize{
 #' \item \code{\link{prepare_data_from_FASTA}}

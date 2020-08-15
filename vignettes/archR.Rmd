@@ -125,6 +125,17 @@ identical(inputSeqs_direct, inputSeqsMat)
 ```
 
 
+
+The FASTA file contained the sequences ordered according to the clusters, hence 
+we shuffle them prior to processing with _archR_.
+```{r shuffle-data, eval=TRUE, echo=TRUE}
+# Randomize the sequence order
+changedOrder <- sample.int(nSeqs, nSeqs, replace = FALSE)
+inputSeqsMat <- inputSeqsMat[ , changedOrder]
+inputSeqsRaw <- inputSeqsRaw[changedOrder]
+```
+
+
 ## Visualize sequences as an image
 
 ```{r plot-seqs, echo=TRUE, fig.height=6, fig.width=5}
@@ -143,23 +154,26 @@ archR::viz_matrix_of_acgt_image(as.character(inputSeqsRaw),
 
 
 ```{r setup-archR-config-call, echo=TRUE}
-# Set archR configuration
+### Set archR configuration
 archRconfig <- archR::archRSetConfig(
-        parallelize = TRUE,
-        nCoresUse = 4,
+        parallelize = FALSE,
         nIterationsUse = 100,
         kMin = 1,
         kMax = 20,
         modSelType = "stability",
         tol = 10^-4,
         bound = 10^-8,
-        innerChunkSize = 500,
+        innerChunkSize = 100,
         flags = list(debugFlag = FALSE, timeFlag = TRUE, verboseFlag = TRUE,
                      plotVerboseFlag = FALSE)
 )
 
+### You can use parallelization by setting 'parallelize = TRUE' and 
+### 'nCoresUse = n', where 'n' is the number of cores to be used.
 
-#
+
+
+
 ### Call/Run archR
 perform_iters <- 2
 archRresult <- archR::archR(config = archRconfig,

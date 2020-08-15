@@ -21,10 +21,13 @@ archR(
 }
 \arguments{
 \item{config}{archR configuration object as returned by
-\code{\link{archRSetConfig()}}. This is a required argument.}
+\code{\link{archRSetConfig}}. This is a required argument.}
 
 \item{seqsMat}{A matrix of one-hot encoded sequences with sequences along
 columns. This is a required argument.}
+
+\item{seqsRaw}{A Biostrings::DNAStringSet object. The FASTA sequences as a
+DNAStringSet object. This argument required argument.}
 
 \item{seqsPositions}{Vector. Specify the tick labels for sequence positions.
 Default is NULL.}
@@ -59,9 +62,6 @@ will create this directory. If a directory with the given name exists at the
 given location, archR will add a suffix to the directory name. This
 change is reported to the user. Default is NULL. When NULL, just the result
 is returned, and no plots or checkpoints or result is written to disk.}
-
-\item{seqRaw}{A Biostrings::DNAStringSet object. The FASTA sequences as a
-DNAStringSet object. This argument required argument.}
 }
 \value{
 Object of class archR (or at the moment, a list of lists)

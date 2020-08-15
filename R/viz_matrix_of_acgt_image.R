@@ -62,6 +62,8 @@
 #' @importFrom Biostrings width
 #'
 #' @return Nothing returned to the R interpreter.
+#' @importFrom grDevices png
+#' @importFrom graphics axis image
 #' @export
 viz_matrix_of_acgt_image <- function(rawSeqs, position_labels = NULL,
                                      xt_freq = 5, yt_freq = 100,
@@ -72,7 +74,7 @@ viz_matrix_of_acgt_image <- function(rawSeqs, position_labels = NULL,
                                      fwidth = 450, fheight = 900, funits = "px"
                                      ) {
     if(is.null(position_labels)){
-        position_labels <- seq_len(Biostrings::width(raw_seqs[1]))
+        position_labels <- seq_len(Biostrings::width(rawSeqs[1]))
     }
 
     nSeqs <- length(rawSeqs)
@@ -82,7 +84,7 @@ viz_matrix_of_acgt_image <- function(rawSeqs, position_labels = NULL,
 
     if(!is.null(savefilename)){
         if(filetype == "PNG"){
-            png(filename = savefilename,
+            grDevices::png(filename = savefilename,
                 width = fwidth, height = fheight, units = funits,
                 bg = "white")
         }else{
@@ -99,7 +101,7 @@ viz_matrix_of_acgt_image <- function(rawSeqs, position_labels = NULL,
     ytick_cal[1] <- 1
     # ytick_cal[length(ytick_cal)] <- nSeqs
 
-    image(x = seq_len(nPos), y = seq_len(nSeqs),
+    graphics::image(x = seq_len(nPos), y = seq_len(nSeqs),
           z = t(seq_mat),
           col = col,
           useRaster = TRUE,

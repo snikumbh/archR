@@ -5,15 +5,10 @@
 \alias{example_data}
 \title{Example data matrix}
 \format{
-A data frame with 53940 rows and 10 variables:
-\describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
-  ...
-}
+An object of class \code{matrix} (inherits from \code{array}) with 800 rows and 1000 columns.
 }
 \usage{
-example_data
+data(example_data)
 }
 \description{
 An example data matrix generated from example_data.fa FASTA file. This is a

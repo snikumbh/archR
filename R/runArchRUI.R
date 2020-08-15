@@ -1,6 +1,11 @@
 #' @title Launch archR user interface
 #' @description Lauch archR's graphical user interface
 #'
+#' @param lbrowser Logical. Set this to FALSE if you do not wish to launch the
+#' app in the browser. Default is TRUE, i.e., the app will launch in the
+#' browser. Note: Saving plots when the app is run via the external viewer in
+#' RStudio could have problems.
+#'
 #' @export
 runArchRUI <- function(lbrowser = TRUE) {
     appDir <- system.file("shiny-interface-to-archR", package = "archR")
@@ -9,5 +14,10 @@ runArchRUI <- function(lbrowser = TRUE) {
              call. = FALSE)
     }
 
-    shiny::runApp(appDir, display.mode = "normal", launch.browser = lbrowser)
+    if (requireNamespace("pkg", quietly = TRUE)) {
+        shiny::runApp(appDir, display.mode = "normal", launch.browser = lbrowser)
+    } else {
+        message("Please install the R package shiny to ")
+    }
+
 }

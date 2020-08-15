@@ -4,10 +4,10 @@
 #' @description Call this function to process a data set using archR.
 #'
 #' @param config archR configuration object as returned by
-#' \code{\link{archRSetConfig()}}. This is a required argument.
+#' \code{\link{archRSetConfig}}. This is a required argument.
 #' @param seqsMat A matrix of one-hot encoded sequences with sequences along
 #' columns. This is a required argument.
-#' @param seqRaw A Biostrings::DNAStringSet object. The FASTA sequences as a
+#' @param seqsRaw A Biostrings::DNAStringSet object. The FASTA sequences as a
 #' DNAStringSet object. This argument required argument.
 #' @param seqsPositions Vector. Specify the tick labels for sequence positions.
 #' Default is NULL.
@@ -52,7 +52,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
     ## assert thresholdItr is a positive integer
     stopifnot(thresholdItr > 0)
     ## better, provide a summary function
-    str(config)
+    utils::str(config)
     archRStartTime <- Sys.time()
     ##
     if(!is.null(oDir)){

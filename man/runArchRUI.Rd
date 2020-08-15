@@ -6,6 +6,12 @@
 \usage{
 runArchRUI(lbrowser = TRUE)
 }
+\arguments{
+\item{lbrowser}{Logical. Set this to FALSE if you do not wish to launch the
+app in the browser. Default is TRUE, i.e., the app will launch in the
+browser. Note: Saving plots when the app is run via the external viewer in
+RStudio could have problems.}
+}
 \description{
 Lauch archR's graphical user interface
 }

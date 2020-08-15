@@ -54,8 +54,9 @@ Note that running archR serially can be time consuming. Consider
 parallelizing with at least 2 or 4 cores. If Slurm is available, archR's
 graphical user interface, accessed with \code{\link{runArchRUI}}, provides
 a way to provide all input data, set archR configuration, and directly
-submit/monitor slurm jobs.
-#' @param nCoresUse The number of cores to be used when `parallelize` is set
+submit/monitor slurm jobs.}
+
+\item{nCoresUse}{The number of cores to be used when `parallelize` is set
 to TRUE. If `parallelize` is FALSE, nCoresUse is ignored.}
 
 \item{nIterationsUse}{Numeric. Specify the number of bootstrapped iterations
@@ -71,7 +72,11 @@ any cluster/chunk of size less than or equal to it will not be further
 processed/clustered.}
 
 \item{modSelLogFile}{Specify a name for the file where model selection logs
-will be wrtten. Warning: To be deprecated.}
+will be written. Warning: To be deprecated.}
+
+\item{checkpointing}{Logical. Specify whether to write intermediate checkpoints
+to disk as RDS files. Default is TRUE. Checkpoints and the final result are
+saved to disk provided the oDir argument is set in \code{\link{archR}}.}
 
 \item{flags}{List with four Logical elements as detailed.
 \describe{
@@ -80,10 +85,6 @@ will be wrtten. Warning: To be deprecated.}
   \item{plotVerboseFlag}{Whether verbose plotting is performed for the run}
   \item{timeFlag}{Whether timing information is printed for the run}
 }}
-
-\item{checkpoint}{Logical. Specify whether to write intermediate checkpoints
-to disk as RDS files. Default is TRUE. Checkpoints and the final result are
-saved to disk provided the oDir argument is set in \code{\link{archR}}.}
 }
 \value{
 a list with all params for archR set

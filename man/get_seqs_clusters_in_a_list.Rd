@@ -17,5 +17,119 @@ clusters are to be reported. Default is 1.}
 A list holding sequence clusters
 }
 \description{
-Retrieve sequence clusters as a list
+Given the sequence cluster labels from a archR result object,
+returns the clusters separated as a list.
+}
+\details{
+#' Keep this internal or external function?
+#' @description We use hclust/hierarchical clustering for reordering archR
+#' clusters
+#'
+#' @title Reorder archR clustering at the current last level
+#'
+#' @param archRresult The archRresult object
+#'
+#' @return Ordering returned from hclust
+#'
+#' @importFrom stats hclust dist
+#' @export
+reorder_archRresult <- function(archRresult, iteration = 3,
+                                clustMethod = "hc",
+                                linkage = "average",
+                                distMethod = "euclid",
+                                regularize = TRUE,
+                                topN = 10,
+                                returnOrder = FALSE,
+                                position_agnostic_dist = FALSE,
+                                config) {
+    # Depends on archRresult object having a fixed set of names.
+    # We need to .assert them
+    # Finally, arrange clusters from processed outer chunks using hclust
+    lastLevel <- iteration
+
+    basisMat <- archRresult$clustBasisVectors[[lastLevel]]$basisVector
+
+    if(regularize){
+        basisMat2 <- basisMat
+        for(i in 1:ncol(basisMat)){
+            asVec <- as.vector(basisMat[,i])
+            threshold <- tail(head(sort(asVec, decreasing = TRUE), topN),1)
+            basisMat2[(basisMat[,i] < threshold), i] <- 0.0
+        }
+        basisMat <- basisMat2
+    }
+
+
+    if(position_agnostic_dist){
+        #TODO
+        factorsClustering <- .position_agnostic_clustering()
+
+    }else{
+        setReturnOrder <- FALSE
+        if(returnOrder){
+            setReturnOrder <- TRUE
+        }
+        factorsClustering <- .handle_clustering_of_factors(basisMat,
+                                      clustMethod = clustMethod,
+                                      linkage = linkage,
+                                      distMethod = distMethod,
+                                      returnOrder = FALSE,
+                                      flags = config$flags)
+    }
+    seqClusters <- get_seqs_clusters_in_a_list(archRresult$seqsClustLabels[[lastLevel]])
+
+    clusters <- .collate_clusters2(factorsClustering,
+                       seqClusters)#, config$flags)
+
+    cluster_sol <- list(factorsClustering = factorsClustering,
+                        clusters = clusters)
+
+    return(cluster_sol)
+
+
+    # temp_hclust <-
+    #     stats::hclust(stats::dist(
+    #         t(archRresult$clustBasisVectors[[lastLevel]]$basisVectors)),
+    #                          method = "ave")
+    # new_order <- temp_hclust$order
+    # # # Fetch original seqClustLabels as a list
+    # origSeqsClustersAsList <- get_seqs_clusters_in_a_list(
+    #                     archRresult$seqsClustLabelsList,
+    #                     chooseLevel = lastLevel + 1)
+    # if (length(new_order) != length(origSeqsClustersAsList)) {
+    #     print("===== SAMARTH SAMARTH =====")
+    #     print(archRresult$seqsClustLabels)
+    #     print(origSeqsClustersAsList)
+    #     print(length(origSeqsClustersAsList))
+    #     print(new_order)
+    #     print(length(new_order))
+    #     stop("SAMARTH: Error")
+    # }
+    # ## arrange by the new ordering
+    # newSeqsClusters <- lapply(new_order, function(x){
+    #                                         origSeqsClustersAsList[[x]]
+    #                                         }
+    #                         )
+    # ## the labels should be set as.character
+    # newSeqsClustLabels <- unlist(lapply(
+    #                                 seq_along(newSeqsClusters),
+    #                                 function(x){
+    #                                     as.character(
+    #                                     rep(x, length(newSeqsClusters[[x]]))
+    #                                     )
+    #                                 }
+    #                             )
+    #                         )
+    # ##
+    # newClustBasisVectors <-
+    #     archRresult$clustBasisVectors[[lastLevel]]$basisVectors[, new_order]
+    # ##
+    # new_field <- list(seqsClusters = newSeqsClusters,
+    #                     seqsClustLabels = newSeqsClustLabels,
+    #                     clustBasisVectors = newClustBasisVectors)
+    # ##
+    # archRresult$final <- new_field
+    # ##
+    # return(archRresult)
+}
 }

@@ -1,5 +1,21 @@
 #' @title Handle directory creation
 #'
+#' @description Given the output directory name with its complete path, this
+#' function checks if a directory of same name exists the given location. If
+#' yes, then it adds a suffix (a number) to the given directory name, and
+#' proceeds to create the directory.
+#'
+#' @param givenODir Specify the output directory name with its complate path.
+#' Thi
+#'
+#' @param flags List with four Logical elements as detailed.
+#' \describe{
+#'   \item{debugFlag}{Whether debug information for the run is printed}
+#'   \item{verboseFlag}{Whether verbose information for the run is printed}
+#'   \item{plotVerboseFlag}{Whether verbose plotting is performed for the run}
+#'   \item{timeFlag}{Whether timing information is printed for the run}
+#' }
+#'
 #' @export
 handle_dir_creation <- function(givenODir, flags = list(debugFlag = FALSE,
                                                         verboseFlag = FALSE,
@@ -108,7 +124,7 @@ get_dimers_from_alphabet <- function(alphabet){
 #' graphical user interface, accessed with \code{\link{runArchRUI}}, provides
 #' a way to provide all input data, set archR configuration, and directly
 #' submit/monitor slurm jobs.
-#' #' @param nCoresUse The number of cores to be used when `parallelize` is set
+#' @param nCoresUse The number of cores to be used when `parallelize` is set
 #' to TRUE. If `parallelize` is FALSE, nCoresUse is ignored.
 #' @param nIterationsUse Numeric. Specify the number of bootstrapped iterations
 #' to be performed with NMF.
@@ -120,8 +136,8 @@ get_dimers_from_alphabet <- function(alphabet){
 #' any cluster/chunk of size less than or equal to it will not be further
 #' processed/clustered.
 #' @param modSelLogFile Specify a name for the file where model selection logs
-#' will be wrtten. Warning: To be deprecated.
-#' @param checkpoint Logical. Specify whether to write intermediate checkpoints
+#' will be written. Warning: To be deprecated.
+#' @param checkpointing Logical. Specify whether to write intermediate checkpoints
 #' to disk as RDS files. Default is TRUE. Checkpoints and the final result are
 #' saved to disk provided the oDir argument is set in \code{\link{archR}}.
 #' @param flags List with four Logical elements as detailed.
@@ -559,42 +575,42 @@ archRSetConfig <- function(innerChunkSize = 500,
 ## =============================================================================
 
 
-reportArchFromResult <- function(archRresult, chooseLevel = NULL) {
-    # INput archRresult
-    # Output: architectures as sequence logos
-    # Algorithm key points:
-    # 1. Use cross_correlation and similarity measures from TFBSTools package
-    # Stepwise algorithm:
-    # 1. Get sequences in different clusters (at a given level/iteration; default: final iteration)
-    # 2. Generate their sequence logos/PWMs
-    # 3. Collect distinct PWMs as architectures in a archCollection object (list)
-    # 4. Return the archCollection object (list of PWMs/sequence logos)
-    if(is.null(chooseLevel)){
-        # type is list, hence length
-        chosenLevel <- length(archRresult$clustBasisVectors)
-    }
-    seqs_clusters_as_list_ordered <-
-        get_seqs_clusters_in_a_list(archRresult$seqsClustLabels[[chosenLevel]])
-    nClusters <- length(seqs_clusters_as_list_ordered)
-
-    reportArch <- list()
-    clusterPWMs <- vector("list", length(seqs_clusters_as_list_ordered))
-
-    for(i in seq_along(seqs_clusters_as_list_ordered)){
-        clusterPWMs[[i]] <- TFBSTools::toPWM(chen_tss.seqs_raw[seqs_clusters_as_list_ordered[[i]]],
-                            type="prob")
-    }
-    # Fetch similarity scores of all pairs
-    sims <- matrix(rep(0, nClusters*nClusters), nrow = nClusters, byrow = TRUE)
-    for(i in seq_along(clusterPWMs)){
-        for(j in i:length(clusterPWMs))
-        sims[i,j] <- TFBSTools::PWMSimilarity(clusterPWMs[[i]], clusterPWMs[[j]],
-                                   method="Euclidean")
-    }
-
-
-
-}
+# reportArchFromResult <- function(archRresult, chooseLevel = NULL) {
+#     # INput archRresult
+#     # Output: architectures as sequence logos
+#     # Algorithm key points:
+#     # 1. Use cross_correlation and similarity measures from TFBSTools package
+#     # Stepwise algorithm:
+#     # 1. Get sequences in different clusters (at a given level/iteration; default: final iteration)
+#     # 2. Generate their sequence logos/PWMs
+#     # 3. Collect distinct PWMs as architectures in a archCollection object (list)
+#     # 4. Return the archCollection object (list of PWMs/sequence logos)
+#     if(is.null(chooseLevel)){
+#         # type is list, hence length
+#         chosenLevel <- length(archRresult$clustBasisVectors)
+#     }
+#     seqs_clusters_as_list_ordered <-
+#         get_seqs_clusters_in_a_list(archRresult$seqsClustLabels[[chosenLevel]])
+#     nClusters <- length(seqs_clusters_as_list_ordered)
+#
+#     reportArch <- list()
+#     clusterPWMs <- vector("list", length(seqs_clusters_as_list_ordered))
+#
+#     for(i in seq_along(seqs_clusters_as_list_ordered)){
+#         clusterPWMs[[i]] <- TFBSTools::toPWM(chen_tss.seqs_raw[seqs_clusters_as_list_ordered[[i]]],
+#                             type="prob")
+#     }
+#     # Fetch similarity scores of all pairs
+#     sims <- matrix(rep(0, nClusters*nClusters), nrow = nClusters, byrow = TRUE)
+#     for(i in seq_along(clusterPWMs)){
+#         for(j in i:length(clusterPWMs))
+#         sims[i,j] <- TFBSTools::PWMSimilarity(clusterPWMs[[i]], clusterPWMs[[j]],
+#                                    method="Euclidean")
+#     }
+#
+#
+#
+# }
 
 
 intermediateResultsPlot <- function(seqsClustLabels, tss.seqs_raw = NULL,

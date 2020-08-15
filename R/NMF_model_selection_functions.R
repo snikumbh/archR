@@ -144,7 +144,7 @@
 
 
 performSearchForK <- function(startVal, endVal, step = 1,
-                              grid_search_params,
+                              # grid_search_params,
                               prev_best_K = -1,
                               best_K = 0,
                               prev_df = NULL,
@@ -230,6 +230,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
 #
 # @return A tibble of grid_search_results
 #
+# @importFrom methods is
 # @importFrom purrr cross_df
 # @importFrom parallel makeCluster stopCluster detectCores clusterEvalQ
 # @importFrom parallel clusterExport getDefaultCluster
@@ -303,7 +304,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
                         startVal = lo[kCGIdx],
                         endVal = hi[kCGIdx],
                         step = 1,
-                        grid_search_params = grid_search_params,
+                        # grid_search_params = grid_search_params,
                         prev_best_K = prev_best_K,
                         best_K = best_K,
                         prev_df = prev_df,
@@ -377,7 +378,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
                     startVal = fgIL,
                     endVal = fgOL,
                     step = 1,
-                    grid_search_params = grid_search_params,
+                    # grid_search_params = grid_search_params,
                     prev_best_K = -1,
                     best_K = 0,
                     prev_df = NULL,
@@ -405,7 +406,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
                                 startVal = fgIL,
                                 endVal = fgOL,
                                 step = 1,
-                                grid_search_params = grid_search_params,
+                                # grid_search_params = grid_search_params,
                                 prev_best_K = -1,
                                 best_K = 0,
                                 prev_df = combined_df,
