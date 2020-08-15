@@ -183,6 +183,19 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw,
     }
 }
 
+
+#' @title Plot sequence logo of a collection of sequences
+#'
+#' @description A wrapper to ggseqlogo plotting. Given a collection of
+#' sequences, this function plots the sequence logo.
+#'
+#' @param seqs Collection of sequences as a Biostrings::DNAStringSet object.
+#' @param position_labels Numeric vector of labels for sequence positions.
+#' This should be the samelength as the width of the given sequences.
+#' @param xt_freq Specify the frequency of the x-axis ticks.
+#' @param title The title for the plot
+#'
+#' @export
 plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 1,
                                        title = "TITLE"){
 
@@ -215,7 +228,6 @@ plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 1,
         ggplot2::ylim(0.0, 2.0) +
         ggplot2::ggtitle(title)
         message("Plot title:", title)
-
 
     samarth_p
 }
