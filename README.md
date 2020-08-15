@@ -25,6 +25,8 @@ This package requires the Python module scikit-learn. See installation instructi
 remotes::install_github("snikumbh/archR", build_vignettes = FALSE)
 ``` 
 
+If the above command produces errors, see troubleshooting note 4 below.
+
 
 ### Usage
 ```r
@@ -76,6 +78,11 @@ archRresult <- archR::archR(config = archRconfig,
 ```
 
 ## Troubleshooting Installation
+
+- Error during installation (with `remotes::install_github` or `devtools::install_github`
+ - If the error occurs during `** testing if installed package can be loaded`, try adding the `--no-test-load` option as
+   `remotes::install_github("snikumbh/archR", INSTALL_opts = c("--no-test-load"))`
+
 
 - List some points or link to already known issues reported/resolved
 - Possible problems: 
