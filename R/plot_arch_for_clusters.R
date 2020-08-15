@@ -23,10 +23,10 @@
 #'
 #' @return nothing.
 #'
-#' @export
+#' @keywords internal
 #' @importFrom stats quantile sd
 #' @importFrom BiocGenerics rowMeans
-plot_arch_for_clusters <- function(givenSamplesMatrix, givenFeaturesMatrix,
+plot_arch_for_clusters_old <- function(givenSamplesMatrix, givenFeaturesMatrix,
                                     nCluster, clustering_sol, seqs = NULL,
                                     position_labels = NA, plotMethod = "custom",
                                     add_pseudo_counts = FALSE,
@@ -143,13 +143,30 @@ get_seq_cluster_levels <- function(annClusters) {
     return(clusterLevels)
 }
 
+
+
+#' @title Plot cluster architectures as sequence logos.
+#' @description Given a collection of FASTA sequences as a DNAStringSet object,
+#' and the clusters information, this function plots the architectures for all
+#' clusters. If a name for the PDF file is provided, the resulting set of
+#' architecture sequence logos are saved as a multi-page PDF.
+#'
+#' @param tss.seqs_raw Sequences as a DNAStringSet
+#' @param list_of_elements Cluster elements as a list
+#' @param position_labels Labels for sequence positions, should be of same
+#' length as length of the sequences
+#' @param xt_freq Frequency of x-axis ticks
+#' @param PDFfname Specify a filename to be saved as PDF
+#'
+#' @importFrom grDevices pdf
+#' @export
 plot_arch_for_clusters_new <- function(tss.seqs_raw,
                                         list_of_elements,
                                         position_labels,
                                         xt_freq = 1,
                                         PDFfname = "archR_sequence_architectures.pdf") {
     if(!is.null(PDFfname)) {
-        pdf(file=PDFfname, width = 11, height = 2)
+        grDevices::pdf(file=PDFfname, width = 11, height = 2)
     }
     # seqs_clusters_as_list <- get_seqs_clusters_in_a_list(archRresult_clust_labels)
     seqs_clusters_as_list <- list_of_elements

@@ -4,13 +4,13 @@
 \alias{plot_ggseqlogo_of_seqs}
 \title{Plot sequence logo of a collection of sequences}
 \usage{
-plot_ggseqlogo_of_seqs(seqs, position_labels, xt_freq = 1, title = "TITLE")
+plot_ggseqlogo_of_seqs(seqs, position_labels, xt_freq = 1, title = "Title")
 }
 \arguments{
 \item{seqs}{Collection of sequences as a Biostrings::DNAStringSet object.}
 
 \item{position_labels}{Numeric vector of labels for sequence positions.
-This should be the samelength as the width of the given sequences.}
+This should be the same length as the width of the given sequences.}
 
 \item{xt_freq}{Specify the frequency of the x-axis ticks.}
 

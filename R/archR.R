@@ -9,7 +9,7 @@
 #' related to data preparation and manipulation, performing non-negative matrix
 #' factorization, performing clustering, and visualization-related functions.
 #'
-#' @importFrom methods as is canCoerce
+#' @importFrom methods is
 #'
 #' @section Functions for data preparation and manipulation:
 #' \itemize{
@@ -25,7 +25,7 @@
 #' \item \code{\link{viz_basis_vectors_as_heatmap}}
 #' \item \code{\link{viz_basis_vectors_as_seqlogo}}
 #' \item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
-#' \item \code{\link{plot_arch_for_clusters}}
+#' \item \code{\link{plot_arch_for_clusters_new}}
 #' \item \code{\link{viz_matrix_of_acgt}}
 #' }
 #'
