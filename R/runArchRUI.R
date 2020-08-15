@@ -14,10 +14,10 @@ runArchRUI <- function(lbrowser = TRUE) {
              call. = FALSE)
     }
 
-    if (requireNamespace("pkg", quietly = TRUE)) {
+    if (requireNamespace("shiny", quietly = TRUE)) {
         shiny::runApp(appDir, display.mode = "normal", launch.browser = lbrowser)
     } else {
-        message("Please install the R package shiny to ")
+        message("Please install the R package shiny to run the application")
     }
 
 }
