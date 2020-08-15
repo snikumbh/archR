@@ -125,17 +125,6 @@ identical(inputSeqs_direct, inputSeqsMat)
 ```
 
 
-
-The FASTA file contained the sequences ordered according to the clusters, hence 
-we shuffle them prior to processing with _archR_.
-```{r shuffle-data, eval=TRUE, echo=TRUE}
-# Randomize the sequence order
-changedOrder <- sample.int(nSeqs, nSeqs, replace = FALSE)
-inputSeqsMat <- inputSeqsMat[ , changedOrder]
-inputSeqsRaw <- inputSeqsRaw[changedOrder]
-```
-
-
 ## Visualize sequences as an image
 
 ```{r plot-seqs, echo=TRUE, fig.height=6, fig.width=5}
