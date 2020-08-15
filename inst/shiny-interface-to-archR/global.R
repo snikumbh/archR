@@ -167,7 +167,7 @@ archR_slurm_call <- function(f, params, jobname = NA, global_objects = NULL,
     }
 
     # Return 'slurm_job' object
-    archR::slurm_job(jobname, jobid, 1)
+    slurm_job(jobname, jobid, 1)
 }
 
 #' Date: 2020-06-27

@@ -1,10 +1,4 @@
 
-library(shiny)
-library(shinyjs)
-library(shinydashboard)
-library(shinycssloaders)
-library(rslurm)
-
 ## File upload size limit changed to 25MB
 options(shiny.maxRequestSize = 25*1024^2)
 
@@ -14,10 +8,10 @@ alignRight <- function (x) {
     tags$div(style="float:right", x)
 }
 
-header <- dashboardHeader(title = paste0("archR v", packageVersion("archR")))
+header <- shinydashboard::dashboardHeader(title = paste0("archR v", packageVersion("archR")))
 
-sidebar <- dashboardSidebar(width = "200px",
-    sidebarMenu(
+sidebar <- shinydashboard::dashboardSidebar(width = "200px",
+    shinydashboard::sidebarMenu(
         id = "performAction",
         menuItem("Process New Data", tabName = "processNew"),
         menuItem("Analyze Existing archR Result",
@@ -26,7 +20,7 @@ sidebar <- dashboardSidebar(width = "200px",
 )
 
 
-body <-    dashboardBody(
+body <- shinydashboard::dashboardBody(
     shinyjs::useShinyjs(),
     ##
     conditionalPanel(
@@ -673,7 +667,7 @@ body <-    dashboardBody(
 
 
 
-ui <- dashboardPage(header, sidebar, body)
+ui <- shinydashboard::dashboardPage(header, sidebar, body)
 
 
 
