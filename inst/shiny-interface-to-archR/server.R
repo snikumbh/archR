@@ -641,7 +641,7 @@ observeEvent(input$callArchR, {
 
 # output$infoBoxProcessNew <- renderInfoBox({
 #
-#     infoBox(title = "Help",
+#     shinydashboard::infoBox(title = "Help",
 #             value = paste0("You can now run archR with default parameter settings",
 #             "or customize them in the 'Parameter Settings' tab ",
 #             "and then run archR"), icon = shiny::icon("hand-point-right"),

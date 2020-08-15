@@ -33,7 +33,7 @@ body <- shinydashboard::dashboardBody(
     ),
     fluidRow(
         column(width = 3,
-        box(title = "Input", status = "primary", solidHeader = TRUE,
+        shinydashboard::box(title = "Input", status = "primary", solidHeader = TRUE,
             collapsible = TRUE, collapsed = FALSE, width = NULL,#4,
             # div(style = 'overflow-y: scroll'),
             conditionalPanel(
@@ -69,7 +69,7 @@ body <- shinydashboard::dashboardBody(
         ), ## first column ends
         column(width = 4,
         #### Settings box ####
-        box(title = "Parameter Settings", status = "primary",
+        shinydashboard::box(title = "Parameter Settings", status = "primary",
            solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
            width = NULL, #4,
            # background = "maroon",
@@ -328,7 +328,7 @@ body <- shinydashboard::dashboardBody(
         column(width = 5,
         #### Info tabBox ####
         ####
-        box(title = "Summary", status = "primary",
+        shinydashboard::box(title = "Summary", status = "primary",
             solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
             width = NULL, # height = "440px", #4,
         # tabBox(title = "Summary", width = 8, height = "440px",
@@ -450,12 +450,12 @@ body <- shinydashboard::dashboardBody(
         # #### Info tabBox ####
         # conditionalPanel(
         #     condition = "input.performAction == 'processNew'",
-        #     infoBoxOutput("infoBoxProcessNew")
+        #     shinydashboard::infoBoxOutput("infoBoxProcessNew")
         # ),
         #### Plots tabBox ####
         conditionalPanel(
             condition = "input.performAction == 'analyzeExisting'",
-            box(title = "Plots", status = "primary",
+            shinydashboard::box(title = "Plots", status = "primary",
                solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                width = 12,
                # uiOutput("Tabpanels")
