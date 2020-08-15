@@ -1189,26 +1189,17 @@ find_contig_motifs <- function(vector_positions){
 #' returns the clusters separated as a list.
 #'
 #' @param seqsClustLabels Sequences with cluster labels as in the archR result
-#' object
-#' @param chooseLevel Specify the level (archR iteration) at which sequence
-#' clusters are to be reported. Default is 1.
+#' object.
 #'
-#' @return A list holding sequence clusters
+#' @return A list holding sequence clusters.
 #' @export
-get_seqs_clusters_in_a_list <- function(seqsClustLabels, chooseLevel = 1){
+get_seqs_clusters_in_a_list <- function(seqsClustLabels){
     ## TODO: check that labels are not empty/NULL
-    chosenLevelLabels <- seqsClustLabels
     clusterLevels <- levels(as.factor(seqsClustLabels))
 
-    # chosenLevelLabels <- collect_cluster_labels(seqsClustLabels,
-    #                                             chooseLevel = chooseLevel)
-    # clusterLevels <- levels(as.factor(chosenLevelLabels))
-    # message(length(clusterLevels),
-    #         " clusters identified by labels: ",
-    #         paste0(clusterLevels, sep = "**"))
-    seqs_clusters_as_a_list <- sapply(seq_along(clusterLevels),
+    seqs_clusters_as_a_list <- lapply(seq_along(clusterLevels),
                                         function(x){
-                                            which(chosenLevelLabels ==
+                                            which(seqsClustLabels ==
                                                     clusterLevels[x])
                                     })
 

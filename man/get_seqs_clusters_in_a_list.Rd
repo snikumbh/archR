@@ -4,17 +4,14 @@
 \alias{get_seqs_clusters_in_a_list}
 \title{Retrieve sequence clusters as a list}
 \usage{
-get_seqs_clusters_in_a_list(seqsClustLabels, chooseLevel = 1)
+get_seqs_clusters_in_a_list(seqsClustLabels)
 }
 \arguments{
 \item{seqsClustLabels}{Sequences with cluster labels as in the archR result
-object}
-
-\item{chooseLevel}{Specify the level (archR iteration) at which sequence
-clusters are to be reported. Default is 1.}
+object.}
 }
 \value{
-A list holding sequence clusters
+A list holding sequence clusters.
 }
 \description{
 Given the sequence cluster labels from a archR result object,
