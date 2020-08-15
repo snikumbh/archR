@@ -1,15 +1,14 @@
-#' @title Get cluster labels for chosen level/iteration
-#'
-#' @description Given a seqsClustLabels, collect cluster labels for sequences at
-#'  the chosen iteration/level.
-#'
-#' @param given_seqsClustLabels from archR result object
-#' @param chooseLevel choose a level/iteration. This value is number of
-#' iterations + 1
-#'
-#' @return A numeric vector of the same size as seqsClustLabels, with labels
-#' only up to the chosen iteration
-#' @export
+# @title Get cluster labels for chosen level/iteration
+#
+# @description Given a seqsClustLabels, collect cluster labels for sequences at
+#  the chosen iteration/level.
+#
+# @param given_seqsClustLabels from archR result object
+# @param chooseLevel choose a level/iteration. This value is number of
+# iterations + 1
+#
+# @return A numeric vector of the same size as seqsClustLabels, with labels
+# only up to the chosen iteration
 #'
 collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     ## Check if all_ok, all elements should have same length

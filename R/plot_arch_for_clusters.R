@@ -1,31 +1,31 @@
-#' @title Plot the sequence architectures of the sequence clusters.
-#'
-#' @description The different architectures characteristic of the different
-#' sequence clusters are visualized. Therefore, the function takes as arguments
-#' the samplesMatrix and featuresMatrix output by NMF, the number of clusters,
-#' the clustering solution obtained and the position labels for the sequences.
-#'
-#'
-#' @param givenSamplesMatrix The samples matrix resulting for NMF.
-#' @param givenFeaturesMatrix The features matrix resulting from NMF.
-#' @param nCluster The number of clusters.
-#' @param clustering_sol The clustering solution as returned by
-#' \code{get_clusters} function.
-#' @param seqs For representing the sequences as an image
-#' (TO-DO: May not be needed).
-#' Default value is NULL when no image gets printed.
-#' @param position_labels Labels of the positions in the sequences. Used for
-#' visualization with function
-#' \code{viz_basis_vectors_in_combined_heatmaps_seqlogos}.
-#' @param add_pseudo_counts OK
-#' @param sinuc_or_dinuc 'sinuc' or 'dinuc'
-#' @param plotMethod 'custom' or 'bits', passed to ggseqlogo
-#'
-#' @return nothing.
-#'
-#' @keywords internal
-#' @importFrom stats quantile sd
-#' @importFrom BiocGenerics rowMeans
+# @title Plot the sequence architectures of the sequence clusters.
+#
+# @description The different architectures characteristic of the different
+# sequence clusters are visualized. Therefore, the function takes as arguments
+# the samplesMatrix and featuresMatrix output by NMF, the number of clusters,
+# the clustering solution obtained and the position labels for the sequences.
+#
+#
+# @param givenSamplesMatrix The samples matrix resulting for NMF.
+# @param givenFeaturesMatrix The features matrix resulting from NMF.
+# @param nCluster The number of clusters.
+# @param clustering_sol The clustering solution as returned by
+# \code{get_clusters} function.
+# @param seqs For representing the sequences as an image
+# (TO-DO: May not be needed).
+# Default value is NULL when no image gets printed.
+# @param position_labels Labels of the positions in the sequences. Used for
+# visualization with function
+# \code{viz_basis_vectors_in_combined_heatmaps_seqlogos}.
+# @param add_pseudo_counts OK
+# @param sinuc_or_dinuc 'sinuc' or 'dinuc'
+# @param plotMethod 'custom' or 'bits', passed to ggseqlogo
+#
+# @return nothing.
+#
+# @keywords internal
+# @importFrom stats quantile sd
+# @importFrom BiocGenerics rowMeans
 plot_arch_for_clusters_old <- function(givenSamplesMatrix, givenFeaturesMatrix,
                                     nCluster, clustering_sol, seqs = NULL,
                                     position_labels = NA, plotMethod = "custom",
