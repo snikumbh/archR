@@ -11,8 +11,7 @@ handle_dir_creation(
 )
 }
 \arguments{
-\item{givenODir}{Specify the output directory name with its complate path.
-Thi}
+\item{givenODir}{Specify the output directory name with its complete path.}
 
 \item{flags}{List with four Logical elements as detailed.
 \describe{

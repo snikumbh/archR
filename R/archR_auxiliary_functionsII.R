@@ -5,8 +5,8 @@
 #' yes, then it adds a suffix (a number) to the given directory name, and
 #' proceeds to create the directory.
 #'
-#' @param givenODir Specify the output directory name with its complate path.
-#' Thi
+#' @param givenODir Specify the output directory name with its complete path.
+#'
 #'
 #' @param flags List with four Logical elements as detailed.
 #' \describe{
