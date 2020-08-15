@@ -391,9 +391,7 @@ summarizeFASTAinTable <- reactive({
         A <- unique(Biostrings::width(raw_seq))
         ## B holds summary of quantiles
         B <- summary(A)
-        message(B)
-        seqLens <- A #if(length(A) > 1){B[c(1,3,6)]}else{A}
-        message(A)
+        seqLens <- A # if(length(A) > 1){B[c(1,3,6)]}else{A}
         ## A holds the alphabetFreq matrix
         ## expected dimensions nSeqs x 5 when DNA/RNA w/ baseOnly=T
         A <- Biostrings::alphabetFrequency(raw_seq, baseOnly = TRUE)
@@ -411,6 +409,18 @@ summarizeFASTAinTable <- reactive({
     }
 })
 ##==========================================================================
+
+
+jobStatusTable <- function(sl_job, submitTorF){
+    if(submitTorF){
+        statusText <- archR_get_job_status(slr_job = sl_job)
+        return(statusText$queue)
+    }else{
+        return(NULL)
+    }
+}
+##==========================================================================
+
 
 observeEvent(input$checkStatus, {
     ##
@@ -431,6 +441,8 @@ observeEvent(input$cancelJob, {
     })
 })
 ##==========================================================================
+
+
 
 
 ##
@@ -507,7 +519,7 @@ observeEvent(input$callArchR, {
                     # Sys.sleep(time=60)
                     ## setup rslurm slurm_call
                     sl_job <-
-                    archR::archR_slurm_call(dir_path = input$jobLocation,
+                        archR_slurm_call(dir_path = input$jobLocation,
                         archR::archR,
                         list(config = archRconfig,
                             seqsMat = tssSeqs,
@@ -539,7 +551,7 @@ observeEvent(input$callArchR, {
                         #                " directory _rslurm_", input$jobName))
                     }else{
 
-                        statusText <- archR::archR_get_job_status(sl_job)
+                        statusText <- archR_get_job_status(sl_job)
                         # message(paste0("Submitted batch job ",
                         #                statusText$queue$JOBID))
                         ##
@@ -624,15 +636,7 @@ observeEvent(input$callArchR, {
 # })
 ##==========================================================================
 
-jobStatusTable <- function(sl_job, submitTorF){
-    if(submitTorF){
-        statusText <- archR::archR_get_job_status(slr_job = sl_job)
-        return(statusText$queue)
-    }else{
-        return(NULL)
-    }
-}
-##==========================================================================
+
 
 
 # output$infoBoxProcessNew <- renderInfoBox({
