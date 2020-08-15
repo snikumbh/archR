@@ -841,7 +841,7 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
             # message("SAMARTH -- plotting, aalo re")
             # seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
             # sorted_order <- sort(seqsClustLabels, index.return = TRUE)
-            # clusters_ord <- get_seqs_clusters_in_a_list(seqsClustLabels)
+            # clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
             ##
             # message("Generating architectures...itr", itr)
             if(as.numeric(input$xtickFreqPWM) == 0){
@@ -867,7 +867,7 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
             # message("SAMARTH -- plotting, aalo re")
             seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
             sorted_order <- sort(seqsClustLabels, index.return = TRUE)
-            clusters_ord <- get_seqs_clusters_in_a_list(seqsClustLabels)
+            clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
             ##
             # message("Generating architectures...itr", itr)
             if(as.numeric(input$xtickFreqPWM) == 0){
@@ -1031,7 +1031,7 @@ observeEvent(input$plotACGTMatrix, {
             #
             seqsClustLabels <- archRresult$seqsClustLabels[[choose_itr]]
             sorted_order <- sort(seqsClustLabels, index.return = TRUE)
-            clusters_ord <- get_seqs_clusters_in_a_list(seqsClustLabels)
+            clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
             plotName <- paste0("plotMatImage",choose_itr)
             message("[", Sys.time(), "] Plotting ", plotName)
             output[[plotName]] <- renderPlot({
@@ -1081,7 +1081,7 @@ observeEvent(input$plotArchPWMs, {
                                     choose_itr))
             seqsClustLabels <- archRresult$seqsClustLabels[[choose_itr]]
             sorted_order <- sort(seqsClustLabels, index.return = TRUE)
-            clusters_ord <- get_seqs_clusters_in_a_list(seqsClustLabels)
+            clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
             plotName <- paste0("plotPWM",choose_itr)
             output[[plotName]] <- renderUI({
                 withCallingHandlers({
