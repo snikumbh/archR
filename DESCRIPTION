@@ -36,9 +36,9 @@ Imports:
     reticulate (>= 1.12),
     tibble (>= 2.1.1),
     ggpubr (>= 0.2.3),
+    parallel,
     hopach (>= 2.42.0),
     TFBSTools,
-    BiocGenerics,
     Biostrings
 Suggests:
     shiny,
@@ -50,8 +50,6 @@ Suggests:
     testthat (>= 2.1.1),
     covr,
     vdiffr (>= 0.3.0)
-Enhances:
-    parallel
 VignetteBuilder: 
     knitr
 biocViews: 

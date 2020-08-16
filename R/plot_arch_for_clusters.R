@@ -26,111 +26,111 @@
 # @keywords internal
 # @importFrom stats quantile sd
 # @importFrom BiocGenerics rowMeans
-plot_arch_for_clusters_old <- function(givenSamplesMatrix, givenFeaturesMatrix,
-                                    nCluster, clustering_sol, seqs = NULL,
-                                    position_labels = NA, plotMethod = "custom",
-                                    add_pseudo_counts = FALSE,
-                                    sinuc_or_dinuc = "sinuc") {
-    # print(length(levels(as.factor(clustering_sol$clust_sol$cluster))))
-    # print(levels(as.factor(clustering_sol$clust_sol$cluster)))
-    if (!is.matrix(givenSamplesMatrix)) {
-        stop("givenSamplesMat not of type matrix")
-    }
-    if (sum(dim(givenSamplesMatrix)) == 2 && is.na(givenSamplesMatrix)) {
-        stop("Empty givenSamplesMat")
-    }
-    if (!is.matrix(givenFeaturesMatrix)) {
-        stop("givenFeaturesMat not of type matrix")
-    }
-    if (sum(dim(givenFeaturesMatrix)) == 2 && is.na(givenFeaturesMatrix)) {
-        stop("Empty givenFeaturesMat")
-    }
-    if (length(nCluster) > 1) {
-        stop("Expecting only one value for nCluster")
-    } else if (nCluster < 1) {
-        stop("nCluster should be non-negative")
-    }
-    # else if (length(levels(as.factor(clustering_sol$clust_sol$cluster)))
-    # != nCluster) {
-    # stop('nCluster value and #Clusters in clustering_sol mismatch') }
-    # cleaned-up code
-    dummy_samarth <- as.vector(rep(0, nrow(givenFeaturesMatrix)))
-    architecture_features <- vector("list", ncol(givenFeaturesMatrix))
-    architecture_features <- lapply(architecture_features, function(x) {
-        x <- dummy_samarth
-    })
-    #
-    for (grp_ID in seq_len(nCluster)) {
-
-
-        select_block <-
-            givenSamplesMatrix[, clustering_sol$reordering_idx[[grp_ID]]]
-        # Calculating means (since seqs along columns, we compute rowMeans)
-        mean_patt_in_block <-
-            as.matrix(BiocGenerics::rowMeans(select_block))
-        # asmatrix creates a column vector
-        # median_patt_in_block <-
-        #     as.matrix(matrixStats::rowMedians(select_block))
-
-        if (ncol(givenFeaturesMatrix) == nrow(mean_patt_in_block)) {
-            meanFeat_in_block <- givenFeaturesMatrix %*% mean_patt_in_block
-            # medianFeat_in_block <- givenFeaturesMatrix %*% median_patt_in_block
-            #
-
-            #
-            new_meanFeat_in_block <- meanFeat_in_block
-            # new_medianFeat_in_block <- medianFeat_in_block
-            new_meanFeat_in_block[meanFeat_in_block <
-                                        as.numeric(stats::quantile(
-                                            meanFeat_in_block,
-                0.75))] <- 10^-5
-            # new_medianFeat_in_block[medianFeat_in_block <
-            #                             as.numeric(stats::quantile(
-            #                                 medianFeat_in_block,
-            #     0.75))] <- 10^-5
-            #
-            architecture_features[[grp_ID]] <- as.vector(t(meanFeat_in_block))
-            #
-        } else {
-            stop("Check dimensions of FeaturesMatrix and SamplesMatrix")
-        }
-
-        # viz_basis_vectors_as_heatmap(meanFeat_in_block,
-        # position_labels = position_labels)
-        if (clustering_sol$clustType == "kmeans") {
-            cluster_seqs <-
-                seqs[, clustering_sol$clust_sol$cluster == grp_ID]
-        } else if (clustering_sol$clustType == "hclust" ||
-                    clustering_sol$clustType == "dbscan") {
-            cluster_seqs <- seqs[, clustering_sol$clust_sol == grp_ID]
-
-        }
-        # else if(clustering_sol$clustType == 'dbscan') { cluster_seqs <- seqs[,
-        # clustering_sol$clust_sol == grp_ID] }
-
-        # cat('#Sequences in Cluster ', grp_ID, ': ',
-        # clustering_sol$clust_sol$size[grp_ID], '\n')
-
-
-        # if (!is.null(seqs)) { represent_matrix_of_acgt(cluster_seqs,
-        # position_labels =
-        # position_labels, plot.title =
-        # paste0( clustering_sol$clust_sol$size[grp_ID], '
-        # sequences in cluster '#, grp_ID ) ) } Plotting mean features
-        viz_basis_vectors_in_combined_heatmaps_seqlogos(
-            meanFeat_in_block,
-            plotMethod = plotMethod,
-            position_labels = position_labels,
-            add_pseudo_counts = add_pseudo_counts,
-            sinuc_or_dinuc = sinuc_or_dinuc)
-        # viz_basis_vectors_in_combined_heatmaps_seqlogos(meanFeat_in_block,
-        # plotMethod =
-        # 'custom', position_labels = position_labels, add_pseudo_counts =
-        # add_pseudo_counts)
-    }
-
-    return(architecture_features)
-}
+# plot_arch_for_clusters_old <- function(givenSamplesMatrix, givenFeaturesMatrix,
+#                                     nCluster, clustering_sol, seqs = NULL,
+#                                     position_labels = NA, plotMethod = "custom",
+#                                     add_pseudo_counts = FALSE,
+#                                     sinuc_or_dinuc = "sinuc") {
+#     # print(length(levels(as.factor(clustering_sol$clust_sol$cluster))))
+#     # print(levels(as.factor(clustering_sol$clust_sol$cluster)))
+#     if (!is.matrix(givenSamplesMatrix)) {
+#         stop("givenSamplesMat not of type matrix")
+#     }
+#     if (sum(dim(givenSamplesMatrix)) == 2 && is.na(givenSamplesMatrix)) {
+#         stop("Empty givenSamplesMat")
+#     }
+#     if (!is.matrix(givenFeaturesMatrix)) {
+#         stop("givenFeaturesMat not of type matrix")
+#     }
+#     if (sum(dim(givenFeaturesMatrix)) == 2 && is.na(givenFeaturesMatrix)) {
+#         stop("Empty givenFeaturesMat")
+#     }
+#     if (length(nCluster) > 1) {
+#         stop("Expecting only one value for nCluster")
+#     } else if (nCluster < 1) {
+#         stop("nCluster should be non-negative")
+#     }
+#     # else if (length(levels(as.factor(clustering_sol$clust_sol$cluster)))
+#     # != nCluster) {
+#     # stop('nCluster value and #Clusters in clustering_sol mismatch') }
+#     # cleaned-up code
+#     dummy_samarth <- as.vector(rep(0, nrow(givenFeaturesMatrix)))
+#     architecture_features <- vector("list", ncol(givenFeaturesMatrix))
+#     architecture_features <- lapply(architecture_features, function(x) {
+#         x <- dummy_samarth
+#     })
+#     #
+#     for (grp_ID in seq_len(nCluster)) {
+#
+#
+#         select_block <-
+#             givenSamplesMatrix[, clustering_sol$reordering_idx[[grp_ID]]]
+#         # Calculating means (since seqs along columns, we compute rowMeans)
+#         mean_patt_in_block <-
+#             as.matrix(BiocGenerics::rowMeans(select_block))
+#         # asmatrix creates a column vector
+#         # median_patt_in_block <-
+#         #     as.matrix(matrixStats::rowMedians(select_block))
+#
+#         if (ncol(givenFeaturesMatrix) == nrow(mean_patt_in_block)) {
+#             meanFeat_in_block <- givenFeaturesMatrix %*% mean_patt_in_block
+#             # medianFeat_in_block <- givenFeaturesMatrix %*% median_patt_in_block
+#             #
+#
+#             #
+#             new_meanFeat_in_block <- meanFeat_in_block
+#             # new_medianFeat_in_block <- medianFeat_in_block
+#             new_meanFeat_in_block[meanFeat_in_block <
+#                                         as.numeric(stats::quantile(
+#                                             meanFeat_in_block,
+#                 0.75))] <- 10^-5
+#             # new_medianFeat_in_block[medianFeat_in_block <
+#             #                             as.numeric(stats::quantile(
+#             #                                 medianFeat_in_block,
+#             #     0.75))] <- 10^-5
+#             #
+#             architecture_features[[grp_ID]] <- as.vector(t(meanFeat_in_block))
+#             #
+#         } else {
+#             stop("Check dimensions of FeaturesMatrix and SamplesMatrix")
+#         }
+#
+#         # viz_basis_vectors_as_heatmap(meanFeat_in_block,
+#         # position_labels = position_labels)
+#         if (clustering_sol$clustType == "kmeans") {
+#             cluster_seqs <-
+#                 seqs[, clustering_sol$clust_sol$cluster == grp_ID]
+#         } else if (clustering_sol$clustType == "hclust" ||
+#                     clustering_sol$clustType == "dbscan") {
+#             cluster_seqs <- seqs[, clustering_sol$clust_sol == grp_ID]
+#
+#         }
+#         # else if(clustering_sol$clustType == 'dbscan') { cluster_seqs <- seqs[,
+#         # clustering_sol$clust_sol == grp_ID] }
+#
+#         # cat('#Sequences in Cluster ', grp_ID, ': ',
+#         # clustering_sol$clust_sol$size[grp_ID], '\n')
+#
+#
+#         # if (!is.null(seqs)) { represent_matrix_of_acgt(cluster_seqs,
+#         # position_labels =
+#         # position_labels, plot.title =
+#         # paste0( clustering_sol$clust_sol$size[grp_ID], '
+#         # sequences in cluster '#, grp_ID ) ) } Plotting mean features
+#         viz_basis_vectors_in_combined_heatmaps_seqlogos(
+#             meanFeat_in_block,
+#             plotMethod = plotMethod,
+#             position_labels = position_labels,
+#             add_pseudo_counts = add_pseudo_counts,
+#             sinuc_or_dinuc = sinuc_or_dinuc)
+#         # viz_basis_vectors_in_combined_heatmaps_seqlogos(meanFeat_in_block,
+#         # plotMethod =
+#         # 'custom', position_labels = position_labels, add_pseudo_counts =
+#         # add_pseudo_counts)
+#     }
+#
+#     return(architecture_features)
+# }
 
 
 get_seq_cluster_levels <- function(annClusters) {
