@@ -25,7 +25,6 @@ addons:
 
 # Install Bioconductor dependencies
 bioc_packages:
-  - BiocGenerics
   - Biostrings
   - hopach
   - TFBSTools  
