@@ -22,7 +22,6 @@ Imports:
     dplyr (>= 0.8.0.1),
     ggplot2 (>= 3.1.1),
     ggseqlogo (>= 0.1),
-    TFBSTools,
     rlang,
     MASS,
     NMF,
@@ -38,6 +37,7 @@ Imports:
     tibble (>= 2.1.1),
     ggpubr (>= 0.2.3),
     hopach (>= 2.42.0),
+    TFBSTools,
     BiocGenerics,
     Biostrings
 Suggests:

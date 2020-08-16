@@ -28,6 +28,7 @@ bioc_packages:
   - BiocGenerics
   - Biostrings
   - hopach
+  - TFBSTools  
 
 warnings_are_errors: true
 
