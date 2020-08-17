@@ -19,7 +19,8 @@ addons:
   apt_packages:
     - libxml2-dev
     - libgsl0-dev
-    - r-cran-xml  
+    - r-cran-xml
+    - ghostsript
     - python3.5
     - python-numpy
     - python-scipy
