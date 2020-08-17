@@ -21,17 +21,21 @@ This package requires the Python module scikit-learn. See installation instructi
 ### To install this package, use 
 
 ```r
-# install.packages("devtools")
+if (!requireNamespace("remotes", quietly = TRUE)) {
+    install.packages("remotes")   
+}
+
 remotes::install_github("snikumbh/archR", build_vignettes = FALSE)
 ``` 
 
-If the above command produces errors, see troubleshooting note 4 below.
+If the above command produces errors, see this troubleshooting [note](https://github.com/snikumbh/archR#troubleshooting-installation) below.
 
 
 ### Usage
 ```r
 # load package
 library(archR)
+library(Biostrings)
 
 
 # Creation of one-hot encoded data matrix from FASTA file
@@ -47,9 +51,9 @@ inputSeqsMat <- archR::prepare_data_from_FASTA(inputFastaFilename,
 inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
                                                rawSeq = TRUE)
 
-nSeqs <- ncol(inputSeqsMat)
-positions <- seq(1,100)
-sinuc <- c('A', 'C', 'G', 'T')
+nSeqs <- length(inputSeqsRaw)
+positions <- seq(1, Biostrings::width(inputSeqsRaw[1]))
+sinuc <- Biostrings::DNA_BASES
 
 # Set archR configuration
 # Most arguments have default values
