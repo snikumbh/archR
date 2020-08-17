@@ -32,19 +32,21 @@ processing.
 While matrix factorization approaches (and their applications) are known to 
 scale poorly for large amounts of data, this approach enables scalable 
 processing of large number of sequences.
-To our knowledge, this is a novel application of NMF on sequence data where
-motifs, their positional specificities and complex inter-relationships, all are 
-simultaneously inferred from the data.
+To our knowledge, this is a novel application of NMF on sequence data.
+Sequence motifs, their positional specificities and complex 
+inter-relationships, all are simultaneously inferred from the data. 
 
 
 This vignette demonstrates archR's usage. 
+Please refer to the paper (cite paper/preprint) for a description and 
+discussion of _archR_'s algorithm.
 
 
 # Installation
-_archR_ is currently made available via Github; thus use the following procedure
+_archR_ is currently made available via Github, thus use the following procedure
 for installing _archR_.
 ```{r archR-install, echo=TRUE, eval=FALSE}
-# install.packages("devtools")
+# install.packages("remotes")
 # remotes::install_github("snikumbh/archR", build_vignettes = TRUE)
 ```
 
@@ -52,6 +54,7 @@ for installing _archR_.
 ```{r setup-two, echo=TRUE}
 # Load archR
 library(archR)
+library(Biostrings)
 
 
 # Set seed for reproducibility
@@ -108,9 +111,9 @@ inputSeqsMat <- archR::prepare_data_from_FASTA(inputFastaFilename,
 inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
                                                rawSeq = TRUE)
 
-nSeqs <- ncol(inputSeqsMat)
-positions <- seq(1,100)
-sinuc <- c('A', 'C', 'G', 'T')
+nSeqs <- length(inputSeqsRaw)
+positions <- seq(1, Biostrings::width(inputSeqsRaw))
+sinuc <- Biostrings::DNA_BASES
 
 ```
 
