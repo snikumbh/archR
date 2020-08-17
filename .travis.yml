@@ -16,12 +16,13 @@ branches:
   - master
 
 addons:
-  apt:
-    packages:
-      - python3.5
-      - python-numpy
-      - python-scipy
-      - python-sklearn
+  apt_packages:
+    - libxml2-dev
+    - libgsl0-dev
+    - python3.5
+    - python-numpy
+    - python-scipy
+    - python-sklearn
 
 # Install Bioconductor dependencies
 bioc_packages:
@@ -41,10 +42,6 @@ env:
 
 r_packages:
   - covr
-
-before_install:
-  - sudo apt-get -y install libxml2-dev
-
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
