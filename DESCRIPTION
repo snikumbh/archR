@@ -17,7 +17,6 @@ SystemRequirements: Python (>= 3.5), scikit-learn (>= 0.21.2)
 Depends:
     R (>= 3.5)
 Imports:
-    BBmisc (>= 1.11),
     cvTools (>= 0.3.2),
     dplyr (>= 0.8.0.1),
     ggplot2 (>= 3.1.1),
