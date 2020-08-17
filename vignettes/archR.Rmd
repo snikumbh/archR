@@ -112,7 +112,7 @@ inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename,
                                                rawSeq = TRUE)
 
 nSeqs <- length(inputSeqsRaw)
-positions <- seq(1, Biostrings::width(inputSeqsRaw))
+positions <- seq(1, Biostrings::width(inputSeqsRaw[1]))
 sinuc <- Biostrings::DNA_BASES
 
 ```
