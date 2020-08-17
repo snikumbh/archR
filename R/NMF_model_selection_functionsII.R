@@ -97,7 +97,9 @@
             }
         }else{
             ## greater than bound, choose and break loop
-            bestK <- kValue - 1
+            ## Bug: If this is reached at kValue = 1, bestK would be assigned 0.
+            ## Avoid this.
+            if(kValue > 1) bestK <- kValue - 1
             if(flags$debugFlag){
                 message("This amariType Distance = ", this_amari)
             }
