@@ -88,7 +88,7 @@
 
     # new_ord[[iter]] <- sample(ncol(this_mat), ncol(this_mat),
     #                           #replace = FALSE)
-    reticulate::source_python(system.file("python/perform_nmf.py",
+    reticulate::source_python(system.file("python", "perform_nmf.py",
                                           package = "archR",
                                           mustWork = TRUE)
     )
