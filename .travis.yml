@@ -42,5 +42,9 @@ env:
 r_packages:
   - covr
 
+before_install:
+  - sudo apt-get -y install libxml2-dev
+
+
 after_success:
   - Rscript -e 'library(covr); codecov()'
