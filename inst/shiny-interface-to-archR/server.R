@@ -528,8 +528,8 @@ observeEvent(input$callArchR, {
                             thresholdItr = as.numeric(input$thresholdsItr),
                             oDir = input$resultLocation),
                        jobname = manipulatedJobname, #input$jobName,
-                       r_template = system.file(file.path("templates",
-                                                "archR_r_template.txt"),
+                       r_template = system.file("templates",
+                                                "archR_r_template.txt",
                                                 package = "archR"),
                        ##
                        ## using custom template, so that we can call

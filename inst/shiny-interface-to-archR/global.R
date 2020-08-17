@@ -104,11 +104,11 @@ archR_slurm_call <- function(f, params, jobname = NA, global_objects = NULL,
 
     # Default templates
     if(is.null(r_template)) {
-        r_template <- system.file("templates/slurm_run_single_R.txt",
+        r_template <- system.file("templates", "slurm_run_single_R.txt",
                                   package = "rslurm")
     }
     if(is.null(sh_template)) {
-        sh_template <- system.file("templates/submit_single_sh.txt",
+        sh_template <- system.file("templates", "submit_single_sh.txt",
                                    package = "rslurm")
     }
 
