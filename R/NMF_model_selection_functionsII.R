@@ -74,9 +74,16 @@
         sam_scores[sam_scores$kValue == kValue, "Score"] <-
             c(this_amari,  this_disp)
         ##
-
+        if(is.na(this_amari)){
+            warning("NA in Amari-type distance computation")
+        }
         ##
-        if(this_amari < bound){
+        if(this_amari == 0) {
+            bestK <- 1
+            break
+        }
+        ##
+        if(this_amari > 0 && this_amari < bound){
             if(!is.na(prev_amari)){
                 magnitudeChange <- abs(floor(log10(this_amari)) -
                                            floor(log10(prev_amari)))

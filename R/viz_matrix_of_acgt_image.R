@@ -83,7 +83,7 @@ viz_matrix_of_acgt_image <- function(rawSeqs, position_labels = NULL,
     seq_mat <- seq_mat[rev(seq_len(nSeqs)),]
 
     if(!is.null(savefilename)){
-        if(filetype == "PNG"){
+        if(filetype == "PNG" || filetype == "png"){
             grDevices::png(filename = savefilename,
                 width = fwidth, height = fheight, units = funits,
                 bg = "white")
@@ -97,20 +97,23 @@ viz_matrix_of_acgt_image <- function(rawSeqs, position_labels = NULL,
     # xtick_cal[length(xtick_cal)] <- nPos
 
     ##
-    ytick_cal <- seq(0, nSeqs, by = yt_freq)
-    ytick_cal[1] <- 1
+    # ytick_cal <- seq(0, nSeqs, by = yt_freq)
+    # ytick_cal[1] <- 1
     # ytick_cal[length(ytick_cal)] <- nSeqs
+    #
+    ytick_names <- rev(seq(yt_freq, nSeqs, by = yt_freq))
+    ytick_loc <- 1 + nSeqs - c(rev(seq(yt_freq, nSeqs, by = yt_freq)))
 
     graphics::image(x = seq_len(nPos), y = seq_len(nSeqs),
           z = t(seq_mat),
           col = col,
           useRaster = TRUE,
-          ylab = paste0("Sequences (n=", nSeqs, ")"),
+          ylab = paste0("Sequences (n = ", nSeqs, ")"),
           xlab = "Positions",
           axes = FALSE)
     axis(side = 1, at = xtick_cal, labels = position_labels[xtick_cal],
          las = 2)
-    axis(side = 2, at = ytick_cal, labels = rev(ytick_cal), las = 2)
+    axis(side = 2, at = ytick_loc, labels = ytick_names, las = 2)
 
     if(!is.null(savefilename)){
         dev.off()
