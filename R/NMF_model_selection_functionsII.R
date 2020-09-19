@@ -16,8 +16,6 @@
                                                  plotFlag = FALSE,
                                                  timeFlag = FALSE)
                                     ){
-    ## Use cophenetic correlation cofficient after multiple runs to select the
-    ## best model
     ##
     sam_scores <- purrr::cross_df(list(
         kValue = param_ranges$k_vals,
@@ -119,11 +117,8 @@
         ##
         prev_amari <- this_amari
     }
-    # if(flags$debugFlag) {sam_scores %>% print(n = Inf)}
-    if(returnBestK){
-        ##
-        return(bestK)
-    }
+    ##
+    if(returnBestK) return(bestK)
     ##
     return(sam_scores)
 }

@@ -47,7 +47,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                   setOCollation = c(TRUE, FALSE, FALSE),
                   fresh = TRUE,
                   UseOC = NULL,
-                  oDir = NULL){#"./archRresult") {
+                  oDir = NULL){
     ##
     ## assert thresholdItr is a positive integer
     stopifnot(thresholdItr > 0)
@@ -257,42 +257,22 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                 ## CBind the factors from all inner chunks into one matrix
                 globFactorsMat <- do.call(cbind, globFactors)
                 ## These factors collected from all innerChunks may need
-                ## clustering
-                ############### HOPACH ON CLUSTERS FROM INNER CHUNK ############
-                # msgSuffix1 <- ", Will skip collapsing of inner chunk clusters with HOPACH"
-                # msgSuffix2 <- ", May collapse inner chunk clusters with HOPACH if decided"
-                # if (test_itr == 1){
-                # ## if (test_itr %% 2 != 1){
-                #     message("Iteration: ", test_itr, msgSuffix1)
-                #     hopachDecision <- FALSE
-                # } else {
-                #     if(config$flags$debugFlag) message("Iteration: ", test_itr, msgSuffix2)
-                #     hopachDecision <- .decide_hopach(globFactorsMat,
-                #                                 distMethod = "cosangle",
-                #                                 withinMeasure = "mean")
-                # }
-                # hopachDecision <- FALSE
-                #
-                # if (hopachDecision) {
-                #     ## Cluster the factors using hopach
-                #     if(config$flags$debugFlag) message("Collapsing with HOPACH")
-                #     globFactorsClustering <-
-                #         .handle_clustering_of_factors(globFactorsMat,
-                #                                     distMethod = "cosangle",
-                #                                     flags = config$flags)
-                # }
-                ############### HOPACH ON CLUSTERS FROM INNER CHUNK ############
+                ## clustering. This was earlier handled at the inner chunk
+                ## level, but is now deferred to the outer chunk level.
+                ## Therefore, the globFactorsClustering variable is directly
+                ## set to NULL. Otherwise, this variable would hold a clustering
+                ##  result object.
                 globFactorsClustering <- NULL
                 ## Manage factors
                 if (!is.null(intClustFactors)) {
                     intClustFactors <-
                         cbind(intClustFactors,
-                            .get_factors_from_factor_clustering(
+                            .get_factors_from_factor_clustering2(
                                 globFactorsClustering,
                                 globFactorsMat))
                 } else {
                     intClustFactors <-
-                    .get_factors_from_factor_clustering(globFactorsClustering,
+                    .get_factors_from_factor_clustering2(globFactorsClustering,
                                                             globFactorsMat)
                 }
                 ## Manage collated cluster assignments
@@ -452,9 +432,11 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         message(rdsFilename)
     }
     ##
-    ## reordering returns the result object with an additional field
-    ## message("Reordering archR clusters")
-    #archRresult <- reorder_archRresult(temp_archRresult)
+    ## At the moment, archR result is not reordered, but this is left
+    ## for later using reorder_archRresult function. This is because we
+    ## currently use hierarchical clustering for this which can give different
+    ## results with different distance measures. Performing this reordering
+    ## later enables the user choose as per need.
     ##
     if(config$flags$verboseFlag) {
         archRComplMsg <- paste("archR exiting")

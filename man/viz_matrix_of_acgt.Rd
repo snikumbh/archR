@@ -8,7 +8,7 @@ viz_matrix_of_acgt(
   givenMat,
   position_labels,
   sinuc_or_dinuc = "sinuc",
-  choose_colors = c(A = "darkgreen", C = "blue", G = "orange", T = "red"),
+  choose_colors = c(A = "darkgreen", C = "blue", G = "orange", T = "red", N = "white"),
   annClusters = NULL,
   mark_seq_at_every = as.integer(ncol(givenMat) * 0.1),
   mark_pos_at_every = 10,

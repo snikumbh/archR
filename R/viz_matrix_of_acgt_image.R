@@ -94,13 +94,7 @@ viz_matrix_of_acgt_image <- function(rawSeqs, position_labels = NULL,
 
     xtick_cal <- seq(0, nPos, by = xt_freq)
     xtick_cal[1] <- 1
-    # xtick_cal[length(xtick_cal)] <- nPos
-
     ##
-    # ytick_cal <- seq(0, nSeqs, by = yt_freq)
-    # ytick_cal[1] <- 1
-    # ytick_cal[length(ytick_cal)] <- nSeqs
-    #
     ytick_names <- rev(seq(yt_freq, nSeqs, by = yt_freq))
     ytick_loc <- 1 + nSeqs - c(rev(seq(yt_freq, nSeqs, by = yt_freq)))
 

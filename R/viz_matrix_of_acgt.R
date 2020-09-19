@@ -44,12 +44,6 @@
         nuc_list[which(nuc_list == "T")] <- 4
         nuc_list_num <- as.numeric(nuc_list)
         nuc_mat <- matrix(nuc_list_num, byrow = T, ncol = nPos, nrow = nSeqs)
-        # positions_to_assign <- rep(position_labels, nSeqs)
-        # seq_ids <- unlist(lapply(seq_along(seqs), function(x){
-        #     rep( x, nPos)}))
-        # plot_df <- data.frame(nucleotides = unlist(nuc_list),
-        #                       seq_id = seq_ids,
-        #                       positions = positions_to_assign)
     } else if (sinuc_or_dinuc == "dinuc") {
         ## handling dinucleotides
         ## not needed any more?!

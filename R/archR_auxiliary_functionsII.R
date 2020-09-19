@@ -234,43 +234,6 @@ archRSetConfig <- function(innerChunkSize = 500,
     }
 ## =============================================================================
 
-## This function makes the decision whether hopach-based processing should be
-## performed (or will work)
-##
-## @param globFactorsMat A matrix object holding all factors as columns
-## @param distMethod character A string specifying the method used for computing
-## distance measure. Default 'cosangle'. Currently, 'cosangle' gives best
-## results, so there are no other options here.
-## @param withinMeasure character A string specifying whether "mean" or "median"
-## should be used to compare between cluster dissimilarity. See more details in
-## hopach.
-##
-## @return Logical TRUE/FALSE
-.decide_hopach <- function(globFactorsMat,
-                            distMethod = "cosangle",
-                            withinMeasure = "mean") {
-    ## Firstly:
-    ## Very basically, if there are only two factors, we don't need HOPACH
-    ## clustering of factors
-    ## Secondly:
-    ## If #factors > 2, we could need/do HOPACH, but if the distances between
-    ## the factors are more or less similarly large (similar range), such that
-    ## there is really no cluster/grouping, drop the idea of using HOPACH.
-    globFactorsDistMat <- .compute_factor_distances(globFactorsMat,
-                                                    distMethod = distMethod)
-    ## Hopach suggestion: use same measure for 'within' and 'between'
-    estClusters <- hopach::msscheck(globFactorsDistMat, within = "mean",
-                            between = "mean")
-    decision <- FALSE
-    if (ncol(globFactorsMat) > 2 && estClusters[1] > 1) {
-        message("Collating clusters")
-        decision <- TRUE
-    }
-    if (!decision) message("No collation of clusters")
-    return(decision)
-}
-## =============================================================================
-
 ## @param factorsMat A matrix holding the factors along the columns
 ## @param distMethod character A string specifying the distance measure to
 ## be computed. Values are: 'modNW' for modified Needleman Wunsch, and any
@@ -339,39 +302,13 @@ archRSetConfig <- function(innerChunkSize = 500,
 ## =============================================================================
 
 
-# @title Get factors from factor clustering (hopach object)
-#
-# @description Returns the cluster medoid factors from hopach clustering of
-# NMF factors
-#
-# @param hopachObj The hopach object holding hopach result
-# @param globFactorsMat The global factors matrix
-#
-# @return If hopach object is not null, returns only the cluster medoid factors
-# as a matrix, else, returns the complete factors matrix
-.get_factors_from_factor_clustering <- function(hopachObj, globFactorsMat){
-    ##
-    .assert_archR_featuresMatrix(globFactorsMat)
-    if (is.null(hopachObj)) {
-        return(globFactorsMat)
-    } else {
-        .assert_archR_hopachObj(hopachObj, test_null = FALSE)
-        hopachMedoids <- .get_hopach_cluster_medoidsIdx(hopachObj)
-        return(as.matrix(globFactorsMat[ , hopachMedoids]))
-    }
-}
-## =============================================================================
-
-
-## for hierarchical clustering object
+## for hierarchical clustering object, return the cluster medoids
 .get_factors_from_factor_clustering2 <- function(listObj, globFactorsMat){
     ##
     .assert_archR_featuresMatrix(globFactorsMat)
     if (is.null(listObj)) {
         return(globFactorsMat)
     } else {
-        # .assert_archR_hopachObj(hopachObj, test_null = FALSE)
-        # hopachMedoids <- .get_hopach_cluster_medoidsIdx(hopachObj)
         medoids <- unlist(lapply(listObj, function(x){x[1]}))
         return(as.matrix(globFactorsMat[ , medoids]))
     }
@@ -465,8 +402,6 @@ archRSetConfig <- function(innerChunkSize = 500,
         nRuns <- config$nIterationsUse
         if(config$flags$verboseFlag) {
             message("Fetching ", best_k, " clusters")
-            # message("Fetching ", best_k, " clusters from best of ",
-            #         nRuns," of NMF")
         }
 
         featuresMatrixList <- vector("list", nRuns)
@@ -510,8 +445,8 @@ archRSetConfig <- function(innerChunkSize = 500,
         ##
         featuresMatrix <- bestFeatMat
         samplesMatrix <- bestSampMat
-        # ## When order was chainging:
-        # ## put samples matrix back in order it should be
+        ## When order was changing:
+        ## put samples matrix back in order it should be
         tempM <- bestSampMat
         samplesMatrix <- matrix(rep(NA, length(tempM)), nrow = nrow(tempM))
         samplesMatrix[ ,bestOrd] <- tempM
@@ -573,44 +508,6 @@ archRSetConfig <- function(innerChunkSize = 500,
     return(returnList)
 }
 ## =============================================================================
-
-
-# reportArchFromResult <- function(archRresult, chooseLevel = NULL) {
-#     # INput archRresult
-#     # Output: architectures as sequence logos
-#     # Algorithm key points:
-#     # 1. Use cross_correlation and similarity measures from TFBSTools package
-#     # Stepwise algorithm:
-#     # 1. Get sequences in different clusters (at a given level/iteration; default: final iteration)
-#     # 2. Generate their sequence logos/PWMs
-#     # 3. Collect distinct PWMs as architectures in a archCollection object (list)
-#     # 4. Return the archCollection object (list of PWMs/sequence logos)
-#     if(is.null(chooseLevel)){
-#         # type is list, hence length
-#         chosenLevel <- length(archRresult$clustBasisVectors)
-#     }
-#     seqs_clusters_as_list_ordered <-
-#         get_seqs_clusters_in_a_list(archRresult$seqsClustLabels[[chosenLevel]])
-#     nClusters <- length(seqs_clusters_as_list_ordered)
-#
-#     reportArch <- list()
-#     clusterPWMs <- vector("list", length(seqs_clusters_as_list_ordered))
-#
-#     for(i in seq_along(seqs_clusters_as_list_ordered)){
-#         clusterPWMs[[i]] <- TFBSTools::toPWM(chen_tss.seqs_raw[seqs_clusters_as_list_ordered[[i]]],
-#                             type="prob")
-#     }
-#     # Fetch similarity scores of all pairs
-#     sims <- matrix(rep(0, nClusters*nClusters), nrow = nClusters, byrow = TRUE)
-#     for(i in seq_along(clusterPWMs)){
-#         for(j in i:length(clusterPWMs))
-#         sims[i,j] <- TFBSTools::PWMSimilarity(clusterPWMs[[i]], clusterPWMs[[j]],
-#                                    method="Euclidean")
-#     }
-#
-#
-#
-# }
 
 
 intermediateResultsPlot <- function(seqsClustLabels, tss.seqs_raw = NULL,
