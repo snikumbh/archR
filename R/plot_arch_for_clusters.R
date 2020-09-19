@@ -144,7 +144,6 @@ get_seq_cluster_levels <- function(annClusters) {
 }
 
 
-
 #' @title Plot cluster architectures as sequence logos.
 #' @description Given a collection of FASTA sequences as a DNAStringSet object,
 #' and the clusters information, this function plots the architectures for all
