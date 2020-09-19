@@ -626,8 +626,8 @@ sorted_order <- sort(seqsClustLabels, index.return = TRUE)
 seqs_clusters_as_list_ordered <- get_seqs_clusters_in_a_list(seqsClustLabels)
 message("=== Intermediate Result ===")
 message("Generating unannotated map of clustered sequences...")
-image_fname <- paste0(fname, "ClusteringImage_Iteration", iterVal)
-message("Sequence clustering image written to: ", image_fname, ".png")
+image_fname <- paste0(fname, "ClusteringImage_Iteration", iterVal, ".png")
+message("Sequence clustering image written to: ", image_fname)
 viz_matrix_of_acgt_image(rawSeqs =  as.character(tss.seqs_raw[sorted_order$ix]),
                         position_labels = positions,
                         savefilename = image_fname,
