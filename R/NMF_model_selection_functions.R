@@ -540,7 +540,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
 # @title Get the best performing value of K (number of factors in NMF)
 #
 # @param x A tibble, grid_search_results, as returned by
-# \code{.cv_model_select_pyNMF}
+# \code{.cv_model_select_pyNMF2}
 #
 # @return A number The best performing value of K.
 .get_best_K <- function(x, parsimony = FALSE) {
@@ -601,7 +601,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
 #
 # @description Aggregate the \eqn{Q^2} values from the grid search results.
 #
-# @param x The return object from \code{\link{.cv_model_select_pyNMF}}.
+# @param x The return object from \code{\link{.cv_model_select_pyNMF2}}.
 # @param chosen_var The variable to aggregate over.
 # @param chosen_func The aggregate function to use (should be a function
 # already existing wihtin R). Possible values are: \code{mean} and \code{sd}.
