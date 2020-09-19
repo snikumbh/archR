@@ -50,7 +50,9 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                   oDir = NULL){
     ##
     ## assert thresholdItr is a positive integer
-    stopifnot(thresholdItr > 0)
+    if(!thresholdItr > 0) {
+        stop("Expecting threshold iteration to be numeric and > 0")
+    }
     ## better, provide a summary function
     utils::str(config)
     archRStartTime <- Sys.time()
