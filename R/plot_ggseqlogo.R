@@ -30,7 +30,7 @@ plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
         stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
     }
     #
-    print(ncol(pwmMat))
+
     if (length(position_labels) < ncol(pwmMat)) {
         stop(paste0("Inadequate position labels supplied",
                     ncol(pwmMat) - length(position_labels)
@@ -55,7 +55,7 @@ plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
         # axis.text.y = element_blank() ) + theme_bw() +
         ggplot2::scale_x_continuous(breaks = seq_len(ncol(pwmMat)),
                                     labels = position_labels,
-                                    expand = expand_scale(mult = c(0, 0))) +
+                                    expand = expansion(mult = c(0, 0))) +
         # ggplot2::coord_fixed(ratio = 8, clip = 'on') +
         # ggplot2::labs(title = plot.title)
         # +
