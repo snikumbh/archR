@@ -25,6 +25,72 @@
 }
 ## =============================================================================
 
+
+.seqs_to_mat <- function(seqs, position_labels, annClusters = NULL,
+                         sinuc_or_dinuc = "sinuc") {
+    nSeqs <- length(seqs)
+    nPos <- length(position_labels)
+    ## handling single- and di-nucleotides separately
+    if (sinuc_or_dinuc == "sinuc") {
+        nuc_list <- unlist(lapply(seq_along(seqs),
+                                  function(x) {
+                                      str_seq <- seqs[x]
+                                      nucleotides <- unlist(strsplit(str_seq,
+                                                                     split = NULL))
+                                  }))
+        nuc_list[which(nuc_list == "A")] <- 1
+        nuc_list[which(nuc_list == "C")] <- 2
+        nuc_list[which(nuc_list == "G")] <- 3
+        nuc_list[which(nuc_list == "T")] <- 4
+        nuc_list_num <- as.numeric(nuc_list)
+        nuc_mat <- matrix(nuc_list_num, byrow = T, ncol = nPos, nrow = nSeqs)
+        # positions_to_assign <- rep(position_labels, nSeqs)
+        # seq_ids <- unlist(lapply(seq_along(seqs), function(x){
+        #     rep( x, nPos)}))
+        # plot_df <- data.frame(nucleotides = unlist(nuc_list),
+        #                       seq_id = seq_ids,
+        #                       positions = positions_to_assign)
+    } else if (sinuc_or_dinuc == "dinuc") {
+        ## handling dinucleotides
+        ## not needed any more?!
+        stop("Nothing for dinuc here. Unrelated!")
+    }
+
+    return(nuc_mat)
+
+}
+## =============================================================================
+
+
+.seqs_to_df2 <- function(seqs, position_labels, annClusters = NULL,
+                         sinuc_or_dinuc = "sinuc") {
+    nSeqs <- length(seqs)
+    nPos <- length(position_labels)
+    ## handling single- and di-nucleotides separately
+    if (sinuc_or_dinuc == "sinuc") {
+        nuc_list <- lapply(seq_along(seqs),
+                           function(x) {
+                               str_seq <- seqs[x]
+                               nucleotides <- unlist(strsplit(str_seq,
+                                                              split = NULL))
+                           })
+        positions_to_assign <- rep(position_labels, nSeqs)
+        seq_ids <- unlist(lapply(seq_along(seqs), function(x){
+                        rep( x, nPos)}))
+        plot_df <- data.frame(nucleotides = unlist(nuc_list),
+                              seq_id = seq_ids,
+                              positions = positions_to_assign)
+    } else if (sinuc_or_dinuc == "dinuc") {
+        ## handling dinucleotides
+        ## not needed any more?!
+        stop("Nothing for dinuc here. Unrelated!")
+    }
+
+    return(plot_df)
+
+}
+## =============================================================================
+
 .seqs_to_df <- function(seqs, position_labels, annClusters = NULL,
                         sinuc_or_dinuc = "sinuc") {
     ## handling single- and di-nucleotides separately
@@ -232,7 +298,7 @@ viz_matrix_of_acgt <-
                 position_labels,
                 sinuc_or_dinuc = "sinuc",
                 choose_colors = c("A" = "darkgreen", "C" = "blue",
-                                    "G" = "orange", "T" = "red"),
+                                    "G" = "orange", "T" = "red", "N" = "white"),
                 annClusters = NULL,
                 mark_seq_at_every =
                     as.integer(ncol(givenMat) * 0.1),
@@ -245,7 +311,7 @@ viz_matrix_of_acgt <-
     ## Returns: No return value
     if (verbose > 0) { cat("Plotting\n") }
     ##
-    plot_df <- .seqs_to_df(
+    plot_df <- .seqs_to_df2(
         givenMat,
         position_labels = position_labels,
         annClusters = annClusters,
@@ -289,6 +355,6 @@ viz_matrix_of_acgt <-
                             device = "png", width = 6.0, height = 11.69)
         }
     } else{
-        print(final_p)
+        final_p
     }
 }
