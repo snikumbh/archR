@@ -315,35 +315,22 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     ## Instead, use numerics w/ as.character and pre-sort to have them in the
     ## order that will be returned by levels (in get_seqs_clusters_in_list fn)
     candidateClustLabels <- sort(as.character(seq_len(nClusters)))
-    # print("Candidate clust labels")
-    # print(candidateClustLabels)
     if (flags$verboseFlag) {
         message("Updating sequence cluster labels")
         message("#Clusters: ", nClusters)
     }
-    ## This was needed when cluster labels had no separator. May be removed now.
-    ## if (nClusters > 9) {
-    ##     warning("More than 9 clusters")
-    ## }
     newSeqsClustLabels <- oldSeqsClustLabels
     for (i in seq_len(nClusters)) {
         needUpdateIdx <- collatedClustAssignments[[i]]
-        # print("Need update idx")
-        # print(head(needUpdateIdx))
-        # print(length(needUpdateIdx))
         newSeqsClustLabels[needUpdateIdx] <-
             vapply(newSeqsClustLabels[needUpdateIdx],
                     function(x) {
-                        #paste0(c(x, candidateClustLabels[i]), collapse = "-")
                         paste0(candidateClustLabels[i])
                     }, character(1)
                 )
     }
     ##
     .assert_archR_seqsClustLabels(newSeqsClustLabels)
-    # print("Inside update cluster labels")
-    # print(oldSeqsClustLabels)
-    # print(newSeqsClustLabels)
     return(newSeqsClustLabels)
 }
 ## =============================================================================
