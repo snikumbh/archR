@@ -321,15 +321,41 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     }
     newSeqsClustLabels <- oldSeqsClustLabels
     for (i in seq_len(nClusters)) {
-        needUpdateIdx <- collatedClustAssignments[[i]]
-        newSeqsClustLabels[needUpdateIdx] <-
-            vapply(newSeqsClustLabels[needUpdateIdx],
-                    function(x) {
-                        paste0(candidateClustLabels[i])
-                    }, character(1)
-                )
+        # needUpdateIdx <- collatedClustAssignments[[i]]
+        # newSeqsClustLabels[needUpdateIdx] <-
+        #     vapply(newSeqsClustLabels[needUpdateIdx],
+        #             function(x) {
+        #                 paste0(candidateClustLabels[i])
+        #             }, character(1)
+        #         )
+        ####
+        needUpdateIdx <- unlist(lapply(collatedClustAssignments[[i]],
+                                       function(x){
+                                which(oldSeqsClustLabels == as.character(x))
+                            }))
+        newSeqsClustLabels[needUpdateIdx] <- as.character(i)
     }
-    ##
+    ####
+    ####
+    # for (i in seq_len(nClusters)) {
+    #     # Solution with two for loops
+    #     needUpdateClustIdx <- collatedClustAssignments[[i]]
+    #     message("i = ", i)
+    #     print(needUpdateClustIdx)
+    #     for(j in needUpdateClustIdx){
+    #         message("j = ", j)
+    #         needUpdateIdx <- which(oldSeqsClustLabels == as.character(j))
+    #         print(needUpdateIdx)
+    #         newSeqsClustLabels[needUpdateIdx] <- as.character(i)
+    #     }
+    #     print("updated labels")
+    #     print(newSeqsClustLabels)
+    #     print("next")
+    #     # if(identical(samarth, newSeqsClustLabels)){
+    #     #     message("Yes")
+    #     # }else{message("NO")}
+    # }
+    ####
     .assert_archR_seqsClustLabels(newSeqsClustLabels)
     return(newSeqsClustLabels)
 }
