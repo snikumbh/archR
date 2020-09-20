@@ -1,7 +1,6 @@
 context("Test heatmap and seqlogo")
 library(ggplot2)
 library(ggseqlogo)
-library(gridExtra)
 
 test_that("Given object is matrix", {
   testFeaturesMat <- rnorm(10000) # err
