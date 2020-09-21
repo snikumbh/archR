@@ -18,7 +18,11 @@ toyConfig <- archR::archRSetConfig(innerChunkSize = 100,
                             kMin = 2, kMax = 20, parallelize = FALSE,
                             modSelType = "stability", 
                             nIterationsUse = 50,
-                            nCoresUse = NA)
+                            nCoresUse = NA,
+                            flags = list(debugFlag = FALSE,
+                                         verboseFlag = TRUE,
+                                         plotVerboseFlag = FALSE,
+                                         timeFlag = TRUE))
 
 
 test_that("archR works", {
