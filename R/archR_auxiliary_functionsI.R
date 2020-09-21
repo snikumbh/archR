@@ -10,28 +10,28 @@
 # @return A numeric vector of the same size as seqsClustLabels, with labels
 # only up to the chosen iteration
 #'
-collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
-    ## Check if all_ok, all elements should have same length
-    .assert_archR_seqsClustLabels_at_end(given_seqsClustLabels)
-    splitChar <- "-"
-    elements_length <- unique(unlist(lapply(strsplit(given_seqsClustLabels,
-                                                    split = splitChar),
-                                                    length)))
-    if (chooseLevel > elements_length) {
-        stop("Choose_levels (", chooseLevel,
-        ") greater than levels present in cluster_labels(",
-        elements_length, ").")
-    } else {
-        selectedLabels <- unlist(lapply(strsplit(given_seqsClustLabels,
-                                                split = splitChar),
-                                        function(x) {
-                                            paste0(x[seq_len(chooseLevel)],
-                                                collapse = splitChar)
-                                        }))
-    }
-    .assert_archR_seqsClustLabels_at_end(selectedLabels)
-    return(selectedLabels)
-}
+# collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
+#     ## Check if all_ok, all elements should have same length
+#     .assert_archR_seqsClustLabels_at_end(given_seqsClustLabels)
+#     splitChar <- "-"
+#     elements_length <- unique(unlist(lapply(strsplit(given_seqsClustLabels,
+#                                                     split = splitChar),
+#                                                     length)))
+#     if (chooseLevel > elements_length) {
+#         stop("Choose_levels (", chooseLevel,
+#         ") greater than levels present in cluster_labels(",
+#         elements_length, ").")
+#     } else {
+#         selectedLabels <- unlist(lapply(strsplit(given_seqsClustLabels,
+#                                                 split = splitChar),
+#                                         function(x) {
+#                                             paste0(x[seq_len(chooseLevel)],
+#                                                 collapse = splitChar)
+#                                         }))
+#     }
+#     .assert_archR_seqsClustLabels_at_end(selectedLabels)
+#     return(selectedLabels)
+# }
 ## =============================================================================
 
 # @title Assign samples to clusters
@@ -70,19 +70,19 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
 
 
 
-.get_consensusClustMemberships <- function(allRunMemberships, nClusters) {
-
-    consensusClustMemberships <-
-        apply(allRunMemberships, 2, function(yVec){
-                        which.max(
-                            vapply(seq_len(nClusters),
-                                   function(x){sum(yVec == x)},
-                            numeric(1))
-                        )}
-        )
-
-    return(consensusClustMemberships)
-}
+# .get_consensusClustMemberships <- function(allRunMemberships, nClusters) {
+# 
+#     consensusClustMemberships <-
+#         apply(allRunMemberships, 2, function(yVec){
+#                         which.max(
+#                             vapply(seq_len(nClusters),
+#                                    function(x){sum(yVec == x)},
+#                             numeric(1))
+#                         )}
+#         )
+# 
+#     return(consensusClustMemberships)
+# }
 
 
 # @title Map clusters to factors
@@ -100,98 +100,98 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
 # @param flags List with four fixed elements. flags param in archR config
 #
 # @return A list that can be assigned as an element in globClustAssignments
-.map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
-                                    iChunkIdx, flags) {
-    ## clustOrderIdx IS clustering_sol_kmeans$reordering_idx, the reorderingIdx
-    ## is a nested list, i.e. a list holding list of seqs_ids belonging to one
-    ## cluster together. Hence, length(this variable) gives #clusters.
-    ## samplesMatrix IS samplesMatrix.
-    ##
-    ## Make checks
-    .assert_archR_samplesMatrix(samplesMatrix)
-    ##
-    if (!is.list(clustOrderIdx)) {
-        print(clustOrderIdx)
-        stop("Mapping clusters to factors, cluster orders is not a list")
-    } else if (!is.vector(clustOrderIdx[[1]])) {
-            stop("Mapping clusters to factors, cluster orders is not a vector")
-    }
-    ## check iChunksColl and iChunkIdx
-    if (!is.null(iChunksColl) && length(iChunksColl) < 1) {
-        stop("Mapping clusters to factors, expecting inner chunks as a
-                list of length > 0")
-    }
-    if (!is.null(iChunkIdx) && !is.numeric(iChunkIdx) && iChunkIdx > 0) {
-        stop("Mapping clusters to factors, expecting inner chunk index as a
-                numeric > 0")
-    }
-    ##
-    .assert_archR_flags(flags)
-    ##
-    rightClusterOrders <- vector("list", length(clustOrderIdx))
-    if (length(clustOrderIdx) == 1) {
-        ## Special case
-        rightClusterOrders[[1]] <- iChunksColl[[iChunkIdx]][clustOrderIdx[[1]]]
-        return(rightClusterOrders)
-        ##
-    } else if (length(clustOrderIdx) > 1) {
-        ##
-        message("Cluster to Factor:")
-        for (cluster_idx in seq_along(clustOrderIdx)) {
-            ##
-            # print(apply(as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]]),
-            #             1, quantile))
-            # print(as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]]))
-            rowwiseMeans <- rowMeans(
-                as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]])
-            )
-            print(paste0("Cluster ID:", cluster_idx))
-            print(paste0("Rowwise means", rowwiseMeans))
-            relevant_factor <- which.max(rowwiseMeans)
-            relevant_descending_order <-
-                sort(samplesMatrix[relevant_factor,clustOrderIdx[[cluster_idx]]],
-                     index.return = TRUE,
-                     decreasing = TRUE)$ix
-            # print(relevant_factor)
-            # #stop("SAMARTH")
-            ##
-            # relevant_factor <-
-            #     which.max(rowMeans(
-            #     as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]])
-            #     ))
-            if (length(relevant_factor) > 1) {
-                if (flags$debugFlag) {
-                    message("Multiple basis vectors attained max.")
-                    message(relevant_factor)
-                }
-            } else {
-                message(relevant_factor)
-                if (flags$debugFlag) {
-                    message("Factor-mapping OK")
-                    message(relevant_factor)
-                }
-
-                seqs_vector_to_assign <-
-                    iChunksColl[[iChunkIdx]][clustOrderIdx[[cluster_idx]]]
-                ## order the sequences by the scores (highest first, weakest last)
-                rightClusterOrders[[relevant_factor]] <-
-                    seqs_vector_to_assign[relevant_descending_order]
-            }
-        }
-        ## Check if any factor got left out?
-        ## i.e. no seqs assigned to its cluster
-        if (any(lapply(rightClusterOrders, length) == 0)) {
-            print(clustOrderIdx)
-            thisGotLeftOut <- which(lapply(rightClusterOrders, length) == 0)
-            warning(c("Factor(s) got no sequences assigned: ",
-                    paste0(thisGotLeftOut, sep="-")), immediate. = TRUE)
-            for (id in thisGotLeftOut) {
-                rightClusterOrders[[id]] <- 0
-            }
-        }
-        return(rightClusterOrders)
-    }
-}
+# .map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
+#                                     iChunkIdx, flags) {
+#     ## clustOrderIdx IS clustering_sol_kmeans$reordering_idx, the reorderingIdx
+#     ## is a nested list, i.e. a list holding list of seqs_ids belonging to one
+#     ## cluster together. Hence, length(this variable) gives #clusters.
+#     ## samplesMatrix IS samplesMatrix.
+#     ##
+#     ## Make checks
+#     .assert_archR_samplesMatrix(samplesMatrix)
+#     ##
+#     if (!is.list(clustOrderIdx)) {
+#         print(clustOrderIdx)
+#         stop("Mapping clusters to factors, cluster orders is not a list")
+#     } else if (!is.vector(clustOrderIdx[[1]])) {
+#             stop("Mapping clusters to factors, cluster orders is not a vector")
+#     }
+#     ## check iChunksColl and iChunkIdx
+#     if (!is.null(iChunksColl) && length(iChunksColl) < 1) {
+#         stop("Mapping clusters to factors, expecting inner chunks as a
+#                 list of length > 0")
+#     }
+#     if (!is.null(iChunkIdx) && !is.numeric(iChunkIdx) && iChunkIdx > 0) {
+#         stop("Mapping clusters to factors, expecting inner chunk index as a
+#                 numeric > 0")
+#     }
+#     ##
+#     .assert_archR_flags(flags)
+#     ##
+#     rightClusterOrders <- vector("list", length(clustOrderIdx))
+#     if (length(clustOrderIdx) == 1) {
+#         ## Special case
+#         rightClusterOrders[[1]] <- iChunksColl[[iChunkIdx]][clustOrderIdx[[1]]]
+#         return(rightClusterOrders)
+#         ##
+#     } else if (length(clustOrderIdx) > 1) {
+#         ##
+#         message("Cluster to Factor:")
+#         for (cluster_idx in seq_along(clustOrderIdx)) {
+#             ##
+#             # print(apply(as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]]),
+#             #             1, quantile))
+#             # print(as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]]))
+#             rowwiseMeans <- rowMeans(
+#                 as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]])
+#             )
+#             print(paste0("Cluster ID:", cluster_idx))
+#             print(paste0("Rowwise means", rowwiseMeans))
+#             relevant_factor <- which.max(rowwiseMeans)
+#             relevant_descending_order <-
+#                 sort(samplesMatrix[relevant_factor,clustOrderIdx[[cluster_idx]]],
+#                      index.return = TRUE,
+#                      decreasing = TRUE)$ix
+#             # print(relevant_factor)
+#             # #stop("SAMARTH")
+#             ##
+#             # relevant_factor <-
+#             #     which.max(rowMeans(
+#             #     as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]])
+#             #     ))
+#             if (length(relevant_factor) > 1) {
+#                 if (flags$debugFlag) {
+#                     message("Multiple basis vectors attained max.")
+#                     message(relevant_factor)
+#                 }
+#             } else {
+#                 message(relevant_factor)
+#                 if (flags$debugFlag) {
+#                     message("Factor-mapping OK")
+#                     message(relevant_factor)
+#                 }
+# 
+#                 seqs_vector_to_assign <-
+#                     iChunksColl[[iChunkIdx]][clustOrderIdx[[cluster_idx]]]
+#                 ## order the sequences by the scores (highest first, weakest last)
+#                 rightClusterOrders[[relevant_factor]] <-
+#                     seqs_vector_to_assign[relevant_descending_order]
+#             }
+#         }
+#         ## Check if any factor got left out?
+#         ## i.e. no seqs assigned to its cluster
+#         if (any(lapply(rightClusterOrders, length) == 0)) {
+#             print(clustOrderIdx)
+#             thisGotLeftOut <- which(lapply(rightClusterOrders, length) == 0)
+#             warning(c("Factor(s) got no sequences assigned: ",
+#                     paste0(thisGotLeftOut, sep="-")), immediate. = TRUE)
+#             for (id in thisGotLeftOut) {
+#                 rightClusterOrders[[id]] <- 0
+#             }
+#         }
+#         return(rightClusterOrders)
+#     }
+# }
 ## =============================================================================
 
 ## @title Collate clusters from hierarchical clustering
@@ -303,6 +303,47 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
                                                 verboseFlag = TRUE,
                                                 plotVerboseFlag = FALSE,
                                                 timeFlag = FALSE)) {
+    ## Important: The collatedClustAssignments variable is a list where each 
+    ## element holds the indices of sequences falling in the same cluster, like so
+    ## For a set of 200 sequences, collatedClustAssignments is
+    ## [[1]]
+    ## [1]   1   2   6  11  20  23  32  46  50  52  63  68  71  72  75  80  82  83  85  86  87  88  92  99 102 104 105
+    ## [28] 112 114 116 123 131 137 138 143 145 146 147 148 151 158 165 167 168 171 176 179 182 190 197
+    ##
+    ## [[2]]
+    ## [1]   3   5   7   8  10  12  13  16  17  18  19  22  25  30  31  36  37  38  39  41  43  45  47  49  51  53  54
+    ## [28]  55  56  58  59  60  61  64  67  69  70  73  77  84  89  91  94  95  98 103 106 107 109 115 117 118 119 120
+    ## [55] 121 122 125 126 128 130 132 133 134 135 136 140 141 142 144 150 152 153 154 156 159 160 161 162 164 166 173
+    ## [82] 175 177 180 183 184 185 186 188 189 191 193 194 195 196 198 199 200
+    ##
+    ## [[3]]
+    ## [1]   4   9  14  15  21  24  26  27  28  29  33  34  35  40  42  44  48  57  62  65  66  74  76  78  79  81  90
+    ## [28]  93  96  97 100 101 108 110 111 113 124 127 129 139 149 155 157 163 169 170 172 174 178 181 187 192
+    ## 
+    ## This is different than the globClustAssignment variable which will hold
+    ## the indices of the factors that are combined into one cluster. For instance,
+    ## when there are 25 factors/clusters which have combined to give 5 clusters,
+    ## globClustAssignments will hold something like this:
+    ## [[1]]
+    ## [1] "3"  "13" "11" "16" "6" 
+    ##
+    ## [[2]]
+    ## [1] "15" "1"  "8"  "25" "18"
+    ##
+    ## [[3]]
+    ## [1] "24" "5"  "4"  "10" "21"
+    ## 
+    ## [[4]]
+    ## [1] "14" "12" "17" "2"  "22"
+    ## 
+    ## [[5]]
+    ## [1] "19" "9"  "20" "7"  "23"
+    ## 
+    ## The collatedClustAssignments variable and the globClustAssignments variable were confused,
+    ## and a corresponding test was wrongly written marking the previous update_cluster_labels code block 
+    ## as erroneous. However, that is not correct, as has been noted above.
+    ## For reference: see commit 4705553
+    ## 
     .assert_archR_seqsClustLabels(oldSeqsClustLabels)
     .assert_archR_globClustAssignments(collatedClustAssignments)
     .assert_archR_flags(flags)
@@ -321,41 +362,14 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
     }
     newSeqsClustLabels <- oldSeqsClustLabels
     for (i in seq_len(nClusters)) {
-        # needUpdateIdx <- collatedClustAssignments[[i]]
-        # newSeqsClustLabels[needUpdateIdx] <-
-        #     vapply(newSeqsClustLabels[needUpdateIdx],
-        #             function(x) {
-        #                 paste0(candidateClustLabels[i])
-        #             }, character(1)
-        #         )
-        ####
-        needUpdateIdx <- unlist(lapply(collatedClustAssignments[[i]],
-                                       function(x){
-                                which(oldSeqsClustLabels == as.character(x))
-                            }))
-        newSeqsClustLabels[needUpdateIdx] <- as.character(i)
+        needUpdateIdx <- collatedClustAssignments[[i]]
+        newSeqsClustLabels[needUpdateIdx] <-
+            vapply(newSeqsClustLabels[needUpdateIdx],
+                    function(x) {
+                        paste0(candidateClustLabels[i])
+                    }, character(1)
+                )
     }
-    ####
-    ####
-    # for (i in seq_len(nClusters)) {
-    #     # Solution with two for loops
-    #     needUpdateClustIdx <- collatedClustAssignments[[i]]
-    #     message("i = ", i)
-    #     print(needUpdateClustIdx)
-    #     for(j in needUpdateClustIdx){
-    #         message("j = ", j)
-    #         needUpdateIdx <- which(oldSeqsClustLabels == as.character(j))
-    #         print(needUpdateIdx)
-    #         newSeqsClustLabels[needUpdateIdx] <- as.character(i)
-    #     }
-    #     print("updated labels")
-    #     print(newSeqsClustLabels)
-    #     print("next")
-    #     # if(identical(samarth, newSeqsClustLabels)){
-    #     #     message("Yes")
-    #     # }else{message("NO")}
-    # }
-    ####
     .assert_archR_seqsClustLabels(newSeqsClustLabels)
     return(newSeqsClustLabels)
 }
@@ -666,7 +680,8 @@ collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
 #' @return A list holding sequence clusters.
 #' @export
 get_seqs_clusters_in_a_list <- function(seqsClustLabels){
-    ## TODO: check that labels are not empty/NULL
+    ## check that labels are not empty/NULL
+    .assert_archR_seqsClustLabels(seqsClustLabels)
     clusterLevels <- levels(as.factor(seqsClustLabels))
 
     seqs_clusters_as_a_list <- lapply(seq_along(clusterLevels),
