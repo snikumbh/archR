@@ -1,16 +1,16 @@
 
-Note: _This package is currently under development. So, please bear with me while I put the final blocks together. Thanks for your understanding!_ 
 
 # archR
 <!-- badges: start -->
-
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build status](https://travis-ci.org/snikumbh/archR.svg?branch=master)](https://travis-ci.org/snikumbh/archR)
 [![Codecov test coverage](https://codecov.io/gh/snikumbh/archR/branch/master/graph/badge.svg)](https://codecov.io/gh/snikumbh/archR?branch=master)
 <!-- badges: end -->
+
 This is an R package implementing an unsupervised, non-negative matrix factorization-based method (of the same name) for discovery of sequence architectures.
 
+Note: _This package is currently under development. So, please bear with me while I put the final blocks together. Thanks for your understanding!_ 
 
 ## Installation
 
