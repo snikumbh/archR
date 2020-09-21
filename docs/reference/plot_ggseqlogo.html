@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • archR</title>
+<title>Visualize a given (PWM) matrix as a sequence logo — plot_ggseqlogo • archR</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script>
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,13 +33,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Visualize a given (PWM) matrix as a sequence logo — plot_ggseqlogo" />
+<meta property="og:description" content="Visualize a given (PWM) matrix as a sequence logo" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -70,7 +71,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">archR</a>
+        <a class="navbar-link" href="../index.html">archR</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
       </span>
     </div>
@@ -78,19 +79,19 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="articles/archR.html">Get started</a>
+  <a href="../articles/archR.html">Get started</a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="articles/index.html">Articles</a>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -111,22 +112,69 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+    <h1>Visualize a given (PWM) matrix as a sequence logo</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/plot_ggseqlogo.R'><code>R/plot_ggseqlogo.R</code></a></small>
+    <div class="hidden name"><code>plot_ggseqlogo.Rd</code></div>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Sarvesh Nikumbh</strong>. Author, maintainer. 
-        </p>
-      </li>
-    </ul>
+    <div class="ref-description">
+    <p>Visualize a given (PWM) matrix as a sequence logo</p>
+    </div>
+
+    <pre class="usage"><span class='fu'>plot_ggseqlogo</span>(
+  <span class='kw'>pwmMat</span>,
+  plotMethod = <span class='st'>"custom"</span>,
+  position_labels = <span class='kw'>NULL</span>,
+  savePDFfilename = <span class='kw'>NULL</span>
+)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>pwmMat</th>
+      <td><p>Matrix (usually a PWM, but can be any non-normalized matrix) to
+be represented as a sequence logo.</p></td>
+    </tr>
+    <tr>
+      <th>plotMethod</th>
+      <td><p>For <code>ggseqlogo</code>; either of 'custom', 'bits', or
+'probability'. Default is 'custom'.</p></td>
+    </tr>
+    <tr>
+      <th>position_labels</th>
+      <td><p>Labels of the positions in the sequences.</p></td>
+    </tr>
+    <tr>
+      <th>savePDFfilename</th>
+      <td><p>Name of the file which will be saved as PDF.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A ggplot object so you can simply call <code>print</code> or <code>save</code>
+on it later. If <code>savePDFfilename</code> is given, it is also saved and the
+<code>ggplot</code> object returned.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='plot_ggheatmap.html'>plot_ggheatmap</a></code> for plotting PWMs as heatmaps</p>
+<p>Other visualization functions: 
+<code><a href='plot_ggheatmap.html'>plot_ggheatmap</a>()</code>,
+<code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a>()</code>,
+<code><a href='viz_basis_vectors_as_seqlogo.html'>viz_basis_vectors_as_seqlogo</a>()</code>,
+<code><a href='viz_basis_vectors_in_combined_heatmaps_seqlogos.html'>viz_basis_vectors_in_combined_heatmaps_seqlogos</a>()</code>,
+<code><a href='viz_matrix_of_acgt.html'>viz_matrix_of_acgt</a>()</code></p></div>
 
   </div>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
+  </div>
 </div>
-
 
 
       <footer>

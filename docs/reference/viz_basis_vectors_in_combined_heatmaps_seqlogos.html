@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Page not found (404) • archR</title>
+<title>Visualize the NMF basis vectors in a paired heatmap and sequence logo
+plot — viz_basis_vectors_in_combined_heatmaps_seqlogos • archR</title>
 
 
 <!-- jquery -->
@@ -18,8 +19,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="http://snikumbh.github.io/archR/bootstrap-toc.css">
-<script src="http://snikumbh.github.io/archR/bootstrap-toc.js"></script>
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,13 +34,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="http://snikumbh.github.io/archR/pkgdown.css" rel="stylesheet">
-<script src="http://snikumbh.github.io/archR/pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Page not found (404)" />
+<meta property="og:title" content="Visualize the NMF basis vectors in a paired heatmap and sequence logo
+plot — viz_basis_vectors_in_combined_heatmaps_seqlogos" />
+<meta property="og:description" content="The given features matrix (with 4 rows) is represented as a
+heatmap followed by a sequence logo where the positions are aligned for
+better visualization." />
 
 
 
@@ -58,7 +63,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-title-body">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -70,7 +75,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="http://snikumbh.github.io/archR/index.html">archR</a>
+        <a class="navbar-link" href="../index.html">archR</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
       </span>
     </div>
@@ -78,19 +83,19 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="articles/archR.html">Get started</a>
+  <a href="../articles/archR.html">Get started</a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="articles/index.html">Articles</a>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -111,23 +116,90 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Page not found (404)</h1>
+    <h1>Visualize the NMF basis vectors in a paired heatmap and sequence logo
+plot</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/viz_basis_vectors_in_combined_heatmaps_seqlogos.R'><code>R/viz_basis_vectors_in_combined_heatmaps_seqlogos.R</code></a></small>
+    <div class="hidden name"><code>viz_basis_vectors_in_combined_heatmaps_seqlogos.Rd</code></div>
     </div>
 
-Content not found. Please use links in the navbar.
+    <div class="ref-description">
+    <p>The given features matrix (with 4 rows) is represented as a
+heatmap followed by a sequence logo where the positions are aligned for
+better visualization.</p>
+    </div>
+
+    <pre class="usage"><span class='fu'>viz_basis_vectors_in_combined_heatmaps_seqlogos</span>(
+  <span class='kw'>featuresMatrix</span>,
+  plotMethod = <span class='st'>"custom"</span>,
+  position_labels = <span class='fl'>NA</span>,
+  add_pseudo_counts = <span class='fl'>FALSE</span>,
+  savePDFfilename = <span class='kw'>NULL</span>,
+  sinuc_or_dinuc = <span class='st'>"sinuc"</span>
+)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>featuresMatrix</th>
+      <td><p>The features matrix output from NMF. Expected
+dimensionality: number of columns represent the number of factors from NMF,
+and the number of rows is 4 times the length of the sequences in the
+collection.</p></td>
+    </tr>
+    <tr>
+      <th>plotMethod</th>
+      <td><p>For <code>ggseqlogo</code>; either of "custom", "bits", or
+"probability".
+Default is "custom".</p></td>
+    </tr>
+    <tr>
+      <th>position_labels</th>
+      <td><p>Labels of the positions in the sequences.</p></td>
+    </tr>
+    <tr>
+      <th>add_pseudo_counts</th>
+      <td><p>Boolean, taking values TRUE/T or FALSE/F, default
+set
+ to FALSE. Setting it to TRUE will enable adding pseudo-counts to the
+ features
+ matrix.</p></td>
+    </tr>
+    <tr>
+      <th>savePDFfilename</th>
+      <td><p>Name of the file which will be saved as PDF
+(also provide the extension).</p></td>
+    </tr>
+    <tr>
+      <th>sinuc_or_dinuc</th>
+      <td><p>"sinuc" or "dinuc"</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>nothing</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a></code> for plotting only as
+heatmaps, <code><a href='viz_basis_vectors_as_seqlogo.html'>viz_basis_vectors_as_seqlogo</a></code> for plotting only as
+sequence logos.</p>
+<p>Other visualization functions: 
+<code><a href='plot_ggheatmap.html'>plot_ggheatmap</a>()</code>,
+<code><a href='plot_ggseqlogo.html'>plot_ggseqlogo</a>()</code>,
+<code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a>()</code>,
+<code><a href='viz_basis_vectors_as_seqlogo.html'>viz_basis_vectors_as_seqlogo</a>()</code>,
+<code><a href='viz_matrix_of_acgt.html'>viz_matrix_of_acgt</a>()</code></p></div>
 
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
-
 </div>
-
 
 
       <footer>

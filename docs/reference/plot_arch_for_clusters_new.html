@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • archR</title>
+<title>Plot cluster architectures as sequence logos. — plot_arch_for_clusters_new • archR</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script>
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,13 +33,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Plot cluster architectures as sequence logos. — plot_arch_for_clusters_new" />
+<meta property="og:description" content="Given a collection of FASTA sequences as a DNAStringSet object,
+and the clusters information, this function plots the architectures for all
+clusters. If a name for the PDF file is provided, the resulting set of
+architecture sequence logos are saved as a multi-page PDF." />
 
 
 
@@ -58,7 +62,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -70,7 +74,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">archR</a>
+        <a class="navbar-link" href="../index.html">archR</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
       </span>
     </div>
@@ -78,19 +82,19 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="articles/archR.html">Get started</a>
+  <a href="../articles/archR.html">Get started</a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="articles/index.html">Articles</a>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -111,22 +115,62 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+    <h1>Plot cluster architectures as sequence logos.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/plot_arch_for_clusters.R'><code>R/plot_arch_for_clusters.R</code></a></small>
+    <div class="hidden name"><code>plot_arch_for_clusters_new.Rd</code></div>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Sarvesh Nikumbh</strong>. Author, maintainer. 
-        </p>
-      </li>
-    </ul>
+    <div class="ref-description">
+    <p>Given a collection of FASTA sequences as a DNAStringSet object,
+and the clusters information, this function plots the architectures for all
+clusters. If a name for the PDF file is provided, the resulting set of
+architecture sequence logos are saved as a multi-page PDF.</p>
+    </div>
+
+    <pre class="usage"><span class='fu'>plot_arch_for_clusters_new</span>(
+  <span class='kw'>tss.seqs_raw</span>,
+  <span class='kw'>list_of_elements</span>,
+  <span class='kw'>position_labels</span>,
+  xt_freq = <span class='fl'>1</span>,
+  PDFfname = <span class='st'>"archR_sequence_architectures.pdf"</span>
+)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>tss.seqs_raw</th>
+      <td><p>Sequences as a DNAStringSet</p></td>
+    </tr>
+    <tr>
+      <th>list_of_elements</th>
+      <td><p>Cluster elements as a list</p></td>
+    </tr>
+    <tr>
+      <th>position_labels</th>
+      <td><p>Labels for sequence positions, should be of same
+length as length of the sequences</p></td>
+    </tr>
+    <tr>
+      <th>xt_freq</th>
+      <td><p>Frequency of x-axis ticks</p></td>
+    </tr>
+    <tr>
+      <th>PDFfname</th>
+      <td><p>Specify a filename to be saved as PDF</p></td>
+    </tr>
+    </table>
+
 
   </div>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
+  </div>
 </div>
-
 
 
       <footer>

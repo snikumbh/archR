@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • archR</title>
+<title>Plot sequences as an image matrix — viz_matrix_of_acgt_image • archR</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script>
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,13 +33,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Plot sequences as an image matrix — viz_matrix_of_acgt_image" />
+<meta property="og:description" content="This function plots the collection of sequences as an image
+matrix." />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -70,7 +72,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">archR</a>
+        <a class="navbar-link" href="../index.html">archR</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
       </span>
     </div>
@@ -78,19 +80,19 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="articles/archR.html">Get started</a>
+  <a href="../articles/archR.html">Get started</a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="articles/index.html">Articles</a>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -111,22 +113,93 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+    <h1>Plot sequences as an image matrix</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/viz_matrix_of_acgt_image.R'><code>R/viz_matrix_of_acgt_image.R</code></a></small>
+    <div class="hidden name"><code>viz_matrix_of_acgt_image.Rd</code></div>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Sarvesh Nikumbh</strong>. Author, maintainer. 
-        </p>
-      </li>
-    </ul>
+    <div class="ref-description">
+    <p>This function plots the collection of sequences as an image
+matrix.</p>
+    </div>
+
+    <pre class="usage"><span class='fu'>viz_matrix_of_acgt_image</span>(
+  <span class='kw'>rawSeqs</span>,
+  position_labels = <span class='kw'>NULL</span>,
+  xt_freq = <span class='fl'>5</span>,
+  yt_freq = <span class='fl'>100</span>,
+  col = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"darkgreen"</span>, <span class='st'>"blue"</span>, <span class='st'>"orange"</span>, <span class='st'>"red"</span>),
+  savefilename = <span class='kw'>NULL</span>,
+  filetype = <span class='st'>"PNG"</span>,
+  fwidth = <span class='fl'>450</span>,
+  fheight = <span class='fl'>900</span>,
+  funits = <span class='st'>"px"</span>
+)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>rawSeqs</th>
+      <td><p>The sequences as a DNAStringSet object.</p></td>
+    </tr>
+    <tr>
+      <th>position_labels</th>
+      <td><p>The labels to be used for the sequence positions.
+Default: Sequence positions are labeled from 1 to the length of the
+sequences.</p></td>
+    </tr>
+    <tr>
+      <th>xt_freq</th>
+      <td><p>The x-axis tick frequency.</p></td>
+    </tr>
+    <tr>
+      <th>yt_freq</th>
+      <td><p>The y-axis tick frequency.</p></td>
+    </tr>
+    <tr>
+      <th>col</th>
+      <td><p>A vector of four colors used for the DNA bases A, C, G, and T (in
+that order)</p></td>
+    </tr>
+    <tr>
+      <th>savefilename</th>
+      <td><p>Specify the filename (with extension) for saving the
+plot to disk</p></td>
+    </tr>
+    <tr>
+      <th>filetype</th>
+      <td><p>Specify the file type, namely PNG, JPEG, TIFF.</p></td>
+    </tr>
+    <tr>
+      <th>fwidth</th>
+      <td><p>Specify the width for the plot. This depends on the length of
+sequences.</p></td>
+    </tr>
+    <tr>
+      <th>fheight</th>
+      <td><p>Specify the height for the plot. This depends on the number of
+sequences.</p></td>
+    </tr>
+    <tr>
+      <th>funits</th>
+      <td><p>Specify the units in which the height and width are given.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Nothing returned to the R interpreter.</p>
 
   </div>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
+  </div>
 </div>
-
 
 
       <footer>

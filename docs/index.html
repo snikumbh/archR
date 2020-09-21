@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>archR home page • archR</title>
+<title>Identify Different Architectures of Sequence Elements • archR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="archR home page">
+<script src="pkgdown.js"></script><meta property="og:title" content="Identify Different Architectures of Sequence Elements">
 <meta property="og:description" content="Given a set of DNA sequences, the \code{archR} enables 
     unsupervised discovery of clusters with characteristic sequence 
     architectures.">
@@ -22,7 +22,7 @@
 </head>
 <body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
-      <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
@@ -51,10 +51,13 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="articles/index.html">Articles</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/snikumbh/archR">
+  <a href="https://github.com/snikumbh/archR/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -101,51 +104,51 @@
 <div id="usage" class="section level3">
 <h3 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># load package</span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw">library</span>(archR)</a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="kw">library</span>(Biostrings)</a>
-<a class="sourceLine" id="cb2-4" title="4"></a>
-<a class="sourceLine" id="cb2-5" title="5"></a>
-<a class="sourceLine" id="cb2-6" title="6"><span class="co"># Creation of one-hot encoded data matrix from FASTA file</span></a>
-<a class="sourceLine" id="cb2-7" title="7"><span class="co"># You can use your own FASTA file instead</span></a>
-<a class="sourceLine" id="cb2-8" title="8">inputFastaFilename &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"example_data.fa"</span>, </a>
-<a class="sourceLine" id="cb2-9" title="9">                                  <span class="dt">package =</span> <span class="st">"archR"</span>, </a>
-<a class="sourceLine" id="cb2-10" title="10">                                  <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-11" title="11"></a>
-<a class="sourceLine" id="cb2-12" title="12"><span class="co"># Specifying dinuc generates dinucleotide features</span></a>
-<a class="sourceLine" id="cb2-13" title="13">inputSeqsMat &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">prepare_data_from_FASTA</span>(inputFastaFilename,</a>
-<a class="sourceLine" id="cb2-14" title="14">                                                  <span class="dt">sinuc_or_dinuc =</span> <span class="st">"dinuc"</span>)</a>
-<a class="sourceLine" id="cb2-15" title="15"></a>
-<a class="sourceLine" id="cb2-16" title="16">inputSeqsRaw &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">prepare_data_from_FASTA</span>(inputFastaFilename, </a>
-<a class="sourceLine" id="cb2-17" title="17">                                               <span class="dt">rawSeq =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-18" title="18"></a>
-<a class="sourceLine" id="cb2-19" title="19">nSeqs &lt;-<span class="st"> </span><span class="kw">length</span>(inputSeqsRaw)</a>
-<a class="sourceLine" id="cb2-20" title="20">positions &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>, Biostrings<span class="op">::</span><span class="kw">width</span>(inputSeqsRaw[<span class="dv">1</span>]))</a>
-<a class="sourceLine" id="cb2-21" title="21">sinuc &lt;-<span class="st"> </span>Biostrings<span class="op">::</span>DNA_BASES</a>
-<a class="sourceLine" id="cb2-22" title="22"></a>
-<a class="sourceLine" id="cb2-23" title="23"><span class="co"># Set archR configuration</span></a>
-<a class="sourceLine" id="cb2-24" title="24"><span class="co"># Most arguments have default values</span></a>
-<a class="sourceLine" id="cb2-25" title="25">archRconfig &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">archRSetConfig</span>(</a>
-<a class="sourceLine" id="cb2-26" title="26">        <span class="dt">parallelize =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb2-27" title="27">        <span class="dt">nCoresUse =</span> <span class="dv">4</span>,</a>
-<a class="sourceLine" id="cb2-28" title="28">        <span class="dt">nIterationsUse =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb2-29" title="29">        <span class="dt">kMin =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb2-30" title="30">        <span class="dt">kMax =</span> <span class="dv">20</span>,</a>
-<a class="sourceLine" id="cb2-31" title="31">        <span class="dt">modSelType =</span> <span class="st">"stability"</span>,</a>
-<a class="sourceLine" id="cb2-32" title="32">        <span class="dt">tol =</span> <span class="dv">10</span><span class="op">^-</span><span class="dv">4</span>,</a>
-<a class="sourceLine" id="cb2-33" title="33">        <span class="dt">bound =</span> <span class="dv">10</span><span class="op">^-</span><span class="dv">8</span>,</a>
-<a class="sourceLine" id="cb2-34" title="34">        <span class="dt">innerChunkSize =</span> <span class="dv">500</span>,</a>
-<a class="sourceLine" id="cb2-35" title="35">        <span class="dt">flags =</span> <span class="kw">list</span>(<span class="dt">debugFlag =</span> <span class="ot">FALSE</span>, <span class="dt">timeFlag =</span> <span class="ot">TRUE</span>, <span class="dt">verboseFlag =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb2-36" title="36">                     <span class="dt">plotVerboseFlag =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb2-37" title="37"></a>
-<a class="sourceLine" id="cb2-38" title="38"><span class="co">#</span></a>
-<a class="sourceLine" id="cb2-39" title="39"><span class="co">### Call/Run archR</span></a>
-<a class="sourceLine" id="cb2-40" title="40">perform_iters &lt;-<span class="st"> </span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb2-41" title="41">archRresult &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">archR</span>(<span class="dt">config =</span> archRconfig,</a>
-<a class="sourceLine" id="cb2-42" title="42">                               <span class="dt">seqsMat =</span> inputSeqsMat,</a>
-<a class="sourceLine" id="cb2-43" title="43">                               <span class="dt">seqsRaw =</span> inputSeqsRaw,</a>
-<a class="sourceLine" id="cb2-44" title="44">                               <span class="dt">seqsPositions =</span> positions,</a>
-<a class="sourceLine" id="cb2-45" title="45">                               <span class="dt">thresholdItr =</span> perform_iters)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># load package</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">library</span>(archR)</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">library</span>(Biostrings)</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># Creation of one-hot encoded data matrix from FASTA file</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># You can use your own FASTA file instead</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>inputFastaFilename &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"example_data.fa"</span>, </span>
+<span id="cb2-9"><a href="#cb2-9"></a>                                  <span class="dt">package =</span> <span class="st">"archR"</span>, </span>
+<span id="cb2-10"><a href="#cb2-10"></a>                                  <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co"># Specifying dinuc generates dinucleotide features</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>inputSeqsMat &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">prepare_data_from_FASTA</span>(inputFastaFilename,</span>
+<span id="cb2-14"><a href="#cb2-14"></a>                                                  <span class="dt">sinuc_or_dinuc =</span> <span class="st">"dinuc"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15"></a></span>
+<span id="cb2-16"><a href="#cb2-16"></a>inputSeqsRaw &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">prepare_data_from_FASTA</span>(inputFastaFilename, </span>
+<span id="cb2-17"><a href="#cb2-17"></a>                                               <span class="dt">rawSeq =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb2-18"><a href="#cb2-18"></a></span>
+<span id="cb2-19"><a href="#cb2-19"></a>nSeqs &lt;-<span class="st"> </span><span class="kw">length</span>(inputSeqsRaw)</span>
+<span id="cb2-20"><a href="#cb2-20"></a>positions &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>, Biostrings<span class="op">::</span><span class="kw">width</span>(inputSeqsRaw[<span class="dv">1</span>]))</span>
+<span id="cb2-21"><a href="#cb2-21"></a>sinuc &lt;-<span class="st"> </span>Biostrings<span class="op">::</span>DNA_BASES</span>
+<span id="cb2-22"><a href="#cb2-22"></a></span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="co"># Set archR configuration</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a><span class="co"># Most arguments have default values</span></span>
+<span id="cb2-25"><a href="#cb2-25"></a>archRconfig &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">archRSetConfig</span>(</span>
+<span id="cb2-26"><a href="#cb2-26"></a>        <span class="dt">parallelize =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb2-27"><a href="#cb2-27"></a>        <span class="dt">nCoresUse =</span> <span class="dv">4</span>,</span>
+<span id="cb2-28"><a href="#cb2-28"></a>        <span class="dt">nIterationsUse =</span> <span class="dv">100</span>,</span>
+<span id="cb2-29"><a href="#cb2-29"></a>        <span class="dt">kMin =</span> <span class="dv">1</span>,</span>
+<span id="cb2-30"><a href="#cb2-30"></a>        <span class="dt">kMax =</span> <span class="dv">20</span>,</span>
+<span id="cb2-31"><a href="#cb2-31"></a>        <span class="dt">modSelType =</span> <span class="st">"stability"</span>,</span>
+<span id="cb2-32"><a href="#cb2-32"></a>        <span class="dt">tol =</span> <span class="dv">10</span><span class="op">^-</span><span class="dv">4</span>,</span>
+<span id="cb2-33"><a href="#cb2-33"></a>        <span class="dt">bound =</span> <span class="dv">10</span><span class="op">^-</span><span class="dv">8</span>,</span>
+<span id="cb2-34"><a href="#cb2-34"></a>        <span class="dt">innerChunkSize =</span> <span class="dv">500</span>,</span>
+<span id="cb2-35"><a href="#cb2-35"></a>        <span class="dt">flags =</span> <span class="kw">list</span>(<span class="dt">debugFlag =</span> <span class="ot">FALSE</span>, <span class="dt">timeFlag =</span> <span class="ot">TRUE</span>, <span class="dt">verboseFlag =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb2-36"><a href="#cb2-36"></a>                     <span class="dt">plotVerboseFlag =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb2-37"><a href="#cb2-37"></a></span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="co">#</span></span>
+<span id="cb2-39"><a href="#cb2-39"></a><span class="co">### Call/Run archR</span></span>
+<span id="cb2-40"><a href="#cb2-40"></a>perform_iters &lt;-<span class="st"> </span><span class="dv">2</span></span>
+<span id="cb2-41"><a href="#cb2-41"></a>archRresult &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">archR</span>(<span class="dt">config =</span> archRconfig,</span>
+<span id="cb2-42"><a href="#cb2-42"></a>                               <span class="dt">seqsMat =</span> inputSeqsMat,</span>
+<span id="cb2-43"><a href="#cb2-43"></a>                               <span class="dt">seqsRaw =</span> inputSeqsRaw,</span>
+<span id="cb2-44"><a href="#cb2-44"></a>                               <span class="dt">seqsPositions =</span> positions,</span>
+<span id="cb2-45"><a href="#cb2-45"></a>                               <span class="dt">thresholdItr =</span> perform_iters)</span></code></pre></div>
 </div>
 </div>
 <div id="troubleshooting-installation" class="section level2">
@@ -184,8 +187,7 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://snikumbh.github.io/">Sarvesh Nikumbh</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Sarvesh Nikumbh <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
 
@@ -194,7 +196,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://snikumbh.github.io/">Sarvesh Nikumbh</a>.</p>
+  <p>Developed by Sarvesh Nikumbh.</p>
 </div>
 
 <div class="pkgdown">
