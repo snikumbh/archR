@@ -1,0 +1,51 @@
+url: http://snikumbh.github.io/archR 
+
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    intro:
+      text: Get started
+      href: articles/archR.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/snikumbh/archR/
+
+reference:
+- title: All functions
+  contents:
+  - '`archR`'
+  - '`archRSetConfig`'
+  - '`example_data`'
+  - '`get_one_hot_encoded_seqs`'
+  - '`get_seqs_clusters_in_a_list`'
+  - '`plot_arch_for_clusters_new`'
+  - '`plot_ggheatmap`'
+  - '`plot_ggseqlogo`'
+  - '`plot_ggseqlogo_of_seqs`'
+  - '`prepare_data_from_FASTA`'
+  - '`runArchRUI`'
+  - '`viz_basis_vectors_as_heatmap`'
+  - '`viz_basis_vectors_as_seqlogo`'
+  - '`viz_basis_vectors_in_combined_heatmaps_seqlogos`'
+  - '`viz_matrix_of_acgt`'
+  - '`viz_matrix_of_acgt_image`'
+
+articles:
+- title: All vignettes
+  desc: ~
+  contents: '`archR`'
+
