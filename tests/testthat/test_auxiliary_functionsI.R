@@ -32,18 +32,20 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
     #                          replace = FALSE)
     toyClustLabels <- c("9", "22", "20", "23", "12", "22", "1", "16", "20",
                         "9", "21", "10", "18", "8", "13", "1", "17", "18",
-                        "11", "14", "11", "9", "25", "3", "12", "16", "1",
-                        "19", "15", "2", "21", "10", "6", "22", "8", "6",
-                        "25", "10", "12", "5", "20", "17", "7", "14", "8",
-                        "21", "7", "18", "7", "4", "2", "14", "4", "23", "4",
-                        "24", "13", "3", "15", "5", "13", "19", "5", "11", "23",
-                        "24", "24", "15", "16", "17", "2", "6", "19", "25", "3")
+                        "11", "14", "11", "9", "25", "3", "12" 
+                        # "16", "1",
+                        # "19", "15", "2", "21", "10", "6", "22", "8", "6",
+                        # "25", "10", "12", "5", "20", "17", "7", "14", "8",
+                        # "21", "7", "18", "7", "4", "2", "14", "4", "23", "4",
+                        # "24", "13", "3", "15", "5", "13", "19", "5", "11", "23",
+                        # "24", "24", "15", "16", "17", "2", "6", "19", "25", "3"
+                        )
     # collection <- sample.int(25)
-    collection <- c("3", "15", "24", "14", "19", "13", "1", "5", "12", "9",
+    collection <- as.numeric(c("3", "15", "24", "14", "19", "13", "1", "5", "12", "9",
                     "11", "8", "4", "17", "20", "16", "25", "10", "2", "7",
-                    "6", "18", "21", "22", "23")
+                    "6", "18", "21", "22", "23"))
     tempList <- vector("list", 5)
-    globClustAssignmentsErr <- lapply(seq_along(tempList),
+    collatedClustAssignmentsErr <- lapply(seq_along(tempList),
                                    function(x){
                                        if ( x != 3) {
                                            tempList[[x]] <- round(10*runif(5))
@@ -52,13 +54,13 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
     # set.seed(1234)
     # collection <- sample.int(25)
     idx <- rep(1:5,5)
-    globClustAssignments <- lapply(seq_along(tempList),
+    collatedClustAssignments <- lapply(seq_along(tempList),
                                    function(x){
                                        tempList[[x]] <- collection[idx == x]
                                    })
     ## this tests an assertion
     expect_error(.update_cluster_labels(toyClustLabels,
-                                        globClustAssignmentsErr),
+                                        collatedClustAssignmentsErr),
                  "Cluster assignments variable has a 0-length entry")
     ####
     #### Test flag set to NULL instead of expected logical
@@ -68,7 +70,7 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
                         timeFlag = TRUE)
 
     ## this tests the flags' assertion
-    expect_error(.update_cluster_labels(toyClustLabels, globClustAssignments,
+    expect_error(.update_cluster_labels(toyClustLabels, collatedClustAssignments,
                                         toyFlags),
                     "Expected only LOGICAL values in flag variable,
                         found otherwise")
@@ -76,28 +78,31 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
     toyFlags$debugFlag <- FALSE
     toyFlags$verboseFlag <- FALSE
 
-    samarth <- c("5", "4", "5", "5", "4", "4", "2", "1", "5", "5", "3", "3",
-                 "2", "2", "1", "2", "4", "2", "1", "4", "1", "5", "2", "1",
-                 "4", "1", "2", "5", "2", "4", "3", "3", "1", "4", "2", "1",
-                 "2", "3", "4", "3", "5", "4", "5", "4", "2", "3", "5", "2",
-                 "5", "3", "4", "4", "3", "5", "3", "3", "1", "1", "2", "3",
-                 "1", "5", "3", "1", "5", "3", "3", "2", "1", "4", "4", "1",
-                 "5", "2", "1")
+    samarth <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
+                 "1", "4", "2", "1", "4", "2", "5", "5", "3", "4", "5", "3", "2")
     ## this tests the updated cluster labels
     ## -- the updated labels should have 5 unique cluster labels since
     ## globClustAssignments has 5 clusters
     ## --
-    print("\n")
-    print(samarth)
-    print("\n")
-    samarth_ans <- .update_cluster_labels(toyClustLabels, globClustAssignments,
+    # print("\n")
+    # print(samarth)
+    # print("\n")
+    samarth_ans <- .update_cluster_labels(toyClustLabels, collatedClustAssignments,
                                           toyFlags)
     # cat(paste(shQuote(samarth_ans, type="cmd"), collapse=", "))
 
     expect_equal(samarth_ans, samarth)
-
-    expect_identical(sort(unique(samarth_ans)), sort(unique(samarth)))
+    # 
+    # expect_identical(sort(unique(samarth_ans)), sort(unique(samarth)))
 })
+
+# test_that("get_seqs_clusters_in_a_list works", {
+#     seqsClustLabels <- samarth <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
+#                                     "1", "4", "2", "1", "4", "2", "5", "5", "3", "4", "5", "3", "2")
+#     ansList <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
+#     expect_length(ansList, 5)
+#     })
+
 
 
 # test_that("update_cluster_labels handles inconsistent #sequences", {
@@ -119,6 +124,7 @@ test_that("get seq clusters as list works fine", {
     seqsClustLabels <- toyClustLabels
     expAns <- 14
     expect_equal(length(get_seqs_clusters_in_a_list(seqsClustLabels)), 14)
+    expect_error(get_seqs_clusters_in_a_list(NULL))
 })
 
 
