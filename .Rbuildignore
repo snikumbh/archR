@@ -10,3 +10,5 @@ data-raw
 ^codecov\.yml$
 ^\.covrignore$
 ^TO-DO.txt$
+^_pkgdown\.yml$
+^pkgdown$
