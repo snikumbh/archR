@@ -47,6 +47,15 @@ test_that("decide_process_outer_chunk works fine", {
 #
 # })
 
+test_that("get_dimers is working fine", {
+  alphabet = c("A", "C", "G", "T")
+  expectAns <- c("AA", "CA", "GA", "TA", "AC", "CC", "GC", "TC", "AG", "CG", 
+                 "GG", "TG", "AT", "CT", "GT", "TT")
+  ans <- get_dimers_from_alphabet(alphabet)
+  expect_equal(expectAns, ans)
+  expect_error(get_dimers_from_alphabet(NULL))
+})
+
 
 test_that("get_hopach_cluster_medoidsIdx handles null hopach object", {
     hopachObj <- NULL
