@@ -67,7 +67,7 @@ set.seed(seed_val)
 
 In order to demonstrate the efficacy of _archR_, we use _archR_ to cluster DNA 
 sequences in a synthetic data set which was generated as follows. 
-A set of 1000 simulated DNA sequences was generated, each 200 nucleotides long 
+A set of 200 simulated DNA sequences was generated, each 200 nucleotides long 
 and with uniform probability for all nucleotides. 
 These sequences have four clusters in them, each with 250 sequences. 
 The profiles of the four clusters are:

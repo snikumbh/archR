@@ -6,7 +6,8 @@ Authors@R:
     person(given = "Sarvesh",
            family = "Nikumbh",
            role = c("aut", "cre"),
-           email = "sarvesh.nikumbh@gmail.com")
+           email = "sarvesh.nikumbh@gmail.com",
+           comment = c(ORCID = "0000-0003-3163-4447"))
 Description: Given a set of DNA sequences, the \code{archR} enables 
     unsupervised discovery of clusters with characteristic sequence 
     architectures.
