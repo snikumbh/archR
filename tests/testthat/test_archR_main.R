@@ -63,7 +63,7 @@ test_that("archR works", {
     expect_equal_to_reference(archRresult, "archRresult_stability_check.rds")
     ##
     ## Test cross-validation-based model selection. This needs to parallel as TRUE.
-    skip_on_travis()
+    # skip_on_travis()
     toyConfig <- archR::archRSetConfig(innerChunkSize = 100,
                             kMin = 2, kMax = 20, parallelize = TRUE,
                             modSelType = "cv",
