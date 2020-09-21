@@ -8,7 +8,7 @@
 #'
 #' @export
 runArchRUI <- function(lbrowser = TRUE) {
-    appDir <- system.file("shiny-interface-to-archR", package = "archR")
+    appDir <- function() system.file("shiny-interface-to-archR", package = "archR")
     if (appDir == "") {
         stop("Could not find example directory. Try re-installing `archR`.",
              call. = FALSE)
