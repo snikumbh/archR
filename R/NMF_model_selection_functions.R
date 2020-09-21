@@ -171,8 +171,8 @@ performSearchForK <- function(startVal, endVal, step = 1,
             ))
             seed_val_list <- sample.int(.Machine$integer.max, size = kFolds*nIterations, replace = FALSE)
             message("Seeds in performSearchForK")
-            print(seed_val_list[1:10])
-            print(length(seed_val_list))
+            message(seed_val_list[1:10])
+            message(length(seed_val_list))
             grid_search_params[, "seed_val"] <- seed_val_list
             q2_vals <-
                 unlist(parallel::clusterApplyLB(cl = NULL,
@@ -182,14 +182,14 @@ performSearchForK <- function(startVal, endVal, step = 1,
                                                         grid_search_params[i,],
                                                         verbose = set_verbose)
                                                 }))
-            print("q2_vals RETURNED")
+            if(set_verbose) message("q2_vals RETURNED")
             grid_search_params <-
                 dplyr::select(grid_search_params, k_vals, alpha, fold,
                               iteration)
-            print("SELECTING COLUMNS DONE")
+            if(set_verbose) message("SELECTING COLUMNS DONE")
             grid_search_results <-
                 tibble::add_column(grid_search_params, q2_vals)
-            print("COLUMN ADDED")
+            if(set_verbose) message("COLUMN ADDED")
             if (is.null(prev_df)) {
                 best_K <- .get_best_K(grid_search_results)
                 prev_df <- grid_search_results
@@ -246,7 +246,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
                                     askParsimony = FALSE,
                                     #monolinear = FALSE,
                                     logfile = "outfile.txt",
-                                    set_verbose = 1) {
+                                    set_verbose = 0) {
     if (!is.matrix(X) && !is(X, "dgCMatrix")) {
         stop("X not of type matrix/dgCMatrix")
     }
@@ -389,7 +389,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
 
                 combined_df <- rbind(prev_df, fine_prev_df)
                 best_K <- .get_best_K(combined_df, parsimony = askParsimony)
-                print(combined_df)
+                if(set_verbose) print(combined_df)
                 ## Ensure chosen value is not the lower boundary
                 # minKInDF <- min(as.numeric(unlist(combined_df["k_vals"])))
                 kValsInDF <- as.numeric(unlist(combined_df["k_vals"]))
@@ -571,7 +571,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
     ######
     idx_best <- as.numeric(which.max(unlist(averages["q2_vals"])))
     ## Print Q2 values and differences
-    print(averages)
+    # print(averages)
     message("Best idx:", idx_best, ", Value: ", averages[idx_best, "q2_vals"])
     ##
     ##
