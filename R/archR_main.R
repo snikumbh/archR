@@ -54,7 +54,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         stop("Expecting threshold iteration to be numeric and > 0")
     }
     ## better, provide a summary function
-    utils::str(config)
+    ## message(utils::str(config))
     archRStartTime <- Sys.time()
     ##
     if(!is.null(oDir)){
