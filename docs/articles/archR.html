@@ -76,7 +76,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2020-09-21</h4>
+            <h4 class="date">2020-09-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -88,28 +88,29 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p><em>archR</em> is a non-negative matrix factorization (NMF)-based unsupervised learning approach for identifying different core promoter sequence architectures. <em>archR</em> implements an algorithm based on chunking and iterative processing. While matrix factorization-based applications are known to scale poorly for large amounts of data, archR’s algorithm enables scalable processing of large number of sequences. A notable advantage of archR is that the sequence motifs – the lengths and positional specificities of individual motifs, and complex inter-relationships where multiple motifs are at play in tandem, all are simultaneously inferred from the data. To our knowledge, this is a novel application of NMF on biological sequence data. For a more detailed discussion, see preprint/publication [TODO: link here].</p>
-<p>This vignette demonstrates archR’s usage with the help of a synthetic DNA sequences data set. Please refer to the paper (TODO: cite paper/preprint) for a detailed description of <em>archR</em>’s algorithm. The paper also discusses the various parameters and their settings. For completeness, the following section gives a brief overview of the algorithm.</p>
+<p><em>archR</em> is a non-negative matrix factorization (NMF)-based unsupervised learning approach for identifying different core promoter sequence architectures. <em>archR</em> implements an algorithm based on chunking and iterative processing. While matrix factorization-based applications are known to scale poorly for large amounts of data, archR’s algorithm enables scalable processing of large number of sequences. A notable advantage of archR is that the sequence motifs – the lengths and positional specificities of individual motifs, and complex inter-relationships where multiple motifs are at play in tandem, all are simultaneously inferred from the data. To our knowledge, this is a novel application of NMF on biological sequence data capable of simultaneously discovering the sequence motifs and their positions. For a more detailed discussion, see preprint/publication [TODO: link here].</p>
+<p>This vignette demonstrates <em>archR</em>’s usage with the help of a synthetic DNA sequences data set. Please refer to the paper (TODO: cite paper/preprint) for a detailed description of <em>archR</em>’s algorithm. The paper also discusses the various parameters and their settings. For completeness, the following section gives a brief overview of the algorithm.</p>
 </div>
 <div id="archrs-algorithm" class="section level1">
 <h1 class="hasAnchor">
-<a href="#archrs-algorithm" class="anchor"></a>archR’s algorithm</h1>
+<a href="#archrs-algorithm" class="anchor"></a><em>archR</em>’s algorithm</h1>
 <p><em>archR</em> implements a chunking-based iterative procedure. Further details to follow.</p>
 </div>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h1>
-<p><em>archR</em> is currently made available via Github, thus use the following procedure for installing <em>archR</em>.</p>
+<p><em>archR</em> is currently made available via GitHub, thus, you can use the following procedure for installing <em>archR</em>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)
 <span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"snikumbh/archR"</span>, build_vignettes = <span class="fl">TRUE</span>)
  
 </pre></div>
-<p>In case of any errors, please consider looking up <a href="https://github.com/snikumbh/archR">https://github.com/snikumbh/archR</a>. If any points noted with regards to troubleshooting <em>archR</em>’s installation, please file a <a href="https://github.com/snikumbh/archR/issues/new">new issue</a>.</p>
+<p>In case of any errors, please consider looking up <a href="https://github.com/snikumbh/archR">https://github.com/snikumbh/archR</a>. If none of the already noted points with regards to troubleshooting <em>archR</em>’s installation help, please file a <a href="https://github.com/snikumbh/archR/issues/new">new issue</a>.</p>
 </div>
 <div id="working-with-archr" class="section level1">
 <h1 class="hasAnchor">
-<a href="#working-with-archr" class="anchor"></a>Working with archR</h1>
+<a href="#working-with-archr" class="anchor"></a>Working with <em>archR</em>
+</h1>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="co"># Load archR</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/snikumbh/archR">archR</a></span>)
@@ -208,8 +209,8 @@
 <div id="reading-input-as-fasta-file" class="section level3">
 <h3 class="hasAnchor">
 <a href="#reading-input-as-fasta-file" class="anchor"></a>Reading input as FASTA file</h3>
-<p>The function <code><a href="../reference/prepare_data_from_FASTA.html">prepare_data_from_FASTA()</a></code> enables one-hot-encoding the DNA sequences in the given FASTA file. The one-hot-encoded sequences are returned as a sparse matrix with as many columns as the number of sequences in the FASTA file and (#sequences x <span class="math inline">\(4^{2}\)</span>) rows when dinucleotide profiles is selected. The number of rows will be (#sequences x <span class="math inline">\(4\)</span>) when single nucleotide profiles is selected. See the <code>sinuc_or_dinuc</code> argument.</p>
-<p>Upon setting the logical argument <code>rawSeq</code> to <code>TRUE</code>, the function returns the raw sequences as a <code>DNAStringSet</code> object, with <code>FALSE</code> it returns the column-wise one-hot encoded representation as noted above. When <code>rawSeq</code> is <code>TRUE</code>, <code>sinuc_or_dinuc</code> argument is ignored.</p>
+<p>The function <code><a href="../reference/prepare_data_from_FASTA.html">archR::prepare_data_from_FASTA()</a></code> enables one-hot-encoding the DNA sequences in the given FASTA file. The one-hot-encoded sequences are returned as a sparse matrix with as many columns as the number of sequences in the FASTA file and (#sequences x <span class="math inline">\(4^{2}\)</span>) rows when dinucleotide profiles is selected. The number of rows will be (#sequences x <span class="math inline">\(4\)</span>) when mononucleotide profiles is selected. See the <code>sinuc_or_dinuc</code> argument.</p>
+<p>Upon setting the logical argument <code>rawSeq</code> to <code>TRUE</code>, the function returns the raw sequences as a <code><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-class.html">Biostrings::DNAStringSet</a></code> object, with <code>FALSE</code> it returns the column-wise one-hot encoded representation as noted above. When <code>rawSeq</code> is <code>TRUE</code>, <code>sinuc_or_dinuc</code> argument is ignored.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="co"># Creation of one-hot encoded data matrix from FASTA file</span>
 <span class="kw">inputFastaFilename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.fa"</span>, 
@@ -245,14 +246,14 @@
 </pre></div>
 </div>
 </div>
-<div id="visualize-sequences-as-an-image" class="section level2">
+<div id="visualize-input-sequences-as-an-image" class="section level2">
 <h2 class="hasAnchor">
-<a href="#visualize-sequences-as-an-image" class="anchor"></a>Visualize sequences as an image</h2>
+<a href="#visualize-input-sequences-as-an-image" class="anchor"></a>Visualize input sequences as an image</h2>
 <div class="sourceCode" id="cb5"><pre class="downlit">
 <span class="co"># Visualize the sequences in a image matrix where the DNA bases are assigned fixed</span>
 <span class="co"># colors</span>
 
-<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_matrix_of_acgt_image.html">viz_matrix_of_acgt_image</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>), 
+<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>), 
                           position_labels = <span class="kw">positions</span>, 
                           savefilename = <span class="kw">NULL</span>
                           )
@@ -278,12 +279,6 @@
         flags = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(debugFlag = <span class="fl">FALSE</span>, timeFlag = <span class="fl">TRUE</span>, verboseFlag = <span class="fl">TRUE</span>,
                      plotVerboseFlag = <span class="fl">FALSE</span>)
 )
-
-<span class="co"># You can use parallelization by setting 'parallelize = TRUE' and </span>
-<span class="co"># 'nCoresUse = n', where 'n' is the number of cores to be used.</span>
-
-
-
 
 <span class="co"># Call/Run archR</span>
 <span class="kw">perform_iters</span> <span class="op">&lt;-</span> <span class="fl">2</span>
@@ -319,8 +314,8 @@
 <span class="co">#&gt; Cluster order by complete linkage w/ euclid distance:</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 3</span>
-<span class="co">#&gt; Iteration 1 completed in 3.31 mins</span>
-<span class="co">#&gt; 3.32 mins ellapsed since start</span>
+<span class="co">#&gt; Iteration 1 completed in 2.17 mins</span>
+<span class="co">#&gt; 2.18 mins ellapsed since start</span>
 <span class="co">#&gt; === Iteration 2, 3 chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk 1/3] [Size: 50]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -351,20 +346,20 @@
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; Iteration 2 completed in 3.35 mins</span>
-<span class="co">#&gt; 6.67 mins ellapsed since start</span>
-<span class="co">#&gt; archR exiting, 6.67 mins</span>
+<span class="co">#&gt; Iteration 2 completed in 2.31 mins</span>
+<span class="co">#&gt; 4.48 mins ellapsed since start</span>
+<span class="co">#&gt; archR exiting, 4.48 mins</span>
 </pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#understanding-the-result-object-from-archr" class="anchor"></a>Understanding the result object from <em>archR</em>
 </h2>
-<p>In the current version, <em>archR</em> naively returns a result object which is a list of lists. The elements include: (a) the sequence cluster labels per iteration; (b) the collection of NMF basis vectors per iteration; (c) the raw sequences provided; (d) the configuration setting used; and (e) the call itself.</p>
+<p>In the version 0.99.6, <em>archR</em> naively returns a result object which is a nested list. The list elements include: (a) the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; (b) the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>. (c) the raw sequences provided [<code>rawSeqs</code>]; (d) the configuration setting [<code>config</code>]; and (e) the call itself [<code>call</code>].</p>
 <div id="nmf-basis-vectors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nmf-basis-vectors" class="anchor"></a>NMF basis vectors</h3>
-<p><em>archR</em> also stores the NMF basis vectors corresponding to each cluster in every iteration in the variable <code>clustBasisVectors</code>. <code>clustBasisVectors</code> is a numbered list corresponding to the number of iterations performed. This is then again a list holding two pieces of information: the number of basis vectors (<code>nBasisVectors</code>) and the basis vectors (<code>basisVectors</code>).</p>
+<p><em>archR</em> stores the NMF basis vectors corresponding to each cluster in every iteration in the variable <code>clustBasisVectors</code>. <code>clustBasisVectors</code> is a numbered list corresponding to the number of iterations performed. This is then again a list holding two pieces of information: the number of basis vectors (<code>nBasisVectors</code>) and the basis vectors (<code>basisVectors</code>).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
 
 <span class="co"># Basis vectors at iteration 2</span>
@@ -421,7 +416,7 @@
 <!-- ``` -->
 <!-- The `plotMethod` argument to functions producing sequence logos is supplied to  -->
 <!-- the call to `ggseqlogo`. The possible values are `custom`, `bits`. -->
-<p>The clustered output from <em>archR</em> can again be visualized as a matrix. Simply sort the sequences based on the cluster labels assigned to them and call <code><a href="../reference/viz_matrix_of_acgt_image.html">archR::viz_matrix_of_acgt_image</a></code> with the sorted order as shown.</p>
+<p>The clustered output from <em>archR</em> can again be visualized as a matrix. Simply sort the sequences based on the cluster labels assigned to them and call <code><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">archR::viz_seqs_as_acgt_mat_from_seqs</a></code> with the sorted order as shown.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
 
 <span class="kw">itr</span> <span class="op">&lt;-</span> <span class="fl">1</span>
@@ -429,13 +424,13 @@
 <span class="kw">sorted_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw">seqsClustLabels</span>, index.return = <span class="fl">TRUE</span>)
 
 
-<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_matrix_of_acgt_image.html">viz_matrix_of_acgt_image</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>[<span class="kw">sorted_order</span><span class="op">$</span><span class="kw">ix</span>]), 
+<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>[<span class="kw">sorted_order</span><span class="op">$</span><span class="kw">ix</span>]), 
                          position_labels = <span class="kw">positions</span>,
                          savefilename = <span class="kw">NULL</span>)
 </pre></div>
 <div class="figure">
-<img src="archR_files/figure-html/visualize-clusters-itr1-1.png" alt="Result at iteration 1" width="480"><p class="caption">
-Result at iteration 1
+<img src="archR_files/figure-html/visualize-clusters-itr1-1.png" alt="Figure: Result at iteration 1" width="480"><p class="caption">
+Figure: Result at iteration 1
 </p>
 </div>
 <div class="sourceCode" id="cb9"><pre class="downlit">
@@ -445,13 +440,13 @@ Result at iteration 1
 <span class="kw">sorted_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw">seqsClustLabels</span>, index.return = <span class="fl">TRUE</span>)
 
 
-<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_matrix_of_acgt_image.html">viz_matrix_of_acgt_image</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>[<span class="kw">sorted_order</span><span class="op">$</span><span class="kw">ix</span>]), 
+<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>[<span class="kw">sorted_order</span><span class="op">$</span><span class="kw">ix</span>]), 
                          position_labels = <span class="kw">positions</span>,
                          savefilename = <span class="kw">NULL</span>)
 </pre></div>
 <div class="figure">
-<img src="archR_files/figure-html/visualize-clusters-itr2-1.png" alt="Result at iteration 2" width="480"><p class="caption">
-Result at iteration 2
+<img src="archR_files/figure-html/visualize-clusters-itr2-1.png" alt="Figure: Result at iteration 2" width="480"><p class="caption">
+Figure: Result at iteration 2
 </p>
 </div>
 <!-- ![_archR_ result on example data w/ clusters](./archR-result-example-data.png) -->
@@ -464,7 +459,7 @@ Result at iteration 2
 <h1 class="hasAnchor">
 <a href="#conclusion" class="anchor"></a>Conclusion</h1>
 <p><em>archR</em> can detect <em>de novo</em> sequence features and simultaneously identify the complex interactions of different features together with their positional specificities.</p>
-<p>Note that the sequence architectures identified by archR have no limitations due to the size of or gaps in the motifs, distance between motifs, compositional and positional variations in the individual motifs and their effects on the complex interactions, and number of motifs involved in any interaction. <!-- It is advisable to perform a large number of bootstrapped iterations for NMF in  --> <!-- _archR_.  --> <!-- This potentially affects the computation time of _archR_.  --> <!-- But being an  --> <!-- embarrasingly parallelizable case, this issue is alleviated.  --> <!-- There are already  --> <!-- provisions in _archR_ to choose parallelization for speeding up computations. --></p>
+<p>Note that the sequence architectures identified by archR have no limitations due to the size of the motifs or gaps in them, distance between motifs, compositional and positional variations in the individual motifs and their effects on the complex interactions, and number of motifs involved in any interaction. <!-- It is advisable to perform a large number of bootstrapped iterations for NMF in  --> <!-- _archR_.  --> <!-- This potentially affects the computation time of _archR_.  --> <!-- But being an  --> <!-- embarrasingly parallelizable case, this issue is alleviated.  --> <!-- There are already  --> <!-- provisions in _archR_ to choose parallelization for speeding up computations. --></p>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">

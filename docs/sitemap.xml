@@ -37,7 +37,7 @@
     <loc>http://snikumbh.github.io/archR/reference/prepare_data_from_FASTA.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/runArchRUI.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/run_archR_UI.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/viz_basis_vectors_as_heatmap.html</loc>
@@ -49,10 +49,10 @@
     <loc>http://snikumbh.github.io/archR/reference/viz_basis_vectors_in_combined_heatmaps_seqlogos.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/viz_matrix_of_acgt.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/viz_seqs_as_acgt_mat_from_ohe.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/viz_matrix_of_acgt_image.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/viz_seqs_as_acgt_mat_from_seqs.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/articles/archR.html</loc>

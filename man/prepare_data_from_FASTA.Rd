@@ -2,8 +2,7 @@
 % Please edit documentation in R/prepare_data_from_FASTA.R
 \name{prepare_data_from_FASTA}
 \alias{prepare_data_from_FASTA}
-\title{Given a FASTA file, this function return a matrix with one-hot encoded
-sequences along the columns or the simply the raw sequences.}
+\title{Generate one-hot encoding of sequences given as FASTA file}
 \usage{
 prepare_data_from_FASTA(
   inputFastaFilename,
@@ -18,15 +17,24 @@ FASTA file.}
 \item{rawSeq}{TRUE or FALSE, set this to TRUE if you want the raw sequences.}
 
 \item{sinuc_or_dinuc}{character string, 'sinuc' or 'dinuc' to select for
-single or dinucleotide profiles.}
+mono- or dinucleotide profiles.}
 }
 \value{
-A matrix of sequences represented with one-hot-encoding. Dimensions
-of the matrix: 4*(sequence length) x number of sequences.
+A sparse matrix of sequences represented with one-hot-encoding.
 }
 \description{
-In the data matrix, the features are along rows, and sequences along columns.
-Currently, only mono-character features for DNA sequences are supported.
-Therefore, the length of the feature vector is four times the
-length of the sequences (since the DNA alphabet is four characters).
+Given a set of sequences in a FASTA file this function returns a sparse 
+matrix with one-hot encoded sequences.
+In this matrix, the sequence features are along rows, and sequences along columns.
+Currently, mono- and dinucleotide features for DNA sequences are supported.
+Therefore, the length of the feature vector is 4 and 16 times the
+length of the sequences (since the DNA alphabet is four characters) for mono- and 
+dinucleotide features respectively.
 }
+\seealso{
+\code{\link{get_one_hot_encoded_seqs}} for directly using a DNAStringSet object
+
+Other input functions: 
+\code{\link{get_one_hot_encoded_seqs}()}
+}
+\concept{input functions}

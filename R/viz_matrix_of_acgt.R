@@ -251,9 +251,10 @@
 ## =============================================================================
 
 
-#' @title Visualize a Matrix of Sequences as an Image.
+#' @title Visualize one-hot encoded DNA sequences as an image
 #'
-#' @description The data matrix is expected to have features alogn the rows and
+#' @description Given the one-hot encoded matrix, visualize each sequence as an image. 
+#' The matrix is expected to have features along the rows and
 #' sequences along the columns.
 #'
 #' @param givenMat The data matrix describing the set of sequences to be
@@ -278,16 +279,16 @@
 #' @param choose_colors Specify a color scheme for the alphabet as a list.
 #' Default is the color scheme for DNA sequences, i.e., c(A = "darkgreen",
 #' C = "blue", G = "orange", T = "red")
-#' @param verbose Default \code{0} which will not print any messages, or can be
-#' set to \code{1} which will print messages.
+#' @param verbose Logical. Use TRUE to print messages, FALSE otherwise.
 #'
 #' @return nothing.
 #' @family visualization functions
-#'
+#' @seealso \code{\link{viz_seqs_as_acgt_mat_from_seqs}} for visualizing DNA sequences
+#'  passed as a DNAStringSet object.
 #' @export
 #' @importFrom grDevices dev.off pdf colorRampPalette
 #' @importFrom rlang .data
-viz_matrix_of_acgt <-
+viz_seqs_as_acgt_mat_from_ohe <-
     function(givenMat,
                 position_labels,
                 sinuc_or_dinuc = "sinuc",
@@ -301,9 +302,9 @@ viz_matrix_of_acgt <-
                 plot.title = "DNA Sequences",
                 saveFilename = NULL,
                 fileType = "png",
-                verbose = 0) {
+                verbose = FALSE) {
     ## Returns: No return value
-    if (verbose > 0) { cat("Plotting\n") }
+    if (verbose) { cat("Plotting\n") }
     ##
     plot_df <- .seqs_to_df2(
         givenMat,

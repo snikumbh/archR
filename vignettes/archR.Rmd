@@ -36,22 +36,23 @@ A notable advantage of archR is that the sequence motifs -- the lengths and
 positional specificities of individual motifs, and complex inter-relationships 
 where multiple motifs are at play in tandem, all are simultaneously inferred 
 from the data.
-To our knowledge, this is a novel application of NMF on biological sequence data.
+To our knowledge, this is a novel application of NMF on biological sequence data
+ capable of simultaneously discovering the sequence motifs and their positions.
 For a more detailed discussion, see preprint/publication [TODO: link here].
 
 
-This vignette demonstrates archR's usage with the help of a synthetic DNA 
+This vignette demonstrates _archR_'s usage with the help of a synthetic DNA 
 sequences data set. 
 Please refer to the paper (TODO: cite paper/preprint) for a detailed description of
 _archR_'s algorithm.
 The paper also discusses the various parameters and their settings.
 For completeness, the following section gives a brief overview of the algorithm.
 
-# archR's algorithm
+# _archR_'s algorithm
 _archR_ implements a chunking-based iterative procedure. Further details to follow.
 
 # Installation
-_archR_ is currently made available via Github, thus use the following procedure
+_archR_ is currently made available via GitHub, thus, you can use the following procedure
 for installing _archR_.
 ```{r archR-install, echo=TRUE, eval=FALSE}
 install.packages("remotes")
@@ -59,12 +60,12 @@ remotes::install_github("snikumbh/archR", build_vignettes = TRUE)
  
 ```
 In case of any errors, please consider looking up [https://github.com/snikumbh/archR](https://github.com/snikumbh/archR). 
-If any points noted with regards to troubleshooting _archR_'s installation, please
-file a [new issue](https://github.com/snikumbh/archR/issues/new).
+If none of the already noted points with regards to troubleshooting _archR_'s installation help, 
+please file a [new issue](https://github.com/snikumbh/archR/issues/new).
 
 
 
-# Working with archR
+# Working with _archR_
 ```{r setup-two, echo=TRUE}
 # Load archR
 library(archR)
@@ -108,16 +109,16 @@ _archR_ provides functions to read input from (a) a FASTA file, and
 (b) `Biostrings::DNAStringSet` object.
 
 ### Reading input as FASTA file
-The function `prepare_data_from_FASTA()` enables one-hot-encoding the DNA sequences in 
+The function `archR::prepare_data_from_FASTA()` enables one-hot-encoding the DNA sequences in 
 the given FASTA file.
 The one-hot-encoded sequences are returned as a sparse matrix with as many columns 
 as the number of sequences in the FASTA file and (#sequences x $4^{2}$) rows 
 when dinucleotide profiles is selected. The number of rows will be (#sequences x $4$) when 
-single nucleotide profiles is selected. See the `sinuc_or_dinuc` argument.
+mononucleotide profiles is selected. See the `sinuc_or_dinuc` argument.
 
 
 Upon setting the logical argument `rawSeq` to `TRUE`, the function returns the raw 
-sequences as a `DNAStringSet` object, with `FALSE` it returns the column-wise 
+sequences as a `Biostrings::DNAStringSet` object, with `FALSE` it returns the column-wise 
 one-hot encoded representation as noted above.
 When `rawSeq` is `TRUE`, `sinuc_or_dinuc` argument is ignored.
 
@@ -154,13 +155,13 @@ identical(inputSeqs_direct, inputSeqsMat)
 ```
 
 
-## Visualize sequences as an image
+## Visualize input sequences as an image
 
 ```{r plot-seqs, echo=TRUE, fig.height=6, fig.width=5}
 # Visualize the sequences in a image matrix where the DNA bases are assigned fixed
 # colors
 
-archR::viz_matrix_of_acgt_image(as.character(inputSeqsRaw), 
+archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw), 
                           position_labels = positions, 
                           savefilename = NULL
                           )
@@ -187,12 +188,6 @@ archRconfig <- archR::archRSetConfig(
                      plotVerboseFlag = FALSE)
 )
 
-# You can use parallelization by setting 'parallelize = TRUE' and 
-# 'nCoresUse = n', where 'n' is the number of cores to be used.
-
-
-
-
 # Call/Run archR
 perform_iters <- 2
 archRresult <- archR::archR(config = archRconfig,
@@ -207,16 +202,21 @@ archRresult <- archR::archR(config = archRconfig,
 
 ## Understanding the result object from _archR_
 
-In the current version, _archR_ naively returns a result object which is a list 
-of lists.
-The elements include: (a) the sequence cluster labels per iteration; (b) the 
-collection of NMF basis vectors per iteration; (c) the raw sequences provided; 
-(d) the configuration setting used; and (e) the call itself.
+In the version `r packageVersion("archR")`, _archR_ naively returns a result object 
+which is a nested list.
+The list elements include: 
+(a) the sequence cluster labels per iteration 
+[`seqsClustLabels`]; 
+(b) the collection of NMF basis vectors per iteration [`clustBasisVectors`]: each 
+is a list of two elements `nBasisVectors` and `basisVectors`.
+(c) the raw sequences provided [`rawSeqs`]; 
+(d) the configuration setting [`config`]; and 
+(e) the call itself [`call`].
 
 
 
 ### NMF basis vectors
-_archR_ also stores the NMF basis vectors corresponding to each cluster in 
+_archR_ stores the NMF basis vectors corresponding to each cluster in 
 every iteration in the variable `clustBasisVectors`. `clustBasisVectors` 
 is a numbered list corresponding to the number of iterations performed.
 This is then again a list holding two pieces of information: the number of 
@@ -282,27 +282,27 @@ One can visualize the NMF basis vectors as well as the sequence clusters.
 
 The clustered output from _archR_ can again be visualized as a matrix. 
 Simply sort the sequences based on the cluster labels assigned to them and call 
-`archR::viz_matrix_of_acgt_image` with the sorted order as shown.
-```{r visualize-clusters-itr1, echo=TRUE, fig.height=6, fig.width=5, fig.cap="Result at iteration 1", eval=TRUE}
+`archR::viz_seqs_as_acgt_mat_from_seqs` with the sorted order as shown.
+```{r visualize-clusters-itr1, echo=TRUE, fig.height=6, fig.width=5, fig.cap="Figure: Result at iteration 1", eval=TRUE}
 
 itr <- 1
 seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
 sorted_order <- sort(seqsClustLabels, index.return = TRUE)
 
 
-archR::viz_matrix_of_acgt_image(as.character(inputSeqsRaw[sorted_order$ix]), 
+archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw[sorted_order$ix]), 
                          position_labels = positions,
                          savefilename = NULL)
 ```
 
-```{r visualize-clusters-itr2, echo=TRUE, fig.height=6, fig.width=5, fig.cap="Result at iteration 2", eval=TRUE}
+```{r visualize-clusters-itr2, echo=TRUE, fig.height=6, fig.width=5, fig.cap="Figure: Result at iteration 2", eval=TRUE}
 
 itr <- 2
 seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
 sorted_order <- sort(seqsClustLabels, index.return = TRUE)
 
 
-archR::viz_matrix_of_acgt_image(as.character(inputSeqsRaw[sorted_order$ix]), 
+archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw[sorted_order$ix]), 
                          position_labels = positions,
                          savefilename = NULL)
 ```
@@ -320,7 +320,7 @@ complex interactions of different features together with their positional
 specificities.
 
 Note that the sequence architectures identified by archR have no limitations 
-due to the size of or gaps in the motifs, distance between motifs, compositional
+due to the size of the motifs or gaps in them, distance between motifs, compositional
 and positional variations in the individual motifs and their effects on the 
 complex interactions, and number of motifs involved in any interaction.
 <!-- It is advisable to perform a large number of bootstrapped iterations for NMF in  -->

@@ -2,18 +2,26 @@
 % Please edit documentation in R/prepare_data_from_FASTA.R
 \name{get_one_hot_encoded_seqs}
 \alias{get_one_hot_encoded_seqs}
-\title{Get One-Hot Encoded Sequences}
+\title{Get one-hot encoded sequences}
 \usage{
 get_one_hot_encoded_seqs(givenFastaSeqs, sinuc_or_dinuc = "sinuc")
 }
 \arguments{
-\item{givenFastaSeqs}{A DNAStringSet object holding the given DNA sequences.}
+\item{givenFastaSeqs}{A DNAStringSet object holding the given DNA sequences}
 
 \item{sinuc_or_dinuc}{'sinuc' or 'dinuc'}
 }
 \value{
-One-hot encoded sequences.
+A sparse matrix of sequences represented with one-hot-encoding
 }
 \description{
 Get the one-hot encoding representation of the given sequences.
 }
+\seealso{
+\code{\link{prepare_data_from_FASTA}} for generating one-hot 
+encoding of sequences from a FASTA file
+
+Other input functions: 
+\code{\link{prepare_data_from_FASTA}()}
+}
+\concept{input functions}

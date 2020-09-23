@@ -525,7 +525,7 @@ message("=== Intermediate Result ===")
 message("Generating unannotated map of clustered sequences...")
 image_fname <- paste0(fname, "ClusteringImage_Iteration", iterVal, ".png")
 message("Sequence clustering image written to: ", image_fname)
-viz_matrix_of_acgt_image(rawSeqs =  as.character(tss.seqs_raw[sorted_order$ix]),
+viz_seqs_as_acgt_mat_from_seqs(rawSeqs =  as.character(tss.seqs_raw[sorted_order$ix]),
                         position_labels = positions,
                         savefilename = image_fname,
                         fwidth = 450,

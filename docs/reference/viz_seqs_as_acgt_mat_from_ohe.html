@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Launch archR user interface — runArchRUI • archR</title>
+<title>Visualize one-hot encoded DNA sequences as an image — viz_seqs_as_acgt_mat_from_ohe • archR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Launch archR user interface — runArchRUI" />
-<meta property="og:description" content="Lauch archR's graphical user interface" />
+<meta property="og:title" content="Visualize one-hot encoded DNA sequences as an image — viz_seqs_as_acgt_mat_from_ohe" />
+<meta property="og:description" content="Given the one-hot encoded matrix, visualize each sequence as an image. 
+The matrix is expected to have features along the rows and
+sequences along the columns." />
 
 
 
@@ -114,29 +116,106 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Launch archR user interface</h1>
-    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/runArchRUI.R'><code>R/runArchRUI.R</code></a></small>
-    <div class="hidden name"><code>runArchRUI.Rd</code></div>
+    <h1>Visualize one-hot encoded DNA sequences as an image</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/viz_matrix_of_acgt.R'><code>R/viz_matrix_of_acgt.R</code></a></small>
+    <div class="hidden name"><code>viz_seqs_as_acgt_mat_from_ohe.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Lauch archR's graphical user interface</p>
+    <p>Given the one-hot encoded matrix, visualize each sequence as an image. 
+The matrix is expected to have features along the rows and
+sequences along the columns.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runArchRUI</span>(lbrowser = <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>viz_seqs_as_acgt_mat_from_ohe</span>(
+  <span class='kw'>givenMat</span>,
+  <span class='kw'>position_labels</span>,
+  sinuc_or_dinuc = <span class='st'>"sinuc"</span>,
+  choose_colors = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(A = <span class='st'>"darkgreen"</span>, C = <span class='st'>"blue"</span>, G = <span class='st'>"orange"</span>, T = <span class='st'>"red"</span>, N = <span class='st'>"white"</span>),
+  annClusters = <span class='kw'>NULL</span>,
+  mark_seq_at_every = <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='kw'>givenMat</span>) <span class='op'>*</span> <span class='fl'>0.1</span>),
+  mark_pos_at_every = <span class='fl'>10</span>,
+  plot.title = <span class='st'>"DNA Sequences"</span>,
+  saveFilename = <span class='kw'>NULL</span>,
+  fileType = <span class='st'>"png"</span>,
+  verbose = <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>lbrowser</th>
-      <td><p>Logical. Set this to FALSE if you do not wish to launch the
-app in the browser. Default is TRUE, i.e., the app will launch in the
-browser. Note: Saving plots when the app is run via the external viewer in
-RStudio could have problems.</p></td>
+      <th>givenMat</th>
+      <td><p>The data matrix describing the set of sequences to be
+visualized as an image. The current version is applicable only for DNA
+sequences.</p></td>
+    </tr>
+    <tr>
+      <th>position_labels</th>
+      <td><p>Labels of the positions in the sequences.</p></td>
+    </tr>
+    <tr>
+      <th>sinuc_or_dinuc</th>
+      <td><p>Specify whether single- or di-nucleotide profiles are
+to be visualized.</p></td>
+    </tr>
+    <tr>
+      <th>choose_colors</th>
+      <td><p>Specify a color scheme for the alphabet as a list.
+Default is the color scheme for DNA sequences, i.e., c(A = "darkgreen",
+C = "blue", G = "orange", T = "red")</p></td>
+    </tr>
+    <tr>
+      <th>annClusters</th>
+      <td><p>Provide cluster information for annotation on the matrix.
+Format is same as the `$ix` variable from output of `base::sort`.</p></td>
+    </tr>
+    <tr>
+      <th>mark_seq_at_every</th>
+      <td><p>Tickmarks for sequences, i.e., these are y-ticks.</p></td>
+    </tr>
+    <tr>
+      <th>mark_pos_at_every</th>
+      <td><p>Tickmarks for sequence positions, i.e., these are
+x-ticks. The tickmarks can be specified for every N-th position or every
+percentage N-th position. For every N-th position, simply specify the
+absolute positive value. For every percentage N-th position, specify 0.01 for
+ 10%.</p></td>
+    </tr>
+    <tr>
+      <th>plot.title</th>
+      <td><p>The title of the plot.</p></td>
+    </tr>
+    <tr>
+      <th>saveFilename</th>
+      <td><p>Name of the file in which the plot will be saved.
+Default `NULL`, shows plot on screen.</p></td>
+    </tr>
+    <tr>
+      <th>fileType</th>
+      <td><p>Specify file type. Default filetype is 'png'. This is ignored
+if `saveFilename` is set to `NULL`.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Logical. Use TRUE to print messages, FALSE otherwise.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>nothing.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='viz_seqs_as_acgt_mat_from_seqs.html'>viz_seqs_as_acgt_mat_from_seqs</a></code> for visualizing DNA sequences
+ passed as a DNAStringSet object.</p>
+<p>Other visualization functions: 
+<code><a href='plot_ggheatmap.html'>plot_ggheatmap</a>()</code>,
+<code><a href='plot_ggseqlogo.html'>plot_ggseqlogo</a>()</code>,
+<code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a>()</code>,
+<code><a href='viz_basis_vectors_as_seqlogo.html'>viz_basis_vectors_as_seqlogo</a>()</code>,
+<code><a href='viz_basis_vectors_in_combined_heatmaps_seqlogos.html'>viz_basis_vectors_in_combined_heatmaps_seqlogos</a>()</code>,
+<code><a href='viz_seqs_as_acgt_mat_from_seqs.html'>viz_seqs_as_acgt_mat_from_seqs</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

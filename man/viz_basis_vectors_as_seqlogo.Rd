@@ -55,6 +55,7 @@ Other visualization functions:
 \code{\link{plot_ggseqlogo}()},
 \code{\link{viz_basis_vectors_as_heatmap}()},
 \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()},
-\code{\link{viz_matrix_of_acgt}()}
+\code{\link{viz_seqs_as_acgt_mat_from_ohe}()},
+\code{\link{viz_seqs_as_acgt_mat_from_seqs}()}
 }
 \concept{visualization functions}

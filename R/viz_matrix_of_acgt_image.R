@@ -37,7 +37,7 @@
 
 
 #' @title
-#' Plot sequences as an image matrix
+#' Visualize raw DNA sequences as an image
 #'
 #' @description This function plots the collection of sequences as an image
 #' matrix.
@@ -62,10 +62,13 @@
 #' @importFrom Biostrings width
 #'
 #' @return Nothing returned to the R interpreter.
+#' @family visualization functions
+#' @seealso \code{\link{viz_seqs_as_acgt_mat_from_ohe}} for visualizing one-hot 
+#' encoded DNA sequences
 #' @importFrom grDevices png
 #' @importFrom graphics axis image
 #' @export
-viz_matrix_of_acgt_image <- function(rawSeqs, position_labels = NULL,
+viz_seqs_as_acgt_mat_from_seqs <- function(rawSeqs, position_labels = NULL,
                                      xt_freq = 5, yt_freq = 100,
                                      col = c("darkgreen", "blue",
                                              "orange", "red"),

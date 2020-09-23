@@ -94,7 +94,8 @@ factorization, performing clustering, and visualization-related functions.
 \item \code{\link{viz_basis_vectors_as_seqlogo}}
 \item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 \item \code{\link{plot_arch_for_clusters_new}}
-\item \code{\link{viz_matrix_of_acgt}}
+\item \code{\link{viz_seqs_as_acgt_mat_from_ohe}}
+\item \code{\link{viz_seqs_as_acgt_mat_from_seqs}}
 }
 }
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Visualize the NMF basis vectors as a sequence logo — viz_basis_vectors_as_seqlogo • archR</title>
+<title>Launch archR's graphical user interface — run_archR_UI • archR</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,27 @@
 
 
 
-<meta property="og:title" content="Visualize the NMF basis vectors as a sequence logo — viz_basis_vectors_as_seqlogo" />
-<meta property="og:description" content="Each factor in the given features matrix is separately
-represented as a sequence logo. Since each feature vector is a
-one-hot-encoded
-DNA sequence, it is reshaped to have 4 rows and then visualized." />
+<meta property="og:title" content="Launch archR's graphical user interface — run_archR_UI" />
+<meta property="og:description" content="Launch archR's shiny app, a graphical user interface for archR.
+The app supports the following functionalities.
+
+Input dataThe app enables reading input FASTA files and provides a 
+summary noting the number of sequences and existence of any non-ACGT characters.
+
+Configuration settingsThe app enables the user to set custom configuration.
+
+ProcessingThe user can choose to run archR in either serial or parallel mode. 
+When parallel mode is selected, the user can further choose to run archR via the 
+Slurm workload manager or otherwise. Jobs can be submitted and managed (queue status 
+monitoring and canceling a submitted job) from within the app.
+
+Viewing resultThe app can help visualize results from an archR run when 
+provided with archR's result file (as RDS file). Specifically, sequence logos 
+of architectures and images of clustered sequences can be viewed and saved to disk
+as PDF and PNG files respectively
+
+
+" />
 
 
 
@@ -117,81 +133,48 @@ DNA sequence, it is reshaped to have 4 rows and then visualized." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Visualize the NMF basis vectors as a sequence logo</h1>
-    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/viz_basis_vectors_as_seqlogo.R'><code>R/viz_basis_vectors_as_seqlogo.R</code></a></small>
-    <div class="hidden name"><code>viz_basis_vectors_as_seqlogo.Rd</code></div>
+    <h1>Launch archR's graphical user interface</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/runArchRUI.R'><code>R/runArchRUI.R</code></a></small>
+    <div class="hidden name"><code>run_archR_UI.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Each factor in the given features matrix is separately
-represented as a sequence logo. Since each feature vector is a
-one-hot-encoded
-DNA sequence, it is reshaped to have 4 rows and then visualized.</p>
+    <p>Launch archR's shiny app, a graphical user interface for archR.
+The app supports the following functionalities.</p>
+<dl>
+<dt>Input data</dt><dd><p>The app enables reading input FASTA files and provides a 
+summary noting the number of sequences and existence of any non-ACGT characters.</p></dd>
+
+<dt>Configuration settings</dt><dd><p>The app enables the user to set custom configuration.</p></dd>
+
+<dt>Processing</dt><dd><p>The user can choose to run archR in either serial or parallel mode. 
+When parallel mode is selected, the user can further choose to run archR via the 
+Slurm workload manager or otherwise. Jobs can be submitted and managed (queue status 
+monitoring and canceling a submitted job) from within the app.</p></dd>
+
+<dt>Viewing result</dt><dd><p>The app can help visualize results from an archR run when 
+provided with archR's result file (as RDS file). Specifically, sequence logos 
+of architectures and images of clustered sequences can be viewed and saved to disk
+as PDF and PNG files respectively</p></dd>
+
+</dl>
+
     </div>
 
-    <pre class="usage"><span class='fu'>viz_basis_vectors_as_seqlogo</span>(
-  <span class='kw'>featuresMatrix</span>,
-  plotMethod = <span class='st'>"custom"</span>,
-  position_labels = <span class='fl'>NA</span>,
-  add_pseudo_counts = <span class='fl'>FALSE</span>,
-  savePDFfilename = <span class='kw'>NULL</span>,
-  sinuc_or_dinuc = <span class='st'>"sinuc"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>run_archR_UI</span>(lbrowser = <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>featuresMatrix</th>
-      <td><p>The features matrix output from NMF. Expected
-dimensionality: number of columns represent the number of factors from NMF,
-and the number of rows is 4 times the length of the sequences in the
-collection.</p></td>
-    </tr>
-    <tr>
-      <th>plotMethod</th>
-      <td><p>For <code>ggseqlogo</code>; either of "custom", "bits", or
-"probability".
-Default is "custom".</p></td>
-    </tr>
-    <tr>
-      <th>position_labels</th>
-      <td><p>Labels of the positions in the sequences.</p></td>
-    </tr>
-    <tr>
-      <th>add_pseudo_counts</th>
-      <td><p>Boolean, taking values TRUE/T or FALSE/F, default
-set
- to FALSE. Setting it to TRUE will enable adding pseudo-counts to the
- features
- matrix.</p></td>
-    </tr>
-    <tr>
-      <th>savePDFfilename</th>
-      <td><p>Name of the file which will be saved as PDF
-(also provide the extension).</p></td>
-    </tr>
-    <tr>
-      <th>sinuc_or_dinuc</th>
-      <td><p>"sinuc" or "dinuc"</p></td>
+      <th>lbrowser</th>
+      <td><p>Logical. Set this to FALSE if you do not wish to launch the
+app in the browser. Default is TRUE, i.e., the app will launch in the
+browser. Note: Saving PDF plots when the app is run via the external viewer in
+RStudio could have problems.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>nothing.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a></code> for plotting only as
-heatmap, <code><a href='viz_basis_vectors_in_combined_heatmaps_seqlogos.html'>viz_basis_vectors_in_combined_heatmaps_seqlogos</a></code>
-for plotting combined heatmaps and sequence logos.</p>
-<p>Other visualization functions: 
-<code><a href='plot_ggheatmap.html'>plot_ggheatmap</a>()</code>,
-<code><a href='plot_ggseqlogo.html'>plot_ggseqlogo</a>()</code>,
-<code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a>()</code>,
-<code><a href='viz_basis_vectors_in_combined_heatmaps_seqlogos.html'>viz_basis_vectors_in_combined_heatmaps_seqlogos</a>()</code>,
-<code><a href='viz_seqs_as_acgt_mat_from_ohe.html'>viz_seqs_as_acgt_mat_from_ohe</a>()</code>,
-<code><a href='viz_seqs_as_acgt_mat_from_seqs.html'>viz_seqs_as_acgt_mat_from_seqs</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

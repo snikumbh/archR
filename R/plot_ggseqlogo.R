@@ -1,6 +1,6 @@
 
 
-#' Visualize a given (PWM) matrix as a sequence logo
+#' @title Visualize a given (PWM) matrix as a sequence logo
 #'
 #' @param pwmMat Matrix (usually a PWM, but can be any non-normalized matrix) to
 #'  be represented as a sequence logo.

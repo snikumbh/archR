@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Visualize a Matrix of Sequences as an Image. — viz_matrix_of_acgt • archR</title>
+<title>Plot sequences as an image matrix using ggplot2 — viz_matrix_of_acgt • archR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Visualize a Matrix of Sequences as an Image. — viz_matrix_of_acgt" />
-<meta property="og:description" content="The data matrix is expected to have features alogn the rows and
+<meta property="og:title" content="Plot sequences as an image matrix using ggplot2 — viz_matrix_of_acgt" />
+<meta property="og:description" content="Given the one-hot encoded matrix, visualize each sequence as an image. 
+The matrix is expected to have features along the rows and
 sequences along the columns." />
 
 
@@ -115,13 +116,14 @@ sequences along the columns." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Visualize a Matrix of Sequences as an Image.</h1>
+    <h1>Plot sequences as an image matrix using ggplot2</h1>
     <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/viz_matrix_of_acgt.R'><code>R/viz_matrix_of_acgt.R</code></a></small>
     <div class="hidden name"><code>viz_matrix_of_acgt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The data matrix is expected to have features alogn the rows and
+    <p>Given the one-hot encoded matrix, visualize each sequence as an image. 
+The matrix is expected to have features along the rows and
 sequences along the columns.</p>
     </div>
 
@@ -136,7 +138,7 @@ sequences along the columns.</p>
   plot.title = <span class='st'>"DNA Sequences"</span>,
   saveFilename = <span class='kw'>NULL</span>,
   fileType = <span class='st'>"png"</span>,
-  verbose = <span class='fl'>0</span>
+  verbose = <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -196,8 +198,7 @@ if `saveFilename` is set to `NULL`.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Default <code>0</code> which will not print any messages, or can be
-set to <code>1</code> which will print messages.</p></td>
+      <td><p>Logical. Use TRUE to print messages, FALSE otherwise.</p></td>
     </tr>
     </table>
 
@@ -206,12 +207,15 @@ set to <code>1</code> which will print messages.</p></td>
     <p>nothing.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other visualization functions: 
+    <div class='dont-index'><p><code><a href='viz_matrix_of_acgt_image.html'>viz_matrix_of_acgt_image</a></code> for visualizing DNA sequences
+ passed as a DNAStringSet object.</p>
+<p>Other visualization functions: 
 <code><a href='plot_ggheatmap.html'>plot_ggheatmap</a>()</code>,
 <code><a href='plot_ggseqlogo.html'>plot_ggseqlogo</a>()</code>,
 <code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a>()</code>,
 <code><a href='viz_basis_vectors_as_seqlogo.html'>viz_basis_vectors_as_seqlogo</a>()</code>,
-<code><a href='viz_basis_vectors_in_combined_heatmaps_seqlogos.html'>viz_basis_vectors_in_combined_heatmaps_seqlogos</a>()</code></p></div>
+<code><a href='viz_basis_vectors_in_combined_heatmaps_seqlogos.html'>viz_basis_vectors_in_combined_heatmaps_seqlogos</a>()</code>,
+<code><a href='viz_matrix_of_acgt_image.html'>viz_matrix_of_acgt_image</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -1,4 +1,4 @@
-#' @title Plot a given matrix as a heatmap using ggplot2.
+#' @title Plot a given position weight matrix as a heatmap using ggplot2
 #'
 #' @description The given matrix is plotted as a heatmap using \code{ggplot2}'s
 #' \code{geom_tile}.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ggheatmap.R
 \name{plot_ggheatmap}
 \alias{plot_ggheatmap}
-\title{Plot a given matrix as a heatmap using ggplot2.}
+\title{Plot a given position weight matrix as a heatmap using ggplot2}
 \usage{
 plot_ggheatmap(pwmMat, position_labels = NULL, savePDFfilename = NULL)
 }
@@ -31,6 +31,7 @@ Other visualization functions:
 \code{\link{viz_basis_vectors_as_heatmap}()},
 \code{\link{viz_basis_vectors_as_seqlogo}()},
 \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()},
-\code{\link{viz_matrix_of_acgt}()}
+\code{\link{viz_seqs_as_acgt_mat_from_ohe}()},
+\code{\link{viz_seqs_as_acgt_mat_from_seqs}()}
 }
 \concept{visualization functions}
