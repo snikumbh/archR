@@ -52,8 +52,8 @@ model selection. Only used when modSelType is set to 'cv'.}
 \item{parallelize}{Logical. Specify whether to parallelize the procedure.
 Note that running archR serially can be time consuming. Consider
 parallelizing with at least 2 or 4 cores. If Slurm is available, archR's
-graphical user interface, accessed with \code{\link{runArchRUI}}, provides
-a way to provide all input data, set archR configuration, and directly
+graphical user interface, accessed with \code{\link{run_archR_UI}}, enables 
+provide all input data, set archR configuration, and directly
 submit/monitor slurm jobs.}
 
 \item{nCoresUse}{The number of cores to be used when `parallelize` is set
