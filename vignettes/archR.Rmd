@@ -176,7 +176,7 @@ archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw),
 # Set archR configuration
 archRconfig <- archR::archRSetConfig(
         parallelize = TRUE,
-        nCores = 4,
+        nCores = 2,
         nIterationsUse = 100,
         kMin = 1,
         kMax = 20,
