@@ -49,7 +49,11 @@ The paper also discusses the various parameters and their settings.
 For completeness, the following section gives a brief overview of the algorithm.
 
 # _archR_'s algorithm
-_archR_ implements a chunking-based iterative procedure. Further details to follow.
+_archR_ implements a chunking-based iterative procedure. Below is a schematic of archR's algorithm.
+
+![](https://github.com/snikumbh/archR/vignettes/archR_algorithm_1080p_cropped.gif)
+
+Further details to follow.
 
 # Installation
 _archR_ is currently made available via GitHub, thus, you can use the following procedure

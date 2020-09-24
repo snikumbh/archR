@@ -8,9 +8,15 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![Codecov test coverage](https://codecov.io/gh/snikumbh/archR/branch/master/graph/badge.svg)](https://codecov.io/gh/snikumbh/archR?branch=master)
 <!-- badges: end -->
 
-This is an R package implementing an unsupervised, non-negative matrix factorization-based method (of the same name) for discovery of sequence architectures.
+archR is an unsupervised, non-negative matrix factorization (NMF)-based algorithm for discovery of sequence architectures de novo.
+
 
 Note: _This package is currently under development. So, please bear with me while I put the final blocks together. Thanks for your understanding!_ 
+
+
+![](https://github.com/snikumbh/archR/vignettes/archR_algorithm_1080p_cropped.gif)
+
+
 
 ## Installation
 
