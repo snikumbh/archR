@@ -95,9 +95,8 @@
 <h1 class="hasAnchor">
 <a href="#archrs-algorithm" class="anchor"></a><em>archR</em>’s algorithm</h1>
 <p><em>archR</em> implements a chunking-based iterative procedure. Below is a schematic of archR’s algorithm.</p>
-<div class="figure">
-<img src="archR_algorithm_1080p_cropped.gif" alt=""><p class="caption">Schematic of archR’s algorithm</p>
-</div>
+<!-- ![Schematic of archR's algorithm](archR_algorithm_static_illustrator_cropped.png) -->
+<!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) -->
 <p>Further details to follow.</p>
 </div>
 <div id="installation" class="section level1">
@@ -106,7 +105,7 @@
 <p><em>archR</em> is currently made available via GitHub, thus, you can use the following procedure for installing <em>archR</em>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)
-<span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"snikumbh/archR"</span>, build_vignettes = <span class="fl">TRUE</span>)
+<span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"snikumbh/archR"</span>)
  
 </pre></div>
 <p>In case of any errors, please consider looking up <a href="https://github.com/snikumbh/archR">https://github.com/snikumbh/archR</a>. If none of the already noted points with regards to troubleshooting <em>archR</em>’s installation help, please file a <a href="https://github.com/snikumbh/archR/issues/new">new issue</a>.</p>
@@ -272,7 +271,7 @@
 <span class="co"># Set archR configuration</span>
 <span class="kw">archRconfig</span> <span class="op">&lt;-</span> <span class="kw">archR</span>::<span class="fu"><a href="../reference/archRSetConfig.html">archRSetConfig</a></span>(
         parallelize = <span class="fl">TRUE</span>,
-        nCores = <span class="fl">4</span>,
+        nCores = <span class="fl">2</span>,
         nIterationsUse = <span class="fl">100</span>,
         kMin = <span class="fl">1</span>,
         kMax = <span class="fl">20</span>,
@@ -291,7 +290,7 @@
                                seqsRaw = <span class="kw">inputSeqsRaw</span>,
                                seqsPositions = <span class="kw">positions</span>,
                                thresholdItr = <span class="kw">perform_iters</span>)
-<span class="co">#&gt; Parallelization with 4 cores</span>
+<span class="co">#&gt; Parallelization with 2 cores</span>
 <span class="co">#&gt; Model selection by factor stability</span>
 <span class="co">#&gt; Tolerance: 1e-04 &amp; Bound: 1e-08</span>
 <span class="co">#&gt; === archR to perform 2 iterations ===</span>
@@ -318,8 +317,8 @@
 <span class="co">#&gt; Cluster order by complete linkage w/ euclid distance:</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 3</span>
-<span class="co">#&gt; Iteration 1 completed in 2.51 mins</span>
-<span class="co">#&gt; 2.52 mins ellapsed since start</span>
+<span class="co">#&gt; Iteration 1 completed in 3.83 mins</span>
+<span class="co">#&gt; 3.84 mins ellapsed since start</span>
 <span class="co">#&gt; === Iteration 2, 3 chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk 1/3] [Size: 50]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -350,9 +349,9 @@
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; Iteration 2 completed in 2.44 mins</span>
-<span class="co">#&gt; 4.96 mins ellapsed since start</span>
-<span class="co">#&gt; archR exiting, 4.96 mins</span>
+<span class="co">#&gt; Iteration 2 completed in 4.16 mins</span>
+<span class="co">#&gt; 8 mins ellapsed since start</span>
+<span class="co">#&gt; archR exiting, 8 mins</span>
 </pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
@@ -428,7 +427,7 @@
 <span class="kw">sorted_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw">seqsClustLabels</span>, index.return = <span class="fl">TRUE</span>)
 
 
-<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>[<span class="kw">sorted_order</span><span class="op">$</span><span class="kw">ix</span>]), 
+<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>[<span class="kw">sorted_order</span><span class="op">$</span><span class="kw">ix</span>]),
                          position_labels = <span class="kw">positions</span>,
                          savefilename = <span class="kw">NULL</span>)
 </pre></div>
@@ -444,7 +443,7 @@ Figure: Result at iteration 1
 <span class="kw">sorted_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw">seqsClustLabels</span>, index.return = <span class="fl">TRUE</span>)
 
 
-<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>[<span class="kw">sorted_order</span><span class="op">$</span><span class="kw">ix</span>]), 
+<span class="kw">archR</span>::<span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">inputSeqsRaw</span>[<span class="kw">sorted_order</span><span class="op">$</span><span class="kw">ix</span>]),
                          position_labels = <span class="kw">positions</span>,
                          savefilename = <span class="kw">NULL</span>)
 </pre></div>

@@ -51,7 +51,8 @@ For completeness, the following section gives a brief overview of the algorithm.
 # _archR_'s algorithm
 _archR_ implements a chunking-based iterative procedure. Below is a schematic of archR's algorithm.
 
-![Schematic of archR's algorithm](./archR_algorithm_static_illustrator_cropped.png)
+<!-- ![Schematic of archR's algorithm](archR_algorithm_static_illustrator_cropped.png) -->
+<!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) -->
 
 Further details to follow.
 
@@ -60,7 +61,7 @@ _archR_ is currently made available via GitHub, thus, you can use the following 
 for installing _archR_.
 ```{r archR-install, echo=TRUE, eval=FALSE}
 install.packages("remotes")
-remotes::install_github("snikumbh/archR", build_vignettes = TRUE)
+remotes::install_github("snikumbh/archR")
  
 ```
 In case of any errors, please consider looking up [https://github.com/snikumbh/archR](https://github.com/snikumbh/archR). 
@@ -294,7 +295,7 @@ seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
 sorted_order <- sort(seqsClustLabels, index.return = TRUE)
 
 
-archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw[sorted_order$ix]), 
+archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw[sorted_order$ix]),
                          position_labels = positions,
                          savefilename = NULL)
 ```
@@ -306,7 +307,7 @@ seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
 sorted_order <- sort(seqsClustLabels, index.return = TRUE)
 
 
-archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw[sorted_order$ix]), 
+archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw[sorted_order$ix]),
                          position_labels = positions,
                          savefilename = NULL)
 ```
