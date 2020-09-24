@@ -14,7 +14,7 @@ archR is an unsupervised, non-negative matrix factorization (NMF)-based algorith
 Note: _This package is currently under development. So, please bear with me while I put the final blocks together. Thanks for your understanding!_ 
 
 
-<img src="https://github.com/snikumbh/archR/blob/master/vignettes/archR_algorithm_1080p_cropped.gif" width="250">
+<img src="https://github.com/snikumbh/archR/blob/master/vignettes/archR_algorithm_1080p_cropped.gif" width="550">
 
 
 ## Installation
