@@ -51,7 +51,7 @@ For completeness, the following section gives a brief overview of the algorithm.
 # _archR_'s algorithm
 _archR_ implements a chunking-based iterative procedure. Below is a schematic of archR's algorithm.
 
-![](https://github.com/snikumbh/archR/vignettes/archR_algorithm_1080p_cropped.gif)
+![Schematic of archR's algorithm](./archR_algorithm_static_illustrator_cropped.png)
 
 Further details to follow.
 
@@ -180,7 +180,7 @@ archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw),
 # Set archR configuration
 archRconfig <- archR::archRSetConfig(
         parallelize = TRUE,
-        nCores = 2,
+        nCores = 4,
         nIterationsUse = 100,
         kMin = 1,
         kMax = 20,
