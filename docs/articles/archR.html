@@ -95,7 +95,9 @@
 <h1 class="hasAnchor">
 <a href="#archrs-algorithm" class="anchor"></a><em>archR</em>’s algorithm</h1>
 <p><em>archR</em> implements a chunking-based iterative procedure. Below is a schematic of archR’s algorithm.</p>
-<p><img src="archR_algorithm_static_illustrator_cropped.png" alt="Schematic of archR’s algorithm"><!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) --></p>
+<p><img src="archR_algorithm_static_illustrator_cropped.png" width="550" align="center"></p>
+<!-- ![Schematic of archR's algorithm]() -->
+<!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) -->
 <p>Further details to follow.</p>
 </div>
 <div id="installation" class="section level1">
@@ -316,8 +318,8 @@
 <span class="co">#&gt; Cluster order by complete linkage w/ euclid distance:</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 3</span>
-<span class="co">#&gt; Iteration 1 completed in 0.818 mins</span>
-<span class="co">#&gt; 0.82 mins ellapsed since start</span>
+<span class="co">#&gt; Iteration 1 completed in 0.794 mins</span>
+<span class="co">#&gt; 0.796 mins ellapsed since start</span>
 <span class="co">#&gt; === Iteration 2, 3 chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk 1/3] [Size: 50]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -348,9 +350,9 @@
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; Iteration 2 completed in 0.904 mins</span>
-<span class="co">#&gt; 1.72 mins ellapsed since start</span>
-<span class="co">#&gt; archR exiting, 1.72 mins</span>
+<span class="co">#&gt; Iteration 2 completed in 0.888 mins</span>
+<span class="co">#&gt; 1.68 mins ellapsed since start</span>
+<span class="co">#&gt; archR exiting, 1.68 mins</span>
 </pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
@@ -461,7 +463,7 @@ Figure: Clusters at iteration 2
 <h1 class="hasAnchor">
 <a href="#conclusion" class="anchor"></a>Conclusion</h1>
 <p><em>archR</em> can detect <em>de novo</em> sequence features and simultaneously identify the complex interactions of different features together with their positional specificities.</p>
-<p>Note that the sequence architectures identified by archR have no limitations due to the size of the motifs or gaps in them, distance between motifs, compositional and positional variations in the individual motifs and their effects on the complex interactions, and number of motifs involved in any interaction. <!-- It is advisable to perform a large number of bootstrapped iterations for NMF in  --> <!-- _archR_.  --> <!-- This potentially affects the computation time of _archR_.  --> <!-- But being an  --> <!-- embarrasingly parallelizable case, this issue is alleviated.  --> <!-- There are already  --> <!-- provisions in _archR_ to choose parallelization for speeding up computations. --></p>
+<p>Note that the sequence architectures identified by <em>archR</em> have no limitations due to the size of the motifs or gaps in them, distance between motifs, compositional and positional variations in the individual motifs and their effects on the complex interactions, and number of motifs involved in any interaction. <!-- It is advisable to perform a large number of bootstrapped iterations for NMF in  --> <!-- _archR_.  --> <!-- This potentially affects the computation time of _archR_.  --> <!-- But being an  --> <!-- embarrasingly parallelizable case, this issue is alleviated.  --> <!-- There are already  --> <!-- provisions in _archR_ to choose parallelization for speeding up computations. --></p>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">

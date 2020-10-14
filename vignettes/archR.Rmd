@@ -11,6 +11,9 @@ vignette: >
   %\VignetteIndexEntry{Example usage of archR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+resource_files:
+  - archR_algorithm_static_illustrator_cropped.png
+  - archR_algorithm_1080p_cropped.gif
 ---
 
 
@@ -51,8 +54,11 @@ For completeness, the following section gives a brief overview of the algorithm.
 # _archR_'s algorithm
 _archR_ implements a chunking-based iterative procedure. Below is a schematic of archR's algorithm.
 
-![Schematic of archR's algorithm](archR_algorithm_static_illustrator_cropped.png)
+<img src="archR_algorithm_static_illustrator_cropped.png" width="550" align="center">
+
+<!-- ![Schematic of archR's algorithm]() -->
 <!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) -->
+
 
 Further details to follow.
 
@@ -324,7 +330,7 @@ _archR_ can detect _de novo_ sequence features and simultaneously identify the
 complex interactions of different features together with their positional 
 specificities.
 
-Note that the sequence architectures identified by archR have no limitations 
+Note that the sequence architectures identified by _archR_ have no limitations 
 due to the size of the motifs or gaps in them, distance between motifs, compositional
 and positional variations in the individual motifs and their effects on the 
 complex interactions, and number of motifs involved in any interaction.
