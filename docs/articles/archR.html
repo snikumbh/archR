@@ -70,13 +70,13 @@
 
       
 
-      </header><script src="archR_files/header-attrs-2.3/header-attrs.js"></script><script src="archR_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="archR_files/header-attrs-2.4/header-attrs.js"></script><script src="archR_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2020-09-24</h4>
+            <h4 class="date">2020-10-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -95,8 +95,7 @@
 <h1 class="hasAnchor">
 <a href="#archrs-algorithm" class="anchor"></a><em>archR</em>’s algorithm</h1>
 <p><em>archR</em> implements a chunking-based iterative procedure. Below is a schematic of archR’s algorithm.</p>
-<!-- ![Schematic of archR's algorithm](archR_algorithm_static_illustrator_cropped.png) -->
-<!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) -->
+<p><img src="archR_algorithm_static_illustrator_cropped.png" alt="Schematic of archR’s algorithm"><!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) --></p>
 <p>Further details to follow.</p>
 </div>
 <div id="installation" class="section level1">
@@ -317,8 +316,8 @@
 <span class="co">#&gt; Cluster order by complete linkage w/ euclid distance:</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 3</span>
-<span class="co">#&gt; Iteration 1 completed in 3.83 mins</span>
-<span class="co">#&gt; 3.84 mins ellapsed since start</span>
+<span class="co">#&gt; Iteration 1 completed in 0.818 mins</span>
+<span class="co">#&gt; 0.82 mins ellapsed since start</span>
 <span class="co">#&gt; === Iteration 2, 3 chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk 1/3] [Size: 50]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -349,9 +348,9 @@
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; Iteration 2 completed in 4.16 mins</span>
-<span class="co">#&gt; 8 mins ellapsed since start</span>
-<span class="co">#&gt; archR exiting, 8 mins</span>
+<span class="co">#&gt; Iteration 2 completed in 0.904 mins</span>
+<span class="co">#&gt; 1.72 mins ellapsed since start</span>
+<span class="co">#&gt; archR exiting, 1.72 mins</span>
 </pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
@@ -432,8 +431,8 @@
                          savefilename = <span class="kw">NULL</span>)
 </pre></div>
 <div class="figure">
-<img src="archR_files/figure-html/visualize-clusters-itr1-1.png" alt="Figure: Result at iteration 1" width="480"><p class="caption">
-Figure: Result at iteration 1
+<img src="archR_files/figure-html/visualize-clusters-itr1-1.png" alt="Figure: Clusters at iteration 1" width="480"><p class="caption">
+Figure: Clusters at iteration 1
 </p>
 </div>
 <div class="sourceCode" id="cb9"><pre class="downlit">
@@ -448,8 +447,8 @@ Figure: Result at iteration 1
                          savefilename = <span class="kw">NULL</span>)
 </pre></div>
 <div class="figure">
-<img src="archR_files/figure-html/visualize-clusters-itr2-1.png" alt="Figure: Result at iteration 2" width="480"><p class="caption">
-Figure: Result at iteration 2
+<img src="archR_files/figure-html/visualize-clusters-itr2-1.png" alt="Figure: Clusters at iteration 2" width="480"><p class="caption">
+Figure: Clusters at iteration 2
 </p>
 </div>
 <!-- ![_archR_ result on example data w/ clusters](./archR-result-example-data.png) -->
@@ -497,21 +496,21 @@ Figure: Result at iteration 2
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;  [1] Rcpp_1.0.5         lattice_0.20-41    ggseqlogo_0.1      assertthat_0.2.1  </span>
 <span class="co">#&gt;  [5] rprojroot_1.3-2    digest_0.6.25      foreach_1.5.0      gridBase_0.4-7    </span>
-<span class="co">#&gt;  [9] R6_2.4.1           plyr_1.8.6         backports_1.1.9    evaluate_0.14     </span>
+<span class="co">#&gt;  [9] R6_2.4.1           plyr_1.8.6         backports_1.1.10   evaluate_0.14     </span>
 <span class="co">#&gt; [13] highr_0.8          ggplot2_3.3.2      pillar_1.4.6       zlibbioc_1.34.0   </span>
-<span class="co">#&gt; [17] rlang_0.4.7        rstudioapi_0.11    Matrix_1.2-18      reticulate_1.16   </span>
-<span class="co">#&gt; [21] rmarkdown_2.3      pkgdown_1.6.1      desc_1.2.0         stringr_1.4.0     </span>
-<span class="co">#&gt; [25] munsell_0.5.0      compiler_4.0.2     xfun_0.16          pkgconfig_2.0.3   </span>
-<span class="co">#&gt; [29] systemfonts_0.2.3  pkgmaker_0.31.1    htmltools_0.5.0    tidyselect_1.1.0  </span>
-<span class="co">#&gt; [33] tibble_3.0.3       codetools_0.2-16   crayon_1.3.4       dplyr_1.0.2       </span>
-<span class="co">#&gt; [37] withr_2.2.0        rappdirs_0.3.1     grid_4.0.2         xtable_1.8-4      </span>
-<span class="co">#&gt; [41] jsonlite_1.7.0     gtable_0.3.0       lifecycle_0.2.0    registry_0.5-1    </span>
-<span class="co">#&gt; [45] magrittr_1.5       scales_1.1.1       bibtex_0.4.2.2     stringi_1.4.6     </span>
+<span class="co">#&gt; [17] rlang_0.4.8        rstudioapi_0.11    Matrix_1.2-18      reticulate_1.16   </span>
+<span class="co">#&gt; [21] rmarkdown_2.4      pkgdown_1.6.1      desc_1.2.0         stringr_1.4.0     </span>
+<span class="co">#&gt; [25] munsell_0.5.0      compiler_4.0.2     xfun_0.18          pkgconfig_2.0.3   </span>
+<span class="co">#&gt; [29] systemfonts_0.3.2  pkgmaker_0.31.1    htmltools_0.5.0    tidyselect_1.1.0  </span>
+<span class="co">#&gt; [33] tibble_3.0.4       codetools_0.2-16   crayon_1.3.4       dplyr_1.0.2       </span>
+<span class="co">#&gt; [37] withr_2.3.0        rappdirs_0.3.1     grid_4.0.2         xtable_1.8-4      </span>
+<span class="co">#&gt; [41] jsonlite_1.7.1     gtable_0.3.0       lifecycle_0.2.0    registry_0.5-1    </span>
+<span class="co">#&gt; [45] magrittr_1.5       scales_1.1.1       bibtex_0.4.2.3     stringi_1.5.3     </span>
 <span class="co">#&gt; [49] reshape2_1.4.4     fs_1.5.0           hopach_2.48.0      doParallel_1.0.15 </span>
-<span class="co">#&gt; [53] ellipsis_0.3.1     ragg_0.3.1         generics_0.0.2     vctrs_0.3.2       </span>
+<span class="co">#&gt; [53] ellipsis_0.3.1     ragg_0.3.1         generics_0.0.2     vctrs_0.3.4       </span>
 <span class="co">#&gt; [57] RColorBrewer_1.1-2 NMF_0.23.0         iterators_1.0.12   tools_4.0.2       </span>
 <span class="co">#&gt; [61] glue_1.4.2         purrr_0.3.4        rngtools_1.5       yaml_2.2.1        </span>
-<span class="co">#&gt; [65] colorspace_1.4-1   cluster_2.1.0      memoise_1.1.0      knitr_1.29</span>
+<span class="co">#&gt; [65] colorspace_1.4-1   cluster_2.1.0      memoise_1.1.0      knitr_1.30</span>
 </pre></div>
 </div>
   </div>

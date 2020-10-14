@@ -4,6 +4,9 @@ data-raw
 ^data-raw$
 ^Meta$
 ^docs$
+^\.png$
+^\.gif$
+index.md$
 ^errors-and-possible-resolutions.txt$
 ^\.gitignore$
 ^\.travis\.yml$
