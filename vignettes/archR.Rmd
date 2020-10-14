@@ -51,7 +51,7 @@ For completeness, the following section gives a brief overview of the algorithm.
 # _archR_'s algorithm
 _archR_ implements a chunking-based iterative procedure. Below is a schematic of archR's algorithm.
 
-<!-- ![Schematic of archR's algorithm](archR_algorithm_static_illustrator_cropped.png) -->
+![Schematic of archR's algorithm](archR_algorithm_static_illustrator_cropped.png)
 <!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) -->
 
 Further details to follow.
@@ -288,7 +288,7 @@ One can visualize the NMF basis vectors as well as the sequence clusters.
 The clustered output from _archR_ can again be visualized as a matrix. 
 Simply sort the sequences based on the cluster labels assigned to them and call 
 `archR::viz_seqs_as_acgt_mat_from_seqs` with the sorted order as shown.
-```{r visualize-clusters-itr1, echo=TRUE, fig.height=6, fig.width=5, fig.cap="Figure: Result at iteration 1", eval=TRUE}
+```{r visualize-clusters-itr1, echo=TRUE, fig.height=6, fig.width=5, fig.cap="Figure: Clusters at iteration 1", eval=TRUE}
 
 itr <- 1
 seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
@@ -300,7 +300,7 @@ archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw[sorted_order$ix]
                          savefilename = NULL)
 ```
 
-```{r visualize-clusters-itr2, echo=TRUE, fig.height=6, fig.width=5, fig.cap="Figure: Result at iteration 2", eval=TRUE}
+```{r visualize-clusters-itr2, echo=TRUE, fig.height=6, fig.width=5, fig.cap="Figure: Clusters at iteration 2", eval=TRUE}
 
 itr <- 2
 seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
