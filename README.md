@@ -20,7 +20,7 @@ Below is a schematic of archR's algorithm.
 ## Installation
 
 ### Python scikit-learn dependency
-This package requires the Python module scikit-learn. See installation instructions [here](https://scikit-learn.org/stable/install.html).
+This package requires the Python module scikit-learn. Please see installation instructions [here](https://scikit-learn.org/stable/install.html).
 
 
 ### To install this package, use 
@@ -33,7 +33,7 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
 remotes::install_github("snikumbh/archR", build_vignettes = FALSE)
 ``` 
 
-If the above command produces errors, see this troubleshooting [note](https://github.com/snikumbh/archR#troubleshooting-installation) below.
+If the above command produces errors, see this troubleshooting   [note](https://github.com/snikumbh/archR#troubleshooting-installation) below.
 
 
 ### Usage
