@@ -670,6 +670,83 @@
 }
 
 
+#' @title Reorder archR raw clustering at the chosen iteration
+#' @description We use hierarchical clustering for reordering archR raw
+#' clusters
+#' @param archRresult The archRresult object.
+#' @param clustMethod Specify 'hc' for hierarchical clustering.
+#' @param linkage One of linkage values as specified for hierarchical clustering.
+#' @param distMethod Distance measure to be used with hierarchical clustering.
+#' @param regularize Specify TRUE if regularization is to be performed before 
+#' comparison. See argument 'topN'.
+#' @param topN Keep only the topN positions for comparing basis vectors.
+#' @param returnOrder Specify TRUE if only the computed order for hierarchical 
+#' clustering is to be returned
+#' @param position_agnostic_dist If position agnostic distance measure is to be 
+#' used.
+#' @param config Pass the configuration of the archR result object.
+#'
+#' @return Returns ordering returned from hclust or the re-ordered clusters
+#'
+#' @importFrom stats hclust dist
+#' @export
+reorder_archRresult <- function(archRresult, iteration = 3,
+                                clustMethod = "hc",
+                                linkage = "average",
+                                distMethod = "euclid",
+                                regularize = TRUE,
+                                topN = 10,
+                                returnOrder = FALSE,
+                                position_agnostic_dist = FALSE,
+                                config) {
+    # Depends on archRresult object having a fixed set of names.
+    # We need to .assert them
+    # Finally, arrange clusters from processed outer chunks using hclust
+    lastLevel <- iteration
+    
+    basisMat <- archRresult$clustBasisVectors[[lastLevel]]$basisVector
+    
+    if(regularize){
+        basisMat2 <- basisMat
+        for(i in 1:ncol(basisMat)){
+            asVec <- as.vector(basisMat[,i])
+            threshold <- tail(head(sort(asVec, decreasing = TRUE), topN),1)
+            basisMat2[(basisMat[,i] < threshold), i] <- 0.0
+        }
+        basisMat <- basisMat2
+    }
+    
+    
+    if(position_agnostic_dist){
+        #TODO
+        factorsClustering <- .position_agnostic_clustering()
+        
+    }else{
+        setReturnOrder <- FALSE
+        if(returnOrder){
+            setReturnOrder <- TRUE
+        }
+        factorsClustering <- .handle_clustering_of_factors(basisMat,
+                                                           clustMethod = clustMethod,
+                                                           linkage = linkage,
+                                                           distMethod = distMethod,
+                                                           returnOrder = returnOrder,
+                                                           flags = config$flags)
+    }
+    seqClusters <- get_seqs_clusters_in_a_list(archRresult$seqsClustLabels[[lastLevel]])
+    
+    clusters <- .collate_clusters2(factorsClustering,
+                                   seqClusters)
+    
+    cluster_sol <- list(factorsClustering = factorsClustering,
+                        clusters = clusters)
+    
+    return(cluster_sol)
+
+}
+## =============================================================================
+
+
 #' @title Retrieve sequence clusters as a list
 #' @description Given the sequence cluster labels from a archR result object,
 #' returns the clusters separated as a list.

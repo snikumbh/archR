@@ -43,6 +43,9 @@ reference:
   - '`viz_basis_vectors_in_combined_heatmaps_seqlogos`'
   - '`viz_seqs_as_acgt_mat_from_ohe`'
   - '`viz_seqs_as_acgt_mat_from_seqs`'
+  - '`make_sinuc_PWMs`'
+  - '`make_dinuc_PWMs`'
+  - '`reorder_archRresult`'
 
 
 articles:

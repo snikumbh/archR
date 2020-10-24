@@ -22,6 +22,12 @@
     <loc>http://snikumbh.github.io/archR/reference/handle_dir_creation.html</loc>
   </url>
   <url>
+    <loc>http://snikumbh.github.io/archR/reference/make_dinuc_PWMs.html</loc>
+  </url>
+  <url>
+    <loc>http://snikumbh.github.io/archR/reference/make_sinuc_PWMs.html</loc>
+  </url>
+  <url>
     <loc>http://snikumbh.github.io/archR/reference/plot_arch_for_clusters_new.html</loc>
   </url>
   <url>
@@ -35,6 +41,9 @@
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/prepare_data_from_FASTA.html</loc>
+  </url>
+  <url>
+    <loc>http://snikumbh.github.io/archR/reference/reorder_archRresult.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/run_archR_UI.html</loc>
