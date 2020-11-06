@@ -22,7 +22,7 @@ get_seq_cluster_levels <- function(annClusters) {
 plot_arch_for_clusters_new <- function(tss.seqs_raw,
                                         list_of_elements,
                                         position_labels,
-                                        xt_freq = 1,
+                                        xt_freq = 5,
                                         PDFfname = "archR_sequence_architectures.pdf") {
     if(!is.null(PDFfname)) {
         grDevices::pdf(file=PDFfname, width = 11, height = 2)
@@ -71,7 +71,7 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw,
 #' @param title The title for the plot
 #'
 #' @export
-plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 1,
+plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 5,
                                        title = "Title"){
 
     nPos <- length(position_labels)
@@ -86,10 +86,10 @@ plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 1,
             method = "bits"
         ) +
         ggplot2::theme_linedraw() +
-        ggplot2::theme(axis.text.x = element_text(size = rel(0.7),
+        ggplot2::theme(axis.text.x = element_text(size = rel(0.9),
                                                   angle = 90,
-                                                  hjust = 1),
-                       axis.text.y = element_text(size = rel(0.8)),
+                                                  hjust = 0.5),
+                       axis.text.y = element_text(size = rel(0.9)),
                        panel.grid = element_blank()
         ) +
         # ggplot2::scale_x_continuous(breaks = seq_len(length(position_labels)),
