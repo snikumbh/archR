@@ -88,7 +88,7 @@ plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 5,
         ggplot2::theme_linedraw() +
         ggplot2::theme(axis.text.x = element_text(size = rel(0.9),
                                                   angle = 90,
-                                                  hjust = 0.5),
+                                                  hjust = 0.0),
                        axis.text.y = element_text(size = rel(0.9)),
                        panel.grid = element_blank()
         ) +
