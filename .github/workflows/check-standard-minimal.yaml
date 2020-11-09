@@ -51,7 +51,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Install system libraries
-        run: sudo apt-get install ghostscript libcurl4-openssl-dev libxml2-dev libgsl0-dev r-cran-xml
+        run: sudo apt-get install ghostscript libcurl4-openssl-dev libxml2-dev libgsl0-dev r-cran-xml -f
 
       - name: Query dependencies
         run: |
