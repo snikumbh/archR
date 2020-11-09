@@ -50,7 +50,7 @@ jobs:
         # installs/sets up pandoc
       - uses: r-lib/actions/setup-pandoc@v1
 
-      - name Install system libraries
+      - name: Install system libraries
         run: apt-get install ghostscript libcurl4-openssl-dev libxml2-dev libx=gsl0-dev r-cran-xml
 
       - name: Query dependencies
