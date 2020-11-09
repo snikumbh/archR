@@ -27,29 +27,31 @@ jobs:
       RSPM: ${{ matrix.config.rspm }}
 
     steps:
-	# 'uses' keyword tells to perform the specified action
-	#
-	# 'actions/' retrives a community action, specifically version v2
-	# this checks out your repo and downloads it to the runner
+        # 'uses' keyword tells to perform the specified action
+        #
+        # 'actions/' retrives a community action, specifically version v2
+        # this checks out your repo and downloads it to the runner
       - name: Checkout repo
-	uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
-	# installs R on the runner using the r-lib actions
+        # installs R on the runner using the r-lib actions
       - name: Setup R
-	uses: r-lib/actions/setup-r@v1
+        uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
 
       - name Install Python
-	runs: |
-	  Rscript -e "install.packages('remotes')"
+        runs: |
+          Rscript -e "install.packages('remotes')"
           Rscript -e "remotes::install_github('rstudio/reticulate')"
           Rscript -e "reticulate::install_miniconda()"
           Rscript -e "reticulate::conda_create('r-reticulate', packages = c('python==3.5', 'python-numpy', 'python-scipy', 'python-sklearn'))"
 
-	# installs/sets up pandoc
+        # installs/sets up pandoc
       - uses: r-lib/actions/setup-pandoc@v1
 
+      - name Install system libraries
+        run: apt-get install ghostscript libcurl4-openssl-dev libxml2-dev libx=gsl0-dev r-cran-xml
 
       - name: Query dependencies
         run: |
