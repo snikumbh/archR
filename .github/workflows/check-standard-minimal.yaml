@@ -45,13 +45,13 @@ jobs:
           Rscript -e "install.packages('remotes')"
           Rscript -e "remotes::install_github('rstudio/reticulate')"
           Rscript -e "reticulate::install_miniconda()"
-          Rscript -e "reticulate::conda_create('r-reticulate', packages = c('python==3.5', 'python-numpy', 'python-scipy', 'python-sklearn'))"
+          Rscript -e "reticulate::conda_create('r-reticulate', packages = c('python==3.5', 'numpy', 'scipy', 'scikit-learn'))"
 
         # installs/sets up pandoc
       - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Install system libraries
-        run: apt-get install ghostscript libcurl4-openssl-dev libxml2-dev libx=gsl0-dev r-cran-xml
+        run: apt-get install ghostscript libcurl4-openssl-dev libxml2-dev libgsl0-dev r-cran-xml
 
       - name: Query dependencies
         run: |
