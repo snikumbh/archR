@@ -245,59 +245,66 @@ archRSetConfig <- function(innerChunkSize = 500,
 .compute_factor_distances <- function(factorsMat, distMethod = "modNW"){
     ## Assumption: Each column is a factor
     .assert_archR_featuresMatrix(factorsMat)
-    if(distMethod == "modNW"){
-        ## Turn the factors which are vectors into a 2D matrix of
-        ## dinucs x positions
-        dim_names <- get_dimers_from_alphabet(c("A", "C", "G", "T"))
-        nPositions <- nrow(factorsMat)/length(dim_names)
-        ##
-        factorsMatList_as2D <- lapply(1:ncol(factorsMat),
-                        function(x){matrix(factorsMat[,x],
-                                       nrow = nrow(factorsMat)/nPositions,
-                                       byrow = TRUE,
-                                       dimnames = list(dim_names))
-                        })
-        ##
-        factorsMatList_asPFMs <- lapply(1:length(factorsMatList_as2D),
-            function(x){
-                sinucSparse <- collapse_into_sinuc_matrix(
-                                given_feature_mat = as.matrix(factorsMat[,x]),
-                                dinuc_mat = factorsMatList_as2D[[x]],
-                                feature_names = dim_names)
-                sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
-                                nrow = 4, byrow = FALSE,
-                                dimnames = list(rownames(sinucSparse)))
-            })
-        ##
-        lenPFMs <- length(factorsMatList_asPFMs)
-        scoresMat <- matrix(rep(0, lenPFMs*lenPFMs),
-                                 nrow = lenPFMs)
-        rownames(scoresMat) <- seq(1:nrow(scoresMat))
-        colnames(scoresMat) <- seq(1:ncol(scoresMat))
-
-        # relScoresMat <- scoresMat
-
-        for(i in seq_len(lenPFMs)){
-            for(j in seq_len(lenPFMs)){
-                temp <- TFBSTools::PFMSimilarity(factorsMatList_asPFMs[[i]],
-                                                 factorsMatList_asPFMs[[j]])
-                scoresMat[i,j] <- temp["score"]
-                # relScoresMat[i,j] <- temp["relScore"]
+    if(!requireNamespace("TFBSTools", quietly = TRUE)){
+        warning("You chose 'modified Needleman-Wunsch' distance for 
+            computing distances between NMF factors. This requires R 
+            package 'TFBSTools', which is not available. Consider 
+            installing the 'TFBSTools' package from Bioconductor and 
+            re-run. Meanwhile, I am using the Euclidean distance.")
+    }else{
+        if(distMethod == "modNW"){
+            ## Turn the factors which are vectors into a 2D matrix of
+            ## dinucs x positions
+            dim_names <- get_dimers_from_alphabet(c("A", "C", "G", "T"))
+            nPositions <- nrow(factorsMat)/length(dim_names)
+            ##
+            factorsMatList_as2D <- lapply(1:ncol(factorsMat),
+                                          function(x){matrix(factorsMat[,x],
+                                                             nrow = nrow(factorsMat)/nPositions,
+                                                             byrow = TRUE,
+                                                             dimnames = list(dim_names))
+                                          })
+            ##
+            factorsMatList_asPFMs <- lapply(1:length(factorsMatList_as2D),
+                                            function(x){
+                                                sinucSparse <- collapse_into_sinuc_matrix(
+                                                    given_feature_mat = as.matrix(factorsMat[,x]),
+                                                    dinuc_mat = factorsMatList_as2D[[x]],
+                                                    feature_names = dim_names)
+                                                sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
+                                                                         nrow = 4, byrow = FALSE,
+                                                                         dimnames = list(rownames(sinucSparse)))
+                                            })
+            ##
+            lenPFMs <- length(factorsMatList_asPFMs)
+            scoresMat <- matrix(rep(0, lenPFMs*lenPFMs),
+                                nrow = lenPFMs)
+            rownames(scoresMat) <- seq(1:nrow(scoresMat))
+            colnames(scoresMat) <- seq(1:ncol(scoresMat))
+            
+            # relScoresMat <- scoresMat
+            
+            for(i in seq_len(lenPFMs)){
+                for(j in seq_len(lenPFMs)){
+                    temp <- TFBSTools::PFMSimilarity(factorsMatList_asPFMs[[i]],
+                                                     factorsMatList_asPFMs[[j]])
+                    scoresMat[i,j] <- temp["score"]
+                    # relScoresMat[i,j] <- temp["relScore"]
+                }
             }
+            ## currently we use scoresMat, so we only return that
+            distMat <- max(scoresMat) - scoresMat
+            return(distMat)
+        } else{
+            ## hopach::distancematrix function requires vectors along rows. Distances
+            ## are computed between row vectors
+            if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
+            hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
+            ## hopachDistMat is a hopach hdist object
+            stopifnot(hopachDistMat@Size == nrow(factorsMat))
+            return(hopachDistMat)
         }
-        ## currently we use scoresMat, so we only return that
-        distMat <- max(scoresMat) - scoresMat
-        return(distMat)
-    } else{
-        ## hopach::distancematrix function requires vectors along rows. Distances
-        ## are computed between row vectors
-        if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
-        hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
-        ## hopachDistMat is a hopach hdist object
-        stopifnot(hopachDistMat@Size == nrow(factorsMat))
-        return(hopachDistMat)
     }
-
 }
 ## =============================================================================
 

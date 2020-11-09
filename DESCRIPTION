@@ -38,9 +38,9 @@ Imports:
     ggpubr (>= 0.2.3),
     parallel,
     hopach (>= 2.42.0),
-    TFBSTools,
     Biostrings
 Suggests:
+    TFBSTools,
     shiny,
     shinyjs,
     shinydashboard,
