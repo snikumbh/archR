@@ -25,7 +25,7 @@ This should be the same length as the width of the given sequences.}
 \item{bits_yax}{Specify 'full' if the information content y-axis limits 
 should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
 the y-axis limits according to the maximum information content of the 
-sequence logo.}
+sequence logo. Default is 'auto'.}
 }
 \description{
 A wrapper to ggseqlogo plotting. Given a collection of
