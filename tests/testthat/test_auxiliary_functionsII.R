@@ -1,6 +1,5 @@
 context("Auxiliary Functions II")
 
-
 test_that("setup_clustFactors return value", {
     toyMat <- matrix(rep(runif(1),1000), ncol = 5)
     returnVal <- .setup_clustFactors_for_archR_result(toyMat)

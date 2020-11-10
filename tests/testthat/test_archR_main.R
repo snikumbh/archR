@@ -1,6 +1,8 @@
 # Sys.unsetenv("R_TESTS")
 
+
 context("archR main functionality")
+library(archR)
 
 ## Make toy objects and data
 inputFastaFilename <- system.file("extdata", "example_data.fa",
@@ -74,8 +76,8 @@ test_that("archR works", {
                                          plotVerboseFlag = FALSE,
                                          timeFlag = TRUE))
     set.seed(1234)
-    archRresult <- archR::archR(toyConfig, seqsRaw = tssSeqsRaw,
-                                seqsMat = tssSeqs, thresholdItr = 1)
+    archRresult <- suppressMessages(archR::archR(toyConfig, seqsRaw = tssSeqsRaw,
+                                seqsMat = tssSeqs, thresholdItr = 1))
     expect_equal_to_reference(archRresult, "archRresult_cv_check.rds")
 })
 
