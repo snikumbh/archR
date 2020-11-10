@@ -674,6 +674,7 @@
 #' @description We use hierarchical clustering for reordering archR raw
 #' clusters
 #' @param archRresult The archRresult object.
+#' @param iteration Specify clusters at which iteration of archR are to be reordered.
 #' @param clustMethod Specify 'hc' for hierarchical clustering.
 #' @param linkage One of linkage values as specified for hierarchical clustering.
 #' @param distMethod Distance measure to be used with hierarchical clustering.
@@ -710,7 +711,7 @@ reorder_archRresult <- function(archRresult, iteration = 3,
         basisMat2 <- basisMat
         for(i in 1:ncol(basisMat)){
             asVec <- as.vector(basisMat[,i])
-            threshold <- tail(head(sort(asVec, decreasing = TRUE), topN),1)
+            threshold <- utils::tail(utils::head(sort(asVec, decreasing = TRUE), topN),1)
             basisMat2[(basisMat[,i] < threshold), i] <- 0.0
         }
         basisMat <- basisMat2
@@ -718,8 +719,8 @@ reorder_archRresult <- function(archRresult, iteration = 3,
     
     
     if(position_agnostic_dist){
-        #TODO
-        factorsClustering <- .position_agnostic_clustering()
+        # TODO
+        # factorsClustering <- .position_agnostic_clustering()
         
     }else{
         setReturnOrder <- FALSE
