@@ -39,7 +39,22 @@
 #'
 #' @importFrom parallel makeCluster setDefaultCluster stopCluster
 #'
-#' @return Object of class archR (or at the moment, a list of lists)
+#' @return A nested list of elements as follows:
+#' \enumerate{
+#' \item seqsClustLabels A list with cluster labels for all sequences per 
+#' iteration of archR. The cluster labels as stored as characters.
+#' \item clustBasisVectors A list with information on NMF basis vectors per 
+#' iteration of archR. Per iteration, there are two variables `nBasisVectors` 
+#' storing the number of basis vectors after model selection,
+#' and `basisVectors`, a matrix storing the basis vectors themselves. Dimensions
+#'  of the `basisVectors` matrix are 4*L \times nBasisVectors (mononucleotide 
+#'  case) or 16*L \times nBasisVectors (dinucleotide case).
+#' \item rawSeqs The input sequences as a DNAStringSet object.
+#' \item timeInfo Stores the time taken (in minutes) for processing each 
+#' iteration. This element is added only if `timeFlag` is set to TRUE in config.
+#' \item config The configuration used for processing.
+#' \item call The function call itself.
+#' } 
 #' @export
 archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                   thresholdItr = 3,
@@ -83,14 +98,18 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
     ## Make checks for params in configuration
     .assert_archR_config(config, ncol(seqsMat))
     .assert_archR_thresholdIteration(thresholdItr)
+    ##
     ## ** To continue archR from an earlier run (further levels downstream)
     ## 1. Initializations of seqClustLabels, Factors etc should be
     ## appropriately handled.**
+    ##
     ## Initialize sequence-cluster-labels and outerChunks
     seqsClustLabels <- rep("0", ncol(seqsMat))
     seqsClustLabelsList <- vector("list", thresholdItr)
     clustFactors <- vector("list", thresholdItr)
     architectures <- vector("list", thresholdItr)
+    if(config$flags$timeFlag) timeInfo <- vector("list", thresholdItr)
+    ##
     if(fresh){
         outerChunksColl <- vector("list", 1)
         ## Set outerChunks for first iteration
@@ -392,6 +411,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             if(config$flags$timeFlag){
                 complTime <- format(as.numeric(Sys.time() - archRStartTime,
                                                units = "mins"), digits = 3)
+                timeInfo[[test_itr]] <- as.double.difftime(complTime)
                 archRComplTime <- paste(complTime, "mins ")
                 message(archRComplTime, archRComplMsg)
             }
@@ -419,12 +439,31 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         test_itr <- test_itr + 1
     } ## algorithm while loop ENDS
     ##
+    
     temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
                         clustBasisVectors = clustFactors,
-                        #architectures = architectures,
                         rawSeqs = seqsRaw,
+                        timeInfo = timeInfo,
                         config = config,
                         call = match.call())
+    ##
+    # temp_res_reord <- reorder_archRresult(temp_archRresult,
+    #                                       iteration = iteration,
+    #                                       clustMethod = "hc",
+    #                                       linkage = "average",
+    #                                       distMethod = dist_method,
+    #                                       regularize = TRUE, topN = 10,
+    #                                       returnOrder = FALSE,
+    #                                       position_agnostic_dist = FALSE,
+    #                                       config = temp_archRresult$config)
+    ##
+    # temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
+    #                          clustBasisVectors = clustFactors,
+    #                          reorderedClusters = temp_res_reord$clusters,
+    #                          rawSeqs = seqsRaw,
+    #                          config = config,
+    #                          call = match.call())
+    ##
     ## Write result to disk as RDS file
     if(!is.null(oDir)){
         rdsFilename <- paste0(oDir, "archRresult.rds")

@@ -64,7 +64,22 @@ change is reported to the user. Default is NULL. When NULL, just the result
 is returned, and no plots or checkpoints or result is written to disk.}
 }
 \value{
-Object of class archR (or at the moment, a list of lists)
+A nested list of elements as follows:
+\enumerate{
+\item seqsClustLabels A list with cluster labels for all sequences per 
+iteration of archR. The cluster labels as stored as characters.
+\item clustBasisVectors A list with information on NMF basis vectors per 
+iteration of archR. Per iteration, there are two variables `nBasisVectors` 
+storing the number of basis vectors after model selection,
+and `basisVectors`, a matrix storing the basis vectors themselves. Dimensions
+ of the `basisVectors` matrix are 4*L \times nBasisVectors (mononucleotide 
+ case) or 16*L \times nBasisVectors (dinucleotide case).
+\item rawSeqs The input sequences as a DNAStringSet object.
+\item timeInfo Stores the time taken (in minutes) for processing each 
+iteration. This element is added only if `timeFlag` is set to TRUE in config.
+\item config The configuration used for processing.
+\item call The function call itself.
+}
 }
 \description{
 Given a set of DNA sequences, the \code{archR} package enables discovery of
