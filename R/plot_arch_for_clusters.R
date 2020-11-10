@@ -15,17 +15,21 @@ get_seq_cluster_levels <- function(annClusters) {
 #' @param position_labels Labels for sequence positions, should be of same
 #' length as length of the sequences
 #' @param xt_freq Frequency of x-axis ticks
+#' @param fwidth,fheight Width and height in inches. Default values are 11 and 
+#' 2
 #' @param PDFfname Specify a filename to be saved as PDF
 #'
 #' @importFrom grDevices pdf
 #' @export
 plot_arch_for_clusters_new <- function(tss.seqs_raw,
-                                        list_of_elements,
-                                        position_labels,
-                                        xt_freq = 5,
-                                        PDFfname = "archR_sequence_architectures.pdf") {
+                                list_of_elements,
+                                position_labels,
+                                xt_freq = 5,
+                                fwidth = 11,
+                                fheight = 2,
+                                PDFfname = "archR_sequence_architectures.pdf"){
     if(!is.null(PDFfname)) {
-        grDevices::pdf(file=PDFfname, width = 11, height = 2)
+        grDevices::pdf(file=PDFfname, width = fwidth, height = fheight)
     }
     seqs_clusters_as_list <- list_of_elements
     cluster_lengths <- unlist(lapply(seqs_clusters_as_list, length))
@@ -68,11 +72,15 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw,
 #' @param position_labels Numeric vector of labels for sequence positions.
 #' This should be the same length as the width of the given sequences.
 #' @param xt_freq Specify the frequency of the x-axis ticks.
-#' @param title The title for the plot
+#' @param title The title for the plot.
+#' @param bits_yax Specify 'full' if the information content y-axis limits 
+#' should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
+#' the y-axis limits according to the maximum information content of the 
+#' sequence logo. Default is 'auto'.
 #'
 #' @export
 plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 5,
-                                       title = "Title"){
+                                       title = "Title", bits_yax = "auto"){
 
     nPos <- length(position_labels)
     xtick_cal <- seq(0, nPos, by = xt_freq)
@@ -88,21 +96,21 @@ plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 5,
         ggplot2::theme_linedraw() +
         ggplot2::theme(axis.text.x = element_text(size = rel(0.9),
                                                   angle = 90,
-                                                  hjust = 0.0),
+						  hjust = 1),
                        axis.text.y = element_text(size = rel(0.9)),
                        panel.grid = element_blank()
         ) +
-        # ggplot2::scale_x_continuous(breaks = seq_len(length(position_labels)),
-        #                             labels = position_labels,
-        #                             expand = expansion(mult = c(0, 0))) +
         ## Add additional bold tick labels
         ggplot2::scale_x_continuous(breaks = xtick_cal,
                                     labels = position_labels[xtick_cal],
                                     expand = expansion(mult = c(0, 0))) +
-
-        ggplot2::ylim(0.0, 2.0) +
         ggplot2::ggtitle(title)
-        message("Plot title:", title)
+    if(bits_yax == 'full'){
+        samarth_p <- samarth_p + ggplot2::ylim(0.0, 2.0) 
+    }
+        
+    
+    message("Plot title:", title)
 
     samarth_p
 }

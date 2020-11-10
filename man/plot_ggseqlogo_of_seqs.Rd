@@ -4,7 +4,13 @@
 \alias{plot_ggseqlogo_of_seqs}
 \title{Plot sequence logo of a collection of sequences}
 \usage{
-plot_ggseqlogo_of_seqs(seqs, position_labels, xt_freq = 1, title = "Title")
+plot_ggseqlogo_of_seqs(
+  seqs,
+  position_labels,
+  xt_freq = 5,
+  title = "Title",
+  bits_yax = "auto"
+)
 }
 \arguments{
 \item{seqs}{Collection of sequences as a Biostrings::DNAStringSet object.}
@@ -14,7 +20,12 @@ This should be the same length as the width of the given sequences.}
 
 \item{xt_freq}{Specify the frequency of the x-axis ticks.}
 
-\item{title}{The title for the plot}
+\item{title}{The title for the plot.}
+
+\item{bits_yax}{Specify 'full' if the information content y-axis limits 
+should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
+the y-axis limits according to the maximum information content of the 
+sequence logo.}
 }
 \description{
 A wrapper to ggseqlogo plotting. Given a collection of

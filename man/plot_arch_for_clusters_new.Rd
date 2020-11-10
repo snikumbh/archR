@@ -8,7 +8,9 @@ plot_arch_for_clusters_new(
   tss.seqs_raw,
   list_of_elements,
   position_labels,
-  xt_freq = 1,
+  xt_freq = 5,
+  fwidth = 11,
+  fheight = 2,
   PDFfname = "archR_sequence_architectures.pdf"
 )
 }
@@ -21,6 +23,9 @@ plot_arch_for_clusters_new(
 length as length of the sequences}
 
 \item{xt_freq}{Frequency of x-axis ticks}
+
+\item{fwidth, fheight}{Width and height in inches. Default values are 11 and 
+2}
 
 \item{PDFfname}{Specify a filename to be saved as PDF}
 }
