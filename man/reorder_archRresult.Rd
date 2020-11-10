@@ -20,6 +20,8 @@ reorder_archRresult(
 \arguments{
 \item{archRresult}{The archRresult object.}
 
+\item{iteration}{Specify clusters at which iteration of archR are to be reordered.}
+
 \item{clustMethod}{Specify 'hc' for hierarchical clustering.}
 
 \item{linkage}{One of linkage values as specified for hierarchical clustering.}
