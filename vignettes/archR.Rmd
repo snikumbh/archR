@@ -10,7 +10,7 @@ output:
     dpi: 300
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Example usage of archR}
+  %\VignetteIndexEntry{Example usage of _archR_ on simulated DNA sequences}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 resource_files:
@@ -189,7 +189,7 @@ Setup archR configuration as follows.
 # Set archR configuration
 archRconfig <- archR::archRSetConfig(
         parallelize = TRUE,
-        nCores = 2,
+        nCoresUse = 2,
         nIterationsUse = 100,
         kMin = 1,
         kMax = 20,
