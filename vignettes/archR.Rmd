@@ -14,8 +14,8 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 resource_files:
-  - archR_algorithm_static_illustrator_cropped.png
-  - archR_algorithm_1080p_cropped.gif
+  - reference/figures/archR_algorithm_static_illustrator_cropped.png
+  - reference/figures/archR_algorithm_1080p_cropped.gif
 ---
 
 
@@ -56,7 +56,7 @@ For completeness, the following section gives a brief overview of the algorithm.
 # _archR_'s algorithm
 _archR_ implements a chunking-based iterative procedure. Below is a schematic of archR's algorithm.
 
-<img src="archR_algorithm_static_illustrator_cropped.png" width="550" align="center">
+<img src="reference/figures/archR_algorithm_static_illustrator_cropped.png" width="550" align="center">
 
 <!-- ![Schematic of archR's algorithm]() -->
 <!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) -->
