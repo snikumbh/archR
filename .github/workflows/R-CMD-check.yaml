@@ -61,7 +61,9 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
+        # On Linux, installing these system libraries is required for some pkgs such as DirichletMultinomial
       - name: Install system libraries
+        if: runner.os == 'Linux'
         run: sudo apt-get install libnlopt-dev ghostscript libcurl4-openssl-dev libgsl0-dev -f
 
       - name: Cache R packages
