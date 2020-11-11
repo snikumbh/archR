@@ -34,7 +34,6 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
 remotes::install_github("snikumbh/archR", build_vignettes = FALSE)
 ``` 
 
-If the above command produces errors, see this troubleshooting   [note](https://github.com/snikumbh/archR#troubleshooting-installation) below.
 
 
 ### Usage
@@ -86,10 +85,6 @@ archRresult <- archR::archR(config = archRconfig,
                                thresholdItr = perform_iters)
 
 ```
-
-## Troubleshooting Installation
-
-1. Error during installation (with `remotes::install_github` or `devtools::install_github`. If the error occurs during `** testing if installed package can be loaded`, try adding the `--no-test-load` option as `remotes::install_github("snikumbh/archR", INSTALL_opts = c("--no-test-load"))`
 
 
 # Contact
