@@ -40,20 +40,30 @@
 #' @importFrom parallel makeCluster setDefaultCluster stopCluster
 #'
 #' @return A nested list of elements as follows:
-#' \enumerate{
-#' \item seqsClustLabels A list with cluster labels for all sequences per 
-#' iteration of archR. The cluster labels as stored as characters.
-#' \item clustBasisVectors A list with information on NMF basis vectors per 
+#' \describe{
+#' \item{seqsClustLabels}{A list with cluster labels for all sequences per 
+#' iteration of archR. The cluster labels as stored as characters.}
+#' 
+#' \item{clustBasisVectors}{A list with information on NMF basis vectors per 
 #' iteration of archR. Per iteration, there are two variables `nBasisVectors` 
 #' storing the number of basis vectors after model selection,
 #' and `basisVectors`, a matrix storing the basis vectors themselves. Dimensions
-#'  of the `basisVectors` matrix are 4*L \times nBasisVectors (mononucleotide 
-#'  case) or 16*L \times nBasisVectors (dinucleotide case).
-#' \item rawSeqs The input sequences as a DNAStringSet object.
-#' \item timeInfo Stores the time taken (in minutes) for processing each 
-#' iteration. This element is added only if `timeFlag` is set to TRUE in config.
-#' \item config The configuration used for processing.
-#' \item call The function call itself.
+#'  of the `basisVectors` matrix are 4*L x nBasisVectors (mononucleotide 
+#'  case) or 16*L x nBasisVectors (dinucleotide case).}
+#'  
+#' \item{clustSol}{The clustering solution obtained upon processing the raw 
+#' clusters from the last iteration of archR's result. This is handled 
+#' internally by the function \code{\link{reorder_archRresult}} using Euclidean 
+#' distance and average linkage hierarchical clustering.}
+#'  
+#' \item{rawSeqs}{The input sequences as a DNAStringSet object.}
+#' 
+#' \item{timeInfo}{Stores the time taken (in minutes) for processing each 
+#' iteration. This element is added only if `timeFlag` is set to TRUE in 
+#' config.}
+#' 
+#' \item{config}{The configuration used for processing.}
+#' \item{call}{The function call itself.}
 #' } 
 #' @export
 archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
@@ -339,7 +349,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         ## Can intClustFactors ever be NULL?
         if (setOCollation[test_itr]) {
             if(config$flags$debugFlag) {
-                message("SAMARTH: HOPACH yes for outer chunk collection")
+                message("Processing outer chunk collection")
             }
             ## Cluster the factors using hopach
             ## Combinations considered:
@@ -375,7 +385,9 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                                                       flags = config$flags)
             ##
         } else {
-            if(config$flags$debugFlag) message("Decision for outer chunk hopach: No")
+            if(config$flags$debugFlag){
+                message("Decision for outer chunk collation: No")
+            }
             ## TO-DO: move this inside else block above?
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
                                                       nxtOuterChunksColl,
@@ -439,30 +451,47 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         test_itr <- test_itr + 1
     } ## algorithm while loop ENDS
     ##
-    
-    temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
+    if(config$flags$timeFlag){
+        temp_res <- list(seqsClustLabels = seqsClustLabelsList,
                         clustBasisVectors = clustFactors,
                         rawSeqs = seqsRaw,
                         timeInfo = timeInfo,
                         config = config,
                         call = match.call())
+    }else{
+        temp_res <- list(seqsClustLabels = seqsClustLabelsList,
+                        clustBasisVectors = clustFactors,
+                        rawSeqs = seqsRaw,
+                        config = config,
+                        call = match.call())
+    }
     ##
-    # temp_res_reord <- reorder_archRresult(temp_archRresult,
-    #                                       iteration = iteration,
-    #                                       clustMethod = "hc",
-    #                                       linkage = "average",
-    #                                       distMethod = dist_method,
-    #                                       regularize = TRUE, topN = 10,
-    #                                       returnOrder = FALSE,
-    #                                       position_agnostic_dist = FALSE,
-    #                                       config = temp_archRresult$config)
+    temp_res_reord <- reorder_archRresult(temp_res,
+                                          iteration = thresholdItr,
+                                          clustMethod = "hc",
+                                          linkage = "average",
+                                          distMethod = "euclid",
+                                          regularize = TRUE, topN = 10,
+                                          returnOrder = FALSE,
+                                          position_agnostic_dist = FALSE,
+                                          config = temp_res$config)
     ##
-    # temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
-    #                          clustBasisVectors = clustFactors,
-    #                          reorderedClusters = temp_res_reord$clusters,
-    #                          rawSeqs = seqsRaw,
-    #                          config = config,
-    #                          call = match.call())
+    if(config$flags$timeFlag){
+        temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
+                             clustBasisVectors = clustFactors,
+                             clustSol = temp_res_reord,
+                             rawSeqs = seqsRaw,
+                             timeInfo = timeInfo,
+                             config = config,
+                             call = match.call())
+    }else{
+        temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
+                                 clustBasisVectors = clustFactors,
+                                 clustSol = temp_res_reord,
+                                 rawSeqs = seqsRaw,
+                                 config = config,
+                                 call = match.call())
+    }
     ##
     ## Write result to disk as RDS file
     if(!is.null(oDir)){
@@ -479,6 +508,12 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
     ## results with different distance measures. Performing this reordering
     ## later enables the user choose as per need.
     ##
+    #### Stop cluster
+    if(config$flags$debugFlag) {
+        message("Stopping cluster...")
+    }
+    if(config$parallelize) parallel::stopCluster(cl)
+    ####
     if(config$flags$verboseFlag) {
         archRComplMsg <- paste("archR exiting")
         archRComplTime <- ""
@@ -489,12 +524,6 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         }
         message(archRComplMsg, archRComplTime)
     }
-    #### Stop cluster
-    if(config$flags$debugFlag) {
-        message("Stopping cluster...")
-    }
-    if(config$parallelize) parallel::stopCluster(cl)
-    ####
     return(temp_archRresult)
 }  ## archR function ENDS
 ## =============================================================================
