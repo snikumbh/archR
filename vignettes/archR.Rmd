@@ -3,9 +3,11 @@ title: "Example usage of _archR_ on simulated DNA sequences"
 author: "Sarvesh Nikumbh"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
+  rmarkdown::html_vignette:
     fig_caption: yes
+    fig.align: 'center'
     number_sections: yes
+    dpi: 300
     toc: yes
 vignette: >
   %\VignetteIndexEntry{Example usage of archR}
