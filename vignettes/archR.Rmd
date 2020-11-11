@@ -154,7 +154,7 @@ sinuc <- Biostrings::DNA_BASES
 
 
 ### Reading input as a DNAStringSet object
-If you already have a `BioStrings::DNAStringSet` object, you can use the 
+If you already have a `Biostrings::DNAStringSet` object, you can use the 
 `get_one_hot_encoded_seqs()` function which directly accepts a `DNAStringSet` 
 object.
 
@@ -182,7 +182,7 @@ archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw),
 
 ## Calling _archR_
 
-
+Setup archR configuration as follows.
 ```{r setup-archR-config-call, echo=TRUE}
 # Set archR configuration
 archRconfig <- archR::archRSetConfig(
@@ -198,7 +198,12 @@ archRconfig <- archR::archRSetConfig(
         flags = list(debugFlag = FALSE, timeFlag = TRUE, verboseFlag = TRUE,
                      plotVerboseFlag = FALSE)
 )
+```
 
+Once the configuration is setup, call the `archR::archR` function with user-specified 
+iterations.
+
+```{r call-archR, echo=TRUE}
 # Call/Run archR
 perform_iters <- 2
 archRresult <- archR::archR(config = archRconfig,
