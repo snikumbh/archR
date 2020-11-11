@@ -514,6 +514,10 @@
             clustList <- .get_clusters_from_hc(hcObj = temp_hclust,
                                                distMat = globFactorsDistMat,
                                                verbose = flags$debugFlag)
+            if(length(clustList) == 1){
+                clustList <- lapply(seq_len(max(clustList[[1]])), 
+                                    function(x){x})   
+            }
             if(flags$debugFlag) {
                 message("=== DONE ===")
                 print(clustList)
@@ -661,9 +665,9 @@
     nodeList <- nodeListUpd
     if (verbose) print(nodeList)
 
-    if(verbose){
-        message("Final Length: ", sum(unlist(lapply(nodeList, length))))
-    }
+    # if(verbose){
+    #     message("Final Length: ", sum(unlist(lapply(nodeList, length))))
+    # }
     stopifnot(sum(unlist(lapply(nodeList, length))) == length(newOrder))
     #####
     return(nodeList)
@@ -739,7 +743,7 @@ reorder_archRresult <- function(archRresult, iteration = 3,
     clusters <- .collate_clusters2(factorsClustering,
                                    seqClusters)
     
-    cluster_sol <- list(factorsClustering = factorsClustering,
+    cluster_sol <- list(basisVectorsClust = factorsClustering,
                         clusters = clusters)
     
     return(cluster_sol)
