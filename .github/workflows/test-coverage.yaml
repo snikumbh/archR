@@ -23,6 +23,14 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
+      - name: Install Python
+        run: |
+          Rscript -e "install.packages('remotes')"
+          Rscript -e "remotes::install_github('rstudio/reticulate')"
+          Rscript -e "reticulate::install_miniconda()"
+          Rscript -e "reticulate::conda_create('r-reticulate', packages = c('python=3.5', 'numpy', 'scipy', 'scikit-learn'))"
+
+
       - name: Query dependencies
         run: |
           install.packages('remotes')
