@@ -692,7 +692,7 @@ observeEvent(input$reset, {
     if(resetAll || any("resultLocation" == input$resetSelect)){
         # message("Updating resultLocation")
         updateTextInput(session, inputId = "resultLocation",
-                        value = "./archR_run")
+                        value = "archR_run")
     }
     # showNotification(type = "message", duration = 5,
     #                  ui = "All")

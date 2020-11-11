@@ -257,7 +257,7 @@ body <- shinydashboard::dashboardBody(
                ##
                textInput(inputId = "resultLocation",
                          label = "Location to save archR result:",
-                         value = "./archR_run", width = "250px", placeholder = NULL),
+                         value = "archR_run", width = "250px", placeholder = NULL),
                ##
                ## parallelize Logical.
                radioButtons(inputId = "parallelize", label = "Parallelize?",
