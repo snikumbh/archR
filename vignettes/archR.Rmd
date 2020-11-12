@@ -223,13 +223,15 @@ archRresult <- archR::archR(config = archRconfig,
 In the version `r packageVersion("archR")`, _archR_ naively returns a result object 
 which is a nested list.
 The list elements include: 
-(a) the sequence cluster labels per iteration 
-[`seqsClustLabels`]; 
-(b) the collection of NMF basis vectors per iteration [`clustBasisVectors`]: each 
-is a list of two elements `nBasisVectors` and `basisVectors`.
-(c) the raw sequences provided [`rawSeqs`]; 
-(d) the configuration setting [`config`]; and 
-(e) the call itself [`call`].
+1. the sequence cluster labels per iteration [`seqsClustLabels`]; 
+2. the collection of NMF basis vectors per iteration [`clustBasisVectors`]: each 
+is a list of two elements `nBasisVectors` and `basisVectors`;
+3. the clustering solution, [`clustSol`], which is obtained upon combining raw 
+clusters from the last iteration of archR. This element stores the clustering of 
+NMF basis vectors [`basisVectorsClust`] and the sequence clusters [`clusters`]; 
+4. the raw sequences provided [`rawSeqs`]; 
+5. the configuration setting [`config`]; and 
+6. the call itself [`call`].
 
 
 
