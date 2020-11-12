@@ -486,7 +486,7 @@
         ############### REORDER CLUSTERS FROM OUTER CHUNK ######################
         if(flags$debugFlag) message("SAMARTH: RE-ORDERING CLUSTERS")
 
-        if(flags$verboseFlag) {
+        if(flags$debugFlag) {
             message("Cluster order by ", linkage," linkage w/ ",
                     distMethod, " distance:")
         }
