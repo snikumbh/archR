@@ -80,7 +80,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2020-11-11</h4>
+            <h4 class="date">2020-11-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -99,7 +99,7 @@
 <h1 class="hasAnchor">
 <a href="#archrs-algorithm" class="anchor"></a><em>archR</em>’s algorithm</h1>
 <p><em>archR</em> implements a chunking-based iterative procedure. Below is a schematic of archR’s algorithm.</p>
-<p><img src="reference/figures/archR_algorithm_static_illustrator_cropped.png" width="550" align="center"></p>
+<p><img src="archR_algorithm_static_illustrator_cropped.png" width="550" align="center"></p>
 <!-- ![Schematic of archR's algorithm]() -->
 <!-- ![Schematic of archR's algorithm](archR_algorithm_1080p_cropped.gif) -->
 <p>Further details to follow.</p>
@@ -317,11 +317,10 @@
 <span class="co">#&gt; [Iteration 1] complete</span>
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Cluster order by complete linkage w/ euclid distance:</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 3</span>
-<span class="co">#&gt; Iteration 1 completed in 1.04 mins</span>
-<span class="co">#&gt; 1.04 mins ellapsed since start</span>
+<span class="co">#&gt; Iteration 1 completed in 1.22 mins</span>
+<span class="co">#&gt; 1.22 mins ellapsed since start</span>
 <span class="co">#&gt; === Iteration 2, 3 chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk 1/3] [Size: 50]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -352,16 +351,15 @@
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; Iteration 2 completed in 0.621 mins</span>
-<span class="co">#&gt; 1.66 mins ellapsed since start</span>
-<span class="co">#&gt; Cluster order by average linkage w/ euclid distance:</span>
-<span class="co">#&gt; archR exiting, 1.66 mins</span></code></pre></div>
+<span class="co">#&gt; Iteration 2 completed in 0.775 mins</span>
+<span class="co">#&gt; 2 mins ellapsed since start</span>
+<span class="co">#&gt; archR exiting, 2 mins</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#understanding-the-result-object-from-archr" class="anchor"></a>Understanding the result object from <em>archR</em>
 </h2>
-<p>In the version 0.1.2, <em>archR</em> naively returns a result object which is a nested list. The list elements include: (a) the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; (b) the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>. (c) the raw sequences provided [<code>rawSeqs</code>]; (d) the configuration setting [<code>config</code>]; and (e) the call itself [<code>call</code>].</p>
+<p>In the version 0.1.2, <em>archR</em> naively returns a result object which is a nested list. The list elements include: 1. the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; 2. the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; 3. the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; 4. the raw sequences provided [<code>rawSeqs</code>]; 5. the configuration setting [<code>config</code>]; and 6. the call itself [<code>call</code>].</p>
 <div id="nmf-basis-vectors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nmf-basis-vectors" class="anchor"></a>NMF basis vectors</h3>
