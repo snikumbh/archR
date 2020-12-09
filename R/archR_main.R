@@ -347,22 +347,33 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         intClustFactorsClustering <- NULL
 
         ## Can intClustFactors ever be NULL?
-        if (setOCollation[test_itr]) {
+        
+        if(config$flags$debugFlag){
+            message("Collation this iter:", setOCollation[test_itr],
+                    "#InnerChunks: ", length(innerChunksColl), 
+                    "; #OuterChunks: ", totOuterChunksColl)
+        }
+        if (setOCollation[test_itr] && (length(innerChunksColl) > 1 
+            || totOuterChunksColl > 1)) {
+            ## ^The second condition in the IF statement protects against
+            ## performing HAC/collation when #inner chunks & the number of 
+            ## outer chunks is 1.
             if(config$flags$debugFlag) {
                 message("Processing outer chunk collection")
             }
-            ## Cluster the factors using hopach
+            ## Cluster the factors using hierachical clustering
             ## Combinations considered:
             ## Cosine distance + Average Linkage
             ## Euclidean distance + Average Linkage
             ## modifiedNW distance + Average Linkage
             ## Euclidean distance + Complete Linkage
-            ##
+            ## Euclidean distance + Ward.D Linkage
+            ## 
             ############## We use Complete linkage with Euclidean distance
             intClustFactorsClusteringEucCom <-
                 .handle_clustering_of_factors(intClustFactors,
                                               clustMethod = "hc",
-                                              linkage = "complete",
+                                              linkage = "ward.D",## or "complete"?,
                                               distMethod = "euclid",
                                               flags = config$flags,
                                               returnOrder = FALSE)
@@ -466,14 +477,26 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                         call = match.call())
     }
     ##
+    decisionToReorder <- TRUE
+    iterations <- length(clustFactors)
+    if(iterations > 1){
+        prevIterNFactors <- clustFactors[[iterations-1]]$nBasisVectors
+        currIterNFactors <- clustFactors[[iterations]]$nBasisVectors
+        if(currIterNFactors == prevIterNFactors){
+            decisionToReorder <- FALSE
+            if(config$flags$debugFlag) message("Reordering decision: FALSE")
+        }
+    }
+    ##
     temp_res_reord <- reorder_archRresult(temp_res,
                                           iteration = thresholdItr,
                                           clustMethod = "hc",
-                                          linkage = "average",
+                                          linkage = "ward.D", ## or average?
                                           distMethod = "euclid",
                                           regularize = TRUE, topN = 10,
                                           returnOrder = FALSE,
                                           position_agnostic_dist = FALSE,
+                                          decisionToReorder = decisionToReorder,
                                           config = temp_res$config)
     ##
     if(config$flags$timeFlag){
