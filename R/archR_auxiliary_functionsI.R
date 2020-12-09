@@ -398,6 +398,8 @@
     .assert_archR_innerChunkSize_independent(reqdChunkSize)
     .assert_archR_flags(flags)
     ##
+    ## When chunkLength (i.e., total sequences) < reqdChunkSize, the else 
+    ## condition, return the totalSet as the only chunk.
     if (chunkLength > reqdChunkSize) {
         chunkStarts <- seq(1, chunkLength, by = reqdChunkSize)
         chunkEnds <- seq(reqdChunkSize, chunkLength, by = reqdChunkSize)
@@ -447,7 +449,9 @@
                                                     verboseFlag = FALSE,
                                                     plotVerboseFlag = FALSE,
                                                     timeFlag = FALSE),
-                                        returnOrder = TRUE) {
+                                        returnOrder = TRUE,
+                                        useCutree = TRUE,
+                                        parentChunks = NULL) {
     .assert_archR_featuresMatrix(globFactorsMat)
     .assert_archR_flags(flags)
     ##
@@ -482,9 +486,9 @@
         }
         return(globFactorsHopach)
     } else if(clustMethod == "hc"){
-        if(flags$debugFlag) message("Hierarchical clustering instead of HOPACH")
+        if(flags$debugFlag) message("Hierarchical clustering")
         ############### REORDER CLUSTERS FROM OUTER CHUNK ######################
-        if(flags$debugFlag) message("SAMARTH: RE-ORDERING CLUSTERS")
+        if(flags$debugFlag) message("RE-ORDERING CLUSTERS")
 
         if(flags$debugFlag) {
             message("Cluster order by ", linkage," linkage w/ ",
@@ -511,9 +515,18 @@
             ## return just the new ordering
             return(new_order)
         }else{
-            clustList <- .get_clusters_from_hc(hcObj = temp_hclust,
-                                               distMat = globFactorsDistMat,
-                                               verbose = flags$debugFlag)
+            if(useCutree){
+                clustList <- .get_clusters_from_hc_using_cutree(
+                                    hcObj = temp_hclust,
+                                    distMat = as_dist_mat,
+                                    hStep = 0.05, 
+                                    parentChunks = parentChunks,
+                                    verbose = flags$debugFlag)
+            }else{
+                clustList <- .get_clusters_from_hc(hcObj = temp_hclust,
+                                           distMat = globFactorsDistMat,
+                                           verbose = flags$debugFlag)
+            }
             if(length(clustList) == 1){
                 clustList <- lapply(seq_len(max(clustList[[1]])), 
                                     function(x){x})   
@@ -527,6 +540,446 @@
     }
 }
 ## =============================================================================
+
+################################# IMPROVED VERSION #############################
+.get_clusters_from_hc2 <- function(hcObj, linkage = "complete", 
+                                   bound_scale = 0.75, pIter = 4,
+                                   distMat, verbose = FALSE){
+    ## important notes:
+    ## -- param bound_scale: changing the value of bound_scale affects formation
+    ##    of singleton clusters
+    ## -- param linkage: currently only works for/accepts 'complete' linkage. 
+    ##    Average linkage leaves many unjoined in remainingIdx
+    
+    
+    #####
+    ## Algo to cut dendrogram and form clusters
+    ## corner case: 1. what if start nodes are not available?
+    ##
+    ## Improvements over the previous version:
+    ## 1. Form start nodes using the merge information. These start nodes are 
+    ## pairs of indices that were first merged when forming the dendrogram.
+    ## 2. Join additional nodes 
+    ## 
+    if(verbose){
+        message("=== *** Merge ===")
+        print(hcObj$merge)
+        message("=== *** height ===")
+        print(hcObj$height)
+        message("=== *** dendro ===")
+        
+        print(utils::str(stats::as.dendrogram(hcObj)))
+        message("=== *** ===")
+    }
+    newOrder <- hcObj$order
+    
+    ## Assign start nodes
+    ## Use merge information from dendrogram object to form start nodes of 
+    ## paired indices
+    startNodeList <- list()
+    ## collect rows from hcObj$merge where both indices col1 and col2 are < 0
+    relRowIdx_from_merge <- which(hcObj$merge[,1] < 0 & hcObj$merge[,2] < 0)
+    ## Are all pair-merges equivalent? Some pair-merges could happen at a much larger 
+    ## distance than others. Worth detecting and not adding them?
+    # pairMergesDist <- unlist(lapply(relRowIdx_from_merge, function(x){
+    #     c1 <- -1*hcObj$merge[x,1]
+    #     c2 <- -1*hcObj$merge[x,2]
+    #     distMat[c1,c2]
+    # }))
+    # median(pairMergesDist) - 3*stats::mad(pairMergesDist)
+    # median(pairMergesDist) + 3*stats::mad(pairMergesDist)
+    ##
+    startNodeList <- lapply(relRowIdx_from_merge, function(x){
+        -1*hcObj$merge[x,]
+    })
+    ## ^ start nodes formed
+    
+    ## Grow start nodes by joining neighboring indices from hcObj$order
+    
+    nodeList <- startNodeList
+    remainingIdx <- setdiff(hcObj$order, unlist(nodeList))
+    remIter <- pIter ## 
+    while(length(remainingIdx) < 1 || remIter > 0){
+        ## Looking to join left neighbors
+        ## -- Check which node in nodeList has a candidate left neighbor to be 
+        ##    considered for stringing/joining
+        ## -- Decide if this candidate left neighbor will be joined based on a 
+        ##    criterion: (a) it is not already included in the nodeList
+        ##               (b) dist between the neighbor and the elements of the 
+        ##                   node is too high (increases the within-cluster 
+        ##                   some measure)
+        ## --            (c) Is it close enough this cluster (of start nodes) to 
+        ##                   justify joining
+        nodeList <- lapply(nodeList, function(x){
+            if(verbose) print(c("Next:", paste0(x, collapse="-")))
+            leftNeighborOfX <- NA
+            leftNeighborOfXisFirst <- FALSE
+            positionOfXinOrder <- which(x[1] == hcObj$order)
+            # if(verbose) print("hcObj$order for ref:");print(hcObj$order)
+            # if(verbose) print(paste("position in Order:", positionOfXinOrder))
+            if(positionOfXinOrder != 1){ 
+                ## not the first, so safely subtract 1 from index
+                leftNeighborOfX <- hcObj$order[positionOfXinOrder-1]
+                if(verbose) print(paste("Left neighbor:", leftNeighborOfX))
+            }else{
+                ## ## Else, it is the first node, without a 
+                ## leftNeighborCandidate. Let it be NA
+            }
+            
+            if(!is.na(leftNeighborOfX)){
+                ## Already note if the leftNeighborOfX is the first node
+                if(positionOfXinOrder == 2) leftNeighborOfXisFirst <- TRUE
+                
+                ## Decide if we can join leftNeighborOfX to node with X?
+                decisionToJoinTrue <- TRUE
+                ## There are conditions in which the decision to join should FALSE
+                ##
+                ## Case 1: leftNeighbor already in another node among nodeList
+                if(any(leftNeighborOfX == unlist(nodeList))){
+                    ## already in another node; so skip joining
+                    decisionToJoinTrue <- FALSE
+                    if(verbose) print("== Not left joined, case 1 ==")
+                }
+                ##
+                ## Case 2: dist b/w leftNeighbor and x[1] is greater than 
+                ##         leftNeighbor and leftNeighbor of leftNeighbor
+                ##      -- This will hold for complete linkage, but not for 
+                ##         average linkage.
+                if(decisionToJoinTrue && !leftNeighborOfXisFirst){
+                    ## can use dist to check if it cannot be joined
+                    positionOfLeftOfLeft <- positionOfXinOrder - 2
+                    leftOfLeftNeighbor <- hcObj$order[positionOfLeftOfLeft]
+                    ##
+                    # if(linkage != "average"){
+                        if(distMat[x[1], leftNeighborOfX] > 
+                                distMat[leftNeighborOfX, leftOfLeftNeighbor]){
+                            decisionToJoinTrue <- FALSE
+                            if(verbose) print(paste("== Not left joined, case 2", 
+                                                      " (may join w/ other) ==", 
+                                                    collapse = ""))
+                        }
+                    # }else{
+                    #     if(distMat[x[1], leftNeighborOfX] > 
+                    #        distMat[leftNeighborOfX, leftOfLeftNeighbor]){
+                    #         decisionToJoinTrue <- FALSE
+                    #         if(verbose) print(paste("== Not left joined, case 2", 
+                    #                                 " (may join w/ other) ==", 
+                    #                                 collapse = ""))
+                    #     }else{
+                    #         ## Add as a different node?
+                    #         if(verbose) print("avg SAMARTH separate CLUSTER")
+                    #         return(list(x, leftNeighborOfX))
+                    #     }
+                    # }
+                }
+                ##
+                ## Case 3: LeftNeighbor should be kept as a separate node or 
+                ##         effectively, a separate cluster
+                ##
+                idx_pairs <- t(utils::combn(x, 2))
+                distInSet <- unlist(lapply(seq_len(nrow(idx_pairs)), function(y){
+                    distMat[idx_pairs[y,1],idx_pairs[y,2]]
+                })) 
+                A <- median(distInSet)
+                dist_bound <- A + bound_scale*A
+                ## If previous cases still kept decision to join as TRUE, check
+                ## the distance criterion, and finally decide.
+                ## If the previous cases already decided as FALSE, don't bother
+                if(decisionToJoinTrue && 
+                   distMat[leftNeighborOfX, x[1]] > dist_bound){
+                    decisionToJoinTrue <- FALSE
+                    if(verbose) print("== Not left joined, case 3 ==")
+                    ## Add a separate node/cluster
+                    if(verbose) print("SAMARTH separate CLUSTER")
+                    return(list(x, leftNeighborOfX))
+                }
+                ## Exclude all above cases, then join
+                if(decisionToJoinTrue){
+                    ## If decision TRUE, join from the left (use after = 0)
+                    x <- append(x, values = leftNeighborOfX, after = 0)
+                    if(verbose){ print("joined x:"); print(x)}
+                }
+            }else{if(verbose)print("Already first, no left neighbor")}
+            x
+        })
+        # ## unravel the nested list element
+        nodeList <- unfurl_nodeList(nodeList)
+        
+        if(verbose){ print("Updated nodeList");print(paste(nodeList))}
+        
+        ## Update remainingIdx
+        remainingIdx <- setdiff(hcObj$order, unlist(nodeList))
+        if(length(remainingIdx) > 0){
+            if(verbose){ print("What remains:");print(remainingIdx)}
+        }else{
+            if(verbose){ print("breaking loop:");print(remainingIdx)}
+            break
+        }
+        if(verbose) message("l(remaining): ", length(remainingIdx))
+        
+        # if(linkage != "average"){
+            if(verbose) message("=== Right joining ===")
+            ## Join right side nodes
+            ## Looking to join right neighbors
+            ## -- Check which node in nodeList has a candidate right neighbor to be 
+            ##    considered for stringing/joining
+            ## -- Decide if this candidate right neighbor will be joined based on a 
+            ##    criterion: (a) it is not already included in the nodeList
+            ##               (b) dist between the neighbor and the elements of the 
+            ##                   node is too high (increases some within-cluster 
+            ##                   measure)
+            ## --            (c) Is it close enough this cluster (of start nodes) to 
+            ##                   justify joining 
+            nodeList <- lapply(nodeList, function(x){
+                if(verbose) print(c("Next:", paste0(x, collapse="-")))
+                rightNeighborOfX <- NA
+                rightNeighborOfXisLast <- FALSE
+                totalLength <- length(hcObj$order)
+                rightOfX <- tail(x, 1)
+                positionOfXinOrder <- which(rightOfX == hcObj$order)
+                # if(verbose) print("hcObj$order for ref:");print(hcObj$order)
+                # if(verbose) print(paste("position in Order:", positionOfXinOrder))
+                if(positionOfXinOrder != totalLength){
+                    ## not the last, so safely add 1 to index
+                    rightNeighborOfX <- hcObj$order[positionOfXinOrder+1]
+                    if(verbose) print(paste("Right neighbor:", rightNeighborOfX))
+                }else{
+                    ## Else, it is the last in order, without a 
+                    ## rightNeighborCandidate. Let it be NA
+                }
+                
+                if(!is.na(rightNeighborOfX)){
+                    ## Already note if the rightNeighborOfX is the last node
+                    if(positionOfXinOrder == totalLength-1) rightNeighborOfXisLast <- TRUE
+                    
+                    ## Decide if we can join rightNeighborOfX to node with X?
+                    decisionToJoinTrue <- TRUE
+                    ## There are conditions in which the decision to join should be FALSE
+                    ##
+                    ## Case 1: rightNeighbor already in another node among nodeList
+                    if(any(rightNeighborOfX == unlist(nodeList))){
+                        ## already in another node; so skip joining
+                        decisionToJoinTrue <- FALSE
+                        if(verbose) print("== Not left joined, case 1 ==")
+                    }
+                    ##
+                    ## Case 2: dist b/w rightNeighbor and x[1] is greater than 
+                    ##         rightNeighbor of rightNeighbor
+                    if(decisionToJoinTrue && !rightNeighborOfXisLast){
+                        ## can use dist to check if it cannot be joined
+                        positionOfRightOfRight <- positionOfXinOrder + 2
+                        rightOfRightNeighbor <- hcObj$order[positionOfRightOfRight]
+                        ##
+                        if(distMat[rightOfX, rightNeighborOfX] > 
+                           distMat[rightNeighborOfX, rightOfRightNeighbor]){
+                            decisionToJoinTrue <- FALSE
+                            if(verbose) print(paste("== Not left joined, case 2", 
+                            " (possibility to join with other ==", collapse = ""))
+                        }
+                    }
+                    ##
+                    ## Case 3: rightNeighbor should be kept as a separate node or 
+                    ##         effectively, a separate cluster
+                    ##
+                    idx_pairs <- t(utils::combn(x, 2))
+                    distInSet <- unlist(lapply(seq_len(nrow(idx_pairs)), function(y){
+                        distMat[idx_pairs[y,1],idx_pairs[y,2]]
+                    }))
+                    dist_bound <- median(distInSet) + bound_scale*median(distInSet)
+                    ## If previous cases still kept decision to join as TRUE, check
+                    ## the distance criterion, and finally decide.
+                    ## If the previous cases already decided as FALSE, don't bother
+                    if(decisionToJoinTrue && 
+                       distMat[rightNeighborOfX, rightOfX] > dist_bound){
+                        decisionToJoinTrue <- FALSE
+                        if(verbose) print("== Not left joined, case 3 ==")
+                        ## Add a separate node/cluster
+                        if(verbose) print("SAMARTH separate CLUSTER")
+                        return(list(x, rightNeighborOfX))
+                    }
+                    ## Exclude all above cases, then join
+                    if(decisionToJoinTrue){
+                        ## If decision TRUE, join from the right (use after = length(x))
+                        x <- append(x, values = rightNeighborOfX, after = length(x))
+                        if(verbose){ print("joined x:"); print(x)}
+                    }
+                }else{if(verbose)print("Already last, no right neighbor")}
+                ## return
+                x
+            })
+            ########
+            # ## unravel the nested list element
+            nodeList <- unfurl_nodeList(nodeList)
+            
+            ## If all resolved already, break loop
+            if(length(remainingIdx) == 0) break
+            
+            ########
+            if(verbose){print("Updated nodeList");print(paste(nodeList))}
+            
+            ## Update remainingIdx
+            remainingIdx <- setdiff(hcObj$order, unlist(nodeList))
+            if(length(remainingIdx) > 0){
+                if(verbose){ print("What remains:");print(remainingIdx)}
+            }else{
+                if(verbose){ print("breaking loop:");print(remainingIdx)}
+                break
+            }
+        # }
+        remIter <- remIter - 1
+        if(verbose) message("remIter: ", remIter)
+        if(verbose) message("l(remaining): ", length(remainingIdx))
+    }
+    
+    ## sort the clusters based on hcObj$order
+    starts <- lapply(nodeList, function(x){utils::head(x, 1)})
+    matchOrder <- vapply(starts, function(x){which(x == hcObj$order)}, numeric(1))
+    newIdx <- sort(matchOrder, index.return = TRUE)$ix
+    nodeListUpd <- lapply(newIdx, function(x){nodeList[[x]]})
+    nodeList <- nodeListUpd
+    
+    if(verbose) print(paste(nodeList))
+    
+    #####
+    return(nodeList)
+}
+
+unfurl_nodeList <- function(nodeList){
+    
+    element_lengths <- unlist(lapply(nodeList, function(elem){
+        if(class(elem) == "list") length(elem)
+        else 1
+    }))
+    
+    if(any(element_lengths != 1)){
+        new_list <- vector("list", sum(element_lengths))
+        iter1 <- 0
+        iter2 <- 1
+        while(iter2 <= length(nodeList)){
+            if(class(nodeList[[iter2]]) != "list"){
+                iter1 <- iter1 + 1
+                new_list[[iter1]] <- nodeList[[iter2]]
+            }else{
+                for(i in seq_along(nodeList[[iter2]])){
+                    iter1 <- iter1 + 1
+                    new_list[[iter1]] <- nodeList[[iter2]][[i]]
+                }
+            }
+            iter2 <- iter2 + 1
+        }
+        new_list
+    }else{
+        nodeList
+    }
+}
+############################## IMPROVED VERSION ################################
+
+
+############################## CUTREE VERSION ##################################
+## This works/is referred with ward.D linkage
+.get_clusters_from_hc_using_cutree <- function(hcObj, distMat, hStep = 0.05,
+                                               parentChunks = NULL,
+                                               verbose = FALSE){
+    
+    cut_heights <- seq(min(hcObj$height), max(hcObj$height), by = hStep)
+    
+    ## Important: Address the question of whether any merging is required?
+    ## -- We could use information from archR iteration
+    ##    -- Obtain the cutree-using-h clustering here. 
+    ##    -- Is it combining subsequent factors, like 1-2-3, 3-4 etc.? 
+    ##          a. This could mean that it is undoing the clusters identified by 
+    ##          archR in a previous iteration.
+    ##          b. But, if 1 came from chunk 1 and 2-3 came from chunk 2, and if
+    ##          the clustering results in combining 1-2, then this is a plausible 
+    ##          merge and should be left alone.
+    ##          c. So, we use a parentChunks variable that notes the parent 
+    ##          chunk for each ofthe current factors. This info can be used to 
+    ##          make this decision unambiguously.
+    
+    if(verbose) startTm <- Sys.time()
+    sils_cut_by_h <- unlist(lapply(cut_heights, 
+                       function(x){
+                           foo_try <- cutree(hcObj, h = x)
+                           names(foo_try) <- NULL
+                           if(length(unique(foo_try)) > 1){
+                               sils <- cluster::silhouette(foo_try, 
+                                                    dist = distMat)
+                               mean(sils[, "sil_width"])
+                           }else return(-100)
+                       }))
+    if(verbose) Sys.time() - startTm
+    
+    
+    if(verbose) plot(sils_cut_by_h)
+    
+    ## multiple matches, first match index is returned with which.max
+    cheight_idx <- which.max(sils_cut_by_h)
+    
+    
+    if(verbose) message("Max. silhouette score at index = ", cheight_idx,
+            ", height:", cut_heights[cheight_idx])
+    
+    cut_result <- cutree(hcObj, h = cut_heights[cheight_idx])
+    names(cut_result) <- NULL
+    clust_list <- lapply(1:length(unique(cut_result)), 
+                                     function(x) which(cut_result == x))
+    
+    if(verbose) message("#Clusters: ", length(clust_list))
+    if(verbose) print(paste(clust_list))
+    
+    if(!is.null(parentChunks)){
+        if(verbose) message("Checking parent chunks...")
+        childrenPerParent <- lapply(unique(parentChunks), function(x){
+                which(parentChunks == x)
+            })
+        updated_clust_list <- lapply(seq_along(clust_list), function(x){
+                        parents <- unique(parentChunks[clust_list[[x]]])
+                        thisX <- clust_list[[x]]
+                        message("parents");print(parents)
+                        message("thisX");print(thisX)
+                        if(length(parents) == 1 && length(thisX) > 1){
+                            ## if cluster elements come from same parent 
+                            ## chunk of previous iteration
+                            ## + now check if all elements in this cluster
+                            ## are the only children of that parent chunk
+                            ## (in other words nothing got separated and 
+                            ## combined with other factors)
+                            childrenThisParent <- 
+                                childrenPerParent[[as.integer(parents)]]
+                            message("length is One so, childrenThisParent:")
+                            print(childrenThisParent)
+                            message(class(as.numeric(childrenThisParent)))
+                            message(class(thisX))
+                            message(class(as.numeric(thisX)))
+                            ##
+                            if(identical(as.numeric(childrenThisParent), 
+                                         as.numeric(thisX))){
+                                message("Are identical")
+                                ## Split the merge back into separate clusters
+                                return(lapply(childrenThisParent, function(x){x}))
+                            }else{
+                                print("samarth, returning thisX")
+                                return(thisX)
+                            }
+                        }
+                        else{
+                            ## cluster elements come from different
+                            ## parent chunks (of previous iteration)
+                            return(thisX)
+                        }
+                    })
+        clust_list <- unfurl_nodeList(updated_clust_list)
+        message("Updated clusters")
+    }
+    
+    if(verbose) message("#Clusters: ", length(clust_list))
+    if(verbose) paste(clust_list)
+    return(clust_list)
+}
+
+############################## CUTREE VERSION ##################################
+
+
 
 .get_clusters_from_hc <- function(hcObj, distMat, verbose = FALSE){
 
@@ -703,13 +1156,13 @@ reorder_archRresult <- function(archRresult, iteration = 3,
                                 topN = 10,
                                 returnOrder = FALSE,
                                 position_agnostic_dist = FALSE,
+                                decisionToReorder = TRUE,
                                 config) {
     # Depends on archRresult object having a fixed set of names.
     # We need to .assert them
     # Finally, arrange clusters from processed outer chunks using hclust
-    lastLevel <- iteration
     
-    basisMat <- archRresult$clustBasisVectors[[lastLevel]]$basisVector
+    basisMat <- archRresult$clustBasisVectors[[iteration]]$basisVector
     
     if(regularize){
         basisMat2 <- basisMat
@@ -721,30 +1174,61 @@ reorder_archRresult <- function(archRresult, iteration = 3,
         basisMat <- basisMat2
     }
     
-    
-    if(position_agnostic_dist){
-        # TODO
-        # factorsClustering <- .position_agnostic_clustering()
+    ## Prepare info on parent chunks for each cluster/factor at given iteration
+    ## We get this info from the seqsClustLabels
+    parentChunks <- NULL
+    if(iteration > 1){
+        clustsThisIter <- sort(unique(archRresult$seqsClustLabels[[iteration]]))
+        parentChunks <- unlist(lapply(clustsThisIter, function(x){
+            relevantSeqsIds <- which(archRresult$seqsClustLabels[[iteration]] 
+                                     == x)
+            unique(archRresult$seqsClustLabels[[iteration - 1]][relevantSeqsIds])
+        }))
+    }
+    if(decisionToReorder){
+        if(position_agnostic_dist){
+            # TODO
+            
+        }else{
+            setReturnOrder <- FALSE
+            if(returnOrder){
+                setReturnOrder <- TRUE
+            }
+            factorsClustering <- .handle_clustering_of_factors(basisMat,
+                                               clustMethod = clustMethod,
+                                               linkage = linkage,
+                                               distMethod = distMethod,
+                                               returnOrder = returnOrder,
+                                               flags = config$flags,
+                                               parentChunks = parentChunks)
+            if(config$flags$debugFlag){
+                message("Performed factor clustering, returning object:")
+                print(factorsClustering)
+            }
+        }
         
     }else{
-        setReturnOrder <- FALSE
-        if(returnOrder){
-            setReturnOrder <- TRUE
+        ## Do not reorder, but prepare the return object
+        nFactors <- archRresult$clustBasisVectors[[iteration]]$nBasisVectors
+        factorsClustering <- vector("list", nFactors)
+        factorsClustering <- lapply(1:nFactors, function(x){x})
+        if(config$flags$debugFlag){
+            message("No factor clustering, returning object:")
+            print(factorsClustering)
         }
-        factorsClustering <- .handle_clustering_of_factors(basisMat,
-                                                           clustMethod = clustMethod,
-                                                           linkage = linkage,
-                                                           distMethod = distMethod,
-                                                           returnOrder = returnOrder,
-                                                           flags = config$flags)
     }
-    seqClusters <- get_seqs_clusters_in_a_list(archRresult$seqsClustLabels[[lastLevel]])
+    seqClusters <- get_seqs_clusters_in_a_list(archRresult$seqsClustLabels[[iteration]])
     
     clusters <- .collate_clusters2(factorsClustering,
                                    seqClusters)
+    clustLabels <- .update_cluster_labels(oldSeqsClustLabels = 
+                                              archRresult$seqsClustLabels[[iteration]], 
+                                          collatedClustAssignments = clusters,
+                                          flags = config$flags)
     
     cluster_sol <- list(basisVectorsClust = factorsClustering,
-                        clusters = clusters)
+                        clusters = clusters,
+                        seqsClustLabels = clustLabels)
     
     return(cluster_sol)
 
