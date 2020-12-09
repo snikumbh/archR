@@ -80,7 +80,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2020-11-12</h4>
+            <h4 class="date">2020-12-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -319,18 +319,10 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 3</span>
-<span class="co">#&gt; Iteration 1 completed in 1.22 mins</span>
-<span class="co">#&gt; 1.22 mins ellapsed since start</span>
+<span class="co">#&gt; Iteration 1 completed in 1.34 mins</span>
+<span class="co">#&gt; 1.34 mins ellapsed since start</span>
 <span class="co">#&gt; === Iteration 2, 3 chunk(s) ===</span>
-<span class="co">#&gt; [Outer chunk 1/3] [Size: 50]</span>
-<span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk 1/1] [Size: 50]</span>
-<span class="co">#&gt; Checking K = 1</span>
-<span class="co">#&gt; Checking K = 2</span>
-<span class="co">#&gt; Best K for this subset: 1</span>
-<span class="co">#&gt; Fetching 1 clusters</span>
-<span class="co">#&gt; [Outer chunk 1/3] complete</span>
-<span class="co">#&gt; [Outer chunk 2/3] [Size: 100]</span>
+<span class="co">#&gt; [Outer chunk 1/3] [Size: 100]</span>
 <span class="co">#&gt; Decision: Processing</span>
 <span class="co">#&gt; [Inner chunk 1/1] [Size: 100]</span>
 <span class="co">#&gt; Checking K = 1</span>
@@ -338,6 +330,14 @@
 <span class="co">#&gt; Checking K = 3</span>
 <span class="co">#&gt; Best K for this subset: 2</span>
 <span class="co">#&gt; Fetching 2 clusters</span>
+<span class="co">#&gt; [Outer chunk 1/3] complete</span>
+<span class="co">#&gt; [Outer chunk 2/3] [Size: 50]</span>
+<span class="co">#&gt; Decision: Processing</span>
+<span class="co">#&gt; [Inner chunk 1/1] [Size: 50]</span>
+<span class="co">#&gt; Checking K = 1</span>
+<span class="co">#&gt; Checking K = 2</span>
+<span class="co">#&gt; Best K for this subset: 1</span>
+<span class="co">#&gt; Fetching 1 clusters</span>
 <span class="co">#&gt; [Outer chunk 2/3] complete</span>
 <span class="co">#&gt; [Outer chunk 3/3] [Size: 50]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -351,9 +351,30 @@
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; Iteration 2 completed in 0.775 mins</span>
-<span class="co">#&gt; 2 mins ellapsed since start</span>
-<span class="co">#&gt; archR exiting, 2 mins</span></code></pre></div>
+<span class="co">#&gt; Iteration 2 completed in 0.809 mins</span>
+<span class="co">#&gt; 2.15 mins ellapsed since start</span>
+<span class="co">#&gt; parents</span>
+<span class="co">#&gt; [1] "1"</span>
+<span class="co">#&gt; thisX</span>
+<span class="co">#&gt; [1] 1 2</span>
+<span class="co">#&gt; length is One so, childrenThisParent:</span>
+<span class="co">#&gt; [1] 1 2</span>
+<span class="co">#&gt; numeric</span>
+<span class="co">#&gt; integer</span>
+<span class="co">#&gt; numeric</span>
+<span class="co">#&gt; Are identical</span>
+<span class="co">#&gt; parents</span>
+<span class="co">#&gt; [1] "2"</span>
+<span class="co">#&gt; thisX</span>
+<span class="co">#&gt; [1] 3</span>
+<span class="co">#&gt; parents</span>
+<span class="co">#&gt; [1] "3"</span>
+<span class="co">#&gt; thisX</span>
+<span class="co">#&gt; [1] 4</span>
+<span class="co">#&gt; Updated clusters</span>
+<span class="co">#&gt; Updating sequence cluster labels</span>
+<span class="co">#&gt; #Clusters: 4</span>
+<span class="co">#&gt; archR exiting, 2.15 mins</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
@@ -372,13 +393,13 @@
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">archRresult</span><span class="op">$</span><span class="va">clustBasisVectors</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">basisVectors</span><span class="op">)</span>
 <span class="co">#&gt; [1] 1600    4</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">archRresult</span><span class="op">$</span><span class="va">clustBasisVectors</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">basisVectors</span><span class="op">)</span>
-<span class="co">#&gt;            [,1]       [,2]       [,3]       [,4]</span>
-<span class="co">#&gt; [1,] 0.05168607 0.12074219 0.07404486 0.08186580</span>
-<span class="co">#&gt; [2,] 0.02486037 0.08706775 0.08675347 0.07917296</span>
-<span class="co">#&gt; [3,] 0.05076204 0.08039092 0.03791906 0.05196331</span>
-<span class="co">#&gt; [4,] 0.09945618 0.07461058 0.04274573 0.05334238</span>
-<span class="co">#&gt; [5,] 0.07484865 0.08034878 0.11742471 0.10758754</span>
-<span class="co">#&gt; [6,] 0.05051104 0.00720184 0.11867505 0.10543655</span></code></pre></div>
+<span class="co">#&gt;             [,1]       [,2]       [,3]       [,4]</span>
+<span class="co">#&gt; [1,] 0.120738792 0.07407943 0.05168607 0.08186580</span>
+<span class="co">#&gt; [2,] 0.087064002 0.08679650 0.02486037 0.07917296</span>
+<span class="co">#&gt; [3,] 0.080387155 0.03793825 0.05076204 0.05196331</span>
+<span class="co">#&gt; [4,] 0.074604999 0.04276979 0.09945618 0.05334238</span>
+<span class="co">#&gt; [5,] 0.080342833 0.11748608 0.07484865 0.10758754</span>
+<span class="co">#&gt; [6,] 0.007200647 0.11873504 0.05051104 0.10543655</span></code></pre></div>
 </div>
 </div>
 <div id="visualize-results-from-archr" class="section level2">
@@ -493,53 +514,53 @@ Figure: Clusters at iteration 2
 <span class="co">#&gt;   [5] TFBSTools_1.28.0            bit64_4.0.5                </span>
 <span class="co">#&gt;   [7] hopach_2.50.0               httr_1.4.2                 </span>
 <span class="co">#&gt;   [9] doParallel_1.0.16           RColorBrewer_1.1-2         </span>
-<span class="co">#&gt;  [11] rprojroot_1.3-2             GenomeInfoDb_1.26.0        </span>
-<span class="co">#&gt;  [13] tools_4.0.3                 backports_1.2.0            </span>
-<span class="co">#&gt;  [15] R6_2.5.0                    seqLogo_1.56.0             </span>
-<span class="co">#&gt;  [17] DBI_1.1.0                   colorspace_2.0-0           </span>
-<span class="co">#&gt;  [19] withr_2.3.0                 tidyselect_1.1.0           </span>
-<span class="co">#&gt;  [21] bit_4.0.4                   compiler_4.0.3             </span>
-<span class="co">#&gt;  [23] textshaping_0.1.2           desc_1.2.0                 </span>
-<span class="co">#&gt;  [25] DelayedArray_0.16.0         pkgmaker_0.32.2            </span>
-<span class="co">#&gt;  [27] rtracklayer_1.50.0          caTools_1.18.0             </span>
-<span class="co">#&gt;  [29] scales_1.1.1                readr_1.4.0                </span>
-<span class="co">#&gt;  [31] NMF_0.23.0                  pkgdown_1.6.1              </span>
-<span class="co">#&gt;  [33] systemfonts_0.3.2           stringr_1.4.0              </span>
-<span class="co">#&gt;  [35] digest_0.6.27               Rsamtools_2.6.0            </span>
-<span class="co">#&gt;  [37] R.utils_2.10.1              rmarkdown_2.5              </span>
-<span class="co">#&gt;  [39] pkgconfig_2.0.3             htmltools_0.5.0            </span>
-<span class="co">#&gt;  [41] MatrixGenerics_1.2.0        highr_0.8                  </span>
-<span class="co">#&gt;  [43] BSgenome_1.58.0             rlang_0.4.8                </span>
-<span class="co">#&gt;  [45] RSQLite_2.2.1               generics_0.1.0             </span>
-<span class="co">#&gt;  [47] BiocParallel_1.24.1         gtools_3.8.2               </span>
-<span class="co">#&gt;  [49] R.oo_1.24.0                 dplyr_1.0.2                </span>
-<span class="co">#&gt;  [51] RCurl_1.98-1.2              magrittr_1.5               </span>
-<span class="co">#&gt;  [53] GO.db_3.12.1                GenomeInfoDbData_1.2.4     </span>
-<span class="co">#&gt;  [55] Matrix_1.2-18               Rcpp_1.0.5                 </span>
-<span class="co">#&gt;  [57] munsell_0.5.0               R.methodsS3_1.8.1          </span>
-<span class="co">#&gt;  [59] lifecycle_0.2.0             stringi_1.5.3              </span>
-<span class="co">#&gt;  [61] yaml_2.2.1                  SummarizedExperiment_1.20.0</span>
-<span class="co">#&gt;  [63] zlibbioc_1.36.0             plyr_1.8.6                 </span>
-<span class="co">#&gt;  [65] grid_4.0.3                  ggseqlogo_0.1              </span>
-<span class="co">#&gt;  [67] blob_1.2.1                  crayon_1.3.4               </span>
-<span class="co">#&gt;  [69] CNEr_1.26.0                 lattice_0.20-41            </span>
-<span class="co">#&gt;  [71] annotate_1.68.0             KEGGREST_1.30.0            </span>
-<span class="co">#&gt;  [73] hms_0.5.3                   knitr_1.30                 </span>
-<span class="co">#&gt;  [75] pillar_1.4.6                GenomicRanges_1.42.0       </span>
-<span class="co">#&gt;  [77] rngtools_1.5                reshape2_1.4.4             </span>
-<span class="co">#&gt;  [79] codetools_0.2-16            TFMPvalue_0.0.8            </span>
-<span class="co">#&gt;  [81] XML_3.99-0.5                glue_1.4.2                 </span>
-<span class="co">#&gt;  [83] evaluate_0.14               png_0.1-7                  </span>
-<span class="co">#&gt;  [85] vctrs_0.3.4                 foreach_1.5.1              </span>
-<span class="co">#&gt;  [87] poweRlaw_0.70.6             gtable_0.3.0               </span>
-<span class="co">#&gt;  [89] purrr_0.3.4                 assertthat_0.2.1           </span>
-<span class="co">#&gt;  [91] ggplot2_3.3.2               xfun_0.19                  </span>
-<span class="co">#&gt;  [93] gridBase_0.4-7              xtable_1.8-4               </span>
-<span class="co">#&gt;  [95] pracma_2.2.9                ragg_0.4.0                 </span>
-<span class="co">#&gt;  [97] tibble_3.0.4                iterators_1.0.13           </span>
-<span class="co">#&gt;  [99] AnnotationDbi_1.52.0        GenomicAlignments_1.26.0   </span>
-<span class="co">#&gt; [101] registry_0.5-1              memoise_1.1.0              </span>
-<span class="co">#&gt; [103] cluster_2.1.0               ellipsis_0.3.1</span></code></pre></div>
+<span class="co">#&gt;  [11] rprojroot_2.0.2             GenomeInfoDb_1.26.2        </span>
+<span class="co">#&gt;  [13] tools_4.0.3                 R6_2.5.0                   </span>
+<span class="co">#&gt;  [15] seqLogo_1.56.0              DBI_1.1.0                  </span>
+<span class="co">#&gt;  [17] colorspace_2.0-0            withr_2.3.0                </span>
+<span class="co">#&gt;  [19] tidyselect_1.1.0            bit_4.0.4                  </span>
+<span class="co">#&gt;  [21] compiler_4.0.3              textshaping_0.2.1          </span>
+<span class="co">#&gt;  [23] desc_1.2.0                  DelayedArray_0.16.0        </span>
+<span class="co">#&gt;  [25] pkgmaker_0.32.2             rtracklayer_1.50.0         </span>
+<span class="co">#&gt;  [27] caTools_1.18.0              scales_1.1.1               </span>
+<span class="co">#&gt;  [29] readr_1.4.0                 NMF_0.23.0                 </span>
+<span class="co">#&gt;  [31] pkgdown_1.6.1               systemfonts_0.3.2          </span>
+<span class="co">#&gt;  [33] stringr_1.4.0               digest_0.6.27              </span>
+<span class="co">#&gt;  [35] Rsamtools_2.6.0             R.utils_2.10.1             </span>
+<span class="co">#&gt;  [37] rmarkdown_2.5               pkgconfig_2.0.3            </span>
+<span class="co">#&gt;  [39] htmltools_0.5.0             MatrixGenerics_1.2.0       </span>
+<span class="co">#&gt;  [41] highr_0.8                   BSgenome_1.58.0            </span>
+<span class="co">#&gt;  [43] rlang_0.4.9                 RSQLite_2.2.1              </span>
+<span class="co">#&gt;  [45] generics_0.1.0              BiocParallel_1.24.1        </span>
+<span class="co">#&gt;  [47] gtools_3.8.2                R.oo_1.24.0                </span>
+<span class="co">#&gt;  [49] dplyr_1.0.2                 RCurl_1.98-1.2             </span>
+<span class="co">#&gt;  [51] magrittr_2.0.1              GO.db_3.12.1               </span>
+<span class="co">#&gt;  [53] GenomeInfoDbData_1.2.4      Matrix_1.2-18              </span>
+<span class="co">#&gt;  [55] Rcpp_1.0.5                  munsell_0.5.0              </span>
+<span class="co">#&gt;  [57] R.methodsS3_1.8.1           lifecycle_0.2.0            </span>
+<span class="co">#&gt;  [59] stringi_1.5.3               yaml_2.2.1                 </span>
+<span class="co">#&gt;  [61] SummarizedExperiment_1.20.0 zlibbioc_1.36.0            </span>
+<span class="co">#&gt;  [63] plyr_1.8.6                  grid_4.0.3                 </span>
+<span class="co">#&gt;  [65] ggseqlogo_0.1               blob_1.2.1                 </span>
+<span class="co">#&gt;  [67] crayon_1.3.4                CNEr_1.26.0                </span>
+<span class="co">#&gt;  [69] lattice_0.20-41             annotate_1.68.0            </span>
+<span class="co">#&gt;  [71] KEGGREST_1.30.1             hms_0.5.3                  </span>
+<span class="co">#&gt;  [73] knitr_1.30                  pillar_1.4.7               </span>
+<span class="co">#&gt;  [75] GenomicRanges_1.42.0        rngtools_1.5               </span>
+<span class="co">#&gt;  [77] reshape2_1.4.4              codetools_0.2-16           </span>
+<span class="co">#&gt;  [79] TFMPvalue_0.0.8             XML_3.99-0.5               </span>
+<span class="co">#&gt;  [81] glue_1.4.2                  evaluate_0.14              </span>
+<span class="co">#&gt;  [83] png_0.1-7                   vctrs_0.3.5                </span>
+<span class="co">#&gt;  [85] foreach_1.5.1               poweRlaw_0.70.6            </span>
+<span class="co">#&gt;  [87] gtable_0.3.0                purrr_0.3.4                </span>
+<span class="co">#&gt;  [89] assertthat_0.2.1            ggplot2_3.3.2              </span>
+<span class="co">#&gt;  [91] xfun_0.19                   gridBase_0.4-7             </span>
+<span class="co">#&gt;  [93] xtable_1.8-4                pracma_2.2.9               </span>
+<span class="co">#&gt;  [95] ragg_0.4.0                  tibble_3.0.4               </span>
+<span class="co">#&gt;  [97] iterators_1.0.13            AnnotationDbi_1.52.0       </span>
+<span class="co">#&gt;  [99] GenomicAlignments_1.26.0    registry_0.5-1             </span>
+<span class="co">#&gt; [101] memoise_1.1.0               cluster_2.1.0              </span>
+<span class="co">#&gt; [103] ellipsis_0.3.1</span></code></pre></div>
 </div>
   </div>
 
