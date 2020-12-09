@@ -309,7 +309,8 @@ archRSetConfig <- function(innerChunkSize = 500,
 ## =============================================================================
 
 
-## for hierarchical clustering object, return the cluster medoids
+## For hierarchical clustering object, return the cluster medoids
+## We currently use the first element of the cluster as its medoid
 .get_factors_from_factor_clustering2 <- function(listObj, globFactorsMat){
     ##
     .assert_archR_featuresMatrix(globFactorsMat)
@@ -358,7 +359,7 @@ archRSetConfig <- function(innerChunkSize = 500,
         stop("Input matrix to model selection procedure is NULL or not a
             matrix")
     }
-    ##
+    #########################
     if(config$modSelType == "cv"){
         if(config$flags$debugFlag) {
             message("Performing cross validation-based model selection")
