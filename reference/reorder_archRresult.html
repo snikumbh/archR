@@ -132,7 +132,7 @@ clusters</p>
   <span class='va'>archRresult</span>,
   iteration <span class='op'>=</span> <span class='fl'>3</span>,
   clustMethod <span class='op'>=</span> <span class='st'>"hc"</span>,
-  linkage <span class='op'>=</span> <span class='st'>"average"</span>,
+  linkage <span class='op'>=</span> <span class='st'>"ward.D"</span>,
   distMethod <span class='op'>=</span> <span class='st'>"euclid"</span>,
   regularize <span class='op'>=</span> <span class='cn'>TRUE</span>,
   topN <span class='op'>=</span> <span class='fl'>10</span>,
@@ -159,7 +159,8 @@ clusters</p>
     </tr>
     <tr>
       <th>linkage</th>
-      <td><p>One of linkage values as specified for hierarchical clustering.</p></td>
+      <td><p>One of linkage values as specified for hierarchical clustering.
+Default is `ward.D'.</p></td>
     </tr>
     <tr>
       <th>distMethod</th>
