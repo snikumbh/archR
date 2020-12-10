@@ -542,6 +542,20 @@
 ## =============================================================================
 
 ################################# IMPROVED VERSION #############################
+
+#' @title Get clusters from hclust object (improved version of previous ad-hoc
+#' approach -- this allows singletons)
+#' 
+#' @param hcObj The hierachical clustering, hclust object
+#' @param linkage String. Specify the linkage used -- works best for ward.D.
+#' @param bound_scale Specify a threshold percentage. This will be used to 
+#' compute the extent of the distance allowed between any two elements so that
+#' they can be combined. See more explanation in the function code
+#' @param pIter Numebr of iterations of joining procedures to be performed (See
+#' while loop in the function code).
+#' 
+#' @importFrom utils tail
+#' @importFrom stats median
 .get_clusters_from_hc2 <- function(hcObj, linkage = "complete", 
                                    bound_scale = 0.75, pIter = 4,
                                    distMat, verbose = FALSE){
@@ -680,7 +694,7 @@
                 distInSet <- unlist(lapply(seq_len(nrow(idx_pairs)), function(y){
                     distMat[idx_pairs[y,1],idx_pairs[y,2]]
                 })) 
-                A <- median(distInSet)
+                A <- stats::median(distInSet)
                 dist_bound <- A + bound_scale*A
                 ## If previous cases still kept decision to join as TRUE, check
                 ## the distance criterion, and finally decide.
@@ -735,7 +749,7 @@
                 rightNeighborOfX <- NA
                 rightNeighborOfXisLast <- FALSE
                 totalLength <- length(hcObj$order)
-                rightOfX <- tail(x, 1)
+                rightOfX <- utils::tail(x, 1)
                 positionOfXinOrder <- which(rightOfX == hcObj$order)
                 # if(verbose) print("hcObj$order for ref:");print(hcObj$order)
                 # if(verbose) print(paste("position in Order:", positionOfXinOrder))
@@ -876,7 +890,26 @@ unfurl_nodeList <- function(nodeList){
 
 
 ############################## CUTREE VERSION ##################################
-## This works/is referred with ward.D linkage
+## This works best/is best referred with ward.D linkage
+#' @title Get clusters out of hierarchical clustering object using cutree. 
+#' Used internally by archR.
+#' 
+#' @description Clusters from a hierarchical clustering object are obtained 
+#' by using cutree at different heights of the tree.
+#' 
+#' @param hcObj The hierarchical clustering object as returned by 
+#' \code{\link{stats::hclust}}.
+#' @param distMat The distance matrix that was used by hclust, a 
+#' \code{\link{stats::dist}} object.
+#' @param hStep Numeric. The step size used to increment height values for 
+#' cutree. Default value is 0.05.
+#' @param parentChunks List. Specify the factor numbers in the previous 
+#' iteration of archR that factors in the current iteration resulted from. 
+#' Default value is NULL.
+#' @param verbose Logical. Specify TRUE for verbose output.
+#' 
+#' @importFrom stats cutree 
+#'
 .get_clusters_from_hc_using_cutree <- function(hcObj, distMat, hStep = 0.05,
                                                parentChunks = NULL,
                                                verbose = FALSE){
@@ -919,7 +952,7 @@ unfurl_nodeList <- function(nodeList){
     if(verbose) message("Max. silhouette score at index = ", cheight_idx,
             ", height:", cut_heights[cheight_idx])
     
-    cut_result <- cutree(hcObj, h = cut_heights[cheight_idx])
+    cut_result <- stats::cutree(hcObj, h = cut_heights[cheight_idx])
     names(cut_result) <- NULL
     clust_list <- lapply(1:length(unique(cut_result)), 
                                      function(x) which(cut_result == x))
@@ -1141,12 +1174,19 @@ unfurl_nodeList <- function(nodeList){
 #' @param returnOrder Specify TRUE if only the computed order for hierarchical 
 #' clustering is to be returned
 #' @param position_agnostic_dist If position agnostic distance measure is to be 
-#' used.
+#' used. For future implementation.
+#' @param decisionToReorder Logical. Specify TRUE if reordering using 
+#' hierachical agglomerative clustering is to be performed, otherwise FALSE. 
+#' 
 #' @param config Pass the configuration of the archR result object.
 #'
-#' @return Returns ordering returned from hclust or the re-ordered clusters
+#' @return Returns ordering returned from hclust or the re-ordered clusters. 
+#' When `decisionToReorder' is FALSE, it returns the already existing basis 
+#' vectors, each as singleton clusters. The sequence cluster labels and sequence
+#'  clusters are handled accordingly.
 #'
 #' @importFrom stats hclust dist
+#' @importFrom utils tail
 #' @export
 reorder_archRresult <- function(archRresult, iteration = 3,
                                 clustMethod = "hc",

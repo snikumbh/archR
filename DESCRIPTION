@@ -8,9 +8,10 @@ Authors@R:
            role = c("aut", "cre"),
            email = "sarvesh.nikumbh@gmail.com",
            comment = c(ORCID = "0000-0003-3163-4447"))
-Description: Given a set of DNA sequences, the \code{archR} enables 
+Description: Given a set of DNA sequences,\code{archR} enables 
     unsupervised discovery of clusters with characteristic sequence 
-    architectures.
+    architectures. \code{archR} is an iterative algorithm with non-negative
+    matrix factorization (NMF) as its backbone.
 License: GPL-3
 URL: https://github.com/snikumbh/archR
 BugReports: https://github.com/snikumbh/archR/issues

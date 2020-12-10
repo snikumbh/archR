@@ -14,6 +14,7 @@ reorder_archRresult(
   topN = 10,
   returnOrder = FALSE,
   position_agnostic_dist = FALSE,
+  decisionToReorder = TRUE,
   config
 )
 }
@@ -37,12 +38,18 @@ comparison. See argument 'topN'.}
 clustering is to be returned}
 
 \item{position_agnostic_dist}{If position agnostic distance measure is to be 
-used.}
+used. For future implementation.}
+
+\item{decisionToReorder}{Logical. Specify TRUE if reordering using 
+hierachical agglomerative clustering is to be performed, otherwise FALSE.}
 
 \item{config}{Pass the configuration of the archR result object.}
 }
 \value{
-Returns ordering returned from hclust or the re-ordered clusters
+Returns ordering returned from hclust or the re-ordered clusters. 
+When `decisionToReorder' is FALSE, it returns the already existing basis 
+vectors, each as singleton clusters. The sequence cluster labels and sequence
+ clusters are handled accordingly.
 }
 \description{
 We use hierarchical clustering for reordering archR raw
