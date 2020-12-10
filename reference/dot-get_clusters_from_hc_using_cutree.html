@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Reorder archR raw clustering at the chosen iteration — reorder_archRresult • archR</title>
+<title>Get clusters out of hierarchical clustering object using cutree. 
+Used internally by archR. — .get_clusters_from_hc_using_cutree • archR</title>
 
 
 <!-- jquery -->
@@ -39,9 +40,10 @@
 
 
 
-<meta property="og:title" content="Reorder archR raw clustering at the chosen iteration — reorder_archRresult" />
-<meta property="og:description" content="We use hierarchical clustering for reordering archR raw
-clusters" />
+<meta property="og:title" content="Get clusters out of hierarchical clustering object using cutree. 
+Used internally by archR. — .get_clusters_from_hc_using_cutree" />
+<meta property="og:description" content="Clusters from a hierarchical clustering object are obtained 
+by using cutree at different heights of the tree." />
 
 
 
@@ -118,89 +120,55 @@ clusters" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Reorder archR raw clustering at the chosen iteration</h1>
+    <h1>Get clusters out of hierarchical clustering object using cutree. 
+Used internally by archR.</h1>
     <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/archR_auxiliary_functionsI.R'><code>R/archR_auxiliary_functionsI.R</code></a></small>
-    <div class="hidden name"><code>reorder_archRresult.Rd</code></div>
+    <div class="hidden name"><code>dot-get_clusters_from_hc_using_cutree.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>We use hierarchical clustering for reordering archR raw
-clusters</p>
+    <p>Clusters from a hierarchical clustering object are obtained 
+by using cutree at different heights of the tree.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>reorder_archRresult</span><span class='op'>(</span>
-  <span class='va'>archRresult</span>,
-  iteration <span class='op'>=</span> <span class='fl'>3</span>,
-  clustMethod <span class='op'>=</span> <span class='st'>"hc"</span>,
-  linkage <span class='op'>=</span> <span class='st'>"average"</span>,
-  distMethod <span class='op'>=</span> <span class='st'>"euclid"</span>,
-  regularize <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  topN <span class='op'>=</span> <span class='fl'>10</span>,
-  returnOrder <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  position_agnostic_dist <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  decisionToReorder <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>config</span>
+    <pre class="usage"><span class='fu'>.get_clusters_from_hc_using_cutree</span><span class='op'>(</span>
+  <span class='va'>hcObj</span>,
+  <span class='va'>distMat</span>,
+  hStep <span class='op'>=</span> <span class='fl'>0.05</span>,
+  parentChunks <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>archRresult</th>
-      <td><p>The archRresult object.</p></td>
+      <th>hcObj</th>
+      <td><p>The hierarchical clustering object as returned by 
+<code><a href='https://rdrr.io/r/stats/hclust.html'>stats::hclust</a></code>.</p></td>
     </tr>
     <tr>
-      <th>iteration</th>
-      <td><p>Specify clusters at which iteration of archR are to be reordered.</p></td>
+      <th>distMat</th>
+      <td><p>The distance matrix that was used by hclust, a 
+<code><a href='https://rdrr.io/r/stats/dist.html'>stats::dist</a></code> object.</p></td>
     </tr>
     <tr>
-      <th>clustMethod</th>
-      <td><p>Specify 'hc' for hierarchical clustering.</p></td>
+      <th>hStep</th>
+      <td><p>Numeric. The step size used to increment height values for 
+cutree. Default value is 0.05.</p></td>
     </tr>
     <tr>
-      <th>linkage</th>
-      <td><p>One of linkage values as specified for hierarchical clustering.</p></td>
+      <th>parentChunks</th>
+      <td><p>List. Specify the factor numbers in the previous 
+iteration of archR that factors in the current iteration resulted from. 
+Default value is NULL.</p></td>
     </tr>
     <tr>
-      <th>distMethod</th>
-      <td><p>Distance measure to be used with hierarchical clustering.</p></td>
-    </tr>
-    <tr>
-      <th>regularize</th>
-      <td><p>Specify TRUE if regularization is to be performed before 
-comparison. See argument 'topN'.</p></td>
-    </tr>
-    <tr>
-      <th>topN</th>
-      <td><p>Keep only the topN positions for comparing basis vectors.</p></td>
-    </tr>
-    <tr>
-      <th>returnOrder</th>
-      <td><p>Specify TRUE if only the computed order for hierarchical 
-clustering is to be returned</p></td>
-    </tr>
-    <tr>
-      <th>position_agnostic_dist</th>
-      <td><p>If position agnostic distance measure is to be 
-used. For future implementation.</p></td>
-    </tr>
-    <tr>
-      <th>decisionToReorder</th>
-      <td><p>Logical. Specify TRUE if reordering using 
-hierachical agglomerative clustering is to be performed, otherwise FALSE.</p></td>
-    </tr>
-    <tr>
-      <th>config</th>
-      <td><p>Pass the configuration of the archR result object.</p></td>
+      <th>verbose</th>
+      <td><p>Logical. Specify TRUE for verbose output.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Returns ordering returned from hclust or the re-ordered clusters. 
-When `decisionToReorder' is FALSE, it returns the already existing basis 
-vectors, each as singleton clusters. The sequence cluster labels and sequence
- clusters are handled accordingly.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
