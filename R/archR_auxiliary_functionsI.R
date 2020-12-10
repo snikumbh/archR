@@ -553,6 +553,9 @@
 #' they can be combined. See more explanation in the function code
 #' @param pIter Numebr of iterations of joining procedures to be performed (See
 #' while loop in the function code).
+#' @param distMat Distance matrix as returned by \code{\link[stats]{dist}}.
+#' @param verbose Specify TRUE or FALSE to control verbosity of output. Setting 
+#' TRUE will print intermediate output enabling debugging.
 #' 
 #' @importFrom utils tail
 #' @importFrom stats median
@@ -898,9 +901,9 @@ unfurl_nodeList <- function(nodeList){
 #' by using cutree at different heights of the tree.
 #' 
 #' @param hcObj The hierarchical clustering object as returned by 
-#' \code{\link{stats::hclust}}.
+#' \code{\link[stats]{hclust}}.
 #' @param distMat The distance matrix that was used by hclust, a 
-#' \code{\link{stats::dist}} object.
+#' \code{\link[stats]{dist}} object.
 #' @param hStep Numeric. The step size used to increment height values for 
 #' cutree. Default value is 0.05.
 #' @param parentChunks List. Specify the factor numbers in the previous 
@@ -1170,6 +1173,7 @@ unfurl_nodeList <- function(nodeList){
 #' @param iteration Specify clusters at which iteration of archR are to be reordered.
 #' @param clustMethod Specify 'hc' for hierarchical clustering.
 #' @param linkage One of linkage values as specified for hierarchical clustering.
+#' Default is `ward.D'.
 #' @param distMethod Distance measure to be used with hierarchical clustering.
 #' @param regularize Specify TRUE if regularization is to be performed before 
 #' comparison. See argument 'topN'.
@@ -1193,7 +1197,7 @@ unfurl_nodeList <- function(nodeList){
 #' @export
 reorder_archRresult <- function(archRresult, iteration = 3,
                                 clustMethod = "hc",
-                                linkage = "average",
+                                linkage = "ward.D",
                                 distMethod = "euclid",
                                 regularize = TRUE,
                                 topN = 10,

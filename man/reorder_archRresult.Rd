@@ -8,7 +8,7 @@ reorder_archRresult(
   archRresult,
   iteration = 3,
   clustMethod = "hc",
-  linkage = "average",
+  linkage = "ward.D",
   distMethod = "euclid",
   regularize = TRUE,
   topN = 10,
@@ -25,7 +25,8 @@ reorder_archRresult(
 
 \item{clustMethod}{Specify 'hc' for hierarchical clustering.}
 
-\item{linkage}{One of linkage values as specified for hierarchical clustering.}
+\item{linkage}{One of linkage values as specified for hierarchical clustering.
+Default is `ward.D'.}
 
 \item{distMethod}{Distance measure to be used with hierarchical clustering.}
 

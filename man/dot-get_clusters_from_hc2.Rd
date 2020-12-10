@@ -25,6 +25,11 @@ they can be combined. See more explanation in the function code}
 
 \item{pIter}{Numebr of iterations of joining procedures to be performed (See
 while loop in the function code).}
+
+\item{distMat}{Distance matrix as returned by \code{\link[stats]{dist}}.}
+
+\item{verbose}{Specify TRUE or FALSE to control verbosity of output. Setting 
+TRUE will print intermediate output enabling debugging.}
 }
 \description{
 Get clusters from hclust object (improved version of previous ad-hoc

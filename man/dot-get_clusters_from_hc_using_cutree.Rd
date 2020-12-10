@@ -15,10 +15,10 @@ Used internally by archR.}
 }
 \arguments{
 \item{hcObj}{The hierarchical clustering object as returned by 
-\code{\link{stats::hclust}}.}
+\code{\link[stats]{hclust}}.}
 
 \item{distMat}{The distance matrix that was used by hclust, a 
-\code{\link{stats::dist}} object.}
+\code{\link[stats]{dist}} object.}
 
 \item{hStep}{Numeric. The step size used to increment height values for 
 cutree. Default value is 0.05.}
