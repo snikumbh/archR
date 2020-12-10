@@ -909,6 +909,7 @@ unfurl_nodeList <- function(nodeList){
 #' @param verbose Logical. Specify TRUE for verbose output.
 #' 
 #' @importFrom stats cutree 
+#' @importFrom cluster silhouette
 #'
 .get_clusters_from_hc_using_cutree <- function(hcObj, distMat, hStep = 0.05,
                                                parentChunks = NULL,
@@ -937,7 +938,7 @@ unfurl_nodeList <- function(nodeList){
                            if(length(unique(foo_try)) > 1){
                                sils <- cluster::silhouette(foo_try, 
                                                     dist = distMat)
-                               mean(sils[, "sil_width"])
+                               base::mean(sils[, "sil_width"])
                            }else return(-100)
                        }))
     if(verbose) Sys.time() - startTm
@@ -968,8 +969,8 @@ unfurl_nodeList <- function(nodeList){
         updated_clust_list <- lapply(seq_along(clust_list), function(x){
                         parents <- unique(parentChunks[clust_list[[x]]])
                         thisX <- clust_list[[x]]
-                        message("parents");print(parents)
-                        message("thisX");print(thisX)
+                        if(verbose) message("parents");print(parents)
+                        if(verbose) message("thisX");print(thisX)
                         if(length(parents) == 1 && length(thisX) > 1){
                             ## if cluster elements come from same parent 
                             ## chunk of previous iteration
@@ -979,19 +980,21 @@ unfurl_nodeList <- function(nodeList){
                             ## combined with other factors)
                             childrenThisParent <- 
                                 childrenPerParent[[as.integer(parents)]]
-                            message("length is One so, childrenThisParent:")
-                            print(childrenThisParent)
-                            message(class(as.numeric(childrenThisParent)))
-                            message(class(thisX))
-                            message(class(as.numeric(thisX)))
+                            if(verbose){
+                                message("length is One so, childrenThisParent:")
+                                print(childrenThisParent)
+                                message(class(as.numeric(childrenThisParent)))
+                                message(class(thisX))
+                                message(class(as.numeric(thisX)))
+                            }
                             ##
                             if(identical(as.numeric(childrenThisParent), 
                                          as.numeric(thisX))){
-                                message("Are identical")
+                                if(verbose) message("Are identical")
                                 ## Split the merge back into separate clusters
                                 return(lapply(childrenThisParent, function(x){x}))
                             }else{
-                                print("samarth, returning thisX")
+                                if(verbose) print("samarth, returning thisX")
                                 return(thisX)
                             }
                         }
@@ -1002,7 +1005,7 @@ unfurl_nodeList <- function(nodeList){
                         }
                     })
         clust_list <- unfurl_nodeList(updated_clust_list)
-        message("Updated clusters")
+        if(verbose) message("Updated clusters")
     }
     
     if(verbose) message("#Clusters: ", length(clust_list))

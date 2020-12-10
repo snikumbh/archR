@@ -31,6 +31,7 @@ Imports:
     grDevices,
     methods,
     stats,
+    cluster,
     data.table,
     purrr (>= 0.3.2),
     reshape2 (>= 1.4.3),
