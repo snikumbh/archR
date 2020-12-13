@@ -18,7 +18,6 @@ archRSetConfig(
   alphaBase = 0,
   alphaPow = 1,
   minSeqs = 25,
-  modSelLogFile = "log.txt",
   checkpointing = TRUE,
   flags = list(debugFlag = FALSE, timeFlag = FALSE, verboseFlag = TRUE, plotVerboseFlag
     = FALSE)
@@ -65,14 +64,11 @@ to be performed with NMF.}
 \item{alphaBase, alphaPow}{Specify the base value and the power for computing
 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
 Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
-Warning: To be deprecated.}
+Warning: For future.}
 
 \item{minSeqs}{Numeric. Specify the minimum number of sequences, such that
 any cluster/chunk of size less than or equal to it will not be further
 processed/clustered.}
-
-\item{modSelLogFile}{Specify a name for the file where model selection logs
-will be written. Warning: To be deprecated.}
 
 \item{checkpointing}{Logical. Specify whether to write intermediate checkpoints
 to disk as RDS files. Default is TRUE. Checkpoints and the final result are

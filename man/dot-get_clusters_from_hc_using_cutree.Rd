@@ -10,6 +10,7 @@ Used internally by archR.}
   distMat,
   hStep = 0.05,
   parentChunks = NULL,
+  keepSiblingsUncollated = FALSE,
   verbose = FALSE
 )
 }
@@ -28,6 +29,11 @@ iteration of archR that factors in the current iteration resulted from.
 Default value is NULL.}
 
 \item{verbose}{Logical. Specify TRUE for verbose output.}
+
+\item{keepSinglingsUncollated}{Logical. Specify TRUE if all clusters from a 
+single parent chunk should not be collated, even when recommended so based on 
+silhouette value computation. Default value FALSE. i.e. if they get collated, it is
+ left as collated.}
 }
 \description{
 Clusters from a hierarchical clustering object are obtained 
