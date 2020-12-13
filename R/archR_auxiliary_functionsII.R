@@ -131,12 +131,10 @@ get_dimers_from_alphabet <- function(alphabet){
 #' @param alphaBase,alphaPow Specify the base value and the power for computing
 #' 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
 #' Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
-#' Warning: To be deprecated.
+#' Warning: For future.
 #' @param minSeqs Numeric. Specify the minimum number of sequences, such that
 #' any cluster/chunk of size less than or equal to it will not be further
 #' processed/clustered.
-#' @param modSelLogFile Specify a name for the file where model selection logs
-#' will be written. Warning: To be deprecated.
 #' @param checkpointing Logical. Specify whether to write intermediate checkpoints
 #' to disk as RDS files. Default is TRUE. Checkpoints and the final result are
 #' saved to disk provided the oDir argument is set in \code{\link{archR}}.
@@ -163,7 +161,6 @@ archRSetConfig <- function(innerChunkSize = 500,
                             alphaBase = 0,
                             alphaPow = 1,
                             minSeqs = 25,
-                            modSelLogFile = "log.txt",
                             checkpointing = TRUE,
                             flags = list(
                                 debugFlag = FALSE,
@@ -187,7 +184,6 @@ archRSetConfig <- function(innerChunkSize = 500,
                             k_vals = seq(kMin, kMax, by = 1)
                         ),
                         innerChunkSize = innerChunkSize,
-                        modSelLogFile = modSelLogFile,
                         checkpointing = checkpointing,
                         minSeqs = minSeqs,
                         flags = flags
@@ -368,7 +364,6 @@ archRSetConfig <- function(innerChunkSize = 500,
                 X = this_mat, param_ranges = config$paramRanges,
                 kFolds = config$kFolds, parallelDo = config$parallelize,
                 nCores = config$nCoresUse, nIterations = config$nIterationsUse,
-                logfile = config$modSelLogFile,
                 set_verbose = 0, returnBestK = TRUE, #monolinear = monolinear,
                 cgfglinear = cgfglinear, coarse_step = coarse_step,
                 askParsimony = askParsimony
@@ -383,7 +378,6 @@ archRSetConfig <- function(innerChunkSize = 500,
             X = this_mat, param_ranges = config$paramRanges,
             parallelDo = config$parallelize, nCores = config$nCoresUse,
             nIterations = config$nIterationsUse,
-            # logfile = config$modSelLogFile,
             tol = config$tol, bound = config$bound,
             flags = config$flags, returnBestK = TRUE, bootstrap = TRUE
         )
@@ -525,25 +519,32 @@ intermediateResultsPlot <- function(seqsClustLabels, tss.seqs_raw = NULL,
 ## Input arguments: vector (size:nseqs) of cluster labels for sequence (for given iteration)
 ## Output: Nothing returned, files written to disk at specified location (fname)
 ##
-sorted_order <- sort(seqsClustLabels, index.return = TRUE)
 
+if(is.numeric(iterVal)){
+    name_suffix <- paste0("Iteration", iterVal)
+    message("=== Intermediate Result ===")
+}else{
+    name_suffix <- paste0("Final")
+    message("=== Final Result ===")
+}
 ##
 seqs_clusters_as_list_ordered <- get_seqs_clusters_in_a_list(seqsClustLabels)
-message("=== Intermediate Result ===")
+
 message("Generating unannotated map of clustered sequences...")
-image_fname <- paste0(fname, "ClusteringImage_Iteration", iterVal, ".png")
+image_fname <- paste0(fname, "ClusteringImage_", name_suffix, ".png")
 message("Sequence clustering image written to: ", image_fname)
-viz_seqs_as_acgt_mat_from_seqs(rawSeqs =  as.character(tss.seqs_raw[sorted_order$ix]),
-                        position_labels = positions,
-                        savefilename = image_fname,
-                        fwidth = 450,
-                        fheight = 900,
-                        xt_freq = 5,
-                        yt_freq = 100)
+viz_seqs_as_acgt_mat_from_seqs(
+    rawSeqs =  as.character(tss.seqs_raw[unlist(seqs_clusters_as_list_ordered)]),
+                    position_labels = positions,
+                    savefilename = image_fname,
+                    fwidth = 450,
+                    fheight = 900,
+                    xt_freq = 5,
+                    yt_freq = 100)
 
 ##
 message("Generating architectures for clusters of sequences...")
-arch_fname <- paste0(fname, "Architecture_SequenceLogos_Iteration", iterVal, ".pdf")
+arch_fname <- paste0(fname, "Architecture_SequenceLogos_", name_suffix, ".pdf")
 message("Architectures written to: ", arch_fname)
 plot_arch_for_clusters_new(
     tss.seqs_raw,
