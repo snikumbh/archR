@@ -365,8 +365,8 @@
 .assert_archR_config <- function(config_var, given_seqs_size = NA) {
     ##TODO: Check assertions for new args modSelType, tol and bound
     expNames <- c("modSelType", "tol", "bound", "kFolds",
-                  "parallelize", "nCoresUse", "nIterationsUse", #"seedVal",
-                  "paramRanges", "innerChunkSize", "modSelLogFile", "minSeqs",
+                  "parallelize", "nCoresUse", "nIterationsUse", 
+                  "paramRanges", "innerChunkSize", "minSeqs",
                   "flags", "checkpointing")
     if (is.null(config_var)) {
         stop("'config' is NULL")
