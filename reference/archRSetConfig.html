@@ -140,7 +140,6 @@
   alphaBase <span class='op'>=</span> <span class='fl'>0</span>,
   alphaPow <span class='op'>=</span> <span class='fl'>1</span>,
   minSeqs <span class='op'>=</span> <span class='fl'>25</span>,
-  modSelLogFile <span class='op'>=</span> <span class='st'>"log.txt"</span>,
   checkpointing <span class='op'>=</span> <span class='cn'>TRUE</span>,
   flags <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>debugFlag <span class='op'>=</span> <span class='cn'>FALSE</span>, timeFlag <span class='op'>=</span> <span class='cn'>FALSE</span>, verboseFlag <span class='op'>=</span> <span class='cn'>TRUE</span>, plotVerboseFlag
     <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
@@ -211,18 +210,13 @@ to be performed with NMF.</p></td>
       <td><p>Specify the base value and the power for computing
 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
 Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
-Warning: To be deprecated.</p></td>
+Warning: For future.</p></td>
     </tr>
     <tr>
       <th>minSeqs</th>
       <td><p>Numeric. Specify the minimum number of sequences, such that
 any cluster/chunk of size less than or equal to it will not be further
 processed/clustered.</p></td>
-    </tr>
-    <tr>
-      <th>modSelLogFile</th>
-      <td><p>Specify a name for the file where model selection logs
-will be written. Warning: To be deprecated.</p></td>
     </tr>
     <tr>
       <th>checkpointing</th>

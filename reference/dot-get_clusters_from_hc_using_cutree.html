@@ -136,6 +136,7 @@ by using cutree at different heights of the tree.</p>
   <span class='va'>distMat</span>,
   hStep <span class='op'>=</span> <span class='fl'>0.05</span>,
   parentChunks <span class='op'>=</span> <span class='cn'>NULL</span>,
+  keepSiblingsUncollated <span class='op'>=</span> <span class='cn'>FALSE</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
@@ -166,6 +167,13 @@ Default value is NULL.</p></td>
     <tr>
       <th>verbose</th>
       <td><p>Logical. Specify TRUE for verbose output.</p></td>
+    </tr>
+    <tr>
+      <th>keepSinglingsUncollated</th>
+      <td><p>Logical. Specify TRUE if all clusters from a 
+single parent chunk should not be collated, even when recommended so based on 
+silhouette value computation. Default value FALSE. i.e. if they get collated, it is
+ left as collated.</p></td>
     </tr>
     </table>
 
