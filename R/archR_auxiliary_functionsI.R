@@ -909,6 +909,10 @@ unfurl_nodeList <- function(nodeList){
 #' @param parentChunks List. Specify the factor numbers in the previous 
 #' iteration of archR that factors in the current iteration resulted from. 
 #' Default value is NULL.
+#' @param keepSinglingsUncollated Logical. Specify TRUE if all clusters from a 
+#' single parent chunk should not be collated, even when recommended so based on 
+#' silhouette value computation. Default value FALSE. i.e. if they get collated, it is
+#'  left as collated.
 #' @param verbose Logical. Specify TRUE for verbose output.
 #' 
 #' @importFrom stats cutree 
@@ -916,6 +920,7 @@ unfurl_nodeList <- function(nodeList){
 #'
 .get_clusters_from_hc_using_cutree <- function(hcObj, distMat, hStep = 0.05,
                                                parentChunks = NULL,
+                                               keepSiblingsUncollated = FALSE,
                                                verbose = FALSE){
     
     cut_heights <- seq(min(hcObj$height), max(hcObj$height), by = hStep)
@@ -932,6 +937,12 @@ unfurl_nodeList <- function(nodeList){
     ##          c. So, we use a parentChunks variable that notes the parent 
     ##          chunk for each ofthe current factors. This info can be used to 
     ##          make this decision unambiguously.
+    ##          
+    ## Update: 2020-12-13: We current let these get combined if HAC+cutree deems
+    ## it fine, and we recommend that the clusters at the iteration of archR can 
+    ## be left uncollated for reference. The final stage will then hold the best
+    ##  possible set of clusters guided by silhouette value.
+    ## Now handled by logical argument keepSiblingsUncollated.
     
     if(verbose) startTm <- Sys.time()
     sils_cut_by_h <- unlist(lapply(cut_heights, 
@@ -947,7 +958,7 @@ unfurl_nodeList <- function(nodeList){
     if(verbose) Sys.time() - startTm
     
     
-    if(verbose) plot(sils_cut_by_h)
+    # if(verbose) plot(sils_cut_by_h)
     
     ## multiple matches, first match index is returned with which.max
     cheight_idx <- which.max(sils_cut_by_h)
@@ -964,7 +975,7 @@ unfurl_nodeList <- function(nodeList){
     if(verbose) message("#Clusters: ", length(clust_list))
     if(verbose) print(paste(clust_list))
     
-    if(!is.null(parentChunks)){
+    if(!is.null(parentChunks) && keepSiblingsUncollated){
         if(verbose) message("Checking parent chunks...")
         childrenPerParent <- lapply(unique(parentChunks), function(x){
                 which(parentChunks == x)
@@ -993,7 +1004,11 @@ unfurl_nodeList <- function(nodeList){
                             ##
                             if(identical(as.numeric(childrenThisParent), 
                                          as.numeric(thisX))){
-                                if(verbose) message("Are identical")
+                                if(verbose) message("Parents are identical")
+                                ## Update: 20202-12-13 
+                                ## See update above. With keepSiblingsUncollated
+                                ## as FALSE, this check is not performed.
+                                ## 
                                 ## Split the merge back into separate clusters
                                 return(lapply(childrenThisParent, function(x){x}))
                             }else{
@@ -1268,10 +1283,12 @@ reorder_archRresult <- function(archRresult, iteration = 3,
     
     clusters <- .collate_clusters2(factorsClustering,
                                    seqClusters)
+
     clustLabels <- .update_cluster_labels(oldSeqsClustLabels = 
                                               archRresult$seqsClustLabels[[iteration]], 
                                           collatedClustAssignments = clusters,
                                           flags = config$flags)
+    
     
     cluster_sol <- list(basisVectorsClust = factorsClustering,
                         clusters = clusters,
