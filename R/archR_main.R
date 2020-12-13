@@ -157,8 +157,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         if(config$flags$debugFlag) message("Asked for parallelization")
         if(config$flags$debugFlag) message("Making cluster here")
         cl <- parallel::makeCluster(config$nCoresUse,
-                                    type = "FORK",
-                                    outfile = config$modSelLogFile)
+                                    type = "FORK")
         parallel::setDefaultCluster(cl)
         if(config$flags$verboseFlag) {
             message("Parallelization with ", config$nCoresUse , " cores")
@@ -359,7 +358,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             ## performing HAC/collation when #inner chunks & the number of 
             ## outer chunks is 1.
             if(config$flags$debugFlag) {
-                message("Processing outer chunk collection")
+                message("Decision for outer chunk collation: Yes")
             }
             ## Cluster the factors using hierachical clustering
             ## Combinations considered:
@@ -498,6 +497,14 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                                           position_agnostic_dist = FALSE,
                                           decisionToReorder = decisionToReorder,
                                           config = temp_res$config)
+    ## Print final stage output files to disk
+    if(config$flags$plotVerboseFlag){
+        if(!is.null(oDir)){
+            intermediateResultsPlot(temp_res_reord$seqsClustLabels,
+                                    seqsRaw, positions = seqsPositions,
+                                    iterVal = "Final", fname = oDir)
+        }
+    }
     ##
     if(config$flags$timeFlag){
         temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
