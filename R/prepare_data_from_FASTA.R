@@ -245,20 +245,20 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
 #' @export
 prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE,
                                     sinuc_or_dinuc = "sinuc") {
-    if (file.exists(inputFastaFilename)) {
-        givenSeqs <-
-            Biostrings::readDNAStringSet(filepath = inputFastaFilename,
-                                            format = "fasta",
-                                            use.names = FALSE)
-    } else {
+    if (!file.exists(inputFastaFilename)) {
         stop("File not found, please check if it exists")
     }
-    #
-    givenSeqs <- Biostrings::DNAStringSet(toupper(givenSeqs))
+    
     if (rawSeq) {
+        givenSeqs <- Biostrings::readDNAStringSet(
+            filepath = inputFastaFilename, format = "fasta", use.names = TRUE)
+        givenSeqs <- Biostrings::DNAStringSet(toupper(givenSeqs))
         return(givenSeqs)
     } else {
         #
+        givenSeqs <- Biostrings::readDNAStringSet(
+            filepath = inputFastaFilename, format = "fasta", use.names = FALSE)
+        givenSeqs <- Biostrings::DNAStringSet(toupper(givenSeqs))
         .assert_seq_attributes(givenSeqs)
         message("Read ", length(givenSeqs), " sequences")
         #
