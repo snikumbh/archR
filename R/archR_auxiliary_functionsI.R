@@ -909,7 +909,7 @@ unfurl_nodeList <- function(nodeList){
 #' @param parentChunks List. Specify the factor numbers in the previous 
 #' iteration of archR that factors in the current iteration resulted from. 
 #' Default value is NULL.
-#' @param keepSinglingsUncollated Logical. Specify TRUE if all clusters from a 
+#' @param keepSiblingsUncollated Logical. Specify TRUE if all clusters from a 
 #' single parent chunk should not be collated, even when recommended so based on 
 #' silhouette value computation. Default value FALSE. i.e. if they get collated, it is
 #'  left as collated.
