@@ -349,7 +349,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         
         if(config$flags$debugFlag){
             message("Collation this iter:", setOCollation[test_itr],
-                    "#InnerChunks: ", length(innerChunksColl), 
+                    "; #InnerChunks: ", length(innerChunksColl), 
                     "; #OuterChunks: ", totOuterChunksColl)
         }
         if (setOCollation[test_itr] && (length(innerChunksColl) > 1 
@@ -426,6 +426,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                 complTime <- format(as.numeric(Sys.time() - iterStartTime,
                                         units = "mins"), digits = 3)
                 itrComplTime <- paste(" in", complTime, "mins")
+                timeInfo[[test_itr]] <- as.double.difftime(complTime)
             }
             message(itrComplMsg, itrComplTime)
             archRComplMsg <- paste("ellapsed since start")
@@ -433,7 +434,6 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             if(config$flags$timeFlag){
                 complTime <- format(as.numeric(Sys.time() - archRStartTime,
                                                units = "mins"), digits = 3)
-                timeInfo[[test_itr]] <- as.double.difftime(complTime)
                 archRComplTime <- paste(complTime, "mins ")
                 message(archRComplTime, archRComplMsg)
             }
@@ -492,7 +492,8 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                                           clustMethod = "hc",
                                           linkage = "ward.D", ## or average?
                                           distMethod = "euclid",
-                                          regularize = TRUE, topN = 10,
+                                          regularize = TRUE, 
+                                          topN = floor(length(seqPositions)/2),
                                           returnOrder = FALSE,
                                           position_agnostic_dist = FALSE,
                                           decisionToReorder = decisionToReorder,
