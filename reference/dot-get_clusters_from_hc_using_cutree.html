@@ -43,7 +43,8 @@ Used internally by archR. — .get_clusters_from_hc_using_cutree • archR</titl
 <meta property="og:title" content="Get clusters out of hierarchical clustering object using cutree. 
 Used internally by archR. — .get_clusters_from_hc_using_cutree" />
 <meta property="og:description" content="Clusters from a hierarchical clustering object are obtained 
-by using cutree at different heights of the tree." />
+by using cutree at different heights of the tree. The optimum number of 
+clusters are decided based on the average silhouette value of the clustering." />
 
 
 
@@ -128,7 +129,8 @@ Used internally by archR.</h1>
 
     <div class="ref-description">
     <p>Clusters from a hierarchical clustering object are obtained 
-by using cutree at different heights of the tree.</p>
+by using cutree at different heights of the tree. The optimum number of 
+clusters are decided based on the average silhouette value of the clustering.</p>
     </div>
 
     <pre class="usage"><span class='fu'>.get_clusters_from_hc_using_cutree</span><span class='op'>(</span>
@@ -137,6 +139,9 @@ by using cutree at different heights of the tree.</p>
   hStep <span class='op'>=</span> <span class='fl'>0.05</span>,
   parentChunks <span class='op'>=</span> <span class='cn'>NULL</span>,
   keepSiblingsUncollated <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  enableSwitchSilToCH <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  minClusters <span class='op'>=</span> <span class='fl'>2</span>,
+  distThreshold <span class='op'>=</span> <span class='fl'>3</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
@@ -170,6 +175,25 @@ Default value is NULL.</p></td>
 single parent chunk should not be collated, even when recommended so based on 
 silhouette value computation. Default value FALSE. i.e. if they get collated, it is
  left as collated.</p></td>
+    </tr>
+    <tr>
+      <th>enableSwitchSilToCH</th>
+      <td><p>Logical. When and if the clustering result has 
+singletons, using the average silhouette value may not be reliable to decide 
+on the optimum number of clusters. In this case, if this argument is TRUE, 
+the Calinski-Harabasz index is used instead. Setting it to FALSE, the
+switch is disabled, i.e., average silhouette value is used. Default is TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>minClusters</th>
+      <td><p>Integer. Specify the minimum number of clusters to be 
+fetched from the HAC solution.</p></td>
+    </tr>
+    <tr>
+      <th>distThreshold</th>
+      <td><p>Numeric. Specify a threshold of units of distance for 
+considering any two elements as close enough to be merged in the same cluster.
+The default value is specified for Euclidean distance.</p></td>
     </tr>
     <tr>
       <th>verbose</th>

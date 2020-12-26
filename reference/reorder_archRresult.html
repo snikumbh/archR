@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Reorder archR raw clustering at the chosen iteration — reorder_archRresult" />
-<meta property="og:description" content="We use hierarchical clustering for reordering archR raw
-clusters" />
+<meta property="og:description" content="We use hierarchical clustering for reordering/collating raw
+clusters from archR's given iteration." />
 
 
 
@@ -124,22 +124,23 @@ clusters" />
     </div>
 
     <div class="ref-description">
-    <p>We use hierarchical clustering for reordering archR raw
-clusters</p>
+    <p>We use hierarchical clustering for reordering/collating raw
+clusters from archR's given iteration.</p>
     </div>
 
     <pre class="usage"><span class='fu'>reorder_archRresult</span><span class='op'>(</span>
   <span class='va'>archRresult</span>,
-  iteration <span class='op'>=</span> <span class='fl'>3</span>,
+  iteration <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>archRresult</span><span class='op'>$</span><span class='va'>seqsClustLabels</span><span class='op'>)</span>,
   clustMethod <span class='op'>=</span> <span class='st'>"hc"</span>,
   linkage <span class='op'>=</span> <span class='st'>"ward.D"</span>,
   distMethod <span class='op'>=</span> <span class='st'>"euclid"</span>,
   regularize <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  topN <span class='op'>=</span> <span class='fl'>10</span>,
+  topN <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span><span class='op'>(</span><span class='fl'>0.5</span> <span class='op'>*</span> <span class='va'>archRresult</span><span class='op'>$</span><span class='va'>rawSeqs</span><span class='op'>@</span><span class='va'>ranges</span><span class='op'>@</span><span class='va'>width</span><span class='op'>)</span>,
   returnOrder <span class='op'>=</span> <span class='cn'>FALSE</span>,
   position_agnostic_dist <span class='op'>=</span> <span class='cn'>FALSE</span>,
   decisionToReorder <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>config</span>
+  <span class='va'>config</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -155,7 +156,8 @@ clusters</p>
     </tr>
     <tr>
       <th>clustMethod</th>
-      <td><p>Specify 'hc' for hierarchical clustering.</p></td>
+      <td><p>Specify 'hc' for hierarchical clustering. Currently, only
+hierarchical clustering is supported.</p></td>
     </tr>
     <tr>
       <th>linkage</th>
@@ -164,7 +166,10 @@ Default is `ward.D'.</p></td>
     </tr>
     <tr>
       <th>distMethod</th>
-      <td><p>Distance measure to be used with hierarchical clustering.</p></td>
+      <td><p>Distance measure to be used with hierarchical clustering. 
+Available options are "euclid" (default), "cor" for correlation, "cosangle" 
+for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
+<code><a href='https://rdrr.io/pkg/TFBSTools/man/PFMSimilarity-methods.html'>PFMSimilarity</a></code>).</p></td>
     </tr>
     <tr>
       <th>regularize</th>
@@ -188,11 +193,15 @@ used. For future implementation.</p></td>
     <tr>
       <th>decisionToReorder</th>
       <td><p>Logical. Specify TRUE if reordering using 
-hierachical agglomerative clustering is to be performed, otherwise FALSE.</p></td>
+hierarchical agglomerative clustering is to be performed, otherwise FALSE.</p></td>
     </tr>
     <tr>
       <th>config</th>
       <td><p>Pass the configuration of the archR result object.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>ignored</p></td>
     </tr>
     </table>
 
@@ -201,7 +210,7 @@ hierachical agglomerative clustering is to be performed, otherwise FALSE.</p></t
     <p>Returns ordering returned from hclust or the re-ordered clusters. 
 When `decisionToReorder' is FALSE, it returns the already existing basis 
 vectors, each as singleton clusters. The sequence cluster labels and sequence
- clusters are handled accordingly.</p>
+ clusters are also handled accordingly.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
