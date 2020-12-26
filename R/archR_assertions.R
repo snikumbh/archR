@@ -450,6 +450,9 @@
 ## =============================================================================
 
 
+
+## =============================================================================
+
 ## Function to check validity of seqsClustLabels
 ## Expected to be:
 ## 1. not NULL
@@ -482,7 +485,108 @@
 }
 ## =============================================================================
 
-
+## Function to check validity of archRresult object 
+## Expected to be a nested list of various elements as follows:
+## 1. seqsClustLabels and clustBasisVectors: list with as many elements as 
+## number of iterations
+##   - each seqsClustLabels: a character vector of labels for all sequences per 
+##   iteration
+##   - each clustBasisVectors: a list with elements 'nBasisVectors' and 
+##   'basisVectors'
+##     - nBasisVectors: integer, number of basis vectors for that iteration
+##     - basisVectors: double matrix, basisVectors, dimensions along rows, 
+##     different basis vectors along columns
+## 2. clustSol: list storing the final clustering solution of archR; this has 
+## three elements
+##   - 'basisVectorsClust': a list storing clustered basis vectors from 
+##   last iteration of archR (result from reorder_archRresult)
+##   - 'clusters': a list storing relevant sequence indices per cluster. Length 
+##   of 'clusters' and 'basisVectorsClust' should be same.
+##   - 'seqsClustLabels': labels per sequence according to clustering in 
+##   clusters
+## 3. rawSeqs: The DNAStringSet object storing all sequences provided to archR. 
+## These sequences have names in the DNAStringSet object.
+## 4. timeInfo: a list storing time required (in minutes) for each iteration 
+## of archR
+## 5. config: configuration set for processing the corresponding data with archR 
+## 6. call: the function call itself. 
+## 
+## 
+.assert_archRresult <- function(archRresultObj) {
+    if(archRresultObj$config$flags$timeFlag){
+        topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", "clustSol",
+                                 "rawSeqs", "timeInfo", "config", 
+                                 "call")
+    }else{
+        ## timeFlag not set so timeInfo shouldn't be present
+        topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", "clustSol",
+                                 "rawSeqs", "config", 
+                                 "call")
+        
+    }
+    if (is.null(archRresultObj)) {
+        stop("archR result object is NULL")
+    }
+    
+    if(!identical(names(archRresultObj), topLevel_elem_names)){
+        stop("archR result object list elements' name do not match")
+    }
+    eq_itr_lengths <- length(archRresultObj$seqsClustLabels)
+    if(!all(length(archRresultObj$clustBasisVectors) == eq_itr_lengths
+             && (archRresultObj$config$flags$timeFlag && 
+                 length(archRresultObj$timeInfo) == eq_itr_lengths)
+            )){
+        stop("archR result object has erroneous iter info for labels, 
+             basis vectors and/or timeInfo")
+    }
+    
+    eq_seqs_length <- length(archRresultObj$rawSeqs)
+    logi_seqs_length <- unlist(lapply(archRresultObj$seqsClustLabels, function(x){
+        length(x) == eq_seqs_length
+    }))
+    if(!all(logi_seqs_length)) stop("Sequence clust labels for iteration(s) of
+                                inappropriate length")
+    
+    if(!(eq_seqs_length == length(archRresultObj$clustSol$seqsClustLabels)))
+        stop("Sequence labels for final clustering solution of inappropriate
+             length")
+    
+    ## assert if dimensions of clustBasisVectors are fine.
+    ## Sequences can be encoded as monomers, dimers, etc.
+    ## this should be 4L, (4^2)L, (4^3)L, and so on
+    factor_rows <- unlist(lapply(archRresultObj$clustBasisVectors, function(x){
+        log(nrow(x$basisVectors)/(archRresultObj$rawSeqs[1]@ranges@width), base=4)
+    }))
+    if(!all(diff(factor_rows) == 0))
+        stop("archR result clustBasisVectors have unequal dimensions across 
+             iterations")
+    
+    factor_cols <- unlist(lapply(archRresultObj$clustBasisVectors, function(x){
+        x$nBasisVectors > 0 &&
+            class(x$basisVectors)[1] == "matrix" &&
+            x$nBasisVectors == ncol(x$basisVectors)
+    }))
+    if(!all(factor_cols))
+        stop("nCols in basisVectors do not match number of basis vectors specified in 
+             nBasisVectors")
+    
+    .assert_archR_seqsClustLabels(archRresultObj$seqsClustLabels)
+    
+    ## assert attributes in clustSol
+    ## - element names
+    ## - lengths of clusters and basisVectorClust
+    clustSol_exp_names <- names(archRresultObj$clustSol)
+    if(!identical(clustSol_exp_names, names(archRresultObj$clustSol)))
+        stop("Element names in clustSol of result object do not match")
+    
+    clustSol <- archRresultObj$clustSol
+    if(length(clustSol$basisVectorsClust) != length(clustSol$clusters))
+        stop("Mismatch in number of clusters in clustSol$basisVectorsClust 
+             and clustSol$clusters")
+    
+    
+}
+## =============================================================================
 
 ## Function to check validity of hopach object for usability with archR
 ## Expected to be:

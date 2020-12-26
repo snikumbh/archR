@@ -23,14 +23,18 @@
 #' clusters are collated, FALSE otherwise.
 #' @param fresh Logical. Specify if this is (not) a fresh run. Because
 #' archR enables checkpointing, it is possible to perform additional iterations
-#' using an existing archR result (or a checkpoint) object. See UseOC argument.
-#' For example, when processing a set of FASTA sequences, if an earlier call
-#' to archR performed two iterations, and now you wish to perform a third,
-#' arguments fresh and UseOC can be used. Simply set fresh to FALSE and assign
-#' the sequence clusters or iteration two from the earlier result to UseOC.
-#' @param UseOC List. Clusters from an earlier iteration of archR or archR
-#' result.
-#' Warning: This has not been rigorously tested yet (v0.99.4).
+#' upon clusters from an existing archR result (or a checkpoint) object. 
+#' See UseOC argument. For example, when processing a set of FASTA sequences, 
+#' if an earlier call to archR performed two iterations, and now you wish to 
+#' perform a third, the arguments `fresh` and `UseOC` can be used. Simply set 
+#' `fresh` to FALSE and assign the sequence clusters from iteration two from 
+#' the earlier result to `UseOC`. As of v1.0.2, with this setting, archR 
+#' returns a new result object as if the additional iteration performed is the 
+#' only iteration.
+#' @param UseOC List. Clusters to be further processed with archR. These can be 
+#' from a previous archR result (in which case use archRresult$clustSol$clusters),
+#' or simply clusters from any other method.
+#' Warning: This has not been rigorously tested yet (v1.0.2).
 #' @param oDir Character. Specify the output directory with its path. archR
 #' will create this directory. If a directory with the given name exists at the
 #' given location, archR will add a suffix to the directory name. This
@@ -120,11 +124,14 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
     architectures <- vector("list", thresholdItr)
     if(config$flags$timeFlag) timeInfo <- vector("list", thresholdItr)
     ##
+    test_itr <- 1
+    ##----------------------------------------------------------------------
     if(fresh){
         outerChunksColl <- vector("list", 1)
         ## Set outerChunks for first iteration
         outerChunksColl[[1]] <- seq(ncol(seqsMat))
-    } else {
+        ##
+    }else{
         message("Working on clusters from an earlier run")
         if(is.null(UseOC)){
             message("UseOC should not be NULL")
@@ -135,6 +142,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                                                       UseOC)
             .assert_archR_OK_for_nextIteration(UseOC)
             outerChunksColl <- UseOC
+            ##
         }
     }
     ##
@@ -149,9 +157,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
         setOCollation[1] <- TRUE
         setOCollation[length(setParsimony)] <- FALSE #Earlier was TRUE
     }
-    ##
-    test_itr <- 1
-    ##--------------------------------------------------------------------------
+    
     #### Start cluster only once
     if(config$parallelize){
         if(config$flags$debugFlag) message("Asked for parallelization")
@@ -177,7 +183,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
 
     ##
     ##--------------------------------------------------------------------------
-    message("=== archR to perform ", thresholdItr, " iterations ===")
+    message("=== archR to perform ", thresholdItr, " iteration(s) ===")
     while (test_itr <= thresholdItr) {
         iterStartTime <- Sys.time()
         totOuterChunksColl <- length(outerChunksColl)
@@ -486,18 +492,25 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             if(config$flags$debugFlag) message("Reordering decision: FALSE")
         }
     }
+    ## For setting minClusters, note last iteration collated
+    set_minClusters <- 2 ## the default value
+    if(any(setOCollation)){
+        lastItrC <- tail(which(setOCollation), 1)
+        set_minClusters <- temp_res$clustBasisVectors[[lastItrC]]$nBasisVectors
+    }
     ##
     temp_res_reord <- reorder_archRresult(temp_res,
-                                          iteration = thresholdItr,
-                                          clustMethod = "hc",
-                                          linkage = "ward.D", ## or average?
-                                          distMethod = "euclid",
-                                          regularize = TRUE, 
-                                          topN = floor(length(seqsPositions)/2),
-                                          returnOrder = FALSE,
-                                          position_agnostic_dist = FALSE,
-                                          decisionToReorder = decisionToReorder,
-                                          config = temp_res$config)
+                  iteration = thresholdItr,
+                  clustMethod = "hc",
+                  linkage = "ward.D", ## or average?
+                  distMethod = "euclid",
+                  minClusters = set_minClusters,
+                  regularize = TRUE, 
+                  topN = floor(0.5*length(seqsPositions)),
+                  returnOrder = FALSE,
+                  position_agnostic_dist = FALSE,
+                  decisionToReorder = decisionToReorder,
+                  config = temp_res$config)
     ## Print final stage output files to disk
     if(config$flags$plotVerboseFlag){
         if(!is.null(oDir)){
@@ -523,6 +536,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                                  config = config,
                                  call = match.call())
     }
+    .assert_archRresult(temp_archRresult)
     ##
     ## Write result to disk as RDS file
     if(!is.null(oDir)){

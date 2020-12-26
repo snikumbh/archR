@@ -11,6 +11,9 @@ Used internally by archR.}
   hStep = 0.05,
   parentChunks = NULL,
   keepSiblingsUncollated = FALSE,
+  enableSwitchSilToCH = TRUE,
+  minClusters = 2,
+  distThreshold = 3,
   verbose = FALSE
 )
 }
@@ -33,9 +36,23 @@ single parent chunk should not be collated, even when recommended so based on
 silhouette value computation. Default value FALSE. i.e. if they get collated, it is
  left as collated.}
 
+\item{enableSwitchSilToCH}{Logical. When and if the clustering result has 
+singletons, using the average silhouette value may not be reliable to decide 
+on the optimum number of clusters. In this case, if this argument is TRUE, 
+the Calinski-Harabasz index is used instead. Setting it to FALSE, the
+switch is disabled, i.e., average silhouette value is used. Default is TRUE.}
+
+\item{minClusters}{Integer. Specify the minimum number of clusters to be 
+fetched from the HAC solution.}
+
+\item{distThreshold}{Numeric. Specify a threshold of units of distance for 
+considering any two elements as close enough to be merged in the same cluster.
+The default value is specified for Euclidean distance.}
+
 \item{verbose}{Logical. Specify TRUE for verbose output.}
 }
 \description{
 Clusters from a hierarchical clustering object are obtained 
-by using cutree at different heights of the tree.
+by using cutree at different heights of the tree. The optimum number of 
+clusters are decided based on the average silhouette value of the clustering.
 }

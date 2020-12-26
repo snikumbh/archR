@@ -6,16 +6,17 @@
 \usage{
 reorder_archRresult(
   archRresult,
-  iteration = 3,
+  iteration = length(archRresult$seqsClustLabels),
   clustMethod = "hc",
   linkage = "ward.D",
   distMethod = "euclid",
   regularize = TRUE,
-  topN = 10,
+  topN = floor(0.5 * archRresult$rawSeqs@ranges@width),
   returnOrder = FALSE,
   position_agnostic_dist = FALSE,
   decisionToReorder = TRUE,
-  config
+  config,
+  ...
 )
 }
 \arguments{
@@ -23,12 +24,16 @@ reorder_archRresult(
 
 \item{iteration}{Specify clusters at which iteration of archR are to be reordered.}
 
-\item{clustMethod}{Specify 'hc' for hierarchical clustering.}
+\item{clustMethod}{Specify 'hc' for hierarchical clustering. Currently, only
+hierarchical clustering is supported.}
 
 \item{linkage}{One of linkage values as specified for hierarchical clustering.
 Default is `ward.D'.}
 
-\item{distMethod}{Distance measure to be used with hierarchical clustering.}
+\item{distMethod}{Distance measure to be used with hierarchical clustering. 
+Available options are "euclid" (default), "cor" for correlation, "cosangle" 
+for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
+\code{\link[TFBSTools]{PFMSimilarity}}).}
 
 \item{regularize}{Specify TRUE if regularization is to be performed before 
 comparison. See argument 'topN'.}
@@ -42,17 +47,19 @@ clustering is to be returned}
 used. For future implementation.}
 
 \item{decisionToReorder}{Logical. Specify TRUE if reordering using 
-hierachical agglomerative clustering is to be performed, otherwise FALSE.}
+hierarchical agglomerative clustering is to be performed, otherwise FALSE.}
 
 \item{config}{Pass the configuration of the archR result object.}
+
+\item{...}{ignored}
 }
 \value{
 Returns ordering returned from hclust or the re-ordered clusters. 
 When `decisionToReorder' is FALSE, it returns the already existing basis 
 vectors, each as singleton clusters. The sequence cluster labels and sequence
- clusters are handled accordingly.
+ clusters are also handled accordingly.
 }
 \description{
-We use hierarchical clustering for reordering archR raw
-clusters
+We use hierarchical clustering for reordering/collating raw
+clusters from archR's given iteration.
 }

@@ -47,15 +47,19 @@ clusters are collated, FALSE otherwise.}
 
 \item{fresh}{Logical. Specify if this is (not) a fresh run. Because
 archR enables checkpointing, it is possible to perform additional iterations
-using an existing archR result (or a checkpoint) object. See UseOC argument.
-For example, when processing a set of FASTA sequences, if an earlier call
-to archR performed two iterations, and now you wish to perform a third,
-arguments fresh and UseOC can be used. Simply set fresh to FALSE and assign
-the sequence clusters or iteration two from the earlier result to UseOC.}
+upon clusters from an existing archR result (or a checkpoint) object. 
+See UseOC argument. For example, when processing a set of FASTA sequences, 
+if an earlier call to archR performed two iterations, and now you wish to 
+perform a third, the arguments `fresh` and `UseOC` can be used. Simply set 
+`fresh` to FALSE and assign the sequence clusters from iteration two from 
+the earlier result to `UseOC`. As of v1.0.2, with this setting, archR 
+returns a new result object as if the additional iteration performed is the 
+only iteration.}
 
-\item{UseOC}{List. Clusters from an earlier iteration of archR or archR
-result.
-Warning: This has not been rigorously tested yet (v0.99.4).}
+\item{UseOC}{List. Clusters to be further processed with archR. These can be 
+from a previous archR result (in which case use archRresult$clustSol$clusters),
+or simply clusters from any other method.
+Warning: This has not been rigorously tested yet (v1.0.2).}
 
 \item{oDir}{Character. Specify the output directory with its path. archR
 will create this directory. If a directory with the given name exists at the
