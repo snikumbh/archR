@@ -51,7 +51,7 @@
 #' @param col A vector of four colors used for the DNA bases A, C, G, and T (in
 #' that order)
 #' @param savefilename Specify the filename (with extension) for saving the
-#' plot to disk
+#' plot to disk.
 #' @param filetype Specify the file type, namely PNG, JPEG, TIFF.
 #' @param fwidth Specify the width for the plot. This depends on the length of
 #' sequences.
@@ -63,8 +63,6 @@
 #'
 #' @return Nothing returned to the R interpreter.
 #' @family visualization functions
-#' @seealso \code{\link{viz_seqs_as_acgt_mat_from_ohe}} for visualizing one-hot 
-#' encoded DNA sequences
 #' @importFrom grDevices png
 #' @importFrom graphics axis image
 #' @export

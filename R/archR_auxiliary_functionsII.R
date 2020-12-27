@@ -51,7 +51,7 @@ handle_dir_creation <- function(givenODir, flags = list(debugFlag = FALSE,
     }
     returnODirName
 }
-
+## =============================================================================
 
 
 ## Getter function to fetch the features matrix from NMF result object
@@ -546,10 +546,11 @@ viz_seqs_as_acgt_mat_from_seqs(
 message("Generating architectures for clusters of sequences...")
 arch_fname <- paste0(fname, "Architecture_SequenceLogos_", name_suffix, ".pdf")
 message("Architectures written to: ", arch_fname)
-plot_arch_for_clusters_new(
+plot_arch_for_clusters(
     tss.seqs_raw,
     list_of_elements = seqs_clusters_as_list_ordered,
     position_labels = positions,
     PDFfname = arch_fname)
 
 }
+## =============================================================================

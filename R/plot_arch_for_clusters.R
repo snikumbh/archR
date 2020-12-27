@@ -1,9 +1,3 @@
-get_seq_cluster_levels <- function(annClusters) {
-    clusterLevels <- levels(as.factor(annClusters))
-    return(clusterLevels)
-}
-
-
 #' @title Plot cluster architectures as sequence logos.
 #' @description Given a collection of FASTA sequences as a DNAStringSet object,
 #' and the clusters information, this function plots the architectures for all
@@ -21,7 +15,7 @@ get_seq_cluster_levels <- function(annClusters) {
 #'
 #' @importFrom grDevices pdf
 #' @export
-plot_arch_for_clusters_new <- function(tss.seqs_raw,
+plot_arch_for_clusters <- function(tss.seqs_raw,
                                 list_of_elements,
                                 position_labels,
                                 xt_freq = 5,
@@ -36,26 +30,28 @@ plot_arch_for_clusters_new <- function(tss.seqs_raw,
     cumsums_of_cluster_lengths <- cumsum(cluster_lengths)
     cluster_names <- sort(as.character(seq_along(seqs_clusters_as_list)))
     for (i in seq_along(seqs_clusters_as_list)) {
+        # if(i > 1){
+        #     startN <- 1 + cumsums_of_cluster_lengths[i-1]
+        # }else{
+        #     startN <- 1
+        # }
         ##
-        if(i > 1){
-            startN <- 1 + cumsums_of_cluster_lengths[i-1]
-        }else{
-            startN <- 1
-        }
+        startN <- ifelse(i > 1, (1+cumsums_of_cluster_lengths[i-1]), 1)
         endN <- cumsums_of_cluster_lengths[i]
-        plot_title <- paste0("(", i , "/", length(seqs_clusters_as_list), ") Arch `",
+        ##
+        plot_title <- paste0("(", i , "/", length(seqs_clusters_as_list), 
+                             ") Arch `",
                              cluster_names[i], "': ",
                              length(seqs_clusters_as_list[[i]]),
-                             " sequences (",  startN, "-",  endN, ")" )
-        message(plot_title)
+                             " sequences (",  startN, "-",  endN, ")")
         ##
-        samarth_p <- plot_ggseqlogo_of_seqs(seqs = tss.seqs_raw[ seqs_clusters_as_list[[i]] ],
-                                            position_labels = position_labels,
-                                            xt_freq = xt_freq,
-                                            title = plot_title)
+        foo_p <- plot_ggseqlogo_of_seqs(seqs = 
+                                    tss.seqs_raw[ seqs_clusters_as_list[[i]] ],
+                                    position_labels = position_labels,
+                                    xt_freq = xt_freq,
+                                    title = plot_title)
         ##
-        suppressMessages(print(samarth_p))
-
+        suppressMessages(print(foo_p))
     }
     if(!is.null(PDFfname)) {
         dev.off()
@@ -87,7 +83,7 @@ plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 5,
     xtick_cal[1] <- 1
     xtick_cal[length(xtick_cal)] <- nPos
 
-    samarth_p <-
+    foo_p <-
         ggseqlogo::ggseqlogo(
             as.character(seqs),
             seq_type = "dna",
@@ -106,11 +102,9 @@ plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 5,
                                     expand = expansion(mult = c(0, 0))) +
         ggplot2::ggtitle(title)
     if(bits_yax == 'full'){
-        samarth_p <- samarth_p + ggplot2::ylim(0.0, 2.0) 
+        foo_p <- foo_p + ggplot2::ylim(0.0, 2.0) 
     }
-        
-    
     message("Plot title:", title)
 
-    samarth_p
+    foo_p
 }
