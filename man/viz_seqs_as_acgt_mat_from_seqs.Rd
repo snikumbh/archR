@@ -32,7 +32,7 @@ sequences.}
 that order)}
 
 \item{savefilename}{Specify the filename (with extension) for saving the
-plot to disk}
+plot to disk.}
 
 \item{filetype}{Specify the file type, namely PNG, JPEG, TIFF.}
 

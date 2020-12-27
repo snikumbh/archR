@@ -838,7 +838,6 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
             )
         }
         if(is.null(itr) && !is.null(selectedRawSeqs)){
-            # message("SAMARTH -- plotting, aalo re")
             # seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
             # sorted_order <- sort(seqsClustLabels, index.return = TRUE)
             # clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
@@ -850,7 +849,7 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
                 xt_val <- as.numeric(input$xtickFreqPWM)
             }
             return(
-                # archR::plot_arch_for_clusters_new(
+                # archR::plot_arch_for_clusters(
                 # archRresult$rawSeqs,
                 # list_of_elements = clusters_ord,
                 # position_labels = pos_labels,
@@ -864,7 +863,7 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
             )
         }
         if(forDownload){
-            # message("SAMARTH -- plotting, aalo re")
+            ##
             seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
             sorted_order <- sort(seqsClustLabels, index.return = TRUE)
             clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
@@ -876,7 +875,7 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
                 xt_val <- as.numeric(input$xtickFreqPWM)
             }
             return(
-                archR::plot_arch_for_clusters_new(
+                archR::plot_arch_for_clusters(
                 archRresult$rawSeqs,
                 list_of_elements = clusters_ord,
                 position_labels = pos_labels,
@@ -955,7 +954,7 @@ get_plot_output_list <- function(rawSeqs, clust_list) {
             }else{
                 xt_val <- as.numeric(input$xtickFreqPWM)
             }
-            # message(my_j, " here, samarth")
+            
             withCallingHandlers({
                 # shinyjs::html("responseText", "")
                 message("[", Sys.time(), "] Generating architecture, ",

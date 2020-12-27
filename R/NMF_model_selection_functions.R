@@ -434,7 +434,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
         warning("best_K: ", best_K , " is already the maximum value for K specified.
                                 Try increasing therange")
     }
-    message("SAMARTH BEST K:", best_K)
+    message("BEST K:", best_K)
     message("done!")
     return(best_K)
 }

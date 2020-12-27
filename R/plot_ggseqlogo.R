@@ -19,7 +19,7 @@
 #' @import ggseqlogo
 plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
                             position_labels = NULL, savePDFfilename = NULL) {
-    # require(ggplot2) require(ggseqlogo)
+    ##
     if (!is.matrix(pwmMat)) {
         stop("Expecting a matrix with 4 rows")
     }
@@ -29,22 +29,21 @@ plot_ggseqlogo <- function(pwmMat, plotMethod = "custom",
     if (!(nrow(pwmMat) == 4)) {
         stop("Expecting a matrix with 4 rows corresponding to DNA alphabet")
     }
-    #
-
+    ##
     if (length(position_labels) < ncol(pwmMat)) {
         stop(paste0("Inadequate position labels supplied",
                     ncol(pwmMat) - length(position_labels)
                     )
             )
     }
-    #
+    ##
     if (length(position_labels) > ncol(pwmMat)) {
         stop(paste0("Overabundant position labels supplied",
                     length(position_labels) - ncol(pwmMat)
                     )
             )
     }
-    #
+    ##
     p1 <- ggplot() +
         geom_logo(pwmMat, method = plotMethod, seq_type = "dna") +
         theme_logo() +

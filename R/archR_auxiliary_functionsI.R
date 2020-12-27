@@ -153,7 +153,7 @@
 #                      index.return = TRUE,
 #                      decreasing = TRUE)$ix
 #             # print(relevant_factor)
-#             # #stop("SAMARTH")
+#             # 
 #             ##
 #             # relevant_factor <-
 #             #     which.max(rowMeans(
@@ -686,7 +686,7 @@
                     #                                 collapse = ""))
                     #     }else{
                     #         ## Add as a different node?
-                    #         if(verbose) print("avg SAMARTH separate CLUSTER")
+                    #         if(verbose) print("separate CLUSTER")
                     #         return(list(x, leftNeighborOfX))
                     #     }
                     # }
@@ -709,7 +709,7 @@
                     decisionToJoinTrue <- FALSE
                     if(verbose) print("== Not left joined, case 3 ==")
                     ## Add a separate node/cluster
-                    if(verbose) print("SAMARTH separate CLUSTER")
+                    if(verbose) print("separate CLUSTER")
                     return(list(x, leftNeighborOfX))
                 }
                 ## Exclude all above cases, then join
@@ -813,7 +813,7 @@
                         decisionToJoinTrue <- FALSE
                         if(verbose) print("== Not left joined, case 3 ==")
                         ## Add a separate node/cluster
-                        if(verbose) print("SAMARTH separate CLUSTER")
+                        if(verbose) print("separate CLUSTER")
                         return(list(x, rightNeighborOfX))
                     }
                     ## Exclude all above cases, then join
@@ -1104,7 +1104,7 @@ unfurl_nodeList <- function(nodeList){
                                     ## Split the merge back into separate clusters
                                     return(lapply(childrenThisParent, function(x){x}))
                                 }else{
-                                    if(verbose) print("samarth, returning thisX")
+                                    if(verbose) print("returning thisX")
                                     return(thisX)
                                 }
                             }

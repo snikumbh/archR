@@ -59,7 +59,7 @@ handle_dir_creation <- function(givenODir, flags = list(debugFlag = FALSE,
 ##Dependency on python script perform_nmf.py
 get_features_matrix <- function(nmfResultObj){
     returnVal <- .assert_archR_list_properties(nmfResultObj)
-    if (returnVal != "SAMARTH") stop(returnVal)
+    if (returnVal != "FOO") stop(returnVal)
     else return(as.matrix(nmfResultObj[[1]]))
 }
 ## =============================================================================
@@ -69,7 +69,7 @@ get_features_matrix <- function(nmfResultObj){
 ## Dependency on python script perform_nmf.py
 get_samples_matrix <- function(nmfResultObj){
     returnVal <- .assert_archR_list_properties(nmfResultObj)
-    if (returnVal != "SAMARTH") stop(returnVal)
+    if (returnVal != "FOO") stop(returnVal)
     else return(as.matrix(nmfResultObj[[2]]))
 }
 ## =============================================================================
