@@ -28,13 +28,13 @@
 #' if an earlier call to archR performed two iterations, and now you wish to 
 #' perform a third, the arguments `fresh` and `UseOC` can be used. Simply set 
 #' `fresh` to FALSE and assign the sequence clusters from iteration two from 
-#' the earlier result to `UseOC`. As of v1.0.2, with this setting, archR 
+#' the earlier result to `UseOC`. As of v0.1.3, with this setting, archR 
 #' returns a new result object as if the additional iteration performed is the 
 #' only iteration.
 #' @param UseOC List. Clusters to be further processed with archR. These can be 
 #' from a previous archR result (in which case use archRresult$clustSol$clusters),
 #' or simply clusters from any other method.
-#' Warning: This has not been rigorously tested yet (v1.0.2).
+#' Warning: This has not been rigorously tested yet (v0.1.3).
 #' @param oDir Character. Specify the output directory with its path. archR
 #' will create this directory. If a directory with the given name exists at the
 #' given location, archR will add a suffix to the directory name. This
