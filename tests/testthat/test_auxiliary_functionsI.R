@@ -78,26 +78,26 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
     toyFlags$debugFlag <- FALSE
     toyFlags$verboseFlag <- FALSE
 
-    samarth <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
+    foo <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
                  "1", "4", "2", "1", "4", "2", "5", "5", "3", "4", "5", "3", "2")
     ## this tests the updated cluster labels
     ## -- the updated labels should have 5 unique cluster labels since
     ## globClustAssignments has 5 clusters
     ## --
     # print("\n")
-    # print(samarth)
+    # print(foo)
     # print("\n")
-    samarth_ans <- .update_cluster_labels(toyClustLabels, collatedClustAssignments,
+    foo_ans <- .update_cluster_labels(toyClustLabels, collatedClustAssignments,
                                           toyFlags)
-    # cat(paste(shQuote(samarth_ans, type="cmd"), collapse=", "))
+    # cat(paste(shQuote(foo_ans, type="cmd"), collapse=", "))
 
-    expect_equal(samarth_ans, samarth)
+    expect_equal(foo_ans, foo)
     # 
-    # expect_identical(sort(unique(samarth_ans)), sort(unique(samarth)))
+    # expect_identical(sort(unique(foo_ans)), sort(unique(foo)))
 })
 
 # test_that("get_seqs_clusters_in_a_list works", {
-#     seqsClustLabels <- samarth <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
+#     seqsClustLabels <- foo <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
 #                                     "1", "4", "2", "1", "4", "2", "5", "5", "3", "4", "5", "3", "2")
 #     ansList <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
 #     expect_length(ansList, 5)

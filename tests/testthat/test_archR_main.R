@@ -16,15 +16,16 @@ positions <- seq(1,100)
 # sinuc <- c('A', 'C', 'G', 'T')
 # changedOrder <- sample.int(nSeqs, nSeqs, replace = FALSE)
 # tssSeqs <- tssSeqsOriginal[ , changedOrder]
+useFlags <- list(debugFlag = FALSE,
+                 verboseFlag = TRUE,
+                 plotVerboseFlag = FALSE,
+                 timeFlag = FALSE)
 toyConfig <- archR::archRSetConfig(innerChunkSize = 100,
                             kMin = 2, kMax = 20, parallelize = FALSE,
                             modSelType = "stability", 
                             nIterationsUse = 50,
                             nCoresUse = NA,
-                            flags = list(debugFlag = FALSE,
-                                         verboseFlag = TRUE,
-                                         plotVerboseFlag = FALSE,
-                                         timeFlag = TRUE))
+                            flags = useFlags)
 
 
 test_that("archR works", {
@@ -71,10 +72,7 @@ test_that("archR works", {
                             modSelType = "cv",
                             nIterationsUse = 10,
                             nCoresUse = 2,
-                            flags = list(debugFlag = FALSE,
-                                         verboseFlag = TRUE,
-                                         plotVerboseFlag = FALSE,
-                                         timeFlag = TRUE))
+                            flags = useFlags)
     set.seed(1234)
     archRresult <- suppressMessages(archR::archR(toyConfig, seqsRaw = tssSeqsRaw,
                                 seqsMat = tssSeqs, thresholdItr = 1))
