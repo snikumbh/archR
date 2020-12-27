@@ -533,8 +533,9 @@
     }
     eq_itr_lengths <- length(archRresultObj$seqsClustLabels)
     if(!all(length(archRresultObj$clustBasisVectors) == eq_itr_lengths
-             && (archRresultObj$config$flags$timeFlag && 
-                 length(archRresultObj$timeInfo) == eq_itr_lengths)
+             && 
+            ifelse(archRresultObj$config$flags$timeFlag, 
+                length(archRresultObj$timeInfo) == eq_itr_lengths, TRUE)
             )){
         stop("archR result object has erroneous iter info for labels, 
              basis vectors and/or timeInfo")
@@ -621,7 +622,7 @@
 ## 3. Not have any 0-length element
 ##
 .assert_archR_list_properties <- function(listVar) {
-    returnMessage <- "SAMARTH"
+    returnMessage <- "FOO"
     if (is.null(listVar)) {
         returnMessage <- "NULL"
     }
