@@ -1,8 +1,8 @@
-#' archR: A package for discovering different architectures of sequence
-#' elements
+#' archR: A package for de novo discovery of different sequence architectures 
+#' composed of combination(s) of sequence elements (motifs).
 #'
-#' Given a set of DNA sequences, the \code{archR} package enables discovery of
-#' clusters of sequence with characteristic sequence architectures.
+#' Given a set of DNA sequences, \code{archR} enables discovery of
+#' clusters of sequence with characteristic sequence architectures. 
 #'
 #'
 #' The archR package provides three categories of important functions:
@@ -26,7 +26,6 @@
 #' \item \code{\link{viz_basis_vectors_as_seqlogo}}
 #' \item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 #' \item \code{\link{plot_arch_for_clusters_new}}
-#' \item \code{\link{viz_seqs_as_acgt_mat_from_ohe}}
 #' \item \code{\link{viz_seqs_as_acgt_mat_from_seqs}}
 #' }
 #'

@@ -3,8 +3,8 @@
 \docType{package}
 \name{archR}
 \alias{archR}
-\title{archR: A package for discovering different architectures of sequence
-elements}
+\title{archR: A package for de novo discovery of different sequence architectures 
+composed of combination(s) of sequence elements (motifs).}
 \usage{
 archR(
   config,
@@ -52,14 +52,14 @@ See UseOC argument. For example, when processing a set of FASTA sequences,
 if an earlier call to archR performed two iterations, and now you wish to 
 perform a third, the arguments `fresh` and `UseOC` can be used. Simply set 
 `fresh` to FALSE and assign the sequence clusters from iteration two from 
-the earlier result to `UseOC`. As of v1.0.2, with this setting, archR 
+the earlier result to `UseOC`. As of v0.1.3, with this setting, archR 
 returns a new result object as if the additional iteration performed is the 
 only iteration.}
 
 \item{UseOC}{List. Clusters to be further processed with archR. These can be 
 from a previous archR result (in which case use archRresult$clustSol$clusters),
 or simply clusters from any other method.
-Warning: This has not been rigorously tested yet (v1.0.2).}
+Warning: This has not been rigorously tested yet (v0.1.3).}
 
 \item{oDir}{Character. Specify the output directory with its path. archR
 will create this directory. If a directory with the given name exists at the
@@ -96,7 +96,7 @@ config.}
 }
 }
 \description{
-Given a set of DNA sequences, the \code{archR} package enables discovery of
+Given a set of DNA sequences, \code{archR} enables discovery of
 clusters of sequence with characteristic sequence architectures.
 
 Call this function to process a data set using archR.
@@ -123,7 +123,6 @@ factorization, performing clustering, and visualization-related functions.
 \item \code{\link{viz_basis_vectors_as_seqlogo}}
 \item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 \item \code{\link{plot_arch_for_clusters_new}}
-\item \code{\link{viz_seqs_as_acgt_mat_from_ohe}}
 \item \code{\link{viz_seqs_as_acgt_mat_from_seqs}}
 }
 }
