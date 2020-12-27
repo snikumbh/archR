@@ -52,9 +52,6 @@ This function plots the collection of sequences as an image
 matrix.
 }
 \seealso{
-\code{\link{viz_seqs_as_acgt_mat_from_ohe}} for visualizing one-hot 
-encoded DNA sequences
-
 Other visualization functions: 
 \code{\link{plot_ggheatmap}()},
 \code{\link{plot_ggseqlogo}()},
