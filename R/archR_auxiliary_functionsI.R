@@ -929,7 +929,7 @@ unfurl_nodeList <- function(nodeList){
 #' @param verbose Logical. Specify TRUE for verbose output.
 #' 
 #' @importFrom stats cutree 
-#' 
+#' @importFrom fpc calinhara
 #' @importFrom cluster silhouette
 #'
 .get_clusters_from_hc_using_cutree <- function(hcObj, distMat, hStep = 0.05,
