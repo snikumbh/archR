@@ -10,9 +10,6 @@
     <loc>http://snikumbh.github.io/archR/reference/archRSetConfig.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/dot-get_clusters_from_hc2.html</loc>
-  </url>
-  <url>
     <loc>http://snikumbh.github.io/archR/reference/dot-get_clusters_from_hc_using_cutree.html</loc>
   </url>
   <url>
@@ -34,7 +31,7 @@
     <loc>http://snikumbh.github.io/archR/reference/make_sinuc_PWMs.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/plot_arch_for_clusters_new.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/plot_arch_for_clusters.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/plot_ggheatmap.html</loc>
@@ -62,9 +59,6 @@
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/viz_basis_vectors_in_combined_heatmaps_seqlogos.html</loc>
-  </url>
-  <url>
-    <loc>http://snikumbh.github.io/archR/reference/viz_seqs_as_acgt_mat_from_ohe.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/viz_seqs_as_acgt_mat_from_seqs.html</loc>
