@@ -136,8 +136,6 @@ clusters from archR's given iteration.</p>
   distMethod <span class='op'>=</span> <span class='st'>"euclid"</span>,
   regularize <span class='op'>=</span> <span class='cn'>TRUE</span>,
   topN <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span><span class='op'>(</span><span class='fl'>0.5</span> <span class='op'>*</span> <span class='va'>archRresult</span><span class='op'>$</span><span class='va'>rawSeqs</span><span class='op'>@</span><span class='va'>ranges</span><span class='op'>@</span><span class='va'>width</span><span class='op'>)</span>,
-  returnOrder <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  position_agnostic_dist <span class='op'>=</span> <span class='cn'>FALSE</span>,
   decisionToReorder <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>config</span>,
   <span class='va'>...</span>
@@ -152,7 +150,8 @@ clusters from archR's given iteration.</p>
     </tr>
     <tr>
       <th>iteration</th>
-      <td><p>Specify clusters at which iteration of archR are to be reordered.</p></td>
+      <td><p>Specify clusters at which iteration of archR are to be 
+reordered.</p></td>
     </tr>
     <tr>
       <th>clustMethod</th>
@@ -173,22 +172,16 @@ for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see
     </tr>
     <tr>
       <th>regularize</th>
-      <td><p>Specify TRUE if regularization is to be performed before 
-comparison. See argument 'topN'.</p></td>
+      <td><p>Logical. Specify TRUE if regularization is to be performed 
+before comparison. See argument 'topN'.</p></td>
     </tr>
     <tr>
       <th>topN</th>
-      <td><p>Keep only the topN positions for comparing basis vectors.</p></td>
-    </tr>
-    <tr>
-      <th>returnOrder</th>
-      <td><p>Specify TRUE if only the computed order for hierarchical 
-clustering is to be returned</p></td>
-    </tr>
-    <tr>
-      <th>position_agnostic_dist</th>
-      <td><p>If position agnostic distance measure is to be 
-used. For future implementation.</p></td>
+      <td><p>Use only the 'topN' dimensions of each basis vector for comparing 
+them. Note that since each basis vector has 4L or 16L (mono- or 
+dinucleotides) dimensions, each dimension is a combination of nucleotide and 
+its position in the sequence. This argument selects the top N dimensions of 
+the basis vector.</p></td>
     </tr>
     <tr>
       <th>decisionToReorder</th>
@@ -207,10 +200,10 @@ hierarchical agglomerative clustering is to be performed, otherwise FALSE.</p></
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns ordering returned from hclust or the re-ordered clusters. 
-When `decisionToReorder' is FALSE, it returns the already existing basis 
-vectors, each as singleton clusters. The sequence cluster labels and sequence
- clusters are also handled accordingly.</p>
+    <p>Returns the re-ordered clusters. When `decisionToReorder' is FALSE, 
+it returns the already existing basis vectors, each as singleton clusters. 
+The sequence cluster labels and sequence clusters are also handled 
+accordingly.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
