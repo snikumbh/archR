@@ -381,8 +381,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                                               clustMethod = "hc",
                                               linkage = "ward.D",## or "complete"?,
                                               distMethod = "euclid",
-                                              flags = config$flags,
-                                              returnOrder = FALSE)
+                                              flags = config$flags)
 
             intClustFactors <- .get_factors_from_factor_clustering2(
                 intClustFactorsClusteringEucCom, intClustFactors)
@@ -508,8 +507,6 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                   minClusters = set_minClusters,
                   regularize = TRUE, 
                   topN = floor(0.5*length(seqsPositions)),
-                  returnOrder = FALSE,
-                  position_agnostic_dist = FALSE,
                   decisionToReorder = decisionToReorder,
                   config = temp_res$config)
     ## Print final stage output files to disk

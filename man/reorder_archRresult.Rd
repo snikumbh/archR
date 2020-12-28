@@ -12,8 +12,6 @@ reorder_archRresult(
   distMethod = "euclid",
   regularize = TRUE,
   topN = floor(0.5 * archRresult$rawSeqs@ranges@width),
-  returnOrder = FALSE,
-  position_agnostic_dist = FALSE,
   decisionToReorder = TRUE,
   config,
   ...
@@ -22,7 +20,8 @@ reorder_archRresult(
 \arguments{
 \item{archRresult}{The archRresult object.}
 
-\item{iteration}{Specify clusters at which iteration of archR are to be reordered.}
+\item{iteration}{Specify clusters at which iteration of archR are to be 
+reordered.}
 
 \item{clustMethod}{Specify 'hc' for hierarchical clustering. Currently, only
 hierarchical clustering is supported.}
@@ -35,16 +34,14 @@ Available options are "euclid" (default), "cor" for correlation, "cosangle"
 for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
 \code{\link[TFBSTools]{PFMSimilarity}}).}
 
-\item{regularize}{Specify TRUE if regularization is to be performed before 
-comparison. See argument 'topN'.}
+\item{regularize}{Logical. Specify TRUE if regularization is to be performed 
+before comparison. See argument 'topN'.}
 
-\item{topN}{Keep only the topN positions for comparing basis vectors.}
-
-\item{returnOrder}{Specify TRUE if only the computed order for hierarchical 
-clustering is to be returned}
-
-\item{position_agnostic_dist}{If position agnostic distance measure is to be 
-used. For future implementation.}
+\item{topN}{Use only the 'topN' dimensions of each basis vector for comparing 
+them. Note that since each basis vector has 4L or 16L (mono- or 
+dinucleotides) dimensions, each dimension is a combination of nucleotide and 
+its position in the sequence. This argument selects the top N dimensions of 
+the basis vector.}
 
 \item{decisionToReorder}{Logical. Specify TRUE if reordering using 
 hierarchical agglomerative clustering is to be performed, otherwise FALSE.}
@@ -54,10 +51,10 @@ hierarchical agglomerative clustering is to be performed, otherwise FALSE.}
 \item{...}{ignored}
 }
 \value{
-Returns ordering returned from hclust or the re-ordered clusters. 
-When `decisionToReorder' is FALSE, it returns the already existing basis 
-vectors, each as singleton clusters. The sequence cluster labels and sequence
- clusters are also handled accordingly.
+Returns the re-ordered clusters. When `decisionToReorder' is FALSE, 
+it returns the already existing basis vectors, each as singleton clusters. 
+The sequence cluster labels and sequence clusters are also handled 
+accordingly.
 }
 \description{
 We use hierarchical clustering for reordering/collating raw
