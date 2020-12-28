@@ -36,8 +36,7 @@ for number of NMF basis vectors.}
 \item{modSelType}{Character. Specify the model selection strategy to be used.
 Default is 'stability'. Another option is 'cv' short for cross-validation.
 Warning: The cross-validation approach can be time consuming and
-computationally expensive than the stability-based approach. The CV approach
-may be deprecate in the near future.}
+computationally expensive than the stability-based approach.}
 
 \item{tol}{Numeric. Specify the tolerance value as criterion for choosing the
 most appropriate number of NMF factors. Default is 1e-03.}
