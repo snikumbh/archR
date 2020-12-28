@@ -212,8 +212,8 @@
         return(collatedClustAssignments)
     }else{
         if(flags$debugFlag){
-            message(globClustAssignments)
-            message("=== ^ That is what I got ===")
+            message("=== This is what I got ===")
+            message(.msg_print(globClustAssignments))
         }
         .assert_archR_globClustAssignments(globClustAssignments)
         nClusters <- length(clustList)
@@ -226,20 +226,27 @@
             }))
             if(flags$debugFlag){
                 message("=== INFO ===")
-                message(clustList[[clustIdx]])
+                message(.msg_print(clustList[[clustIdx]]))
                 message("Size:", length(temp))
             }
             collatedClustAssignments[[clustIdx]] <- temp
         }
         if(flags$debugFlag){
             message("=== I am returning ===")
-            message(collatedClustAssignments)
+            message(.msg_print(collatedClustAssignments))
         }
         return(collatedClustAssignments)
     }
 }
 
-
+.msg_print <- function(vec_or_list){
+    if(is.list(vec_or_list)){
+        return(paste(vec_or_list, collapse = "\n"))
+    }
+    if(is.vector(vec_or_list)){
+        return(paste(vec_or_list, collapse = ", "))
+    }
+}
 
 # ## @title Collate clusters
 # ##
@@ -422,10 +429,13 @@
             print(chunkStarts)
             print(chunkEnds)
         }
+        ##
         preparedChunks <- vector("list", length(chunkStarts))
         for (i in seq_along(chunkStarts)) {
-            preparedChunks[[i]] <- total_set[chunkStarts[i]:chunkEnds[i]]
+            preparedChunks[[i]] <- 
+                total_set[seq(chunkStarts[i],chunkEnds[i],by=1)]
         }
+        ##
     } else {
         preparedChunks <- vector("list", 1)
         preparedChunks[[1]] <- total_set
@@ -505,14 +515,16 @@
         new_order <- temp_hclust$order
         ##
         if(flags$debugFlag){
-            message("New order: ", paste(new_order, collapse = ", "))
-            for(k in 1:(length(new_order)-1) ){
+            message("New order: ", .msg_print(new_order))
+            for(k in seq_along(new_order[-length(new_order)]) ){
                 message(new_order[k], ", ", new_order[k+1],", ",
                         globFactorsDistMat[new_order[k], new_order[k+1]])
             }
-            message("New order: ", paste(new_order, collapse = ", "))
+            ##
+            message("New order: ", .msg_print(new_order))
             ##
             message("=== CALLING get_clusters FUNCTION === ")
+            # stop("samarth")
         }
         ##
 
@@ -536,7 +548,7 @@
         }
         if(flags$debugFlag) {
             message("=== DONE ===")
-            message("ClustList: ", paste(clustList, collapse = ", "))
+            message("ClustList: ", .msg_print(clustList))
         }
         return(clustList)
         
@@ -1026,7 +1038,7 @@
         
         if(verbose) message("Final #Clusters using silhouette values: ", 
                             length(clust_list))
-        if(verbose) message(paste(clust_list))
+        if(verbose) message(.msg_print(clust_list))
         
         if(enableSwitchSilToCH && any(clust_list_lengths == 1)){
             if(verbose) message("But singleton(s) present: clusters ", 
@@ -1065,7 +1077,7 @@
         #                                  function(x) which(cut_result == x))
         
         if(verbose) message("Final #Clusters: ", length(clust_list))
-        if(verbose) message(paste(clust_list))
+        if(verbose) message(.msg_print(clust_list))
         
         if(!is.null(parentChunks) && keepSiblingsUncollated){
             if(verbose) message("Checking parent chunks...")
@@ -1194,7 +1206,7 @@ reorder_archRresult <- function(archRresult,
     ## assert that topN value supplied is in the valid range
     if(!(topN > 0 && topN <= nrow(basisMat))){
         stop("Selected topN value ", topN," is outside expected range [", 
-             paste(c(1, nrow(basisMat)), collapse = ","), "]")
+             .msg_print(c(1, nrow(basisMat))), "]")
     }
     
     if(!is.logical(regularize) && !is.logical(decisionToReorder)){
@@ -1234,13 +1246,13 @@ reorder_archRresult <- function(archRresult,
                                            ...)
         if(config$flags$debugFlag){
             message("Performed factor clustering, returning object:")
-            message("Returning: ", paste(factorsClustering, collapse = ", "))
+            message("Returning: ", .msg_print(factorsClustering))
         }
     }else{
         ## Do not reorder, but prepare the return object
         nFactors <- archRresult$clustBasisVectors[[iteration]]$nBasisVectors
         factorsClustering <- vector("list", nFactors)
-        factorsClustering <- lapply(1:nFactors, function(x){x})
+        factorsClustering <- lapply(seq_len(nFactors), function(x){x})
         if(config$flags$debugFlag){
             message("No factor clustering, returning object:")
             print(paste(factorsClustering))

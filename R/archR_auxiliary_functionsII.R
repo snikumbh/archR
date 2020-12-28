@@ -110,8 +110,7 @@ get_dimers_from_alphabet <- function(alphabet){
 #' @param modSelType Character. Specify the model selection strategy to be used.
 #' Default is 'stability'. Another option is 'cv' short for cross-validation.
 #' Warning: The cross-validation approach can be time consuming and
-#' computationally expensive than the stability-based approach. The CV approach
-#' may be deprecate in the near future.
+#' computationally expensive than the stability-based approach. 
 #' @param tol Numeric. Specify the tolerance value as criterion for choosing the
 #' most appropriate number of NMF factors. Default is 1e-03.
 #' @param bound Numeric. Specify the lower bound value as criterion for choosing
@@ -254,14 +253,14 @@ archRSetConfig <- function(innerChunkSize = 500,
             dim_names <- get_dimers_from_alphabet(c("A", "C", "G", "T"))
             nPositions <- nrow(factorsMat)/length(dim_names)
             ##
-            factorsMatList_as2D <- lapply(1:ncol(factorsMat),
+            factorsMatList_as2D <- lapply(seq_len(ncol(factorsMat)),
                                           function(x){matrix(factorsMat[,x],
                                                              nrow = nrow(factorsMat)/nPositions,
                                                              byrow = TRUE,
                                                              dimnames = list(dim_names))
                                           })
             ##
-            factorsMatList_asPFMs <- lapply(1:length(factorsMatList_as2D),
+            factorsMatList_asPFMs <- lapply(seq_len(length(factorsMatList_as2D)),
                                             function(x){
                                                 sinucSparse <- collapse_into_sinuc_matrix(
                                                     given_feature_mat = as.matrix(factorsMat[,x]),
@@ -275,8 +274,8 @@ archRSetConfig <- function(innerChunkSize = 500,
             lenPFMs <- length(factorsMatList_asPFMs)
             scoresMat <- matrix(rep(0, lenPFMs*lenPFMs),
                                 nrow = lenPFMs)
-            rownames(scoresMat) <- seq(1:nrow(scoresMat))
-            colnames(scoresMat) <- seq(1:ncol(scoresMat))
+            rownames(scoresMat) <- seq(1,nrow(scoresMat),by=1)
+            colnames(scoresMat) <- seq(1,ncol(scoresMat),by=1)
             
             # relScoresMat <- scoresMat
             
@@ -428,7 +427,7 @@ archRSetConfig <- function(innerChunkSize = 500,
         new_ord <- nmf_nRuns_list$new_ord
         ## Get reconstruction accuracies for them
         bestQ2 <- -1
-        for (nR in 1:nRuns){
+        for (nR in seq_len(nRuns)){
             ##A <- this_mat[, new_ord[[nR]]]
             A <- this_mat
             recA <- as.matrix(featuresMatrixList[[nR]]) %*%
