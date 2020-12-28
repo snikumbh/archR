@@ -13,7 +13,7 @@ context("Auxiliary Functions I")
 # })
 
 test_that("collate_clusters handles empty globClustAssignments", {
-    hopachObj <- list(clustering = list(k = 5, sizes = rep(5,5), order = 1:25))
+    Obj <- list(clustering = list(k = 5, sizes = rep(5,5), order = 1:25))
     tempList <- vector("list", 5)
     globClustAssignments <- lapply(seq_along(tempList),
                                    function(x){
@@ -21,9 +21,28 @@ test_that("collate_clusters handles empty globClustAssignments", {
                                             tempList[[x]] <- round(10*runif(5))
                                        }
                                    })
-    expect_error(.collate_clusters(hopachObj, globClustAssignments),
+    expect_error(.collate_clusters2(Obj, globClustAssignments),
                  "Cluster assignments variable has a 0-length entry")
 })
+
+
+test_that("unfurl_nodeList handles example nodeList well", {
+    nodeList <- list(c(1,3,4), list(2, 5), c(6,7))
+    unfurled_nodeList <- list(c(1,3,4), 2, 5, c(6,7))
+    ans <- .unfurl_nodeList(nodeList = nodeList)
+    expect_identical(unfurled_nodeList, ans)
+    
+})
+
+
+test_that("unfurl_nodeList handles empty/null nodeList", {
+    nodeList <- NULL
+    expect_error(.unfurl_nodeList(nodeList = nodeList))
+    nodeList <- list()
+    expect_error(.unfurl_nodeList(nodeList = nodeList))
+})
+
+
 
 
 test_that("update_cluster_labels handles empty collatedClustAssignments", {

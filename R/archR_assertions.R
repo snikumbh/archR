@@ -594,24 +594,24 @@
 ## 1. not NULL
 ## 2. a nested list w/ one element named 'clustering' which is also a list
 ## 3. The 'clustering' further has 3 elements: '$k', '$sizes' and '$order'
-.assert_archR_hopachObj <- function(hopachObj, test_null = TRUE) {
-    expNames <- c("clustering")
-    expNames2 <- c("k", "sizes", "order")
-    if (test_null) {
-        if (is.null(hopachObj)) {
-            stop("Hopach object is NULL")
-        }
-    }
-    if (!is.list(hopachObj)) {
-        stop("Check hopach object, need a list with element 'clustering'")
-    } else if (is.list(hopachObj) && expNames %in% names(hopachObj)) {
-        if (!all(expNames2 %in% names(hopachObj$clustering))) {
-            stop("For archR, the element 'clustering' in hopach object should",
-            " have elements named  'k', 'sizes' and 'order'")
-        }
-    }
-
-}
+# .assert_archR_hopachObj <- function(hopachObj, test_null = TRUE) {
+#     expNames <- c("clustering")
+#     expNames2 <- c("k", "sizes", "order")
+#     if (test_null) {
+#         if (is.null(hopachObj)) {
+#             stop("Hopach object is NULL")
+#         }
+#     }
+#     if (!is.list(hopachObj)) {
+#         stop("Check hopach object, need a list with element 'clustering'")
+#     } else if (is.list(hopachObj) && expNames %in% names(hopachObj)) {
+#         if (!all(expNames2 %in% names(hopachObj$clustering))) {
+#             stop("For archR, the element 'clustering' in hopach object should",
+#             " have elements named  'k', 'sizes' and 'order'")
+#         }
+#     }
+# 
+# }
 ## =============================================================================
 
 
@@ -629,9 +629,13 @@
     if (!is.list(listVar)) {
         returnMessage <- "Nlist"
     } else {
-        check_lengths <- lapply(listVar, length)
-        if (any(check_lengths == 0)) {
-            returnMessage <- "0LengthEntry"
+        if(length(listVar) == 0){
+            returnMessage <- "0LengthList"
+        }else{
+            check_lengths <- lapply(listVar, length)
+            if (any(check_lengths == 0)) {
+                returnMessage <- "0LengthEntry"
+            }
         }
     }
     return(returnMessage)

@@ -56,14 +56,14 @@ test_that("get_dimers is working fine", {
 })
 
 
-test_that("get_hopach_cluster_medoidsIdx handles null hopach object", {
-    hopachObj <- NULL
-    fMat <- matrix(rep(runif(1),1000), ncol = 5)
-    expect_error(.get_hopach_cluster_medoidsIdx(hopachObj),
-                 "Hopach object is NULL")
-    ## Make hopach object to test
-
-})
+# test_that("get_hopach_cluster_medoidsIdx handles null hopach object", {
+#     hopachObj <- NULL
+#     fMat <- matrix(rep(runif(1),1000), ncol = 5)
+#     expect_error(.get_hopach_cluster_medoidsIdx(hopachObj),
+#                  "Hopach object is NULL")
+#     ## Make hopach object to test
+# 
+# })
 
 
 test_that("NMF result from py script OK", {

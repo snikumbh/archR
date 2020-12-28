@@ -81,10 +81,10 @@ get_samples_matrix <- function(nmfResultObj){
 ## @param hopachObj
 ##
 ## Dependency on hopach package
-.get_hopach_cluster_medoidsIdx <- function(hopachObj){
-    .assert_archR_hopachObj(hopachObj, test_null = TRUE)
-    return(hopachObj$clustering$medoids)
-}
+# .get_hopach_cluster_medoidsIdx <- function(hopachObj){
+#     .assert_archR_hopachObj(hopachObj, test_null = TRUE)
+#     return(hopachObj$clustering$medoids)
+# }
 ## =============================================================================
 
 get_dimers_from_alphabet <- function(alphabet){

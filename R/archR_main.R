@@ -285,7 +285,8 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                         thisNMFResult$forGlobClustAssignments
                 } ## for loop over innerChunksColl ENDS here
                 #################### INNER CHUNK FOR LOOP ######################
-                ## We need globFactors, globClustAssignments
+                ## We need globFactors, globClustAssignments.
+                ## 
                 ## Single unlist of globClustAssignments brings together
                 ## clusters from different innerChunks into one collection
                 globClustAssignments <- unlist(globClustAssignments,
@@ -313,7 +314,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                 }
                 ## Manage collated cluster assignments
                 collatedClustAssignments <-
-                    .collate_clusters(globFactorsClustering,
+                    .collate_clusters2(globFactorsClustering,
                                         globClustAssignments)
             }  ## IfElse doNotProcess outer chunk ENDS
             ##
