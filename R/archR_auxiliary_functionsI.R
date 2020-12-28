@@ -446,15 +446,19 @@
 # @param distMethod Specify the distance measure to be used. Default is cosine
 # measure.
 # 
+# @param clustMethod Specify hc. This is the only option available.
+# 
 # @param linkage Specify one of linkage options for hclust.
 # 
 # @param flags Specify the flags from the config param set for archR.
 # 
 # @param returnOrder
 # 
-# @param useCutree By setting this arg, the cutree version of get_clusters func 
-# is used. This func uses silhouette and/or Calinski-Harabasz index. See 
-# additional details there.
+# @param useCutree By setting this arg to TRUE, the cutree version of 
+# get_clusters func is used. This func uses silhouette and/or 
+# Calinski-Harabasz index. See additional details there. Note: currently, this 
+# is the only avaiable func so useCutree should beset to TRUE always, FALSE 
+# will not work.
 # 
 # @param minClusters Passed to get_clusters function. See explanation there.
 # 
@@ -486,35 +490,7 @@
     globFactorsDistMat <- .compute_factor_distances(globFactorsMat,
                                                 distMethod = distMethod)
 
-    if(clustMethod == "hopach"){
-        # ## These lines were put for additional caution/check.
-        # ## May not be needed now.
-        # ## doHopach <- hopach::msscheck(globFactorsDistMat, within = "mean",
-        # ##                             between = "mean")
-        # ## if (doHopach[1] == 1 && ncol(globFactorsMat) > 2) {
-        # ##     message("Error expected to occur now")
-        # ## }
-        # ##
-        # globFactorsHopach <- hopach::hopach(data = t(globFactorsMat),
-        #                                     dmat = globFactorsDistMat,
-        #                                     d = "cosangle", newmed = "uwnn",
-        #                                     clusters = "best", coll = "all",
-        #                                     initord = "clust", mss = "mean",
-        #                                     verbose = flags$verboseFlag)
-        # if (flags$debugFlag ||
-        #     flags$verboseFlag) {
-        #     message("Identified #clusters: ", globFactorsHopach$clustering$k)
-        # }
-        # if (flags$plotVerboseFlag) {
-        #     ## Order the medians, accordingly change order of 
-        #     ## the collated cluster assignments
-        #     medoidsIdx <-
-        #         .get_hopach_cluster_medoidsIdx(globFactorsHopach)
-        #     print(medoidsIdx)
-        # }
-        # return(globFactorsHopach)
-        ##
-    } else if(clustMethod == "hc"){
+    if(clustMethod == "hc"){
         if(flags$debugFlag) message("Hierarchical clustering")
         ########## REORDER CLUSTERS FROM OUTER CHUNK ######################
         if(flags$debugFlag) message("RE-ORDERING CLUSTERS")
@@ -1149,153 +1125,6 @@
 }
 
 ############################## CUTREE VERSION ##################################
-
-
-# ## This function will soon be deprecated/removed
-# .get_clusters_from_hc <- function(hcObj, distMat, verbose = FALSE){
-# 
-#     #####
-#     ## Algo to cut dendrogram and form clusters
-#     ## corner case: 1. what if start nodes are not available?
-#     if(verbose){
-#         message("=== *** Merge ===")
-#         print(hcObj$merge)
-#         message("=== *** height ===")
-#         print(hcObj$height)
-#         message("=== *** dendro ===")
-#         print(utils::str(stats::as.dendrogram(hcObj)))
-#         message("=== *** ===")
-#     }
-#     newOrder <- hcObj$order
-# 
-#     leftN <- rep(NA, length(newOrder))
-#     rightN <- rep(NA, length(newOrder))
-#     chooseVal <- rep(NA, length(newOrder))
-#     if(verbose) {
-#         message("Length: ", length(newOrder))
-#     }
-#     for(k in seq_along(newOrder)){
-#         idxInOrder <- which(newOrder == k)
-# 
-#         if(idxInOrder != 1) leftN[k] <- newOrder[idxInOrder - 1]
-#         if(idxInOrder != length(newOrder)) rightN[k] <- newOrder[idxInOrder + 1]
-#         if(!is.na(leftN[k]) && !is.na(rightN[k]) ){
-#             if(distMat[leftN[k],k] > distMat[k,rightN[k]] ){
-#                 chooseVal[k] <- rightN[k]}
-#             else {
-#                 chooseVal[k] <- leftN[k]}
-#         }
-#         #
-#         specialIdx <- which(is.na(leftN))
-#         chooseVal[specialIdx] <- rightN[specialIdx]
-#         specialIdx <- which(is.na(rightN))
-#         chooseVal[specialIdx] <- leftN[specialIdx]
-#         #
-#         if(verbose){
-#         message("[", leftN[k], ",", rightN[k], "]",
-#                 " for ", k, ", chose ", chooseVal[k])
-#         }
-#     }
-# 
-#     # find start nodes
-#     startNodeList <- list()
-#     chosenIdx <- vector() #stores chooseVal indices to ignore later
-#     for(k in 1:length(chooseVal)){
-#         if(chooseVal[chooseVal[k]] == k){
-#             chosenIdx <- append(chosenIdx, k)
-#             if(k < chooseVal[k]){
-#                 a <- k
-#                 b <- chooseVal[k]
-#             } else{
-#                 a <- chooseVal[k]
-#                 b <- k
-#             }
-#             nodeEntry <- c(a,b)
-#             matches <- unlist(lapply(startNodeList, function(l) {nodeEntry == l}))
-#             if(!(any(matches))){
-#                 startNodeList <- append(startNodeList, NA)
-#                 startNodeList[[length(startNodeList)]] <- nodeEntry
-#                 if(verbose){
-#                     message(a,"-",b)
-#                 }
-#             }
-#         }
-#     }
-#     relIdx <- setdiff(1:length(chooseVal), chosenIdx)
-# 
-#     # case when all nodes end up as part of startNodes,
-#     # relidx is numeric(0), length 0
-#     nodeList <- startNodeList
-#     if(length(relIdx) != 0 && length(relIdx) < length(chooseVal)){
-#         ##
-#         reChooseVal <- chooseVal
-#         reChooseVal[-relIdx] <- NA
-#         if(verbose){
-#             message("Stringing nodes on the left")
-#             print(reChooseVal)
-#             message("=== Start nodes: ===")
-#             print(startNodeList)
-#             message("=== Done ===")
-#         }
-#         for(l in 1:length(startNodeList)){
-#             # if(verbose) message(nodeList[[l]])
-#             a <- startNodeList[[l]][1]
-#             # if(verbose) message(a, ", ", b)
-#             while(any(which(reChooseVal == a)) ){
-#                 # if (verbose) print(reChooseVal)
-#                 matchIdx <- which(reChooseVal == a)
-#                 nodeList[[l]] <- append(nodeList[[l]], matchIdx, after = 0)
-#                 a <- matchIdx
-#                 # if (verbose) print(a)
-#                 reChooseVal[matchIdx] <- NA
-#                 # if (verbose) print(reChooseVal)
-#             }
-#         }
-#         if(verbose){
-#             # print(reChooseVal)
-#             # message("=== Nodes list: ===")
-#             # print(nodeList)
-#             # message("=== Done ===")
-#         }
-#         if(!all(is.na(reChooseVal))){
-#             if(verbose){
-#                 message("Stringing nodes on the right")
-#             }
-#             for(l in 1:length(nodeList)){
-#                 if(verbose) message(paste0(nodeList[[l]], sep=","))
-#                 b <- startNodeList[[l]][2]
-#                 # if(verbose) message(a, ", ", b)
-#                 while(any(which(reChooseVal == b)) ){
-#                     if (verbose) print(reChooseVal)
-#                     matchIdx <- which(reChooseVal == b)
-#                     nodeList[[l]] <- append(nodeList[[l]], matchIdx,
-#                                             after = length(nodeList[[l]]))
-#                     b <- matchIdx
-#                     if (verbose) print(b)
-#                     reChooseVal[matchIdx] <- NA
-#                     if (verbose) print(reChooseVal)
-#                 }
-#             }
-#         }
-#     }
-#     if (verbose){
-#         print(nodeList)
-#         message("Re-adjust order")
-#     }
-#     starts <- lapply(nodeList, function(x){utils::head(x, 1)})
-#     matchOrder <- vapply(starts, function(x){which(x == newOrder)}, numeric(1))
-#     newIdx <- sort(matchOrder, index.return = TRUE)$ix
-#     nodeListUpd <- lapply(newIdx, function(x){nodeList[[x]]})
-#     nodeList <- nodeListUpd
-#     if (verbose) print(nodeList)
-# 
-#     # if(verbose){
-#     #     message("Final Length: ", sum(unlist(lapply(nodeList, length))))
-#     # }
-#     stopifnot(sum(unlist(lapply(nodeList, length))) == length(newOrder))
-#     #####
-#     return(nodeList)
-# }
 
 
 #' @title Reorder archR raw clustering at the chosen iteration
