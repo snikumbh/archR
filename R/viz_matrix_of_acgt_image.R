@@ -63,7 +63,7 @@
 #'
 #' @return Nothing returned to the R interpreter.
 #' @family visualization functions
-#' @importFrom grDevices png
+#' @importFrom grDevices png dev.off
 #' @importFrom graphics axis image
 #' @export
 viz_seqs_as_acgt_mat_from_seqs <- function(rawSeqs, position_labels = NULL,

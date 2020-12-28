@@ -13,7 +13,7 @@
 #' 2
 #' @param PDFfname Specify a filename to be saved as PDF
 #'
-#' @importFrom grDevices pdf
+#' @importFrom grDevices pdf dev.off
 #' @export
 plot_arch_for_clusters <- function(tss.seqs_raw,
                                 list_of_elements,
