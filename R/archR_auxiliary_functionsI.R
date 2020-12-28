@@ -523,7 +523,6 @@
             message("New order: ", .msg_print(new_order))
             ##
             message("=== CALLING get_clusters FUNCTION === ")
-            # stop("samarth")
         }
         ##
 
