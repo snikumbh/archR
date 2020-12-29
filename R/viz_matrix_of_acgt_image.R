@@ -25,7 +25,7 @@
         nuc_list[which(nuc_list == "G")] <- 3
         nuc_list[which(nuc_list == "T")] <- 4
         nuc_list_num <- as.numeric(nuc_list)
-        nuc_mat <- matrix(nuc_list_num, byrow = T, ncol = nPos, nrow = nSeqs)
+        nuc_mat <- matrix(nuc_list_num, byrow = TRUE, ncol = nPos, nrow = nSeqs)
     } else if (sinuc_or_dinuc == "dinuc") {
         ## handling dinucleotides
         ## not needed any more?!
