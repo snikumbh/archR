@@ -43,12 +43,12 @@ Imports:
     reshape2 (>= 1.4.3),
     reticulate (>= 1.12),
     tibble (>= 2.1.1),
-    ggpubr (>= 0.2.3),
     parallel,
     hopach (>= 2.42.0),
     Biostrings
 Suggests:
     TFBSTools,
+    ggpubr (>= 0.2.3),
     shiny,
     shinyjs,
     shinydashboard,
