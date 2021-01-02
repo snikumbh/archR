@@ -39,7 +39,7 @@ run_archR_UI <- function(lbrowser = TRUE) {
 
     if (!requireNamespace(c("shiny", "shinyjs", "shinydashboard",
                             "shinycssloaders"), quietly = TRUE)) {
-        message("Please install the R package 'shiny' to run the application")
+        stop("Please install the R package 'shiny' to run the application")
     } else {
         shiny::runApp(appDir, display.mode = "normal", 
                                     launch.browser = lbrowser)
