@@ -87,8 +87,8 @@
             stop("Check matrix, 'ncols' is: ", check_ncols)
         }
         if (all(featuresMatrix == 0)) {
-            ## This will lead to an error if hopach is performed, hence throwing
-            ## error
+            ## This will lead to an error if hopach is performed, 
+            ## hence throwing error
             stop("WARNING: All zeroes as factors")
         }
         # Commented for low-dimensional representation
@@ -229,7 +229,7 @@
     if (any(lapply(nxtOuterChunksColl, length) == 0)) {
         message("WARNING: Chunks for next iteration have a problem")
         stop("Index ",
-             which(lapply(nxtOuterChunksColl, length) == 0),
+                which(lapply(nxtOuterChunksColl, length) == 0),
                 " of zero length")
     }
 }
@@ -365,9 +365,9 @@
 .assert_archR_config <- function(config_var, given_seqs_size = NA) {
     ##TODO: Check assertions for new args modSelType, tol and bound
     expNames <- c("modSelType", "tol", "bound", "kFolds",
-                  "parallelize", "nCoresUse", "nIterationsUse", 
-                  "paramRanges", "innerChunkSize", "minSeqs",
-                  "flags", "checkpointing")
+                    "parallelize", "nCoresUse", "nIterationsUse", 
+                    "paramRanges", "innerChunkSize", "minSeqs",
+                    "flags", "checkpointing")
     if (is.null(config_var)) {
         stop("'config' is NULL")
     }
@@ -508,20 +508,19 @@
 ## These sequences have names in the DNAStringSet object.
 ## 4. timeInfo: a list storing time required (in minutes) for each iteration 
 ## of archR
-## 5. config: configuration set for processing the corresponding data with archR 
+## 5. config: configuration set for processing the corresponding data with 
+## archR
 ## 6. call: the function call itself. 
 ## 
 ## 
 .assert_archRresult <- function(archRresultObj) {
     if(archRresultObj$config$flags$timeFlag){
-        topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", "clustSol",
-                                 "rawSeqs", "timeInfo", "config", 
-                                 "call")
+        topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", 
+            "clustSol", "rawSeqs", "timeInfo", "config", "call")
     }else{
         ## timeFlag not set so timeInfo shouldn't be present
-        topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", "clustSol",
-                                 "rawSeqs", "config", 
-                                 "call")
+        topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", 
+            "clustSol", "rawSeqs", "config", "call")
         
     }
     if (is.null(archRresultObj)) {
@@ -533,43 +532,46 @@
     }
     eq_itr_lengths <- length(archRresultObj$seqsClustLabels)
     if(!all(length(archRresultObj$clustBasisVectors) == eq_itr_lengths
-             && 
+            && 
             ifelse(archRresultObj$config$flags$timeFlag, 
                 length(archRresultObj$timeInfo) == eq_itr_lengths, TRUE)
             )){
         stop("archR result object has erroneous iter info for labels, 
-             basis vectors and/or timeInfo")
+                basis vectors and/or timeInfo")
     }
     
     eq_seqs_length <- length(archRresultObj$rawSeqs)
-    logi_seqs_length <- unlist(lapply(archRresultObj$seqsClustLabels, function(x){
-        length(x) == eq_seqs_length
-    }))
+    logi_seqs_length <- unlist(lapply(archRresultObj$seqsClustLabels, 
+        function(x){
+            length(x) == eq_seqs_length
+        }))
     if(!all(logi_seqs_length)) stop("Sequence clust labels for iteration(s) of
                                 inappropriate length")
     
     if(!(eq_seqs_length == length(archRresultObj$clustSol$seqsClustLabels)))
         stop("Sequence labels for final clustering solution of inappropriate
-             length")
+                length")
     
     ## assert if dimensions of clustBasisVectors are fine.
     ## Sequences can be encoded as monomers, dimers, etc.
     ## this should be 4L, (4^2)L, (4^3)L, and so on
-    factor_rows <- unlist(lapply(archRresultObj$clustBasisVectors, function(x){
-        log(nrow(x$basisVectors)/(archRresultObj$rawSeqs[1]@ranges@width), base=4)
+    factor_rows <- unlist(lapply(archRresultObj$clustBasisVectors, 
+        function(x){
+            log(nrow(x$basisVectors)/(archRresultObj$rawSeqs[1]@ranges@width),
+                base=4)
     }))
     if(!all(diff(factor_rows) == 0))
         stop("archR result clustBasisVectors have unequal dimensions across 
-             iterations")
+                iterations")
     
-    factor_cols <- unlist(lapply(archRresultObj$clustBasisVectors, function(x){
-        x$nBasisVectors > 0 &&
+    factor_cols <- unlist(lapply(archRresultObj$clustBasisVectors, 
+        function(x){
+            x$nBasisVectors > 0 &&
             class(x$basisVectors)[1] == "matrix" &&
             x$nBasisVectors == ncol(x$basisVectors)
-    }))
+        }))
     if(!all(factor_cols))
-        stop("nCols in basisVectors do not match number of basis vectors specified in 
-             nBasisVectors")
+        stop("nCols in basisVectors do not match nBasisVectors")
     
     .assert_archR_seqsClustLabels(archRresultObj$seqsClustLabels)
     
@@ -583,7 +585,7 @@
     clustSol <- archRresultObj$clustSol
     if(length(clustSol$basisVectorsClust) != length(clustSol$clusters))
         stop("Mismatch in number of clusters in clustSol$basisVectorsClust 
-             and clustSol$clusters")
+                and clustSol$clusters")
     
     
 }
@@ -649,7 +651,7 @@
     nSeqs_in_assignments <- length(unlist(clustAssignments))
     if (!nSeqs_in_labels == nSeqs_in_assignments) {
         stop("Number of sequences in seqsClustLabels and clustAssignments not",
-            " equal")
+                " equal")
     }
 }
 ## =============================================================================

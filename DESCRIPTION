@@ -7,11 +7,16 @@ Authors@R:
            family = "Nikumbh",
            role = c("aut", "cre", "cph"),
            email = "sarvesh.nikumbh@gmail.com",
-           comment = c(ORCID = "0000-0003-3163-4447", Twitter = "@sarveshnikumbh"))
-Description: Given a set of DNA sequences,\code{archR} enables 
-    unsupervised discovery of clusters with characteristic sequence 
-    architectures. \code{archR} is an iterative algorithm with non-negative
-    matrix factorization (NMF) as its backbone.
+           comment = c(ORCID = "0000-0003-3163-4447", 
+           Twitter = "@sarveshnikumbh"))
+Description: \code{archR} enables unsupervised discovery of _de novo_ clusters 
+    of DNA sequences with characteristic sequence architectures. archR does 
+    _not_ require any specifications w.r.t. the length of any individual motifs,
+    or the distance between any motifs occurring in pairs/groups; it 
+    directly infers them from the data. \code{archR} uses non-negative matrix 
+    factorization (NMF) as its backbone, and employs a chunking-based 
+    iterative procedure that enables processing of large sequence collections 
+    efficiently. 
 License: GPL-3
 URL: https://snikumbh.github.io/archR/,
     https://github.com/snikumbh/archR
@@ -20,21 +25,20 @@ SystemRequirements: Python (>= 3.5), scikit-learn (>= 0.21.2)
 Depends:
     R (>= 3.6.0)
 Imports:
+    utils,
+    graphics,
     cvTools (>= 0.3.2),
     dplyr (>= 0.8.0.1),
     ggplot2 (>= 3.1.1),
     ggseqlogo (>= 0.1),
-    rlang,
     MASS,
     NMF,
     Matrix,
-    scales,
     grDevices,
     methods,
     stats,
     cluster,
     fpc,
-    data.table,
     purrr (>= 0.3.2),
     reshape2 (>= 1.4.3),
     reticulate (>= 1.12),

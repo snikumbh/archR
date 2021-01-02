@@ -69,8 +69,8 @@
     # D_W <- nmf_submatrixD[[1]]
     # D_H <- nmf_submatrixD[[2]]
     ##
-    reconstructed_submatrixA <-
-        as.matrix(submatrixB) %*% MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% as.matrix(submatrixC)
+    reconstructed_submatrixA <- as.matrix(submatrixB) %*% 
+        MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% as.matrix(submatrixC)
     ##
     if (verbose == 1) {
         cat(paste("INFO-END", x["k_vals"], x["alpha"], "\n", sep = ","))
@@ -89,16 +89,16 @@
     # new_ord[[iter]] <- sample(ncol(this_mat), ncol(this_mat),
     #                           #replace = FALSE)
     reticulate::source_python(system.file("python", "perform_nmf.py",
-                                          package = "archR",
-                                          mustWork = TRUE)
+                                        package = "archR",
+                                        mustWork = TRUE)
     )
     ##
     nmf_result <- perform_nmf_func(X,
-                               nPatterns = as.integer(kVal),
-                               nIter = as.integer(2000),
-                               givenAlpha = alphaVal,
-                               givenL1_ratio = 1,
-                               seed_val = as.integer(seedVal)
+                            nPatterns = as.integer(kVal),
+                            nIter = as.integer(2000),
+                            givenAlpha = alphaVal,
+                            givenL1_ratio = 1,
+                            seed_val = as.integer(seedVal)
                             )
     D_W <- as.matrix(get_features_matrix(nmf_result))
     D_H <- as.matrix(get_samples_matrix(nmf_result))
@@ -144,12 +144,12 @@
 
 
 performSearchForK <- function(startVal, endVal, step = 1,
-                              # grid_search_params,
-                              prev_best_K = -1,
-                              best_K = 0,
-                              prev_df = NULL,
-                              param_ranges,
-                              kFolds, nIterations, set_verbose){
+                                # grid_search_params,
+                                prev_best_K = -1,
+                                best_K = 0,
+                                prev_df = NULL,
+                                param_ranges,
+                                kFolds, nIterations, set_verbose){
     message("setting seed_val")
     seed_val <- 10208090
     # need this only as place filler for the seed_val column in the
@@ -169,23 +169,25 @@ performSearchForK <- function(startVal, endVal, step = 1,
                 seed_val = seed_val,
                 verbose = set_verbose
             ))
-            seed_val_list <- sample.int(.Machine$integer.max, size = kFolds*nIterations, replace = FALSE)
+            seed_val_list <- sample.int(.Machine$integer.max, 
+                                        size = kFolds*nIterations, 
+                                        replace = FALSE)
             message("Seeds in performSearchForK")
-            message(seed_val_list[1:10])
+            message(seed_val_list[seq_len(10)])
             message(length(seed_val_list))
             grid_search_params[, "seed_val"] <- seed_val_list
             q2_vals <-
                 unlist(parallel::clusterApplyLB(cl = NULL,
-                                                seq_len(nrow(grid_search_params)),
-                                                function(i) {
-                                                    .get_q2_using_py(
-                                                        grid_search_params[i,],
-                                                        verbose = set_verbose)
-                                                }))
+                                            seq_len(nrow(grid_search_params)),
+                                            function(i) {
+                                                .get_q2_using_py(
+                                                    grid_search_params[i,],
+                                                    verbose = set_verbose)
+                                            }))
             if(set_verbose) message("q2_vals RETURNED")
             grid_search_params <-
                 dplyr::select(grid_search_params, k_vals, alpha, fold,
-                              iteration)
+                                iteration)
             if(set_verbose) message("SELECTING COLUMNS DONE")
             grid_search_results <-
                 tibble::add_column(grid_search_params, q2_vals)
@@ -199,13 +201,16 @@ performSearchForK <- function(startVal, endVal, step = 1,
                 best_K <- .get_best_K(new_df)
                 prev_df <- new_df
             }
-            message("Prev best K: ", prev_best_K," Best K: ", best_K, " This K: ", this_K)
-            message("Curr nrows: ", nrow(grid_search_results), " Total nrows: ", nrow(prev_df))
+            message("Prev best K: ", prev_best_K, 
+                    " Best K: ", best_K, 
+                    " This K: ", this_K)
+            message("Curr nrows: ", nrow(grid_search_results), 
+                    " Total nrows: ", nrow(prev_df))
         }
     }
     returnObject <- list(best_K = best_K,
-                         prev_best_K = prev_best_K,
-                         return_df = prev_df)
+                        prev_best_K = prev_best_K,
+                        return_df = prev_df)
 }
 
 
@@ -263,7 +268,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
     }
     ## Check names in param_ranges list, the function relies on it below
     if (length(setdiff(names(param_ranges), c("alphaPow", "alphaBase",
-                                              "k_vals"))) > 0) {
+                                    "k_vals"))) > 0) {
         stop("Expected elements in param ranges: alphaBase, alphaPow, k_vals")
     }
     ## Get cross-validation folds
@@ -274,10 +279,10 @@ performSearchForK <- function(startVal, endVal, step = 1,
         #### New strategy
         if(returnBestK) {
             message("===Cluster ready?===")
-            ### cl <- parallel::makeCluster(nCores, type = "FORK", outfile = logfile)
+            
             cl <- parallel::getDefaultCluster()
-            parallel::clusterEvalQ(cl, suppressWarnings(require(MASS,
-                                                                quietly = TRUE)))
+            parallel::clusterEvalQ(cl, 
+                        suppressWarnings(require(MASS, quietly = TRUE)))
             message("===Seems OK===")
             ## ^for pseudo-inverse using function `ginv`
             parallel::clusterExport(
@@ -289,8 +294,12 @@ performSearchForK <- function(startVal, endVal, step = 1,
             if(cgfglinear){
                 message("COARSE-GRAINED/FINE-GRAINED")
                 prev_df <- NULL
-                #go_fine <- FALSE # when either lo or hi values are best, so we need to perform a fine-grained search
-                #eureka <- FALSE # to note when the mid value happens to be the best
+                #go_fine <- FALSE 
+                ## when either lo or hi values are best, so we need to perform 
+                ## a fine-grained search
+                #eureka <- FALSE 
+                ## to note when the mid value happens to be 
+                ## the best
                 #coarse_step <- 10
                 mi <- seq(coarse_step, max(param_ranges$k_vals), by=coarse_step)
                 lo <- mi-1
@@ -318,28 +327,39 @@ performSearchForK <- function(startVal, endVal, step = 1,
                         ## Work done, leave loop?
                         message("mi value is best")
                         if(askParsimony){
-                            ## When mi value is chosen as best, in order for the 1-SE rule,
-                            ## it would be a good idea compute q2 values for at least 5
-                            ## consecutive values of K less than mi.
-                            ## This means that, in thise case, we would set fgIL to (mi-5)
-                            ## Then, the 1-SE rule could lead to choosing a smaller value.
+                            ## When mi value is chosen as best, in order for 
+                            ## the 1-SE rule, it would be a good idea compute 
+                            ## q2 values for at least 5 consecutive values of 
+                            ## K less than mi. 
+                            ## This means that, in thise case, we would set 
+                            ## fgIL to (mi-5)
+                            ## Then, the 1-SE rule could lead to choosing a 
+                            ## smaller value.
                             ##
                             #go_fine <- TRUE
-                            ## Scenario when the mi value is best, first check the 1-SE rule,
+                            ## Scenario when the mi value is best, first check 
+                            ## the 1-SE rule,
                             ## What is the value chosen by this rule?
-                            ## Does it already include values from the previous triplet, if any?
-                            ## If yes, we may need computations for a few  consecutive values below that value
-                            # idx_best <- as.numeric(which.max(unlist(coarse_prev_df["q2_vals"])))
-                            # threshold <- coarse_prev_df[idx_best, "q2"] - coarse_prev_df[idx_best, "SE"]
-                            # if()
+                            ## Does it already include values from the previous 
+                            ## triplet, if any?
+                            ## If yes, we may need computations for a few 
+                            ## consecutive values below that value
+                            # idx_best <- as.numeric(which.max(
+                            # unlist(coarse_prev_df["q2_vals"])))
+                            # threshold <- coarse_prev_df[idx_best, "q2"] - 
+                            #   coarse_prev_df[idx_best, "SE"]
+                            # 
                             ## TODO
-                            fgIL <- max(mi[kCGIdx]-5, 1) #shield against setting 0
+                            fgIL <- max(mi[kCGIdx]-5, 1) 
+                            ## shield against setting 0
                             fgOL <- max(lo[kCGIdx]-1, 1)
                             message("Choosing interval: ", fgIL, "-", fgOL)
                         }else{
-                            ## Added to handle case when 1-SE rule is not applied
+                            ## Added to handle case when 1-SE rule is not 
+                            ## applied
                             ##
-                            fgIL <- max(mi[kCGIdx]-1, 1) #shield against setting 0
+                            fgIL <- max(mi[kCGIdx]-1, 1) 
+                            ## shield against setting 0
                             fgOL <- max(mi[kCGIdx]-1, 1)
                             message("Choosing interval: ", fgIL, "-", fgOL)
                         }
@@ -353,10 +373,10 @@ performSearchForK <- function(startVal, endVal, step = 1,
                             message("Choosing interval: ", fgIL, "-", fgOL)
                             break
                         } else{
-                            ## go fine over interval ( hi[kCGIdx]+1 , lo[kCGIdx] )
+                            ## go fine over interval (hi[kCGIdx]+1 , lo[kCGIdx])
                             message("lo value is best")
-                            fgOL <- lo[kCGIdx]-1      #fine-grained search outer limit
-                            fgIL <- hi[kCGIdx-1]+1    #fine-grained search inner limit
+                            fgOL <- lo[kCGIdx]-1    # fine-grained search outer 
+                            fgIL <- hi[kCGIdx-1]+1  # and inner limit
                             message("Choosing interval: ", fgIL, "-", fgOL)
                             break
                         }
@@ -394,10 +414,12 @@ performSearchForK <- function(startVal, endVal, step = 1,
                 # minKInDF <- min(as.numeric(unlist(combined_df["k_vals"])))
                 kValsInDF <- as.numeric(unlist(combined_df["k_vals"]))
                 if(best_K != 1 && !any((best_K-1) - kValsInDF == 0)){
-                    message("Chosen best value happens to be the lowest. Making sure...")
+                    message("Chosen best value happens to be the lowest.")
+                    message("Making sure...")
                     attemptCount <- 1
                     makeSureK <- best_K
-                    while(makeSureK != 1 && !any((makeSureK-1) - kValsInDF == 0)){
+                    while(makeSureK != 1 && 
+                            !any((makeSureK-1) - kValsInDF == 0)){
                         # Ensure the new value is not already computed
                         fgIL <- max(best_K - 1*attemptCount, 1)
                         fgOL <- fgIL
@@ -416,10 +438,12 @@ performSearchForK <- function(startVal, endVal, step = 1,
                         combined_df <- searchReturnFine$return_df
 
                         # combined_df <- rbind(combined_df, fine_prev_df)
-                        makeSureK <- .get_best_K(combined_df, parsimony = askParsimony)
+                        makeSureK <- .get_best_K(combined_df, 
+                                                    parsimony = askParsimony)
                         message("MAKE_SURE_K:", makeSureK)
                         attemptCount <- attemptCount + 1
-                        # minKInDF <- min(as.numeric(unlist(combined_df["k_vals"])))
+                        # minKInDF <- min(as.numeric(
+                        #               unlist(combined_df["k_vals"])))
                         # message("MIN_K_IN_DF: ", minKInDF)
                         kValsInDF <- as.numeric(unlist(combined_df["k_vals"]))
                     }
@@ -431,7 +455,8 @@ performSearchForK <- function(startVal, endVal, step = 1,
         }
     }
     if(best_K == max(param_ranges$k_vals)){
-        warning("best_K: ", best_K , " is already the maximum value for K specified.
+        warning("best_K: ", 
+                best_K , " is already the maximum value for K specified.
                                 Try increasing therange")
     }
     message("BEST K:", best_K)
@@ -445,10 +470,10 @@ performSearchForK <- function(startVal, endVal, step = 1,
 # return A list of two lists: one containing feature matrices, the other samples
 # matrices
 .perform_multiple_NMF_runs <- function(X, kVal, alphaVal,
-                                       parallelDo = TRUE, nCores = NA,
-                                       nRuns = 100,
-                                       bootstrap = TRUE,
-                                       logfile = "outfile_nRuns.txt") {
+                                        parallelDo = TRUE, nCores = NA,
+                                        nRuns = 100,
+                                        bootstrap = TRUE,
+                                        logfile = "outfile_nRuns.txt") {
     # message("Kval is: ", kVal)
     if(bootstrap){
         new_ord <- lapply(seq_len(nRuns), function(x){
@@ -500,13 +525,13 @@ performSearchForK <- function(startVal, endVal, step = 1,
     } else{
         ## In serial
         nmf_result_list <- lapply(seq_len(nRuns),
-                                  function(i) {
-                                      .perform_single_NMF_run(
-                                          X = X[,new_ord[[i]]],
-                                          kVal = kVal,
-                                          alphaVal = alphaVal,
-                                          seedVal = seed_val_list[i])
-                                  })
+                                function(i) {
+                                .perform_single_NMF_run(
+                                    X = X[,new_ord[[i]]],
+                                    kVal = kVal,
+                                    alphaVal = alphaVal,
+                                    seedVal = seed_val_list[i])
+                                })
         return(list(nmf_result_list = nmf_result_list, new_ord = new_ord))
         ##
     }
@@ -563,11 +588,11 @@ performSearchForK <- function(startVal, endVal, step = 1,
         .get_q2_aggregates_chosen_var(x, chosen_var = x$k_vals, base::mean)
     ######
     ## Using the one-std error rule for selecting a parsimonious model
-    sd_by_K <-
-        .get_q2_aggregates_chosen_var(x, x$k_vals,
-                                      stats::sd)
+    sd_by_K <- .get_q2_aggregates_chosen_var(x, x$k_vals, stats::sd)
     se_by_K <- sd_by_K / sqrt(nrow(x)/nrow(sd_by_K))
-    averages <- tibble::add_column(averages, "SD" = sd_by_K$q2_vals, "SE" = se_by_K$q2_vals)
+    averages <- tibble::add_column(averages, 
+                                    "SD" = sd_by_K$q2_vals, 
+                                    "SE" = se_by_K$q2_vals)
     ######
     idx_best <- as.numeric(which.max(unlist(averages["q2_vals"])))
     ## Print Q2 values and differences
@@ -583,10 +608,11 @@ performSearchForK <- function(startVal, endVal, step = 1,
     if(parsimony){
         ## Return the value of K using the one SE rule
         ## best_K_by_mean <- best_K
-        se_rule_threshold <- averages[idx_best, "q2_vals"] - averages[idx_best, "SE"]
+        se_rule_threshold <- averages[idx_best, "q2_vals"] - 
+            averages[idx_best, "SE"]
         message("SE_RULE_THRESHOLD = ", se_rule_threshold)
-        best_K_by_se_rule <- averages[which(unlist(averages["q2_vals"]) > se_rule_threshold),
-                                      "rel_var"]
+        best_K_by_se_rule <- averages[
+            which(unlist(averages["q2_vals"]) > se_rule_threshold), "rel_var"]
         best_K_by_se_rule_chosen <- min(best_K_by_se_rule)
         message("MATCHES = ", paste0(best_K_by_se_rule, collapse = ","))
         message("SE RULE BEST K chosen = ", best_K_by_se_rule_chosen)
@@ -631,12 +657,12 @@ performSearchForK <- function(startVal, endVal, step = 1,
 # @importFrom stats sd
 .get_q2_threshold_by_K <- function(model_selectK) {
     ##
-    mean_by_K <-
-        .get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals,
-                                        base::mean)
-    sd_by_K <-
-        .get_q2_aggregates_chosen_var(model_selectK, model_selectK$k_vals,
-                                        stats::sd)
+    mean_by_K <- .get_q2_aggregates_chosen_var(model_selectK, 
+                                model_selectK$k_vals,
+                                base::mean)
+    sd_by_K <- .get_q2_aggregates_chosen_var(model_selectK, 
+                                model_selectK$k_vals,
+                                stats::sd)
     se_by_K <- sd_by_K / sqrt(nrow(sd_by_K))
     ##
     best_K <- .get_best_K(model_selectK)

@@ -56,9 +56,9 @@ the earlier result to `UseOC`. As of v0.1.3, with this setting, archR
 returns a new result object as if the additional iteration performed is the 
 only iteration.}
 
-\item{UseOC}{List. Clusters to be further processed with archR. These can be 
-from a previous archR result (in which case use archRresult$clustSol$clusters),
-or simply clusters from any other method.
+\item{UseOC}{List. Clusters to be further processed with archR. These can 
+be from a previous archR result (in which case use 
+archRresult$clustSol$clusters), or simply clusters from any other method.
 Warning: This has not been rigorously tested yet (v0.1.3).}
 
 \item{oDir}{Character. Specify the output directory with its path. archR
@@ -76,14 +76,15 @@ iteration of archR. The cluster labels as stored as characters.}
 \item{clustBasisVectors}{A list with information on NMF basis vectors per 
 iteration of archR. Per iteration, there are two variables `nBasisVectors` 
 storing the number of basis vectors after model selection,
-and `basisVectors`, a matrix storing the basis vectors themselves. Dimensions
- of the `basisVectors` matrix are 4*L x nBasisVectors (mononucleotide 
- case) or 16*L x nBasisVectors (dinucleotide case).}
+and `basisVectors`, a matrix storing the basis vectors themselves. 
+Dimensions of the `basisVectors` matrix are 4*L x nBasisVectors 
+(mononucleotide case) or 16*L x nBasisVectors (dinucleotide case).}
  
 \item{clustSol}{The clustering solution obtained upon processing the raw 
 clusters from the last iteration of archR's result. This is handled 
-internally by the function \code{\link{reorder_archRresult}} using Euclidean 
-distance and average linkage hierarchical clustering.}
+internally by the function \code{\link{reorder_archRresult}} using the
+default setting of Euclidean distance and ward.D linkage hierarchical 
+clustering.}
  
 \item{rawSeqs}{The input sequences as a DNAStringSet object.}
 
@@ -127,3 +128,39 @@ factorization, performing clustering, and visualization-related functions.
 }
 }
 
+\examples{
+
+inputFastaFilename <- system.file("extdata", "example_data.fa", 
+                        package = "archR", mustWork = TRUE)
+
+# Specifying 'dinuc' generates dinucleotide features
+inputSeqsMat <- archR::prepare_data_from_FASTA(inputFastaFilename,
+    sinuc_or_dinuc = "dinuc")
+
+inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
+    rawSeq = TRUE)
+
+# Set archR configuration
+archRconfig <- archR::archRSetConfig(
+    parallelize = TRUE,
+    nCoresUse = 2,
+    nIterationsUse = 100,
+    kMin = 1,
+    kMax = 20,
+    modSelType = "stability",
+    tol = 10^-4,
+    bound = 10^-8,
+    innerChunkSize = 100,
+    flags = list(debugFlag = TRUE, timeFlag = TRUE, verboseFlag = TRUE,
+        plotVerboseFlag = FALSE)
+)
+
+# Run archR 
+archRresult <- archR::archR(config = archRconfig,
+                          seqsMat = inputSeqsMat,
+                          seqsRaw = inputSeqsRaw,
+                          seqsPositions = seq(1,100,by=1),
+                          thresholdItr = 2)
+
+ 
+}

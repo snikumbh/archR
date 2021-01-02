@@ -31,9 +31,9 @@
 #' the earlier result to `UseOC`. As of v0.1.3, with this setting, archR 
 #' returns a new result object as if the additional iteration performed is the 
 #' only iteration.
-#' @param UseOC List. Clusters to be further processed with archR. These can be 
-#' from a previous archR result (in which case use archRresult$clustSol$clusters),
-#' or simply clusters from any other method.
+#' @param UseOC List. Clusters to be further processed with archR. These can 
+#' be from a previous archR result (in which case use 
+#' archRresult$clustSol$clusters), or simply clusters from any other method.
 #' Warning: This has not been rigorously tested yet (v0.1.3).
 #' @param oDir Character. Specify the output directory with its path. archR
 #' will create this directory. If a directory with the given name exists at the
@@ -51,14 +51,15 @@
 #' \item{clustBasisVectors}{A list with information on NMF basis vectors per 
 #' iteration of archR. Per iteration, there are two variables `nBasisVectors` 
 #' storing the number of basis vectors after model selection,
-#' and `basisVectors`, a matrix storing the basis vectors themselves. Dimensions
-#'  of the `basisVectors` matrix are 4*L x nBasisVectors (mononucleotide 
-#'  case) or 16*L x nBasisVectors (dinucleotide case).}
+#' and `basisVectors`, a matrix storing the basis vectors themselves. 
+#' Dimensions of the `basisVectors` matrix are 4*L x nBasisVectors 
+#' (mononucleotide case) or 16*L x nBasisVectors (dinucleotide case).}
 #'  
 #' \item{clustSol}{The clustering solution obtained upon processing the raw 
 #' clusters from the last iteration of archR's result. This is handled 
-#' internally by the function \code{\link{reorder_archRresult}} using Euclidean 
-#' distance and average linkage hierarchical clustering.}
+#' internally by the function \code{\link{reorder_archRresult}} using the
+#' default setting of Euclidean distance and ward.D linkage hierarchical 
+#' clustering.}
 #'  
 #' \item{rawSeqs}{The input sequences as a DNAStringSet object.}
 #' 
@@ -68,15 +69,51 @@
 #' 
 #' \item{config}{The configuration used for processing.}
 #' \item{call}{The function call itself.}
-#' } 
+#' }
+#' 
+#' @examples 
+#' 
+#' inputFastaFilename <- system.file("extdata", "example_data.fa", 
+#'                         package = "archR", mustWork = TRUE)
+#' 
+#' # Specifying 'dinuc' generates dinucleotide features
+#' inputSeqsMat <- archR::prepare_data_from_FASTA(inputFastaFilename,
+#'     sinuc_or_dinuc = "dinuc")
+#' 
+#' inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
+#'     rawSeq = TRUE)
+#' 
+#' # Set archR configuration
+#' archRconfig <- archR::archRSetConfig(
+#'     parallelize = TRUE,
+#'     nCoresUse = 2,
+#'     nIterationsUse = 100,
+#'     kMin = 1,
+#'     kMax = 20,
+#'     modSelType = "stability",
+#'     tol = 10^-4,
+#'     bound = 10^-8,
+#'     innerChunkSize = 100,
+#'     flags = list(debugFlag = TRUE, timeFlag = TRUE, verboseFlag = TRUE,
+#'         plotVerboseFlag = FALSE)
+#' )
+#' 
+#' # Run archR 
+#' archRresult <- archR::archR(config = archRconfig,
+#'                           seqsMat = inputSeqsMat,
+#'                           seqsRaw = inputSeqsRaw,
+#'                           seqsPositions = seq(1,100,by=1),
+#'                           thresholdItr = 2)
+#' 
+#'  
 #' @export
 archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
-                  thresholdItr = 3,
-                  setParsimony = c(FALSE, FALSE, FALSE),
-                  setOCollation = c(TRUE, FALSE, FALSE),
-                  fresh = TRUE,
-                  UseOC = NULL,
-                  oDir = NULL){
+                    thresholdItr = 3,
+                    setParsimony = c(FALSE, FALSE, FALSE),
+                    setOCollation = c(TRUE, FALSE, FALSE),
+                    fresh = TRUE,
+                    UseOC = NULL,
+                    oDir = NULL){
     ##
     ## assert thresholdItr is a positive integer
     if(!thresholdItr > 0) {
@@ -102,12 +139,12 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
     ##
     if(config$flags$plotVerboseFlag){
         allSequencesLogo <- plot_ggseqlogo_of_seqs(seqs = seqsRaw,
-                               position_labels = seqsPositions,
-                               title = paste("Sequence logo of all",
-                                             length(seqsRaw),"sequences" ))
+                                position_labels = seqsPositions,
+                                title = paste("Sequence logo of all",
+                                            length(seqsRaw),"sequences" ))
         ggsave(filename = file.path(oDir,"allSequencesLogo.pdf"),
-               plot = allSequencesLogo,
-               device = "pdf", width = 20, height = 2.5)
+                plot = allSequencesLogo,
+                device = "pdf", width = 20, height = 2.5)
     }
     ## Make checks for params in configuration
     .assert_archR_config(config, ncol(seqsMat))
@@ -139,7 +176,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             message("OK")
             ## UseOC is same as nxtOuterChunkColl
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
-                                                      UseOC)
+                                                        UseOC)
             .assert_archR_OK_for_nextIteration(UseOC)
             outerChunksColl <- UseOC
             ##
@@ -182,8 +219,8 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
     }
 
     ##
-    ##--------------------------------------------------------------------------
-    message("=== archR to perform ", thresholdItr, " iteration(s) ===")
+    ##-------------------------------------------------------------------------
+    ##    message("=== archR to perform ", thresholdItr, " iteration(s) ===")
     while (test_itr <= thresholdItr) {
         iterStartTime <- Sys.time()
         totOuterChunksColl <- length(outerChunksColl)
@@ -218,29 +255,30 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                 ## assumed to be populated already -- in the first iteration,
                 ## test_itr is 0, and indexing using test_itr would fail.
                 collatedClustAssignments <- list(outerChunk)
-                ## We access clustFactors that are set in the previous iteration,
-                ## when test_itr would be one less than it's current value.
+                ## We access clustFactors that are set in the previous 
+                ## iteration, when test_itr would be one less than its 
+                ## current value.
                 if (!is.null(intClustFactors)) {
-                    intClustFactors <- cbind(intClustFactors,
-                        as.matrix(
-                        clustFactors[[test_itr-1]]$basisVectors[, outerChunkIdx])
-                        )
+                    intClustFactors <- 
+                    cbind(intClustFactors, as.matrix(
+                    clustFactors[[test_itr-1]]$basisVectors[, outerChunkIdx])
+                    )
                 } else {
                     intClustFactors <- as.matrix(
-                        clustFactors[[test_itr-1]]$basisVectors[, outerChunkIdx]
-                        )
+                    clustFactors[[test_itr-1]]$basisVectors[, outerChunkIdx]
+                    )
                 }
             } else {
                 if(config$flags$verboseFlag) {
                     message("Decision: Processing")
                 }
                 innerChunksColl <- .prepare_chunks(outerChunk,
-                                                   config$innerChunkSize)
+                                                config$innerChunkSize)
                 ## Maintain these in a list, for collation later when
                 ## all innerChunks in innerChunksColl have been processed
                 globFactors <- vector("list", length(innerChunksColl))
                 globClustAssignments <- vector("list", length(innerChunksColl))
-                #################### INNER CHUNK FOR LOOP ######################
+                #################### INNER CHUNK FOR LOOP #####################
                 for (innerChunkIdx in seq_along(innerChunksColl)) {
                     if (config$flags$verboseFlag) {
                         message("[Inner chunk ", innerChunkIdx, "/",
@@ -257,7 +295,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                             message("=== Wihtout parsimony ===")
                     }
                     if(test_itr == 1 ||
-                       length(outerChunk) > 0.9*config$innerChunkSize){
+                        length(outerChunk) > 0.9*config$innerChunkSize){
                         thisNMFResult <-
                             .handle_chunk_w_NMF2(innerChunkIdx,
                                         innerChunksColl,
@@ -282,7 +320,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                     .assert_archR_NMFresult(thisNMFResult)
                     globFactors[[innerChunkIdx]] <- thisNMFResult$forGlobFactors
                     globClustAssignments[[innerChunkIdx]] <-
-                        thisNMFResult$forGlobClustAssignments
+                            thisNMFResult$forGlobClustAssignments
                 } ## for loop over innerChunksColl ENDS here
                 #################### INNER CHUNK FOR LOOP ######################
                 ## We need globFactors, globClustAssignments.
@@ -326,10 +364,10 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             ##
             chunksComplInfo <-
                 paste0("[Outer chunk ", outerChunkIdx, "/", totOuterChunksColl,
-                       "] complete")
+                        "] complete")
             iterComplInfo <- paste0("[Iteration ", test_itr, "] complete")
             currInfo <- paste0("current total factors: ",
-                               ncol(intClustFactors))
+                                ncol(intClustFactors))
             nextIterInfo <- paste0("Current total chunks for next iteration: ",
                                 length(nxtOuterChunksColl))
             ##
@@ -378,10 +416,10 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             ############## We use Complete linkage with Euclidean distance
             intClustFactorsClusteringEucCom <-
                 .handle_clustering_of_factors(intClustFactors,
-                                              clustMethod = "hc",
-                                              linkage = "ward.D",## or "complete"?,
-                                              distMethod = "euclid",
-                                              flags = config$flags)
+                                                clustMethod = "hc",
+                                                linkage = "ward.D",
+                                                distMethod = "euclid",
+                                                flags = config$flags)
 
             intClustFactors <- .get_factors_from_factor_clustering2(
                 intClustFactorsClusteringEucCom, intClustFactors)
@@ -391,14 +429,14 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
 
             nxtOuterChunksColl <-
                 .collate_clusters2(intClustFactorsClusteringEucCom,
-                                   nxtOuterChunksColl, config$flags)
+                                    nxtOuterChunksColl, config$flags)
 
-            ## Updating cluster labels for sequences can be done later after the
-            ## clusters have been rearranged
+            ## Updating cluster labels for sequences can be done later after 
+            ## the clusters have been rearranged
             ## But we need this for rearrangement
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
-                                                      nxtOuterChunksColl,
-                                                      flags = config$flags)
+                                                        nxtOuterChunksColl,
+                                                        flags = config$flags)
             ##
         } else {
             if(config$flags$debugFlag){
@@ -406,8 +444,8 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             }
             ## TO-DO: move this inside else block above?
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
-                                                      nxtOuterChunksColl,
-                                                      flags = config$flags)
+                                                        nxtOuterChunksColl,
+                                                        flags = config$flags)
         }
         ############### MANAGING CLUSTERS FROM OUTER CHUNK ENDS ################
         seqsClustLabelsList[[test_itr]] <- seqsClustLabels
@@ -439,7 +477,7 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
             archRComplTime <- ""
             if(config$flags$timeFlag){
                 complTime <- format(as.numeric(Sys.time() - archRStartTime,
-                                               units = "mins"), digits = 3)
+                                            units = "mins"), digits = 3)
                 archRComplTime <- paste(complTime, "mins ")
                 message(archRComplTime, archRComplMsg)
             }
@@ -454,13 +492,13 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                 "Saving result of iteration ", test_itr, ".")
             }
             curr_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
-                                     clustBasisVectors = clustFactors,
-                                     #architectures = architectures,
-                                     rawSeqs = seqsRaw,
-                                     config = config,
-                                     call = match.call())
+                                        clustBasisVectors = clustFactors,
+                                        #architectures = architectures,
+                                        rawSeqs = seqsRaw,
+                                        config = config,
+                                        call = match.call())
             rdsFilename <- paste0(oDir, "archRresult_checkpoint",
-                                  test_itr, ".rds")
+                                    test_itr, ".rds")
             saveRDS(curr_archRresult, file=rdsFilename)
         }
         ##
@@ -500,15 +538,15 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
     }
     ##
     temp_res_reord <- reorder_archRresult(temp_res,
-                  iteration = thresholdItr,
-                  clustMethod = "hc",
-                  linkage = "ward.D", ## or average?
-                  distMethod = "euclid",
-                  minClusters = set_minClusters,
-                  regularize = TRUE, 
-                  topN = floor(0.5*length(seqsPositions)),
-                  decisionToReorder = decisionToReorder,
-                  config = temp_res$config)
+                                    iteration = thresholdItr,
+                                    clustMethod = "hc",
+                                    linkage = "ward.D", ## or average?
+                                    distMethod = "euclid",
+                                    minClusters = set_minClusters,
+                                    regularize = TRUE, 
+                                    topN = floor(0.5*length(seqsPositions)),
+                                    decisionToReorder = decisionToReorder,
+                                    config = temp_res$config)
     ## Print final stage output files to disk
     if(config$flags$plotVerboseFlag){
         if(!is.null(oDir)){
@@ -520,19 +558,19 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
     ##
     if(config$flags$timeFlag){
         temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
-                             clustBasisVectors = clustFactors,
-                             clustSol = temp_res_reord,
-                             rawSeqs = seqsRaw,
-                             timeInfo = timeInfo,
-                             config = config,
-                             call = match.call())
+                                clustBasisVectors = clustFactors,
+                                clustSol = temp_res_reord,
+                                rawSeqs = seqsRaw,
+                                timeInfo = timeInfo,
+                                config = config,
+                                call = match.call())
     }else{
         temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
-                                 clustBasisVectors = clustFactors,
-                                 clustSol = temp_res_reord,
-                                 rawSeqs = seqsRaw,
-                                 config = config,
-                                 call = match.call())
+                                clustBasisVectors = clustFactors,
+                                clustSol = temp_res_reord,
+                                rawSeqs = seqsRaw,
+                                config = config,
+                                call = match.call())
     }
     .assert_archRresult(temp_archRresult)
     ##

@@ -40,10 +40,10 @@ plot_arch_for_clusters <- function(tss.seqs_raw,
         endN <- cumsums_of_cluster_lengths[i]
         ##
         plot_title <- paste0("(", i , "/", length(seqs_clusters_as_list), 
-                             ") Arch `",
-                             cluster_names[i], "': ",
-                             length(seqs_clusters_as_list[[i]]),
-                             " sequences (",  startN, "-",  endN, ")")
+                            ") Arch `",
+                            cluster_names[i], "': ",
+                            length(seqs_clusters_as_list[[i]]),
+                            " sequences (",  startN, "-",  endN, ")")
         ##
         foo_p <- plot_ggseqlogo_of_seqs(seqs = 
                                     tss.seqs_raw[ seqs_clusters_as_list[[i]] ],
@@ -73,10 +73,10 @@ plot_arch_for_clusters <- function(tss.seqs_raw,
 #' should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
 #' the y-axis limits according to the maximum information content of the 
 #' sequence logo. Default is 'auto'.
-#'
+#' 
 #' @export
 plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 5,
-                                       title = "Title", bits_yax = "auto"){
+                                    title = "Title", bits_yax = "auto"){
 
     nPos <- length(position_labels)
     xtick_cal <- seq(0, nPos, by = xt_freq)
@@ -91,10 +91,10 @@ plot_ggseqlogo_of_seqs <- function(seqs, position_labels, xt_freq = 5,
         ) +
         ggplot2::theme_linedraw() +
         ggplot2::theme(axis.text.x = element_text(size = rel(0.9),
-                                                  angle = 90,
-						  hjust = 1),
-                       axis.text.y = element_text(size = rel(0.9)),
-                       panel.grid = element_blank()
+                                                    angle = 90,
+                                                    hjust = 1),
+                        axis.text.y = element_text(size = rel(0.9)),
+                        panel.grid = element_blank()
         ) +
         ## Add additional bold tick labels
         ggplot2::scale_x_continuous(breaks = xtick_cal,

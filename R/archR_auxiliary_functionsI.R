@@ -50,7 +50,7 @@
     ##
     if (length(unique(clustMemberships)) != nClusters) {
         message("WARNING: Basis vector that got no sequences assigned: ",
-             setdiff( unique(clustMemberships), seq_len(nClusters)))
+                setdiff( unique(clustMemberships), seq_len(nClusters)))
     } else {
         ##
     }
@@ -85,114 +85,6 @@
 # }
 
 
-# @title Map clusters to factors
-#
-# @description This function maps the clusters with the corresponding factors
-#  factors <--> clusters; meaning if there are 5 clusters and 5 factors, which
-#  cluster corresponds to which factor is assigned by this function.
-#  It takes as input the clusters, and returns the correct order of the
-#  clusters.
-#
-# @param samplesMatrix A matrix. Samples matrix from solving NMF
-# @param clustOrderIdx A nested list similar to reordering_idx from kmeans
-# @param iChunksColl A list
-# @param iChunkIdx A numeric
-# @param flags List with four fixed elements. flags param in archR config
-#
-# @return A list that can be assigned as an element in globClustAssignments
-# .map_clusters_to_factors <- function(samplesMatrix, clustOrderIdx, iChunksColl,
-#                                     iChunkIdx, flags) {
-#     ## clustOrderIdx IS clustering_sol_kmeans$reordering_idx, the reorderingIdx
-#     ## is a nested list, i.e. a list holding list of seqs_ids belonging to one
-#     ## cluster together. Hence, length(this variable) gives #clusters.
-#     ## samplesMatrix IS samplesMatrix.
-#     ##
-#     ## Make checks
-#     .assert_archR_samplesMatrix(samplesMatrix)
-#     ##
-#     if (!is.list(clustOrderIdx)) {
-#         print(clustOrderIdx)
-#         stop("Mapping clusters to factors, cluster orders is not a list")
-#     } else if (!is.vector(clustOrderIdx[[1]])) {
-#             stop("Mapping clusters to factors, cluster orders is not a vector")
-#     }
-#     ## check iChunksColl and iChunkIdx
-#     if (!is.null(iChunksColl) && length(iChunksColl) < 1) {
-#         stop("Mapping clusters to factors, expecting inner chunks as a
-#                 list of length > 0")
-#     }
-#     if (!is.null(iChunkIdx) && !is.numeric(iChunkIdx) && iChunkIdx > 0) {
-#         stop("Mapping clusters to factors, expecting inner chunk index as a
-#                 numeric > 0")
-#     }
-#     ##
-#     .assert_archR_flags(flags)
-#     ##
-#     rightClusterOrders <- vector("list", length(clustOrderIdx))
-#     if (length(clustOrderIdx) == 1) {
-#         ## Special case
-#         rightClusterOrders[[1]] <- iChunksColl[[iChunkIdx]][clustOrderIdx[[1]]]
-#         return(rightClusterOrders)
-#         ##
-#     } else if (length(clustOrderIdx) > 1) {
-#         ##
-#         message("Cluster to Factor:")
-#         for (cluster_idx in seq_along(clustOrderIdx)) {
-#             ##
-#             # print(apply(as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]]),
-#             #             1, quantile))
-#             # print(as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]]))
-#             rowwiseMeans <- rowMeans(
-#                 as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]])
-#             )
-#             print(paste0("Cluster ID:", cluster_idx))
-#             print(paste0("Rowwise means", rowwiseMeans))
-#             relevant_factor <- which.max(rowwiseMeans)
-#             relevant_descending_order <-
-#                 sort(samplesMatrix[relevant_factor,clustOrderIdx[[cluster_idx]]],
-#                      index.return = TRUE,
-#                      decreasing = TRUE)$ix
-#             # print(relevant_factor)
-#             # 
-#             ##
-#             # relevant_factor <-
-#             #     which.max(rowMeans(
-#             #     as.matrix(samplesMatrix[, clustOrderIdx[[cluster_idx]]])
-#             #     ))
-#             if (length(relevant_factor) > 1) {
-#                 if (flags$debugFlag) {
-#                     message("Multiple basis vectors attained max.")
-#                     message(relevant_factor)
-#                 }
-#             } else {
-#                 message(relevant_factor)
-#                 if (flags$debugFlag) {
-#                     message("Factor-mapping OK")
-#                     message(relevant_factor)
-#                 }
-# 
-#                 seqs_vector_to_assign <-
-#                     iChunksColl[[iChunkIdx]][clustOrderIdx[[cluster_idx]]]
-#                 ## order the sequences by the scores (highest first, weakest last)
-#                 rightClusterOrders[[relevant_factor]] <-
-#                     seqs_vector_to_assign[relevant_descending_order]
-#             }
-#         }
-#         ## Check if any factor got left out?
-#         ## i.e. no seqs assigned to its cluster
-#         if (any(lapply(rightClusterOrders, length) == 0)) {
-#             print(clustOrderIdx)
-#             thisGotLeftOut <- which(lapply(rightClusterOrders, length) == 0)
-#             warning(c("Factor(s) got no sequences assigned: ",
-#                     paste0(thisGotLeftOut, sep="-")), immediate. = TRUE)
-#             for (id in thisGotLeftOut) {
-#                 rightClusterOrders[[id]] <- 0
-#             }
-#         }
-#         return(rightClusterOrders)
-#     }
-# }
-## =============================================================================
 
 ## @title Collate clusters from hierarchical clustering
 ##
@@ -201,7 +93,7 @@
 ##
 ## @return collatedClustAssignments A list
 .collate_clusters2 <- function(clustList, globClustAssignments,
-                               flags = list(debugFlag = FALSE,
+                                flags = list(debugFlag = FALSE,
                                             verboseFlag = FALSE,
                                             plotVerboseFlag = FALSE,
                                             timeFlag = FALSE)) {
@@ -247,61 +139,6 @@
         return(paste(vec_or_list, collapse = ", "))
     }
 }
-
-# ## @title Collate clusters
-# ##
-# ## @param hopachObj A hopach object which is a special list with elements
-# ## having fixed names
-# ## @param globClustAssignments A list
-# ##
-# ## @return collatedClustAssignments A list
-# .collate_clusters <- function(hopachObj, globClustAssignments) {
-#     ## Based on which factors are being combined (hopachObj), look at the
-#     ## globClustAssignments variable to combine the respective sequences
-#     ## together.
-#     .assert_archR_globClustAssignments(globClustAssignments)
-#     if (is.null(hopachObj)) {
-#         ## When HOPACH clustering was not performed, the globClustAssingments
-#         ## variable is directly assigned
-#         collatedClustAssignments <- globClustAssignments
-#     } else {
-#         ## When HOPACH clustering was performed, liase with the hopachObj
-#         .assert_archR_hopachObj(hopachObj, test_null = FALSE)
-#         nClusters <- hopachObj$clustering$k
-#         clustSizes <- hopachObj$clustering$sizes
-#         elementsOrder <- hopachObj$clustering$order
-#         ##
-#         collatedClustAssignments <- vector("list", nClusters)
-#         ##
-#         for (coll_cluster_idx in seq_along(collatedClustAssignments)) {
-#             to_combine_this_itr <- clustSizes[coll_cluster_idx]
-#             leave_first <- 0
-#             if (coll_cluster_idx > 1) {
-#                 leave_first <- sum(clustSizes[seq_len(coll_cluster_idx - 1)])
-#             }
-#             pick_this_itr <- elementsOrder[
-#                 (leave_first + 1):(leave_first + to_combine_this_itr)]
-#             ##
-#             if (all(pick_this_itr <= length(globClustAssignments))) {
-#                 temp <- unlist(lapply(pick_this_itr, function(x) {
-#                     globClustAssignments[[x]]
-#                 }))
-#                 collatedClustAssignments[[coll_cluster_idx]] <- temp
-#             } else {
-#                 pick_this_itr <- pick_this_itr[]
-#                 these_not_ok <-
-#                     which(pick_this_itr > length(globClustAssignments))
-#                 resolve_these <- these_not_ok
-#                 collatedClustAssignments[[coll_cluster_idx]] <-
-#                     unlist(lapply(pick_this_itr[-these_not_ok],
-#                             function(x) {globClustAssignments[[x]]}
-#                             )
-#                     )
-#             }
-#         }  ## collation for loop ends
-#     }
-#     return(collatedClustAssignments)
-# }
 ## =============================================================================
 
 ## @title Update labels of sequences in a cluster
@@ -317,25 +154,34 @@
                                                 plotVerboseFlag = FALSE,
                                                 timeFlag = FALSE)) {
     ## Important: The collatedClustAssignments variable is a list where each 
-    ## element holds the indices of sequences falling in the same cluster, like so
+    ## element holds the indices of sequences falling in the same cluster, 
+    ## like so
     ## For a set of 200 sequences, collatedClustAssignments is
     ## [[1]]
-    ## [1]   1   2   6  11  20  23  32  46  50  52  63  68  71  72  75  80  82  83  85  86  87  88  92  99 102 104 105
-    ## [28] 112 114 116 123 131 137 138 143 145 146 147 148 151 158 165 167 168 171 176 179 182 190 197
+    ## [1]   1   2   6  11  20  23  32  46  50  52  63  68  71  72  75  
+    ## 80  82  83  85  86  87  88  92  99 102 104 105
+    ## [28] 112 114 116 123 131 137 138 143 145 146 147 148 151 158 165 
+    ## 167 168 171 176 179 182 190 197
     ##
     ## [[2]]
-    ## [1]   3   5   7   8  10  12  13  16  17  18  19  22  25  30  31  36  37  38  39  41  43  45  47  49  51  53  54
-    ## [28]  55  56  58  59  60  61  64  67  69  70  73  77  84  89  91  94  95  98 103 106 107 109 115 117 118 119 120
-    ## [55] 121 122 125 126 128 130 132 133 134 135 136 140 141 142 144 150 152 153 154 156 159 160 161 162 164 166 173
+    ## [1]   3   5   7   8  10  12  13  16  17  18  19  22  25  30  31  
+    ## 36  37  38  39  41  43  45  47  49  51  53  54
+    ## [28]  55  56  58  59  60  61  64  67  69  70  73  77  84  89  91  
+    ## 94  95  98 103 106 107 109 115 117 118 119 120
+    ## [55] 121 122 125 126 128 130 132 133 134 135 136 140 141 142 144 
+    ## 150 152 153 154 156 159 160 161 162 164 166 173
     ## [82] 175 177 180 183 184 185 186 188 189 191 193 194 195 196 198 199 200
     ##
     ## [[3]]
-    ## [1]   4   9  14  15  21  24  26  27  28  29  33  34  35  40  42  44  48  57  62  65  66  74  76  78  79  81  90
-    ## [28]  93  96  97 100 101 108 110 111 113 124 127 129 139 149 155 157 163 169 170 172 174 178 181 187 192
+    ## [1]   4   9  14  15  21  24  26  27  28  29  33  34  35  40  42  44  
+    ## 48  57  62  65  66  74  76  78  79  81  90
+    ## [28]  93  96  97 100 101 108 110 111 113 124 127 129 139 149 155 157 
+    ## 163 169 170 172 174 178 181 187 192
     ## 
     ## This is different than the globClustAssignment variable which will hold
-    ## the indices of the factors that are combined into one cluster. For instance,
-    ## when there are 25 factors/clusters which have combined to give 5 clusters,
+    ## the indices of the factors that are combined into one cluster. 
+    ## For instance, when there are 25 factors/clusters which have combined 
+    ## to give 5 clusters,
     ## globClustAssignments will hold something like this:
     ## [[1]]
     ## [1] "3"  "13" "11" "16" "6" 
@@ -352,8 +198,10 @@
     ## [[5]]
     ## [1] "19" "9"  "20" "7"  "23"
     ## 
-    ## The collatedClustAssignments variable and the globClustAssignments variable were confused,
-    ## and a corresponding test was wrongly written marking the previous update_cluster_labels code block 
+    ## The collatedClustAssignments variable and the globClustAssignments 
+    ## variable were confused,
+    ## and a corresponding test was wrongly written marking the previous
+    ##  update_cluster_labels code block 
     ## as erroneous. However, that is not correct, as has been noted above.
     ## For reference: see commit 4705553
     ## 
@@ -560,8 +408,8 @@
     if(returnVal != "FOO") stop(returnVal)
     ##
     element_lengths <- unlist(lapply(nodeList, function(elem){
-        if(class(elem) == "list") length(elem)
-        else 1
+        ifelse(is.list(elem), length(elem), 1)
+        # else 1
     }))
     
     if(any(element_lengths != 1)){
@@ -569,7 +417,7 @@
         iter1 <- 0
         iter2 <- 1
         while(iter2 <= length(nodeList)){
-            if(class(nodeList[[iter2]]) != "list"){
+            if(!is.list(nodeList[[iter2]])){
                 iter1 <- iter1 + 1
                 new_list[[iter1]] <- nodeList[[iter2]]
             }else{
@@ -590,54 +438,54 @@
 
 ############################## CUTREE VERSION ##################################
 ## This works best/is best referred with ward.D linkage
-#' @title Get clusters out of hierarchical clustering object using cutree. 
-#' Used internally by archR.
-#' 
-#' @description Clusters from a hierarchical clustering object are obtained 
-#' by using cutree at different heights of the tree. The optimum number of 
-#' clusters are decided based on the average silhouette value of the clustering.
-#' 
-#' @param hcObj The hierarchical clustering object as returned by 
-#' \code{\link[stats]{hclust}}.
-#' @param distMat The distance matrix that was used by hclust, a 
-#' \code{\link[stats]{dist}} object.
-#' @param hStep Numeric. The step size used to increment height values for 
-#' cutree. Default value is 0.05.
-#' @param parentChunks List. Specify the factor numbers in the previous 
-#' iteration of archR that factors in the current iteration resulted from. 
-#' Default value is NULL.
-#' @param keepSiblingsUncollated Logical. Specify TRUE if all clusters from a 
-#' single parent chunk should not be collated, even when recommended so based on 
-#' silhouette value computation. Default value FALSE. i.e. if they get collated, it is
-#'  left as collated.
-#' @param enableSwitchSilToCH Logical. When and if the clustering result has 
-#' singletons, using the average silhouette value may not be reliable to decide 
-#' on the optimum number of clusters. In this case, if this argument is TRUE, 
-#' the Calinski-Harabasz index is used instead. Setting it to FALSE, the
-#' switch is disabled, i.e., average silhouette value is used. Default is TRUE.
-#' @param minClusters Integer. Specify the minimum number of clusters to be 
-#' fetched from the HAC solution. 
-#' @param distThreshold Numeric. Specify a threshold of units of distance for 
-#' considering any two elements as close enough to be merged in the same cluster.
-#' The default value is specified for Euclidean distance.
-#' @param verbose Logical. Specify TRUE for verbose output.
-#' 
-#' @importFrom stats cutree 
-#' @importFrom fpc calinhara
-#' @importFrom cluster silhouette
-#'
+# @title Get clusters out of hierarchical clustering object using cutree. 
+# Used internally by archR.
+# 
+# @description Clusters from a hierarchical clustering object are obtained 
+# by using cutree at different heights of the tree. The optimum number of 
+# clusters are decided based on the average silhouette value of the clustering.
+# 
+# @param hcObj The hierarchical clustering object as returned by 
+# \code{\link[stats]{hclust}}.
+# @param distMat The distance matrix that was used by hclust, a 
+# \code{\link[stats]{dist}} object.
+# @param hStep Numeric. The step size used to increment height values for 
+# cutree. Default value is 0.05.
+# @param parentChunks List. Specify the factor numbers in the previous 
+# iteration of archR that factors in the current iteration resulted from. 
+# Default value is NULL.
+# @param keepSiblingsUncollated Logical. Specify TRUE if all clusters from a 
+# single parent chunk should not be collated, even when recommended so based 
+# on silhouette value computation. Default value FALSE. i.e. if they get 
+# collated, it is left as collated.
+# @param enableSwitchSilToCH Logical. When and if the clustering result has 
+# singletons, using the average silhouette value may not be reliable to decide 
+# on the optimum number of clusters. In this case, if this argument is TRUE, 
+# the Calinski-Harabasz index is used instead. Setting it to FALSE, the
+# switch is disabled, i.e., average silhouette value is used. Default is TRUE.
+# @param minClusters Integer. Specify the minimum number of clusters to be 
+# fetched from the HAC solution. 
+# @param distThreshold Numeric. Specify a threshold of units of distance for 
+# considering any two elements as close enough to be merged in the same 
+# cluster. The default value is specified for Euclidean distance.
+# @param verbose Logical. Specify TRUE for verbose output.
+# 
+# @importFrom stats cutree 
+# @importFrom fpc calinhara
+# @importFrom cluster silhouette
+#
 .get_clusters_from_hc_using_cutree <- function(hcObj, distMat, hStep = 0.05,
-                                               parentChunks = NULL,
-                                               keepSiblingsUncollated = FALSE,
-                                               enableSwitchSilToCH = TRUE,
-                                               minClusters = 2, 
-                                               ## number of clusters in a previous 
-                                               ## iteration on which collation
-                                               ## was performed
-                                               distThreshold = 3,
-                                               ## this default value is for 
-                                               ## euclidean distance measure
-                                               verbose = FALSE){
+                                            parentChunks = NULL,
+                                            keepSiblingsUncollated = FALSE,
+                                            enableSwitchSilToCH = TRUE,
+                                            minClusters = 2, 
+                                            ## number of clusters in a 
+                                            ## previous iteration on 
+                                            ## which collation was performed
+                                            distThreshold = 3,
+                                            ## this default value is for 
+                                            ## euclidean distance measure
+                                            verbose = FALSE){
     
     ##
     if(minClusters < 2){
@@ -657,47 +505,50 @@
         ##
         
         cut_heights <- seq(min(hcObj$height), max(hcObj$height), by = hStep)
-        ## Keeping the min to 0 (as below) leads to as many clusters as the number
-        ## of elements. This throws an error when fetching the mean[, "sil_width"]
+        ## Keeping the min to 0 (as below) leads to as many clusters as 
+        ## the number of elements. This throws an error when fetching the 
+        ## mean[, "sil_width"]
         # cut_heights <- seq(0, max(hcObj$height), by = hStep)
         
         ## Important: Address the question of whether any merging is required?
         ## -- We could use information from archR iteration
         ##    -- Obtain the cutree-using-h clustering here. 
         ##    -- Is it combining consecutive factors, like 1-2-3, 3-4 etc.? 
-        ##          a. This could mean that it is undoing the clusters identified by 
-        ##          archR in a previous iteration.
-        ##          b. But, if 1 came from chunk 1 and 2-3 came from chunk 2, and if
-        ##          the clustering results in combining 1-2, then this is a plausible 
-        ##          merge and should be left alone.
+        ##          a. This could mean that it is undoing the clusters 
+        ##          identified by archR in a previous iteration.
+        ##          b. But, if 1 came from chunk 1 and 2-3 came from chunk 2, 
+        ##          and if the clustering results in combining 1-2, then this 
+        ##          is a plausible merge and should be left alone.
         ##          c. So, we use a parentChunks variable that notes the parent 
-        ##          chunk for each of the current factors. This info can be used to 
-        ##          make this decision unambiguously.
+        ##          chunk for each of the current factors. This info can be 
+        ##          used to make this decision unambiguously.
         ##          
-        ## Update: 2020-12-13: We currently let these get combined if HAC+cutree deems
-        ## it fine, and we recommend that the clusters at the iteration of archR can 
-        ## be left uncollated for reference. The final stage will then hold the best
-        ##  possible set of clusters guided by silhouette value.
+        ## Update: 2020-12-13: We currently let these get combined if 
+        ## HAC+cutree deems it fine, and we recommend that the clusters at the 
+        ## iteration of archR can be left uncollated for reference. 
+        ## The final stage will then hold the best possible set of clusters 
+        ## guided by silhouette value.
         ## Now handled by logical argument keepSiblingsUncollated.
         
-        ## Update: 2020-12-24: With singletons in a clustering, using silhouette
-        ## values could be problematic, because it arbitrarily assigns s(i) = 0 for 
-        ## a singleton cluster. This can lead to smaller average silhouette value, 
-        ## artificially making that clustering look bad.
+        ## Update: 2020-12-24: With singletons in a clustering, using 
+        ## silhouette values could be problematic, because it arbitrarily 
+        ## assigns s(i) = 0 for a singleton cluster. This can lead to 
+        ## smaller average silhouette value, artificially making that 
+        ## clustering look bad.
         ## Thus, if and when we detect such a case, test using the 
         ## Calinski-Harabasz (CH) index automatically. See argument 
         ## `enableSwitchSilToCH`.
         
         sils_cut_by_h <- unlist(lapply(cut_heights, 
-                           function(x){
-                               foo_try <- cutree(hcObj, h = x)
-                               names(foo_try) <- NULL
-                               if(length(unique(foo_try)) >= minClusters){
-                                   sils <- cluster::silhouette(foo_try, 
+                            function(x){
+                                foo_try <- stats::cutree(hcObj, h = x)
+                                names(foo_try) <- NULL
+                                if(length(unique(foo_try)) >= minClusters){
+                                    sils <- cluster::silhouette(foo_try, 
                                                         dist = distMat)
-                                   base::mean(sils[, "sil_width"])
-                               }else return(-100)
-                           }))
+                                    base::mean(sils[, "sil_width"])
+                                }else return(-100)
+                            }))
         
         # if(verbose) plot(sils_cut_by_h)
         
@@ -705,13 +556,13 @@
         cheight_idx <- which.max(sils_cut_by_h)
         
         if(verbose) message("Max. silhouette score at index = ", cheight_idx,
-                ", height:", cut_heights[cheight_idx])
+                    ", height:", cut_heights[cheight_idx])
         ###
         ### number of clusters decided, get final clustering result
         cut_result <- stats::cutree(hcObj, h = cut_heights[cheight_idx])
         names(cut_result) <- NULL
-        clust_list <- lapply(1:length(unique(cut_result)), 
-                             function(x) which(cut_result == x))
+        clust_list <- lapply(seq_along(unique(cut_result)), 
+                                function(x) which(cut_result == x))
         clust_list_lengths <- unlist(lapply(clust_list, length))
         
         if(verbose) message("Final #Clusters using silhouette values: ", 
@@ -724,27 +575,28 @@
             if(verbose) message("Using Calinski-Harabasz index instead")
             ### Calinski-Harabasz Index
             ch_cut_by_h <- unlist(lapply(cut_heights, 
-                               function(x){
-                                   foo_try <- cutree(hcObj, h = x)
-                                   names(foo_try) <- NULL
-                                   if(length(unique(foo_try)) >= minClusters){
-                                       ch_idx <- fpc::calinhara(distMat, 
+                                function(x){
+                                    foo_try <- stats::cutree(hcObj, h = x)
+                                    names(foo_try) <- NULL
+                                    if(length(unique(foo_try)) >= minClusters){
+                                        ch_idx <- fpc::calinhara(distMat, 
                                                 foo_try)
-                                       ch_idx
-                                   }else return(-100)
-                               }))
+                                        ch_idx
+                                    }else return(-100)
+                                }))
             # if(verbose) plot(ch_cut_by_h)
             
             ## multiple matches, first match index is returned with which.max
             cheight_idx <- which.max(ch_cut_by_h)
             
-            if(verbose) message("Max. CH index at heights' index = ", cheight_idx,
+            if(verbose) message("Max. CH index at heights' index = ", 
+                                cheight_idx,
                                 ", height:", cut_heights[cheight_idx])
             ## get new cut result based on which height gave maximum CH index
             cut_result <- stats::cutree(hcObj, h = cut_heights[cheight_idx])
             names(cut_result) <- NULL
-            clust_list <- lapply(1:length(unique(cut_result)), 
-                                 function(x) which(cut_result == x))
+            clust_list <- lapply(seq_along(unique(cut_result)), 
+                                function(x) which(cut_result == x))
         }
         
         
@@ -777,22 +629,23 @@
                                 childrenThisParent <- 
                                     childrenPerParent[[as.integer(parents)]]
                                 if(verbose){
-                                    message("length is One so, childrenThisParent:")
+                                    message("length is One so, 
+                                            childrenThisParent:")
                                     print(childrenThisParent)
-                                    message(class(as.numeric(childrenThisParent)))
-                                    message(class(thisX))
-                                    message(class(as.numeric(thisX)))
                                 }
                                 ##
                                 if(identical(as.numeric(childrenThisParent), 
-                                             as.numeric(thisX))){
+                                                as.numeric(thisX))){
                                     if(verbose) message("Parents are identical")
                                     ## Update: 20202-12-13 
-                                    ## See update above. With keepSiblingsUncollated
-                                    ## as FALSE, this check is not performed.
+                                    ## See update above. 
+                                    ## With keepSiblingsUncollated as FALSE, 
+                                    ## this check is not performed.
                                     ## 
-                                    ## Split the merge back into separate clusters
-                                    return(lapply(childrenThisParent, function(x){x}))
+                                    ## Split the merge back into separate 
+                                    ## clusters
+                                    return(lapply(childrenThisParent, 
+                                                    function(x){x}))
                                 }else{
                                     if(verbose) print("returning thisX")
                                     return(thisX)
@@ -830,8 +683,8 @@
 #' @param clustMethod Specify 'hc' for hierarchical clustering. Currently, only
 #' hierarchical clustering is supported.
 #' 
-#' @param linkage One of linkage values as specified for hierarchical clustering.
-#' Default is `ward.D'.
+#' @param linkage One of linkage values as specified for hierarchical 
+#' clustering with \code{\link[stats]{hclust}}. Default is `ward.D'.
 #' 
 #' @param distMethod Distance measure to be used with hierarchical clustering. 
 #' Available options are "euclid" (default), "cor" for correlation, "cosangle" 
@@ -841,8 +694,8 @@
 #' @param regularize Logical. Specify TRUE if regularization is to be performed 
 #' before comparison. See argument 'topN'.
 #' 
-#' @param topN Use only the 'topN' dimensions of each basis vector for comparing 
-#' them. Note that since each basis vector has 4L or 16L (mono- or 
+#' @param topN Use only the 'topN' dimensions of each basis vector for 
+#' comparing them. Note that since each basis vector has 4L or 16L (mono- or 
 #' dinucleotides) dimensions, each dimension is a combination of nucleotide and 
 #' its position in the sequence. This argument selects the top N dimensions of 
 #' the basis vector.
@@ -884,20 +737,21 @@ reorder_archRresult <- function(archRresult,
     ## assert that topN value supplied is in the valid range
     if(!(topN > 0 && topN <= nrow(basisMat))){
         stop("Selected topN value ", topN," is outside expected range [", 
-             .msg_print(c(1, nrow(basisMat))), "]")
+                .msg_print(c(1, nrow(basisMat))), "]")
     }
     
     if(!is.logical(regularize) && !is.logical(decisionToReorder)){
         stop("Arguments 'regularize' and 'decisionToReorder' expect a logical ",
-             " value (TRUE/FALSE), found otherwise")
+                " value (TRUE/FALSE), found otherwise")
     }
     
     
     if(regularize){
         basisMat2 <- basisMat
-        for(i in 1:ncol(basisMat)){
+        for(i in seq_len(ncol(basisMat))){
             asVec <- as.vector(basisMat[,i])
-            threshold <- utils::tail(utils::head(sort(asVec, decreasing = TRUE), topN),1)
+            threshold <- utils::tail(utils::head(
+                sort(asVec, decreasing = TRUE), topN),1)
             basisMat2[(basisMat[,i] < threshold), i] <- 0.0
         }
         basisMat <- basisMat2
@@ -909,19 +763,18 @@ reorder_archRresult <- function(archRresult,
     if(iteration > 1){
         clustsThisIter <- sort(unique(archRresult$seqsClustLabels[[iteration]]))
         parentChunks <- unlist(lapply(clustsThisIter, function(x){
-            relevantSeqsIds <- which(archRresult$seqsClustLabels[[iteration]] 
-                                     == x)
-            unique(archRresult$seqsClustLabels[[iteration - 1]][relevantSeqsIds])
+            relSeqsIds <- which(archRresult$seqsClustLabels[[iteration]] == x)
+            unique(archRresult$seqsClustLabels[[iteration - 1]][relSeqsIds])
         }))
     }
     if(decisionToReorder){
         factorsClustering <- .handle_clustering_of_factors(basisMat,
-                                           clustMethod = clustMethod,
-                                           linkage = linkage,
-                                           distMethod = distMethod,
-                                           flags = config$flags,
-                                           parentChunks = parentChunks,
-                                           ...)
+                                            clustMethod = clustMethod,
+                                            linkage = linkage,
+                                            distMethod = distMethod,
+                                            flags = config$flags,
+                                            parentChunks = parentChunks,
+                                            ...)
         if(config$flags$debugFlag){
             message("Performed factor clustering, returning object:")
             message("Returning: ", .msg_print(factorsClustering))
@@ -942,9 +795,9 @@ reorder_archRresult <- function(archRresult,
     clusters <- .collate_clusters2(factorsClustering, seqClusters)
 
     clustLabels <- .update_cluster_labels(oldSeqsClustLabels = 
-                                      archRresult$seqsClustLabels[[iteration]], 
-                                  collatedClustAssignments = clusters,
-                                  flags = config$flags)
+                                    archRresult$seqsClustLabels[[iteration]], 
+                                collatedClustAssignments = clusters,
+                                flags = config$flags)
     
     
     cluster_sol <- list(basisVectorsClust = factorsClustering,
@@ -965,6 +818,13 @@ reorder_archRresult <- function(archRresult,
 #' object.
 #'
 #' @return A list holding sequence clusters.
+#' 
+#' @examples 
+#' 
+#' clustLabels <- sample(seq_len(4), 50, replace = TRUE)
+#' 
+#' get_seqs_clusters_in_a_list(clustLabels)
+#' 
 #' @export
 get_seqs_clusters_in_a_list <- function(seqsClustLabels){
     ## check that labels are not empty/NULL

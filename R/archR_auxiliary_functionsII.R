@@ -17,10 +17,11 @@
 #' }
 #'
 #' @export
-handle_dir_creation <- function(givenODir, flags = list(debugFlag = FALSE,
-                                                        verboseFlag = FALSE,
-                                                        plotFlag = FALSE,
-                                                        timeFlag = FALSE)){
+handle_dir_creation <- function(givenODir, 
+    flags = list(debugFlag = FALSE,
+        verboseFlag = FALSE,
+        plotFlag = FALSE,
+        timeFlag = FALSE)){
     if(dir.exists(givenODir)){
         if(flags$verboseFlag) {
             message("-- Directory exists: -- ")
@@ -28,9 +29,9 @@ handle_dir_creation <- function(givenODir, flags = list(debugFlag = FALSE,
             message("-- Changing name to: -- ")
         }
         allExistingDirs <- list.dirs(path = dirname(givenODir),
-                                     recursive = FALSE)
+                                        recursive = FALSE)
         dirsThatMatch <- grep(pattern = basename(givenODir), allExistingDirs,
-                              value = TRUE)
+                                value = TRUE)
         ## Suffix an integer, because directory with given name (oDir)
         ## exists for length(dirsThatMatch) times
         name_suffix <- length(dirsThatMatch)
@@ -134,9 +135,10 @@ get_dimers_from_alphabet <- function(alphabet){
 #' @param minSeqs Numeric. Specify the minimum number of sequences, such that
 #' any cluster/chunk of size less than or equal to it will not be further
 #' processed/clustered.
-#' @param checkpointing Logical. Specify whether to write intermediate checkpoints
-#' to disk as RDS files. Default is TRUE. Checkpoints and the final result are
-#' saved to disk provided the oDir argument is set in \code{\link{archR}}.
+#' @param checkpointing Logical. Specify whether to write intermediate 
+#' checkpoints to disk as RDS files. Default is TRUE. Checkpoints and the final
+#'  result are saved to disk provided the oDir argument is set in 
+#'  \code{\link{archR}}.
 #' @param flags List with four Logical elements as detailed.
 #' \describe{
 #'   \item{debugFlag}{Whether debug information for the run is printed}
@@ -146,6 +148,24 @@ get_dimers_from_alphabet <- function(alphabet){
 #' }
 #'
 #' @return a list with all params for archR set
+#' 
+#' @examples 
+#' # Set archR configuration
+#' archRconfig <- archR::archRSetConfig(
+#'     parallelize = TRUE,
+#'     nCoresUse = 2,
+#'     nIterationsUse = 100,
+#'     kMin = 1,
+#'     kMax = 20,
+#'     modSelType = "stability",
+#'     tol = 10^-4,
+#'     bound = 10^-8,
+#'     innerChunkSize = 100,
+#'     flags = list(debugFlag = TRUE, timeFlag = TRUE, verboseFlag = TRUE,
+#'         plotVerboseFlag = FALSE)
+#' )
+#' 
+#' 
 #' @export
 archRSetConfig <- function(innerChunkSize = 500,
                             kMin = 2,
@@ -254,22 +274,24 @@ archRSetConfig <- function(innerChunkSize = 500,
             nPositions <- nrow(factorsMat)/length(dim_names)
             ##
             factorsMatList_as2D <- lapply(seq_len(ncol(factorsMat)),
-                                          function(x){matrix(factorsMat[,x],
-                                                             nrow = nrow(factorsMat)/nPositions,
-                                                             byrow = TRUE,
-                                                             dimnames = list(dim_names))
-                                          })
+                                function(x){
+                                    matrix(factorsMat[,x],
+                                        nrow = nrow(factorsMat)/nPositions,
+                                        byrow = TRUE,
+                                        dimnames = list(dim_names))
+                                })
             ##
-            factorsMatList_asPFMs <- lapply(seq_len(length(factorsMatList_as2D)),
-                                            function(x){
-                                                sinucSparse <- collapse_into_sinuc_matrix(
-                                                    given_feature_mat = as.matrix(factorsMat[,x]),
-                                                    dinuc_mat = factorsMatList_as2D[[x]],
-                                                    feature_names = dim_names)
-                                                sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
-                                                                         nrow = 4, byrow = FALSE,
-                                                                         dimnames = list(rownames(sinucSparse)))
-                                            })
+            factorsMatList_asPFMs <- 
+                lapply(seq_len(length(factorsMatList_as2D)),
+            function(x){
+                sinucSparse <- collapse_into_sinuc_matrix(
+                    given_feature_mat = as.matrix(factorsMat[,x]),
+                    dinuc_mat = factorsMatList_as2D[[x]],
+                    feature_names = dim_names)
+                sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
+                                    nrow = 4, byrow = FALSE,
+                                    dimnames = list(rownames(sinucSparse)))
+            })
             ##
             lenPFMs <- length(factorsMatList_asPFMs)
             scoresMat <- matrix(rep(0, lenPFMs*lenPFMs),
@@ -281,8 +303,8 @@ archRSetConfig <- function(innerChunkSize = 500,
             
             for(i in seq_len(lenPFMs)){
                 for(j in seq_len(lenPFMs)){
-                    temp <- TFBSTools::PFMSimilarity(factorsMatList_asPFMs[[i]],
-                                                     factorsMatList_asPFMs[[j]])
+                    temp <- TFBSTools::PFMSimilarity(
+                        factorsMatList_asPFMs[[i]], factorsMatList_asPFMs[[j]])
                     scoresMat[i,j] <- temp["score"]
                     # relScoresMat[i,j] <- temp["relScore"]
                 }
@@ -291,8 +313,8 @@ archRSetConfig <- function(innerChunkSize = 500,
             distMat <- max(scoresMat) - scoresMat
             return(distMat)
         } else{
-            ## hopach::distancematrix function requires vectors along rows. Distances
-            ## are computed between row vectors
+            ## hopach::distancematrix function requires vectors along rows. 
+            ## Distances are computed between row vectors
             if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
             hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
             ## hopachDistMat is a hopach hdist object
@@ -338,13 +360,13 @@ archRSetConfig <- function(innerChunkSize = 500,
 ## - Similarly, globFactors variable is updated inside the function to
 ## additionally hold new ones
 .handle_chunk_w_NMF2 <- function(innerChunkIdx,
-                                 innerChunksColl,
-                                 this_mat,
-                                 monolinear = FALSE,
-                                 cgfglinear = TRUE,
-                                 coarse_step = 10,
-                                 askParsimony = TRUE,
-                                 config){
+                                    innerChunksColl,
+                                    this_mat,
+                                    monolinear = FALSE,
+                                    cgfglinear = TRUE,
+                                    coarse_step = 10,
+                                    askParsimony = TRUE,
+                                    config){
 
     .assert_archR_flags(config$flags)
     ##
@@ -384,9 +406,9 @@ archRSetConfig <- function(innerChunkSize = 500,
     #########################
     if (best_k == max(config$paramRanges$k_vals)) {
         warning(c("WARNING: Best K for this subset == 'kMax'. ",
-                  "Consider selecting a larger 'kMax' value, or\n",
-                  "smaller innerChunkSize, or\n",
-                  "perhaps, further increasing 'nIterationsUse'\n"),
+                    "Consider selecting a larger 'kMax' value, or\n",
+                    "smaller innerChunkSize, or\n",
+                    "perhaps, further increasing 'nIterationsUse'\n"),
                 immediate. = TRUE)
     }
     if (config$flags$verboseFlag) {
@@ -409,16 +431,16 @@ archRSetConfig <- function(innerChunkSize = 500,
         samplesMatrixList <- vector("list", nRuns)
         new_ord <- vector("list", nRuns)
         nmf_nRuns_list <- .perform_multiple_NMF_runs(X = this_mat,
-                                             kVal = best_k,
-                                             alphaVal = 0,
-                                             parallelDo = config$parallelize,
-                                             nCores = config$nCoresUse,
-                                             nRuns = nRuns,
-                                             bootstrap = TRUE)
+                                        kVal = best_k,
+                                        alphaVal = 0,
+                                        parallelDo = config$parallelize,
+                                        nCores = config$nCoresUse,
+                                        nRuns = nRuns,
+                                        bootstrap = TRUE)
         featuresMatrixList <- lapply(nmf_nRuns_list$nmf_result_list,
-                                     function(x){
-                                         get_features_matrix(x)
-                                     })
+                                    function(x){
+                                        get_features_matrix(x)
+                                    })
         samplesMatrixList <- lapply(nmf_nRuns_list$nmf_result_list,
                                     function(x){
                                         get_samples_matrix(x)
@@ -512,11 +534,13 @@ archRSetConfig <- function(innerChunkSize = 500,
 
 
 intermediateResultsPlot <- function(seqsClustLabels, tss.seqs_raw = NULL,
-                                    positions = NULL, iterVal = 0, fname = NULL){
+                                positions = NULL, iterVal = 0, fname = NULL){
 ## This function plots and prints resulting clusters -- the sequence image
 ## matrix (PNG file) and the sequence logos (PDF file).
-## Input arguments: vector (size:nseqs) of cluster labels for sequence (for given iteration)
-## Output: Nothing returned, files written to disk at specified location (fname)
+## Input arguments: vector (size:nseqs) of cluster labels for sequence 
+## (for given iteration)
+## Output: Nothing returned, files written to disk at specified location 
+## (fname)
 ##
 
 if(is.numeric(iterVal)){
@@ -533,7 +557,8 @@ message("Generating unannotated map of clustered sequences...")
 image_fname <- paste0(fname, "ClusteringImage_", name_suffix, ".png")
 message("Sequence clustering image written to: ", image_fname)
 viz_seqs_as_acgt_mat_from_seqs(
-    rawSeqs =  as.character(tss.seqs_raw[unlist(seqs_clusters_as_list_ordered)]),
+    rawSeqs =  as.character(
+                    tss.seqs_raw[unlist(seqs_clusters_as_list_ordered)]),
                     position_labels = positions,
                     savefilename = image_fname,
                     fwidth = 450,

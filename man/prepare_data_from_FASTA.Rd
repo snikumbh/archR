@@ -25,14 +25,33 @@ A sparse matrix of sequences represented with one-hot-encoding.
 \description{
 Given a set of sequences in a FASTA file this function returns a sparse 
 matrix with one-hot encoded sequences.
-In this matrix, the sequence features are along rows, and sequences along columns.
-Currently, mono- and dinucleotide features for DNA sequences are supported.
-Therefore, the length of the feature vector is 4 and 16 times the
-length of the sequences (since the DNA alphabet is four characters) for mono- and 
-dinucleotide features respectively.
+In this matrix, the sequence features are along rows, and sequences along 
+columns. Currently, mono- and dinucleotide features for DNA sequences are 
+supported. Therefore, the length of the feature vector is 4 and 16 times 
+the length of the sequences (since the DNA alphabet is four characters) 
+for mono- and dinucleotide features respectively.
+}
+\examples{
+
+fname <- system.file("extdata", "example_data.fa", 
+                        package = "archR", mustWork = TRUE)
+
+# mononucleotides feature matrix
+prepare_data_from_FASTA(inputFastaFilename = fname,
+                        sinuc_or_dinuc = "sinuc")
+
+# dinucleotides feature matrix
+prepare_data_from_FASTA(inputFastaFilename = fname,
+                        sinuc_or_dinuc = "dinuc")
+                       
+# FASTA sequences as a Biostrings::DNAStringSet
+prepare_data_from_FASTA(inputFastaFilename = fname,
+                        rawSeq = TRUE)
+
 }
 \seealso{
-\code{\link{get_one_hot_encoded_seqs}} for directly using a DNAStringSet object
+\code{\link{get_one_hot_encoded_seqs}} for directly using a 
+DNAStringSet object
 
 Other input functions: 
 \code{\link{get_one_hot_encoded_seqs}()}

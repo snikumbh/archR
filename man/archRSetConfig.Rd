@@ -69,9 +69,10 @@ Warning: For future.}
 any cluster/chunk of size less than or equal to it will not be further
 processed/clustered.}
 
-\item{checkpointing}{Logical. Specify whether to write intermediate checkpoints
-to disk as RDS files. Default is TRUE. Checkpoints and the final result are
-saved to disk provided the oDir argument is set in \code{\link{archR}}.}
+\item{checkpointing}{Logical. Specify whether to write intermediate 
+checkpoints to disk as RDS files. Default is TRUE. Checkpoints and the final
+ result are saved to disk provided the oDir argument is set in 
+ \code{\link{archR}}.}
 
 \item{flags}{List with four Logical elements as detailed.
 \describe{
@@ -86,4 +87,22 @@ a list with all params for archR set
 }
 \description{
 This function sets the configuration for `archR`.
+}
+\examples{
+# Set archR configuration
+archRconfig <- archR::archRSetConfig(
+    parallelize = TRUE,
+    nCoresUse = 2,
+    nIterationsUse = 100,
+    kMin = 1,
+    kMax = 20,
+    modSelType = "stability",
+    tol = 10^-4,
+    bound = 10^-8,
+    innerChunkSize = 100,
+    flags = list(debugFlag = TRUE, timeFlag = TRUE, verboseFlag = TRUE,
+        plotVerboseFlag = FALSE)
+)
+
+
 }

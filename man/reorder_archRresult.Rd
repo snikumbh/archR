@@ -26,8 +26,8 @@ reordered.}
 \item{clustMethod}{Specify 'hc' for hierarchical clustering. Currently, only
 hierarchical clustering is supported.}
 
-\item{linkage}{One of linkage values as specified for hierarchical clustering.
-Default is `ward.D'.}
+\item{linkage}{One of linkage values as specified for hierarchical 
+clustering with \code{\link[stats]{hclust}}. Default is `ward.D'.}
 
 \item{distMethod}{Distance measure to be used with hierarchical clustering. 
 Available options are "euclid" (default), "cor" for correlation, "cosangle" 
@@ -37,8 +37,8 @@ for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see
 \item{regularize}{Logical. Specify TRUE if regularization is to be performed 
 before comparison. See argument 'topN'.}
 
-\item{topN}{Use only the 'topN' dimensions of each basis vector for comparing 
-them. Note that since each basis vector has 4L or 16L (mono- or 
+\item{topN}{Use only the 'topN' dimensions of each basis vector for 
+comparing them. Note that since each basis vector has 4L or 16L (mono- or 
 dinucleotides) dimensions, each dimension is a combination of nucleotide and 
 its position in the sequence. This argument selects the top N dimensions of 
 the basis vector.}

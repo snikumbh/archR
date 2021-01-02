@@ -8,18 +8,18 @@
 # @param annClusters For later, when clusters are to be annotated
 # @param sinuc_or_dinuc For later, maybe
 .seqs_to_mat <- function(seqs, position_labels, annClusters = NULL,
-                         sinuc_or_dinuc = "sinuc") {
+                            sinuc_or_dinuc = "sinuc") {
     nSeqs <- length(seqs)
     nPos <- length(position_labels)
     ## handling single- and di-nucleotides separately
     if (sinuc_or_dinuc == "sinuc") {
         nuc_list <- unlist(lapply(seq_along(seqs),
-                                  function(x) {
-                                      str_seq <- seqs[x]
-                                      nucleotides <-
-                                          unlist(strsplit(str_seq,
-                                                    split = NULL))
-                                  }))
+                                function(x) {
+                                    str_seq <- seqs[x]
+                                    nucleotides <-
+                                        unlist(strsplit(str_seq,
+                                                split = NULL))
+                                }))
         nuc_list[which(nuc_list == "A")] <- 1
         nuc_list[which(nuc_list == "C")] <- 2
         nuc_list[which(nuc_list == "G")] <- 3
@@ -67,13 +67,13 @@
 #' @importFrom graphics axis image
 #' @export
 viz_seqs_as_acgt_mat_from_seqs <- function(rawSeqs, position_labels = NULL,
-                                     xt_freq = 5, yt_freq = 100,
-                                     col = c("darkgreen", "blue",
-                                             "orange", "red"),
-                                     savefilename = NULL,
-                                     filetype = "PNG",
-                                     fwidth = 450, fheight = 900, funits = "px"
-                                     ) {
+                                    xt_freq = 5, yt_freq = 100,
+                                    col = c("darkgreen", "blue",
+                                            "orange", "red"),
+                                    savefilename = NULL,
+                                    filetype = "PNG",
+                                    fwidth = 450, fheight = 900, funits = "px"
+                                    ) {
     if(is.null(position_labels)){
         position_labels <- seq_len(Biostrings::width(rawSeqs[1]))
     }
@@ -100,14 +100,13 @@ viz_seqs_as_acgt_mat_from_seqs <- function(rawSeqs, position_labels = NULL,
     ytick_loc <- 1 + nSeqs - c(rev(seq(yt_freq, nSeqs, by = yt_freq)))
 
     graphics::image(x = seq_len(nPos), y = seq_len(nSeqs),
-          z = t(seq_mat),
-          col = col,
-          useRaster = TRUE,
-          ylab = paste0("Sequences (n = ", nSeqs, ")"),
-          xlab = "Positions",
-          axes = FALSE)
-    axis(side = 1, at = xtick_cal, labels = position_labels[xtick_cal],
-         las = 2)
+                z = t(seq_mat),
+                col = col,
+                useRaster = TRUE,
+                ylab = paste0("Sequences (n = ", nSeqs, ")"),
+                xlab = "Positions",
+                axes = FALSE)
+    axis(side = 1, at = xtick_cal, labels = position_labels[xtick_cal], las = 2)
     axis(side = 2, at = ytick_loc, labels = ytick_names, las = 2)
 
     if(!is.null(savefilename)){

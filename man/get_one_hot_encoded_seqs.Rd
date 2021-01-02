@@ -17,6 +17,19 @@ A sparse matrix of sequences represented with one-hot-encoding
 \description{
 Get the one-hot encoding representation of the given sequences.
 }
+\examples{
+
+fname <- system.file("extdata", "example_data.fa", 
+                        package = "archR", mustWork = TRUE)
+
+                        
+rawFasta <- prepare_data_from_FASTA(inputFastaFilename = fname,
+                        rawSeq = TRUE)
+
+get_one_hot_encoded_seqs(givenFastaSeqs = rawFasta,
+                                sinuc_or_dinuc = "dinuc")
+                        
+}
 \seealso{
 \code{\link{prepare_data_from_FASTA}} for generating one-hot 
 encoding of sequences from a FASTA file

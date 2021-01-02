@@ -17,3 +17,10 @@ A list holding sequence clusters.
 Given the sequence cluster labels from a archR result object,
 returns the clusters separated as a list.
 }
+\examples{
+
+clustLabels <- sample(seq_len(4), 50, replace = TRUE)
+
+get_seqs_clusters_in_a_list(clustLabels)
+
+}

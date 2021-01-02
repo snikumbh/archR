@@ -47,8 +47,8 @@
     # size 4*seq_len
     dna_alphabet <- c("A", "C", "G", "T")
     dna_alphabet_trinuc <- do.call(paste0, expand.grid(dna_alphabet,
-                                                      dna_alphabet,
-                                                      dna_alphabet))
+                                                        dna_alphabet,
+                                                        dna_alphabet))
     given_seq_len <- length(givenSeq)
     givenSeq_trinuc <- unlist(lapply(seq_len(given_seq_len - 2), function(x) {
         paste0(givenSeq[x], givenSeq[x + 1], givenSeq[x + 2])
@@ -60,7 +60,7 @@
         #
         for (i in seq_along(dna_alphabet_trinuc)) {
             one_hot_encoded_trinuc_profile[, (i - 1) * given_seq_len +
-                                              which(givenSeq_trinuc == dna_alphabet_trinuc[i])] <- 1
+                    which(givenSeq_trinuc == dna_alphabet_trinuc[i])] <- 1
         }
         return(one_hot_encoded_trinuc_profile)
     } else {
@@ -142,6 +142,19 @@
 #' @seealso \code{\link{prepare_data_from_FASTA}} for generating one-hot 
 #' encoding of sequences from a FASTA file
 #' @importFrom Matrix Matrix
+#' 
+#' @examples 
+#' 
+#' fname <- system.file("extdata", "example_data.fa", 
+#'                         package = "archR", mustWork = TRUE)
+#' 
+#'                         
+#' rawFasta <- prepare_data_from_FASTA(inputFastaFilename = fname,
+#'                         rawSeq = TRUE)
+#' 
+#' get_one_hot_encoded_seqs(givenFastaSeqs = rawFasta,
+#'                                 sinuc_or_dinuc = "dinuc")
+#'                         
 #' @export
 get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
     #
@@ -224,11 +237,11 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
 #' @description
 #' Given a set of sequences in a FASTA file this function returns a sparse 
 #' matrix with one-hot encoded sequences.
-#' In this matrix, the sequence features are along rows, and sequences along columns.
-#' Currently, mono- and dinucleotide features for DNA sequences are supported.
-#' Therefore, the length of the feature vector is 4 and 16 times the
-#' length of the sequences (since the DNA alphabet is four characters) for mono- and 
-#' dinucleotide features respectively.
+#' In this matrix, the sequence features are along rows, and sequences along 
+#' columns. Currently, mono- and dinucleotide features for DNA sequences are 
+#' supported. Therefore, the length of the feature vector is 4 and 16 times 
+#' the length of the sequences (since the DNA alphabet is four characters) 
+#' for mono- and dinucleotide features respectively.
 #'
 #' @param inputFastaFilename Provide the name (with complete path) of the input
 #' FASTA file.
@@ -240,8 +253,27 @@ get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
 #'
 #' @return A sparse matrix of sequences represented with one-hot-encoding.
 #' @family input functions
-#' @seealso \code{\link{get_one_hot_encoded_seqs}} for directly using a DNAStringSet object
+#' @seealso \code{\link{get_one_hot_encoded_seqs}} for directly using a 
+#' DNAStringSet object
 #' @importFrom Biostrings DNAStringSet
+#' 
+#' @examples 
+#' 
+#' fname <- system.file("extdata", "example_data.fa", 
+#'                         package = "archR", mustWork = TRUE)
+#' 
+#' # mononucleotides feature matrix
+#' prepare_data_from_FASTA(inputFastaFilename = fname,
+#'                         sinuc_or_dinuc = "sinuc")
+#' 
+#' # dinucleotides feature matrix
+#' prepare_data_from_FASTA(inputFastaFilename = fname,
+#'                         sinuc_or_dinuc = "dinuc")
+#'                        
+#' # FASTA sequences as a Biostrings::DNAStringSet
+#' prepare_data_from_FASTA(inputFastaFilename = fname,
+#'                         rawSeq = TRUE)
+#' 
 #' @export
 prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE,
                                     sinuc_or_dinuc = "sinuc") {
