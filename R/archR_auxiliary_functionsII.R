@@ -255,9 +255,12 @@ archRSetConfig <- function(innerChunkSize = 500,
 ## distance measure that is possible with HOPACH
 ##
 ## Default value 'modNW'
+## Edit on 2021-01-02:
+## Default value changed to euclid instead of modNW which is computed using 
+## a suggested package
 ##
 ## @return distance matrix from hopach (hdist object)
-.compute_factor_distances <- function(factorsMat, distMethod = "modNW"){
+.compute_factor_distances <- function(factorsMat, distMethod = "euclid"){
     ## Assumption: Each column is a factor
     .assert_archR_featuresMatrix(factorsMat)
     if(!requireNamespace("TFBSTools", quietly = TRUE)){
