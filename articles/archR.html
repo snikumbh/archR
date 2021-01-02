@@ -79,7 +79,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2020-12-28</h4>
+            <h4 class="date">2021-01-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -294,7 +294,6 @@
 <span class="co">#&gt; Parallelization with 2 cores</span>
 <span class="co">#&gt; Model selection by factor stability</span>
 <span class="co">#&gt; Tolerance: 1e-04 &amp; Bound: 1e-08</span>
-<span class="co">#&gt; === archR to perform 2 iteration(s) ===</span>
 <span class="co">#&gt; === Iteration 1, 1 chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk 1/1] [Size: 200]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -318,8 +317,8 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 3</span>
-<span class="co">#&gt; Iteration 1 completed in 1.19 mins</span>
-<span class="co">#&gt; 1.2 mins ellapsed since start</span>
+<span class="co">#&gt; Iteration 1 completed in 0.75 mins</span>
+<span class="co">#&gt; 0.751 mins ellapsed since start</span>
 <span class="co">#&gt; === Iteration 2, 3 chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk 1/3] [Size: 100]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -350,12 +349,12 @@
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; Iteration 2 completed in 0.969 mins</span>
-<span class="co">#&gt; 2.16 mins ellapsed since start</span>
+<span class="co">#&gt; Iteration 2 completed in 0.676 mins</span>
+<span class="co">#&gt; 1.43 mins ellapsed since start</span>
 <span class="co">#&gt; No element pairs close enough by given distance threshold: 3</span>
 <span class="co">#&gt; Updating sequence cluster labels</span>
 <span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; archR exiting, 2.16 mins</span></code></pre></div>
+<span class="co">#&gt; archR exiting, 1.43 mins</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
@@ -490,65 +489,58 @@ Figure: Clusters at iteration 2
 <span class="co">#&gt; [7] archR_0.1.3        </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;   [1] colorspace_2.0-0            ellipsis_0.3.1             </span>
-<span class="co">#&gt;   [3] class_7.3-17                modeltools_0.2-23          </span>
-<span class="co">#&gt;   [5] mclust_5.4.7                rprojroot_2.0.2            </span>
-<span class="co">#&gt;   [7] GenomicRanges_1.42.0        fs_1.5.0                   </span>
-<span class="co">#&gt;   [9] flexmix_2.3-17              bit64_4.0.5                </span>
-<span class="co">#&gt;  [11] AnnotationDbi_1.52.0        R.methodsS3_1.8.1          </span>
-<span class="co">#&gt;  [13] codetools_0.2-16            doParallel_1.0.16          </span>
-<span class="co">#&gt;  [15] robustbase_0.93-6           knitr_1.30                 </span>
-<span class="co">#&gt;  [17] hopach_2.50.0               jsonlite_1.7.2             </span>
-<span class="co">#&gt;  [19] Rsamtools_2.6.0             seqLogo_1.56.0             </span>
-<span class="co">#&gt;  [21] gridBase_0.4-7              annotate_1.68.0            </span>
-<span class="co">#&gt;  [23] GO.db_3.12.1                cluster_2.1.0              </span>
-<span class="co">#&gt;  [25] kernlab_0.9-29              png_0.1-7                  </span>
-<span class="co">#&gt;  [27] R.oo_1.24.0                 readr_1.4.0                </span>
-<span class="co">#&gt;  [29] compiler_4.0.3              httr_1.4.2                 </span>
-<span class="co">#&gt;  [31] assertthat_0.2.1            Matrix_1.2-18              </span>
-<span class="co">#&gt;  [33] htmltools_0.5.0             tools_4.0.3                </span>
-<span class="co">#&gt;  [35] gtable_0.3.0                glue_1.4.2                 </span>
-<span class="co">#&gt;  [37] TFMPvalue_0.0.8             GenomeInfoDbData_1.2.4     </span>
-<span class="co">#&gt;  [39] reshape2_1.4.4              dplyr_1.0.2                </span>
-<span class="co">#&gt;  [41] Rcpp_1.0.5                  pkgdown_1.6.1              </span>
-<span class="co">#&gt;  [43] NMF_0.23.0                  vctrs_0.3.6                </span>
-<span class="co">#&gt;  [45] rtracklayer_1.50.0          iterators_1.0.13           </span>
-<span class="co">#&gt;  [47] fpc_2.2-9                   ggseqlogo_0.1              </span>
-<span class="co">#&gt;  [49] xfun_0.19                   CNEr_1.26.0                </span>
-<span class="co">#&gt;  [51] stringr_1.4.0               lifecycle_0.2.0            </span>
-<span class="co">#&gt;  [53] poweRlaw_0.70.6             rngtools_1.5               </span>
-<span class="co">#&gt;  [55] gtools_3.8.2                XML_3.99-0.5               </span>
-<span class="co">#&gt;  [57] DEoptimR_1.0-8              zlibbioc_1.36.0            </span>
-<span class="co">#&gt;  [59] MASS_7.3-53                 scales_1.1.1               </span>
-<span class="co">#&gt;  [61] BSgenome_1.58.0             ragg_0.4.0                 </span>
-<span class="co">#&gt;  [63] hms_0.5.3                   MatrixGenerics_1.2.0       </span>
-<span class="co">#&gt;  [65] SummarizedExperiment_1.20.0 RColorBrewer_1.1-2         </span>
-<span class="co">#&gt;  [67] yaml_2.2.1                  memoise_1.1.0              </span>
-<span class="co">#&gt;  [69] reticulate_1.18-9000        ggplot2_3.3.2              </span>
-<span class="co">#&gt;  [71] pkgmaker_0.32.2             stringi_1.5.3              </span>
-<span class="co">#&gt;  [73] RSQLite_2.2.1               highr_0.8                  </span>
-<span class="co">#&gt;  [75] desc_1.2.0                  foreach_1.5.1              </span>
-<span class="co">#&gt;  [77] caTools_1.18.0              BiocParallel_1.24.1        </span>
-<span class="co">#&gt;  [79] GenomeInfoDb_1.26.2         rlang_0.4.9                </span>
-<span class="co">#&gt;  [81] pkgconfig_2.0.3             systemfonts_0.3.2          </span>
-<span class="co">#&gt;  [83] prabclus_2.3-2              bitops_1.0-6               </span>
-<span class="co">#&gt;  [85] matrixStats_0.57.0          pracma_2.2.9               </span>
-<span class="co">#&gt;  [87] evaluate_0.14               lattice_0.20-41            </span>
-<span class="co">#&gt;  [89] purrr_0.3.4                 GenomicAlignments_1.26.0   </span>
-<span class="co">#&gt;  [91] bit_4.0.4                   tidyselect_1.1.0           </span>
-<span class="co">#&gt;  [93] plyr_1.8.6                  magrittr_2.0.1             </span>
-<span class="co">#&gt;  [95] R6_2.5.0                    generics_0.1.0             </span>
-<span class="co">#&gt;  [97] DelayedArray_0.16.0         DBI_1.1.0                  </span>
-<span class="co">#&gt;  [99] pillar_1.4.7                withr_2.3.0                </span>
-<span class="co">#&gt; [101] KEGGREST_1.30.1             RCurl_1.98-1.2             </span>
-<span class="co">#&gt; [103] nnet_7.3-14                 tibble_3.0.4               </span>
-<span class="co">#&gt; [105] crayon_1.3.4                rmarkdown_2.6              </span>
-<span class="co">#&gt; [107] TFBSTools_1.28.0            grid_4.0.3                 </span>
-<span class="co">#&gt; [109] blob_1.2.1                  digest_0.6.27              </span>
-<span class="co">#&gt; [111] diptest_0.75-7              xtable_1.8-4               </span>
-<span class="co">#&gt; [113] R.utils_2.10.1              textshaping_0.2.1          </span>
-<span class="co">#&gt; [115] munsell_0.5.0               DirichletMultinomial_1.32.0</span>
-<span class="co">#&gt; [117] registry_0.5-1</span></code></pre></div>
+<span class="co">#&gt;   [1] bitops_1.0-6                matrixStats_0.57.0         </span>
+<span class="co">#&gt;   [3] fs_1.5.0                    DirichletMultinomial_1.32.0</span>
+<span class="co">#&gt;   [5] TFBSTools_1.28.0            bit64_4.0.5                </span>
+<span class="co">#&gt;   [7] hopach_2.50.0               httr_1.4.2                 </span>
+<span class="co">#&gt;   [9] doParallel_1.0.16           RColorBrewer_1.1-2         </span>
+<span class="co">#&gt;  [11] rprojroot_2.0.2             GenomeInfoDb_1.26.2        </span>
+<span class="co">#&gt;  [13] tools_4.0.3                 R6_2.5.0                   </span>
+<span class="co">#&gt;  [15] seqLogo_1.56.0              DBI_1.1.0                  </span>
+<span class="co">#&gt;  [17] colorspace_2.0-0            withr_2.3.0                </span>
+<span class="co">#&gt;  [19] tidyselect_1.1.0            bit_4.0.4                  </span>
+<span class="co">#&gt;  [21] compiler_4.0.3              textshaping_0.2.1          </span>
+<span class="co">#&gt;  [23] desc_1.2.0                  DelayedArray_0.16.0        </span>
+<span class="co">#&gt;  [25] pkgmaker_0.32.2             rtracklayer_1.50.0         </span>
+<span class="co">#&gt;  [27] caTools_1.18.0              scales_1.1.1               </span>
+<span class="co">#&gt;  [29] readr_1.4.0                 NMF_0.23.0                 </span>
+<span class="co">#&gt;  [31] pkgdown_1.6.1               systemfonts_0.3.2          </span>
+<span class="co">#&gt;  [33] stringr_1.4.0               digest_0.6.27              </span>
+<span class="co">#&gt;  [35] Rsamtools_2.6.0             R.utils_2.10.1             </span>
+<span class="co">#&gt;  [37] rmarkdown_2.6               pkgconfig_2.0.3            </span>
+<span class="co">#&gt;  [39] htmltools_0.5.0             MatrixGenerics_1.2.0       </span>
+<span class="co">#&gt;  [41] highr_0.8                   BSgenome_1.58.0            </span>
+<span class="co">#&gt;  [43] rlang_0.4.10                RSQLite_2.2.1              </span>
+<span class="co">#&gt;  [45] generics_0.1.0              BiocParallel_1.24.1        </span>
+<span class="co">#&gt;  [47] gtools_3.8.2                R.oo_1.24.0                </span>
+<span class="co">#&gt;  [49] dplyr_1.0.2                 RCurl_1.98-1.2             </span>
+<span class="co">#&gt;  [51] magrittr_2.0.1              GO.db_3.12.1               </span>
+<span class="co">#&gt;  [53] GenomeInfoDbData_1.2.4      Matrix_1.2-18              </span>
+<span class="co">#&gt;  [55] Rcpp_1.0.5                  munsell_0.5.0              </span>
+<span class="co">#&gt;  [57] R.methodsS3_1.8.1           lifecycle_0.2.0            </span>
+<span class="co">#&gt;  [59] stringi_1.5.3               yaml_2.2.1                 </span>
+<span class="co">#&gt;  [61] SummarizedExperiment_1.20.0 zlibbioc_1.36.0            </span>
+<span class="co">#&gt;  [63] plyr_1.8.6                  grid_4.0.3                 </span>
+<span class="co">#&gt;  [65] ggseqlogo_0.1               blob_1.2.1                 </span>
+<span class="co">#&gt;  [67] crayon_1.3.4                CNEr_1.26.0                </span>
+<span class="co">#&gt;  [69] lattice_0.20-41             annotate_1.68.0            </span>
+<span class="co">#&gt;  [71] KEGGREST_1.30.1             hms_0.5.3                  </span>
+<span class="co">#&gt;  [73] knitr_1.30                  pillar_1.4.7               </span>
+<span class="co">#&gt;  [75] GenomicRanges_1.42.0        rngtools_1.5               </span>
+<span class="co">#&gt;  [77] reshape2_1.4.4              codetools_0.2-16           </span>
+<span class="co">#&gt;  [79] TFMPvalue_0.0.8             XML_3.99-0.5               </span>
+<span class="co">#&gt;  [81] glue_1.4.2                  evaluate_0.14              </span>
+<span class="co">#&gt;  [83] png_0.1-7                   vctrs_0.3.6                </span>
+<span class="co">#&gt;  [85] foreach_1.5.1               poweRlaw_0.70.6            </span>
+<span class="co">#&gt;  [87] gtable_0.3.0                purrr_0.3.4                </span>
+<span class="co">#&gt;  [89] assertthat_0.2.1            ggplot2_3.3.3              </span>
+<span class="co">#&gt;  [91] xfun_0.19                   gridBase_0.4-7             </span>
+<span class="co">#&gt;  [93] xtable_1.8-4                pracma_2.2.9               </span>
+<span class="co">#&gt;  [95] ragg_0.4.0                  tibble_3.0.4               </span>
+<span class="co">#&gt;  [97] iterators_1.0.13            AnnotationDbi_1.52.0       </span>
+<span class="co">#&gt;  [99] GenomicAlignments_1.26.0    registry_0.5-1             </span>
+<span class="co">#&gt; [101] memoise_1.1.0               cluster_2.1.0              </span>
+<span class="co">#&gt; [103] ellipsis_0.3.1</span></code></pre></div>
 </div>
   </div>
 

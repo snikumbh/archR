@@ -160,8 +160,8 @@ hierarchical clustering is supported.</p></td>
     </tr>
     <tr>
       <th>linkage</th>
-      <td><p>One of linkage values as specified for hierarchical clustering.
-Default is `ward.D'.</p></td>
+      <td><p>One of linkage values as specified for hierarchical 
+clustering with <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></code>. Default is `ward.D'.</p></td>
     </tr>
     <tr>
       <th>distMethod</th>
@@ -177,8 +177,8 @@ before comparison. See argument 'topN'.</p></td>
     </tr>
     <tr>
       <th>topN</th>
-      <td><p>Use only the 'topN' dimensions of each basis vector for comparing 
-them. Note that since each basis vector has 4L or 16L (mono- or 
+      <td><p>Use only the 'topN' dimensions of each basis vector for 
+comparing them. Note that since each basis vector has 4L or 16L (mono- or 
 dinucleotides) dimensions, each dimension is a combination of nucleotide and 
 its position in the sequence. This argument selects the top N dimensions of 
 the basis vector.</p></td>
