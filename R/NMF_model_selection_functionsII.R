@@ -123,10 +123,11 @@
 }
 
 
-amariDistance <- function(matrix.A, matrix.B) {
-    K <- dim(matrix.A)[2]
-    C <- stats::cor(matrix.A, matrix.B)
-    return(1 - (sum(apply(C, 1, max)) + sum(apply(C, 2, max))) / (2 * K))
+amariDistance <- function(matA, matB) {
+    K <- dim(matA)[2]
+    corrMat <- stats::cor(matA, matB)
+    return(1 - (sum(apply(corrMat, 1, max)) + 
+            sum(apply(corrMat, 2, max))) / (2 * K))
 }
 
 
