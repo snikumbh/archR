@@ -244,7 +244,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
 # can be set to \code{1} which will print messages. Value passed to the
 # \code{get_q2_val} function
 #
-# @return A tibble of grid_search_results
+# @return A data.frame/tibble of grid_search_results
 #
 # @importFrom methods is
 # @importFrom parallel makeCluster stopCluster detectCores clusterEvalQ
@@ -574,7 +574,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
 
 # @title Get the best performing value of K (number of factors in NMF)
 #
-# @param x A tibble, grid_search_results, as returned by
+# @param x A data.frame/tibble, grid_search_results, as returned by
 # \code{.cv_model_select_pyNMF2}
 #
 # @return A number The best performing value of K.
@@ -589,7 +589,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
     )) > 0) {
         message(names(x))
         stop(paste0(
-            "Check colnames in tibble, expecting five element names: ",
+            "Check colnames in data.frame, expecting five element names: ",
             c("k_vals", "alpha", "fold", "iteration", "q2_vals")
         ))
     }
@@ -600,9 +600,13 @@ performSearchForK <- function(startVal, endVal, step = 1,
     ## Using the one-std error rule for selecting a parsimonious model
     sd_by_K <- .get_q2_aggregates_chosen_var(x, x$k_vals, stats::sd)
     se_by_K <- sd_by_K / sqrt(nrow(x)/nrow(sd_by_K))
-    averages <- tibble::add_column(averages, 
-                                    "SD" = sd_by_K$q2_vals, 
-                                    "SE" = se_by_K$q2_vals)
+    # averages <- tibble::add_column(averages, 
+    #                                 "SD" = sd_by_K$q2_vals, 
+    #                                 "SE" = se_by_K$q2_vals)
+    ##
+    averages$SD <- sd_by_K$q2_vals
+    averages$SE <- se_by_K$q2_vals
+    ##
     ######
     idx_best <- as.numeric(which.max(unlist(averages["q2_vals"])))
     ## Print Q2 values and differences

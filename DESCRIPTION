@@ -40,7 +40,6 @@ Imports:
     fpc,
     reshape2 (>= 1.4.3),
     reticulate (>= 1.12),
-    tibble (>= 2.1.1),
     parallel,
     Biostrings
 Suggests:

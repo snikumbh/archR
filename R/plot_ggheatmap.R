@@ -15,7 +15,6 @@
 #' @family visualization functions
 #' @seealso \code{\link{plot_ggseqlogo}} for plotting PWMs as sequence logos
 #' @importFrom reshape2 melt
-#' @importFrom tibble add_column
 #' @import ggplot2
 #' @import ggseqlogo
 #'
@@ -49,8 +48,11 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL,
     ## Convert pwmMat to df, heatmap by ggplot-way
     pwmMat_df <- as.data.frame(pwmMat)
 
-    pwmMat_df <- add_column(pwmMat_df, Nucleotides = rownames(pwmMat_df))
-
+    # pwmMat_df <- tibble::add_column(pwmMat_df, Nucleotides = 
+    #         rownames(pwmMat_df))
+    ##
+    pwmMat_df$Nucleotides <- rownames(pwmMat_df)
+    ##
     colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
     ##
     pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars = c("Nucleotides"),
