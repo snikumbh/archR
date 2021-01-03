@@ -46,10 +46,12 @@
 #' @param position_labels The labels to be used for the sequence positions.
 #' Default: Sequence positions are labeled from 1 to the length of the
 #' sequences.
-#' @param xt_freq The x-axis tick frequency.
-#' @param yt_freq The y-axis tick frequency.
+#' @param xt_freq The x-axis tick frequency. Expects a positive integer less 
+#' than the length of the sequences. Default is 5.
+#' @param yt_freq The y-axis tick frequency. Expects a positive integer less 
+#' than number of sequences. Default is 100.
 #' @param col A vector of four colors used for the DNA bases A, C, G, and T (in
-#' that order)
+#' that order).
 #' @param savefilename Specify the filename (with extension) for saving the
 #' plot to disk.
 #' @param filetype Specify the file type, namely PNG, JPEG, TIFF.
@@ -67,7 +69,8 @@
 #' @importFrom graphics axis image
 #' @export
 viz_seqs_as_acgt_mat_from_seqs <- function(rawSeqs, position_labels = NULL,
-                                    xt_freq = 5, yt_freq = 100,
+                                    xt_freq = min(length(position_labels), 5), 
+                                    yt_freq = min(length(rawSeqs), 100),
                                     col = c("darkgreen", "blue",
                                             "orange", "red"),
                                     savefilename = NULL,
@@ -78,6 +81,17 @@ viz_seqs_as_acgt_mat_from_seqs <- function(rawSeqs, position_labels = NULL,
         position_labels <- seq_len(Biostrings::width(rawSeqs[1]))
     }
 
+    if(xt_freq <= 0 || xt_freq > length(position_labels)){
+        warning("Expected positive integer (< length of sequences) for", 
+            "xt_freq. Reverting to default value")
+        xt_freq <- min(length(position_labels), 5)
+    }
+    if(yt_freq <= 0 || yt_freq > length(rawSeqs)){
+        warning("Expected positive integer (< number of sequences) for", 
+            "yt_freq. Reverting to default value")
+        yt_freq <- min(length(rawSeqs), 100)
+    }
+    
     nSeqs <- length(rawSeqs)
     nPos <- length(position_labels)
     seq_mat <- .seqs_to_mat(seqs = rawSeqs, position_labels = position_labels)
