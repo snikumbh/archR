@@ -7,8 +7,8 @@
 viz_seqs_as_acgt_mat_from_seqs(
   rawSeqs,
   position_labels = NULL,
-  xt_freq = 5,
-  yt_freq = 100,
+  xt_freq = min(length(position_labels), 5),
+  yt_freq = min(length(rawSeqs), 100),
   col = c("darkgreen", "blue", "orange", "red"),
   savefilename = NULL,
   filetype = "PNG",
@@ -24,12 +24,14 @@ viz_seqs_as_acgt_mat_from_seqs(
 Default: Sequence positions are labeled from 1 to the length of the
 sequences.}
 
-\item{xt_freq}{The x-axis tick frequency.}
+\item{xt_freq}{The x-axis tick frequency. Expects a positive integer less 
+than the length of the sequences. Default is 5.}
 
-\item{yt_freq}{The y-axis tick frequency.}
+\item{yt_freq}{The y-axis tick frequency. Expects a positive integer less 
+than number of sequences. Default is 100.}
 
 \item{col}{A vector of four colors used for the DNA bases A, C, G, and T (in
-that order)}
+that order).}
 
 \item{savefilename}{Specify the filename (with extension) for saving the
 plot to disk.}
