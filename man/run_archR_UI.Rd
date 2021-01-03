@@ -12,8 +12,11 @@ app in the browser. Default is TRUE, i.e., the app will launch in the
 browser. Note: Saving PDF plots when the app is run via the external viewer 
 in RStudio could have problems.}
 }
+\value{
+Shiny application
+}
 \description{
-Launch archR's shiny app, a graphical user interface for archR.
+Launch archR's Shiny app, a graphical user interface for archR.
 The app supports the following functionalities.
 
 \describe{
@@ -35,4 +38,11 @@ when provided with archR's result file (as RDS file). Specifically, sequence
 logos of architectures and images of clustered sequences can be viewed and 
 saved to disk as PDF and PNG files respectively}
 }
+}
+\examples{
+
+if(interactive()) {
+  run_archR_UI(lbrowser = TRUE)
+}
+
 }
