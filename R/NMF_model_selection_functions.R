@@ -161,14 +161,16 @@ performSearchForK <- function(startVal, endVal, step = 1,
     for (this_K in kValues){
 
         if(prev_best_K != best_K && !is.na(this_K)){
-            grid_search_params <- purrr::cross_df(list(
+            ##
+            grid_search_params <- expand.grid(list(
                 k_vals = this_K,
                 alpha = param_ranges$alphaBase ^ param_ranges$alphaPow,
                 fold = seq_len(kFolds),
                 iteration = seq_len(nIterations),
-                seed_val = seed_val,
-                verbose = set_verbose
+                seed_val = seed_val
+                # verbose = set_verbose
             ))
+            ##
             seed_val_list <- sample.int(.Machine$integer.max, 
                                         size = kFolds*nIterations, 
                                         replace = FALSE)
@@ -185,12 +187,21 @@ performSearchForK <- function(startVal, endVal, step = 1,
                                                     verbose = set_verbose)
                                             }))
             if(set_verbose) message("q2_vals RETURNED")
-            grid_search_params <-
-                dplyr::select(grid_search_params, k_vals, alpha, fold,
-                                iteration)
+            # grid_search_params <-
+            #     dplyr::select(grid_search_params, k_vals, alpha, fold,
+            #                     iteration)
+            ##
+            grid_search_results <- 
+                as.data.frame(grid_search_params[, 
+                    c("k_vals", "alpha", "fold", "iteration")],
+                    col.names = c("k_vals", "alpha", "fold", "iteration"))
+            ##
             if(set_verbose) message("SELECTING COLUMNS DONE")
-            grid_search_results <-
-                tibble::add_column(grid_search_params, q2_vals)
+            # grid_search_results <-
+            #     tibble::add_column(grid_search_params, q2_vals)
+            ##
+            grid_search_results$q2_vals <- q2_vals
+            ##
             if(set_verbose) message("COLUMN ADDED")
             if (is.null(prev_df)) {
                 best_K <- .get_best_K(grid_search_results)
@@ -236,7 +247,6 @@ performSearchForK <- function(startVal, endVal, step = 1,
 # @return A tibble of grid_search_results
 #
 # @importFrom methods is
-# @importFrom purrr cross_df
 # @importFrom parallel makeCluster stopCluster detectCores clusterEvalQ
 # @importFrom parallel clusterExport getDefaultCluster
 .cv_model_select_pyNMF2 <- function(X,

@@ -251,6 +251,14 @@ archRSetConfig <- function(innerChunkSize = 500,
 .compute_factor_distances <- function(factorsMat, distMethod = "euclid"){
     ## Assumption: Each column is a factor
     .assert_archR_featuresMatrix(factorsMat)
+    ## Since the default distMethod is euclid/euclidean, when the user wishes
+    ## to use any other distance methods/metrics, we can check if hopach exists
+    ## If not, we ask the user to install it.
+    ## This lets move hopach to Suggests
+    distMethods_hopach <- c("cosangle", "abscosangle", 
+                            "abseuclid", "cor", "abscor")
+    distMethods_stats <- c("euclid")
+    
     if(!requireNamespace("TFBSTools", quietly = TRUE)){
         warning("You chose 'modified Needleman-Wunsch' distance for 
             computing distances between NMF factors. This requires R 
@@ -303,14 +311,28 @@ archRSetConfig <- function(innerChunkSize = 500,
             ## currently we use scoresMat, so we only return that
             distMat <- max(scoresMat) - scoresMat
             return(distMat)
-        } else{
-            ## hopach::distancematrix function requires vectors along rows. 
-            ## Distances are computed between row vectors
+            ##
+        } else if(any(distMethod == distMethods_hopach)){
+            if(!requireNamespace("hopach", quietly = TRUE)){
+                stop("Please install R package 'hopach' to use ", distMethod,
+                    " distance.")
+            }else{
+                ## - these distance metrics are available in hopach pkg
+                ## - hopach::distancematrix function requires vectors along rows. 
+                ## - Distances are computed between row vectors
+                if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
+                hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
+                ## hopachDistMat is a hopach hdist object
+                stopifnot(hopachDistMat@Size == nrow(factorsMat))
+                return(hopachDistMat)
+            }
+            ##
+        }else if(any(distMethod == distMethods_stats)){
+            ## dist method from stats // standard
             if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
-            hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
-            ## hopachDistMat is a hopach hdist object
-            stopifnot(hopachDistMat@Size == nrow(factorsMat))
-            return(hopachDistMat)
+            as_dist <- stats::dist(factorsMat, method = "euclidean")
+            distMat <- as.matrix(as_dist)
+            return(distMat)
         }
     }
 }

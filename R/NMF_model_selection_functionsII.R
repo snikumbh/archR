@@ -17,9 +17,8 @@
                                                 timeFlag = FALSE)
                                     ){
     ##
-    sam_scores <- purrr::cross_df(list(
+    sam_scores <- expand.grid(list(
         kValue = param_ranges$k_vals,
-        # ScoreType = c("CophCorrelation", "AmariTypeDistance", "Dispersion"),
         ScoreType = c("AmariTypeDistance", "Dispersion"),
         nRuns = nIterations,
         Score = -0.01
