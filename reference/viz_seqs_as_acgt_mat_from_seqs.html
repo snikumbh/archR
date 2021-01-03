@@ -131,8 +131,8 @@ matrix.</p>
     <pre class="usage"><span class='fu'>viz_seqs_as_acgt_mat_from_seqs</span><span class='op'>(</span>
   <span class='va'>rawSeqs</span>,
   position_labels <span class='op'>=</span> <span class='cn'>NULL</span>,
-  xt_freq <span class='op'>=</span> <span class='fl'>5</span>,
-  yt_freq <span class='op'>=</span> <span class='fl'>100</span>,
+  xt_freq <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>position_labels</span><span class='op'>)</span>, <span class='fl'>5</span><span class='op'>)</span>,
+  yt_freq <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>rawSeqs</span><span class='op'>)</span>, <span class='fl'>100</span><span class='op'>)</span>,
   col <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"darkgreen"</span>, <span class='st'>"blue"</span>, <span class='st'>"orange"</span>, <span class='st'>"red"</span><span class='op'>)</span>,
   savefilename <span class='op'>=</span> <span class='cn'>NULL</span>,
   filetype <span class='op'>=</span> <span class='st'>"PNG"</span>,
@@ -156,16 +156,18 @@ sequences.</p></td>
     </tr>
     <tr>
       <th>xt_freq</th>
-      <td><p>The x-axis tick frequency.</p></td>
+      <td><p>The x-axis tick frequency. Expects a positive integer less 
+than the length of the sequences. Default is 5.</p></td>
     </tr>
     <tr>
       <th>yt_freq</th>
-      <td><p>The y-axis tick frequency.</p></td>
+      <td><p>The y-axis tick frequency. Expects a positive integer less 
+than number of sequences. Default is 100.</p></td>
     </tr>
     <tr>
       <th>col</th>
       <td><p>A vector of four colors used for the DNA bases A, C, G, and T (in
-that order)</p></td>
+that order).</p></td>
     </tr>
     <tr>
       <th>savefilename</th>
