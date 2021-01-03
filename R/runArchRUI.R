@@ -1,6 +1,6 @@
 #' @title Launch archR's graphical user interface
 #' 
-#' @description Launch archR's shiny app, a graphical user interface for archR.
+#' @description Launch archR's Shiny app, a graphical user interface for archR.
 #' The app supports the following functionalities.
 #' 
 #' \describe{
@@ -27,6 +27,15 @@
 #' app in the browser. Default is TRUE, i.e., the app will launch in the
 #' browser. Note: Saving PDF plots when the app is run via the external viewer 
 #' in RStudio could have problems.
+#'
+#' @return 
+#' Shiny application
+#'
+#' @examples 
+#' 
+#' if(interactive()) {
+#'   run_archR_UI(lbrowser = TRUE)
+#' }
 #'
 #' @export
 run_archR_UI <- function(lbrowser = TRUE) {
