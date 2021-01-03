@@ -45,34 +45,37 @@ most appropriate number of NMF factors. Default is 1e-03.}
 the most appropriate number of NMF factors. Default is 1e-08.}
 
 \item{cvFolds}{Numeric. Specify the number of cross-validation folds used for
-model selection. Only used when modSelType is set to 'cv'.}
+model selection. Only used when modSelType is set to 'cv'. Default value is 
+5.}
 
 \item{parallelize}{Logical. Specify whether to parallelize the procedure.
 Note that running archR serially can be time consuming. Consider
 parallelizing with at least 2 or 4 cores. If Slurm is available, archR's
 graphical user interface, accessed with \code{\link{run_archR_UI}}, enables 
-provide all input data, set archR configuration, and directly
-submit/monitor slurm jobs.}
+providing all input data, setting archR configuration, and running archR 
+directly by submiting/monitoring slurm jobs through the user interface.}
 
 \item{nCoresUse}{The number of cores to be used when `parallelize` is set
 to TRUE. If `parallelize` is FALSE, nCoresUse is ignored.}
 
 \item{nIterationsUse}{Numeric. Specify the number of bootstrapped iterations
-to be performed with NMF.}
+to be performed with NMF. Default value is 100. When using cross-validation 
+more than 100 (upto 500) iterations may be needed.}
 
 \item{alphaBase, alphaPow}{Specify the base value and the power for computing
 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
 Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
-Warning: For future.}
+Warning: Currently, not used (for future).}
 
 \item{minSeqs}{Numeric. Specify the minimum number of sequences, such that
 any cluster/chunk of size less than or equal to it will not be further
 processed/clustered.}
 
 \item{checkpointing}{Logical. Specify whether to write intermediate 
-checkpoints to disk as RDS files. Default is TRUE. Checkpoints and the final
- result are saved to disk provided the oDir argument is set in 
- \code{\link{archR}}.}
+checkpoints to disk as RDS files. Checkpoints and the final result are 
+saved to disk provided the oDir argument is set in \code{\link{archR}}. 
+When oDir argument is not provided or NULL, this is ignored. 
+Default is TRUE.}
 
 \item{flags}{List with four Logical elements as detailed.
 \describe{

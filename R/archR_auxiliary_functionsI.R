@@ -495,12 +495,13 @@
     } 
     ##
     if(min(distMat) > distThreshold){
-        message("No element pairs close enough by given distance threshold: ", 
-                distThreshold)
         clust_list <- lapply(hcObj$order, function(x) x)
-        
-        if(verbose) message("#Clusters: ", length(clust_list))
-        if(verbose) paste(clust_list)
+        if(verbose){
+            message("No element pairs close enough by given dist threshold: ", 
+                distThreshold)
+            message("#Clusters: ", length(clust_list))
+            # if(verbose) paste(clust_list)
+        }
         return(clust_list)
     }else{
         ##

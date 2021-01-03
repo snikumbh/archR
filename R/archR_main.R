@@ -290,10 +290,10 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                     ## Setting up sequences for the current chunk
                     this_seqsMat <-
                         seqsMat[, innerChunksColl[[innerChunkIdx]]]
-                    if(config$modSelType == "cv" && !setParsimony[test_itr]) {
-                        if(config$flags$verboseFlag)
-                            message("=== Wihtout parsimony ===")
-                    }
+                    # if(config$modSelType == "cv" && !setParsimony[test_itr]) {
+                    #     if(config$flags$verboseFlag)
+                    #         message("=== Without parsimony ===")
+                    # }
                     if(test_itr == 1 ||
                         length(outerChunk) > 0.9*config$innerChunkSize){
                         thisNMFResult <-
@@ -318,7 +318,8 @@ archR <- function(config, seqsMat, seqsRaw, seqsPositions = NULL,
                                         config)
                     }
                     .assert_archR_NMFresult(thisNMFResult)
-                    globFactors[[innerChunkIdx]] <- thisNMFResult$forGlobFactors
+                    globFactors[[innerChunkIdx]] <- 
+                            thisNMFResult$forGlobFactors
                     globClustAssignments[[innerChunkIdx]] <-
                             thisNMFResult$forGlobClustAssignments
                 } ## for loop over innerChunksColl ENDS here
