@@ -48,12 +48,13 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
         invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
             if (sinuc_or_dinuc == "dinuc") {
                 dna_alphabet <- c("A", "C", "G", "T")
-                dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
-                                                                    dna_alphabet))
+                dna_alphabet_dinuc <- do.call(paste0, 
+                                expand.grid(dna_alphabet, dna_alphabet))
                 pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = FALSE,
                                     scale = FALSE)
             } else if (sinuc_or_dinuc == "sinuc") {
-                pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE, scale = FALSE)
+                pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE, 
+                                    scale = FALSE)
             }
             ## Heatmap on top
             p1 <- plot_ggheatmap(
@@ -82,7 +83,8 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
                 if (file.exists(savePDFfilename)) {
                     warning("File exists, will overwrite", immediate. = TRUE)
                 }
-                ggplot2::ggsave(final_p, device = "pdf", width = 20, height = 2.5)
+                ggplot2::ggsave(final_p, device = "pdf", width = 20, 
+                                    height = 2.5)
             } else {
                 base::suppressMessages(print(final_p))
             }

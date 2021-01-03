@@ -357,7 +357,7 @@
                     distMethod, " distance:")
         }
         ##
-        as_dist_mat <- as.dist(globFactorsDistMat)
+        as_dist_mat <- stats::as.dist(globFactorsDistMat)
         # as_dist_mat <- stats::as.dist(hopach::as.matrix(globFactorsDistMat))
         temp_hclust <- stats::hclust(as_dist_mat, method = linkage)
         new_order <- temp_hclust$order

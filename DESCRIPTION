@@ -19,7 +19,7 @@ Description: Given a set of DNA sequences, \code{archR} enables unsupervised
     non-negative matrix factorization (NMF) as its backbone, and employs a 
     chunking-based iterative procedure that enables processing of large 
     sequence collections efficiently. Wrapper functions are provided for 
-    visualizing cluster architectures as sequence logos. Furthermore, a shiny 
+    visualizing cluster architectures as sequence logos. Furthermore, a Shiny 
     application is provided to enable using \code{archR} via an easy-to-use 
     user interface.
 License: GPL-3

@@ -318,10 +318,13 @@ archRSetConfig <- function(innerChunkSize = 500,
                     " distance.")
             }else{
                 ## - these distance metrics are available in hopach pkg
-                ## - hopach::distancematrix function requires vectors along rows. 
+                ## - hopach::distancematrix func requires vectors along rows. 
                 ## - Distances are computed between row vectors
-                if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
-                hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
+                if (nrow(factorsMat) > ncol(factorsMat)){
+                    factorsMat <- t(factorsMat)
+                }
+                hopachDistMat <- hopach::distancematrix(factorsMat, 
+                    d = distMethod)
                 ## hopachDistMat is a hopach hdist object
                 stopifnot(hopachDistMat@Size == nrow(factorsMat))
                 return(hopachDistMat)
