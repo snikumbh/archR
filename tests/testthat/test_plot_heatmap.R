@@ -1,7 +1,6 @@
 context("Plotting features matrix as ggheatmap")
 library(ggplot2)
 library(reshape2)
-library(dplyr)
 
 
 test_that("Matrix has 4 rows", {

@@ -1,5 +1,5 @@
 context("Model selection functions")
-library(tibble)
+
 
 test_that("Handles < 3 cross-validation folds", {
   testDataX <- matrix(rnorm(10000), nrow = 200)
@@ -79,7 +79,7 @@ test_that("Handles erroneous colnames in input data.frame (get_best_K)", {
   testDataX <- matrix(rnorm(10000), nrow = 200)
   testParamRanges <- list(alphabase = 0, alphaPow = 0, k_vals = 0)
   testKFolds <- 5
-  testModelSelectResult <- tibble::tibble(
+  testModelSelectResult <- data.frame(
     k_vals = seq(4), alpha = rnorm(4),
     fold = seq(4), q2vals = rnorm(4)
   )
