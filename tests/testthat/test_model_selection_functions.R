@@ -75,7 +75,7 @@ test_that("Returned names is 'generate_folds' return object are right", {
 })
 
 
-test_that("Handles erroneous colnames in input tibble (get_best_K)", {
+test_that("Handles erroneous colnames in input data.frame (get_best_K)", {
   testDataX <- matrix(rnorm(10000), nrow = 200)
   testParamRanges <- list(alphabase = 0, alphaPow = 0, k_vals = 0)
   testKFolds <- 5
@@ -85,6 +85,6 @@ test_that("Handles erroneous colnames in input tibble (get_best_K)", {
   )
   expect_error(
     .get_best_K(testModelSelectResult),
-    "Check colnames in tibble"
+    "Check colnames in data.frame"
   )
 })
