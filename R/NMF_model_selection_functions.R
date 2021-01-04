@@ -177,7 +177,7 @@ performSearchForK <- function(startVal, endVal, step = 1,
                                                 .get_q2_using_py(
                                                     grid_search_params[i,])
                                             }))
-            if(set_verbose == 2) message("q2_vals RETURNED")
+            # if(set_verbose == 2) message("q2_vals RETURNED")
             # grid_search_params <-
             #     dplyr::select(grid_search_params, k_vals, alpha, fold,
             #                     iteration)
@@ -187,13 +187,13 @@ performSearchForK <- function(startVal, endVal, step = 1,
                     c("k_vals", "alpha", "fold", "iteration")],
                     col.names = c("k_vals", "alpha", "fold", "iteration"))
             ##
-            if(set_verbose == 2) message("SELECTING COLUMNS DONE")
+            # if(set_verbose == 2) message("SELECTING COLUMNS DONE")
             # grid_search_results <-
             #     tibble::add_column(grid_search_params, q2_vals)
             ##
             grid_search_results$q2_vals <- q2_vals
             ##
-            if(set_verbose == 2) message("COLUMN ADDED")
+            # if(set_verbose == 2) message("COLUMN ADDED")
             if (is.null(prev_df)) {
                 best_K <- .get_best_K(grid_search_results)
                 prev_df <- grid_search_results
