@@ -11,7 +11,7 @@ reorder_archRresult(
   linkage = "ward.D",
   distMethod = "euclid",
   regularize = TRUE,
-  topN = floor(0.5 * archRresult$rawSeqs@ranges@width),
+  topN = 50,
   decisionToReorder = TRUE,
   config,
   ...
