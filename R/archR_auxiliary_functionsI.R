@@ -340,7 +340,8 @@
                                                     timeFlag = FALSE),
                                         useCutree = TRUE,
                                         minClusters = 2,
-                                        parentChunks = NULL) {
+                                        parentChunks = NULL,
+                                        ...) {
     ##
     .assert_archR_featuresMatrix(globFactorsMat)
     .assert_archR_flags(flags)
@@ -382,7 +383,8 @@
                                 hStep = 0.05, 
                                 parentChunks = parentChunks,
                                 minClusters = minClusters,
-                                verbose = flags$debugFlag)
+                                verbose = flags$debugFlag,
+                                ...)
         }
         # else{
         #     clustList <- .get_clusters_from_hc(hcObj = temp_hclust,
@@ -724,7 +726,7 @@ reorder_archRresult <- function(archRresult,
                             linkage = "ward.D",
                             distMethod = "euclid",
                             regularize = TRUE, 
-                            topN = floor(0.5*archRresult$rawSeqs@ranges@width),
+                            topN = 50,
                             decisionToReorder = TRUE,
                             config,
                             ...) {
