@@ -183,7 +183,8 @@ the most appropriate number of NMF factors. Default is 1e-08.</p></td>
     <tr>
       <th>cvFolds</th>
       <td><p>Numeric. Specify the number of cross-validation folds used for
-model selection. Only used when modSelType is set to 'cv'.</p></td>
+model selection. Only used when modSelType is set to 'cv'. Default value is 
+5.</p></td>
     </tr>
     <tr>
       <th>parallelize</th>
@@ -191,8 +192,8 @@ model selection. Only used when modSelType is set to 'cv'.</p></td>
 Note that running archR serially can be time consuming. Consider
 parallelizing with at least 2 or 4 cores. If Slurm is available, archR's
 graphical user interface, accessed with <code><a href='run_archR_UI.html'>run_archR_UI</a></code>, enables 
-provide all input data, set archR configuration, and directly
-submit/monitor slurm jobs.</p></td>
+providing all input data, setting archR configuration, and running archR 
+directly by submiting/monitoring slurm jobs through the user interface.</p></td>
     </tr>
     <tr>
       <th>nCoresUse</th>
@@ -202,14 +203,15 @@ to TRUE. If `parallelize` is FALSE, nCoresUse is ignored.</p></td>
     <tr>
       <th>nIterationsUse</th>
       <td><p>Numeric. Specify the number of bootstrapped iterations
-to be performed with NMF.</p></td>
+to be performed with NMF. Default value is 100. When using cross-validation 
+more than 100 (upto 500) iterations may be needed.</p></td>
     </tr>
     <tr>
       <th>alphaBase, alphaPow</th>
       <td><p>Specify the base value and the power for computing
 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
 Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
-Warning: For future.</p></td>
+Warning: Currently, not used (for future).</p></td>
     </tr>
     <tr>
       <th>minSeqs</th>
@@ -220,9 +222,10 @@ processed/clustered.</p></td>
     <tr>
       <th>checkpointing</th>
       <td><p>Logical. Specify whether to write intermediate 
-checkpoints to disk as RDS files. Default is TRUE. Checkpoints and the final
- result are saved to disk provided the oDir argument is set in 
- <code><a href='archR.html'>archR</a></code>.</p></td>
+checkpoints to disk as RDS files. Checkpoints and the final result are 
+saved to disk provided the oDir argument is set in <code><a href='archR.html'>archR</a></code>. 
+When oDir argument is not provided or NULL, this is ignored. 
+Default is TRUE.</p></td>
     </tr>
     <tr>
       <th>flags</th>
