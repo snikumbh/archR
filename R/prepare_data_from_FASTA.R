@@ -9,22 +9,24 @@
 .one_hot_encode_sinuc <- function(givenSeq) {
     # Input: A DNA seq as a vector of caharacters (A/C/G/T)
     # Returns: A row matrix of
-    # size 4*seq_len
+    # size 4*seqlen
     dna_alphabet <- c("A", "C", "G", "T")
-    seq_len <- length(givenSeq)
-    if (seq_len > 0) {
-        one_hot_encoded <- matrix(rep(0, length(dna_alphabet) * seq_len),
+    seqlen <- length(givenSeq)
+    if (seqlen > 0) {
+        one_hot_encoded <- matrix(rep(0, length(dna_alphabet) * seqlen),
                                     nrow = 1,
                                     byrow = TRUE)
         # characters to match
-        one_hot_encoded[, 0 * seq_len + which(givenSeq == dna_alphabet[1])] <-
+        one_hot_encoded[, 0 * seqlen + which(givenSeq == dna_alphabet[1])] <-
             1
-        one_hot_encoded[, 1 * seq_len + which(givenSeq == dna_alphabet[2])] <-
+        one_hot_encoded[, 1 * seqlen + which(givenSeq == dna_alphabet[2])] <-
             1
-        one_hot_encoded[, 2 * seq_len + which(givenSeq == dna_alphabet[3])] <-
+        one_hot_encoded[, 2 * seqlen + which(givenSeq == dna_alphabet[3])] <-
             1
-        one_hot_encoded[, 3 * seq_len + which(givenSeq == dna_alphabet[4])] <-
+        one_hot_encoded[, 3 * seqlen + which(givenSeq == dna_alphabet[4])] <-
             1
+        colnames(one_hot_encoded) <- paste(rep(dna_alphabet, 
+                            each = seqlen), seq_len(seqlen), sep=".")
         return(one_hot_encoded)
     } else {
         stop("Empty or NULL found")
@@ -44,24 +46,27 @@
 .one_hot_encode_trinuc <- function(givenSeq) {
     # Input: A DNA seq as a vector of caharacters (A/C/G/T)
     # Returns: A row matrix of
-    # size 4*seq_len
+    # size 4*seqlen
     dna_alphabet <- c("A", "C", "G", "T")
     dna_alphabet_trinuc <- do.call(paste0, expand.grid(dna_alphabet,
                                                         dna_alphabet,
                                                         dna_alphabet))
-    given_seq_len <- length(givenSeq)
-    givenSeq_trinuc <- unlist(lapply(seq_len(given_seq_len - 2), function(x) {
+    given_seqlen <- length(givenSeq)
+    givenSeq_trinuc <- unlist(lapply(seq_len(given_seqlen - 2), function(x) {
         paste0(givenSeq[x], givenSeq[x + 1], givenSeq[x + 2])
     }))
-    if (given_seq_len > 0) {
+    if (given_seqlen > 0) {
         one_hot_encoded_trinuc_profile <- matrix(
             rep(0, length(dna_alphabet_trinuc) *
-                    given_seq_len), nrow = 1, byrow = TRUE)
+                    given_seqlen), nrow = 1, byrow = TRUE)
         #
         for (i in seq_along(dna_alphabet_trinuc)) {
-            one_hot_encoded_trinuc_profile[, (i - 1) * given_seq_len +
+            one_hot_encoded_trinuc_profile[, (i - 1) * given_seqlen +
                     which(givenSeq_trinuc == dna_alphabet_trinuc[i])] <- 1
         }
+        colnames(one_hot_encoded_trinuc_profile) <- 
+            paste(rep(dna_alphabet_trinuc, each = given_seqlen), 
+                seq_len(given_seqlen), sep=".")
         return(one_hot_encoded_trinuc_profile)
     } else {
         stop("Empty or NULL found")
@@ -82,23 +87,26 @@
 .one_hot_encode_dinuc <- function(givenSeq) {
     # Input: A DNA seq as a vector of caharacters (A/C/G/T)
     # Returns: A row matrix of
-    # size 4*seq_len
+    # size 4*seqlen
     dna_alphabet <- c("A", "C", "G", "T")
     dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
                                                         dna_alphabet))
-    given_seq_len <- length(givenSeq)
-    givenSeq_dinuc <- unlist(lapply(seq_len(given_seq_len - 1), function(x) {
+    given_seqlen <- length(givenSeq)
+    givenSeq_dinuc <- unlist(lapply(seq_len(given_seqlen - 1), function(x) {
         paste0(givenSeq[x], givenSeq[x + 1])
     }))
-    if (given_seq_len > 0) {
+    if (given_seqlen > 0) {
         one_hot_encoded_dinuc_profile <- matrix(
             rep(0, length(dna_alphabet_dinuc) *
-            given_seq_len), nrow = 1, byrow = TRUE)
+            given_seqlen), nrow = 1, byrow = TRUE)
         #
         for (i in seq_along(dna_alphabet_dinuc)) {
-            one_hot_encoded_dinuc_profile[, (i - 1) * given_seq_len +
+            one_hot_encoded_dinuc_profile[, (i - 1) * given_seqlen +
                     which(givenSeq_dinuc == dna_alphabet_dinuc[i])] <- 1
         }
+        colnames(one_hot_encoded_dinuc_profile) <- 
+            paste(rep(dna_alphabet_dinuc, each = given_seqlen), 
+                seq_len(given_seqlen), sep=".")
         return(one_hot_encoded_dinuc_profile)
     } else {
         stop("Empty or NULL found")
@@ -117,10 +125,10 @@
 .one_hot_decode <- function(oneHotEncodedSeqV) {
 
     dna_alphabet <- c("A", "C", "G", "T")
-    seq_len <- length(oneHotEncodedSeqV)/length(dna_alphabet)
-    decodedSeq <- rep("Q", seq_len)
+    seqlen <- length(oneHotEncodedSeqV)/length(dna_alphabet)
+    decodedSeq <- rep("Q", seqlen)
     for (alpha_char in seq_along(dna_alphabet)) {
-        cutp <- seq_len
+        cutp <- seqlen
         startp <- (alpha_char * cutp) - cutp + 1
         endp <- (alpha_char * cutp)
         decodedSeq[which(oneHotEncodedSeqV[startp:endp] == 1)] <-
