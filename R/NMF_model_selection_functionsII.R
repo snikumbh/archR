@@ -17,9 +17,9 @@
                                                 timeFlag = FALSE)
                                     ){
     ##
-    sam_scores <- expand.grid(list(
+    foo_scores <- expand.grid(list(
         kValue = param_ranges$k_vals,
-        ScoreType = c("AmariTypeDistance", "Dispersion"),
+        ScoreType = c("AmariTypeDistance"),
         nRuns = nIterations,
         Score = -0.01
     ))
@@ -64,12 +64,10 @@
         ##
         consensusMat <- getConsensusMat(sampMatList)
         ##
-        this_disp <- NMF::dispersion(consensusMat)
         this_amari <- computeAmariDistances(featMatList)
         if(flags$debugFlag) message("AmariTypeDist : ", this_amari)
 
-        sam_scores[sam_scores$kValue == kValue, "Score"] <-
-            c(this_amari, this_disp)
+        foo_scores[foo_scores$kValue == kValue, "Score"] <- this_amari
         ##
         if(is.na(this_amari)){
             warning("NA in Amari-type distance computation")
@@ -104,13 +102,6 @@
             ## Bug: If this is reached at kValue = 1, bestK would be assigned 0.
             ## Avoid this.
             if(kValue > 1) bestK <- kValue - 1
-            if(flags$debugFlag){
-                message("This amariType Distance = ", this_amari)
-            }
-            if(flags$verboseFlag) {
-                ## message("Choosing bestK as : ", bestK)
-                ## message already provided by handle_chunk_w_NMF2
-            }
             break
         }
         ##
@@ -119,7 +110,7 @@
     ##
     if(returnBestK) return(bestK)
     ##
-    return(sam_scores)
+    return(foo_scores)
 }
 
 
