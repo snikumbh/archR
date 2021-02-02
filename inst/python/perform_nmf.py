@@ -8,9 +8,11 @@
 from sklearn.decomposition import NMF
 
 
-def perform_nmf_func(givenMat, nPatterns, nIter=200, givenAlpha = 0, givenL1_ratio = 1, seed_val = 3456):
+def perform_nmf_func(givenMat, nPatterns, nIter=200, givenAlpha = 0, 
+                                    givenL1_ratio = 1, seed_val = 3456):
     #
-    model = NMF(n_components=nPatterns, 
+    model = NMF(n_components=nPatterns,
+                solver='cd',
                 init='nndsvd', 
                 alpha=givenAlpha, 
                 max_iter=nIter,
