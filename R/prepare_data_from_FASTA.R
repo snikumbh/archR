@@ -142,7 +142,7 @@
 #'
 #' @description Get the one-hot encoding representation of the given sequences.
 #'
-#' @param givenFastaSeqs A DNAStringSet object holding the given DNA sequences
+#' @param seqs A DNAStringSet object holding the given DNA sequences
 #' @param sinuc_or_dinuc 'sinuc' or 'dinuc'
 #'
 #' @return A sparse matrix of sequences represented with one-hot-encoding
@@ -160,15 +160,14 @@
 #' rawFasta <- prepare_data_from_FASTA(inputFastaFilename = fname,
 #'                         rawSeq = TRUE)
 #' 
-#' get_one_hot_encoded_seqs(givenFastaSeqs = rawFasta,
-#'                                 sinuc_or_dinuc = "dinuc")
+#' get_one_hot_encoded_seqs(seqs = rawFasta, sinuc_or_dinuc = "dinuc")
 #'                         
 #' @export
-get_one_hot_encoded_seqs <- function(givenFastaSeqs, sinuc_or_dinuc = "sinuc") {
+get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
     #
-    if (!is.null(givenFastaSeqs) && length(givenFastaSeqs) > 0) {
+    if (!is.null(seqs) && length(seqs) > 0) {
         seqs_split_as_list <-
-            base::strsplit(as.character(givenFastaSeqs), split = NULL)
+            base::strsplit(as.character(seqs), split = NULL)
         if (length(seqs_split_as_list) > 0) {
             if (sinuc_or_dinuc == "sinuc") {
                 encoded_seqs <- lapply(seqs_split_as_list,
