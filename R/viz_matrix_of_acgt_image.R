@@ -7,10 +7,10 @@
 # @param position_labels Labels for the axis denoting sequence positions
 # @param annClusters For later, when clusters are to be annotated
 # @param sinuc_or_dinuc For later, maybe
-.seqs_to_mat <- function(seqs, position_labels, annClusters = NULL,
+.seqs_to_mat <- function(seqs, pos_lab, annClusters = NULL,
                             sinuc_or_dinuc = "sinuc") {
     nSeqs <- length(seqs)
-    nPos <- length(position_labels)
+    nPos <- length(pos_lab)
     ## handling single- and di-nucleotides separately
     if (sinuc_or_dinuc == "sinuc") {
         nuc_list <- unlist(lapply(seq_along(seqs),
@@ -42,8 +42,8 @@
 #' @description This function plots the collection of sequences as an image
 #' matrix.
 #'
-#' @param rawSeqs The sequences as a DNAStringSet object.
-#' @param position_labels The labels to be used for the sequence positions.
+#' @param seqs The sequences as a DNAStringSet object.
+#' @param pos_lab The labels to be used for the sequence positions.
 #' Default: Sequence positions are labeled from 1 to the length of the
 #' sequences.
 #' @param xt_freq The x-axis tick frequency. Expects a positive integer less 
@@ -52,14 +52,14 @@
 #' than number of sequences. Default is 100.
 #' @param col A vector of four colors used for the DNA bases A, C, G, and T (in
 #' that order).
-#' @param savefilename Specify the filename (with extension) for saving the
+#' @param save_fname Specify the filename (with extension) for saving the
 #' plot to disk.
-#' @param filetype Specify the file type, namely PNG, JPEG, TIFF.
-#' @param fwidth Specify the width for the plot. This depends on the length of
+#' @param file_type Specify the file type, namely PNG, JPEG, TIFF.
+#' @param f_width Specify the width for the plot. This depends on the length of
 #' sequences.
-#' @param fheight Specify the height for the plot. This depends on the number of
-#' sequences.
-#' @param funits Specify the units in which the height and width are given.
+#' @param f_height Specify the height for the plot. This depends on the number 
+#' of sequences.
+#' @param f_units Specify the units in which the height and width are given.
 #'
 #' @importFrom Biostrings width
 #'
@@ -68,45 +68,45 @@
 #' @importFrom grDevices png dev.off
 #' @importFrom graphics axis image
 #' @export
-viz_seqs_as_acgt_mat_from_seqs <- function(rawSeqs, position_labels = NULL,
-                                    xt_freq = min(length(position_labels), 5), 
-                                    yt_freq = min(length(rawSeqs), 100),
+viz_seqs_as_acgt_mat_from_seqs <- function(seqs, pos_lab = NULL,
+                                    xt_freq = min(length(pos_lab), 5), 
+                                    yt_freq = min(length(seqs), 100),
                                     col = c("darkgreen", "blue",
                                             "orange", "red"),
-                                    savefilename = NULL,
-                                    filetype = "PNG",
-                                    fwidth = 450, fheight = 900, funits = "px"
+                                    save_fname = NULL,
+                                    file_type = "PNG",
+                                    f_width = 450, f_height = 900, 
+                                    f_units = "px"
                                     ) {
-    if(is.null(position_labels)){
-        position_labels <- seq_len(Biostrings::width(rawSeqs[1]))
+    if(is.null(pos_lab)){
+        pos_lab <- seq_len(Biostrings::width(seqs[1]))
     }
 
-    if(xt_freq <= 0 || xt_freq > length(position_labels)){
+    if(xt_freq <= 0 || xt_freq > length(pos_lab)){
         warning("Expected positive integer (< length of sequences) for", 
             "xt_freq. Reverting to default value")
-        xt_freq <- min(length(position_labels), 5)
+        xt_freq <- min(length(pos_lab), 5)
     }
-    if(yt_freq <= 0 || yt_freq > length(rawSeqs)){
+    if(yt_freq <= 0 || yt_freq > length(seqs)){
         warning("Expected positive integer (< number of sequences) for", 
             "yt_freq. Reverting to default value")
-        yt_freq <- min(length(rawSeqs), 100)
+        yt_freq <- min(length(seqs), 100)
     }
-    
-    nSeqs <- length(rawSeqs)
-    nPos <- length(position_labels)
-    seq_mat <- .seqs_to_mat(seqs = rawSeqs, position_labels = position_labels)
+    ##
+    nSeqs <- length(seqs)
+    nPos <- length(pos_lab)
+    seq_mat <- .seqs_to_mat(seqs = seqs, pos_lab = pos_lab)
     seq_mat <- seq_mat[rev(seq_len(nSeqs)),]
-
-    if(!is.null(savefilename)){
-        if(filetype == "PNG" || filetype == "png"){
-            grDevices::png(filename = savefilename,
-                width = fwidth, height = fheight, units = funits,
-                bg = "white")
+    ##
+    if(!is.null(save_fname)){
+        if(file_type == "PNG" || file_type == "png"){
+            grDevices::png(filename = save_fname, width = f_width, 
+                height = f_height, units = f_units, bg = "white")
         }else{
             ## TODO
         }
+    }else{ ## do nothing 
     }
-
     xtick_cal <- seq(0, nPos, by = xt_freq)
     xtick_cal[1] <- 1
     ##
@@ -114,17 +114,13 @@ viz_seqs_as_acgt_mat_from_seqs <- function(rawSeqs, position_labels = NULL,
     ytick_loc <- 1 + nSeqs - c(rev(seq(yt_freq, nSeqs, by = yt_freq)))
 
     graphics::image(x = seq_len(nPos), y = seq_len(nSeqs),
-                z = t(seq_mat),
-                col = col,
-                useRaster = TRUE,
-                ylab = paste0("Sequences (n = ", nSeqs, ")"),
-                xlab = "Positions",
-                axes = FALSE)
-    axis(side = 1, at = xtick_cal, labels = position_labels[xtick_cal], las = 2)
+                z = t(seq_mat), col = col, useRaster = TRUE,
+                ylab = paste0("Sequences (n = ", nSeqs, ")"), 
+                xlab = "Positions", axes = FALSE)
+    axis(side = 1, at = xtick_cal, labels = pos_lab[xtick_cal], las = 2)
     axis(side = 2, at = ytick_loc, labels = ytick_names, las = 2)
 
-    if(!is.null(savefilename)){
+    if(!is.null(save_fname)){
         dev.off()
     }
-
 }

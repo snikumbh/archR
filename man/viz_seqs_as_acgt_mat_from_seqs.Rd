@@ -5,22 +5,22 @@
 \title{Visualize raw DNA sequences as an image}
 \usage{
 viz_seqs_as_acgt_mat_from_seqs(
-  rawSeqs,
-  position_labels = NULL,
-  xt_freq = min(length(position_labels), 5),
-  yt_freq = min(length(rawSeqs), 100),
+  seqs,
+  pos_lab = NULL,
+  xt_freq = min(length(pos_lab), 5),
+  yt_freq = min(length(seqs), 100),
   col = c("darkgreen", "blue", "orange", "red"),
-  savefilename = NULL,
-  filetype = "PNG",
-  fwidth = 450,
-  fheight = 900,
-  funits = "px"
+  save_fname = NULL,
+  file_type = "PNG",
+  f_width = 450,
+  f_height = 900,
+  f_units = "px"
 )
 }
 \arguments{
-\item{rawSeqs}{The sequences as a DNAStringSet object.}
+\item{seqs}{The sequences as a DNAStringSet object.}
 
-\item{position_labels}{The labels to be used for the sequence positions.
+\item{pos_lab}{The labels to be used for the sequence positions.
 Default: Sequence positions are labeled from 1 to the length of the
 sequences.}
 
@@ -33,18 +33,18 @@ than number of sequences. Default is 100.}
 \item{col}{A vector of four colors used for the DNA bases A, C, G, and T (in
 that order).}
 
-\item{savefilename}{Specify the filename (with extension) for saving the
+\item{save_fname}{Specify the filename (with extension) for saving the
 plot to disk.}
 
-\item{filetype}{Specify the file type, namely PNG, JPEG, TIFF.}
+\item{file_type}{Specify the file type, namely PNG, JPEG, TIFF.}
 
-\item{fwidth}{Specify the width for the plot. This depends on the length of
+\item{f_width}{Specify the width for the plot. This depends on the length of
 sequences.}
 
-\item{fheight}{Specify the height for the plot. This depends on the number of
-sequences.}
+\item{f_height}{Specify the height for the plot. This depends on the number 
+of sequences.}
 
-\item{funits}{Specify the units in which the height and width are given.}
+\item{f_units}{Specify the units in which the height and width are given.}
 }
 \value{
 Nothing returned to the R interpreter.

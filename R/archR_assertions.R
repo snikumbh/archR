@@ -13,14 +13,14 @@
         stop("flags variable is not a list")
     } else {
         matchNames <- names(flags) %in% expNames
-        if (is.null(names(flags)) || !all(matchNames)) {
+        if (!is.null(names(flags)) && !all(matchNames)) {
             stop("Unexpected names or no elements in flags variable")
         } else {
             ## test all are set to logical values
             all_logical <- unlist(lapply(flags, is.logical))
             if (!all(all_logical)) {
-                stop("Expected only LOGICAL values in flag variable,
-                        found otherwise")
+                stop(paste("Expected only LOGICAL values in flag variable,",
+                        "found otherwise"))
             }
         }
     }
@@ -101,19 +101,19 @@
 
 
 
-## Function to independently check validity of minSeqs param in config
+## Function to independently check validity of min_size param in config
 ## Expected to be:
 ## 1. not NULL
 ## 2. numeric and > 0
-.assert_archR_minSeqs_independent <- function(minSeqs_var) {
+.assert_archR_min_size_independent <- function(minSeqs_var) {
     if (is.null(minSeqs_var)) {
-        stop("'minSeqs' is NULL")
+        stop("'min_size' is NULL")
     }
     if (!is.numeric(minSeqs_var)) {
-        stop("'minSeqs' should be numeric and > 0")
+        stop("'min_size' should be numeric and > 0")
     } else {
         if (minSeqs_var < 0) {
-            stop("'misSeqs' should be > 0")
+            stop("'min_size' should be > 0")
         }
     }
 }
@@ -126,10 +126,10 @@
 ## 1. independently valid (see f .assert_archR_minSeqs_independent)
 ## 2. < #given sequences
 ##
-.assert_archR_minSeqs_in_tandem <- function(minSeqs_var, given_seqs_size) {
-    .assert_archR_minSeqs_independent(minSeqs_var)
+.assert_archR_min_size_in_tandem <- function(minSeqs_var, given_seqs_size) {
+    .assert_archR_min_size_independent(minSeqs_var)
     if (minSeqs_var > given_seqs_size) {
-        stop("'minSeqs' is > number of input sequences.
+        stop("'min_size' is > number of input sequences.
             Typically, a small number")
     }
 }
@@ -280,15 +280,15 @@
             ## all OK, check ranges now
             alphaVal <- alphaBase^alphaPow
             if (alphaVal < 0) {
-                stop("Resulting alpha value is < 0. Check 'alphaBase' and
-                    'alphaPow'")
+                stop(paste("Resulting alpha value is < 0.",
+                    "Check 'alpha_base' and 'alpha_pow'"))
             }
             if (!all(k_vals > 0)) {
                 stop("'k_vals' should be > 0")
             }
         } else {
-            stop("Either of 'k_vals', 'alphaBase' or 'alphaPow' is not a
-                    numeric value")
+            stop(paste("Either of 'k_vals', 'alphaBase' or 'alphaPow'", 
+                "is not a numeric value"))
         }
     }
 }
@@ -303,13 +303,13 @@
 ## 3. ?
 .assert_archR_nIterations <- function(nIter_var) {
     if (is.null(nIter_var)) {
-        stop("'nIterationsUse' is NULL")
+        stop("'n_iterations' is NULL")
     }
     if (!is.numeric(nIter_var)) {
-        stop("'nIterationsUse' should be numeric and > 0")
+        stop("'n_iterations' should be numeric and > 0")
     } else {
         if (nIter_var < 0) {
-            stop("'nIterationsUse' should be > 0")
+            stop("'n_iterations' should be > 0")
         }
     }
 }
@@ -326,13 +326,13 @@
 ## the total number of sequences
 .assert_archR_innerChunkSize_independent <- function(innerChunkSize_var) {
     if (is.null(innerChunkSize_var)) {
-        stop("'innerChunkSize' is NULL")
+        stop("'inner_chunk_size' is NULL")
     }
     if (!is.numeric(innerChunkSize_var)) {
-        stop("'innerChunkSize' should be numeric")
+        stop("'inner_chunk_size' should be numeric")
     } else {
         if (innerChunkSize_var <= 0) {
-            stop("'innerChunkSize' should be > 0")
+            stop("'inner_chunk_size' should be > 0")
         }
     }
 }
@@ -349,7 +349,7 @@
                                                 given_seqs_size) {
     .assert_archR_innerChunkSize_independent(innerChunkSize_var)
     if (innerChunkSize_var > given_seqs_size) {
-        stop("'innerChunkSize' should be <= number of input sequences")
+        stop("'inner_chunk_size' should be <= number of input sequences")
     }
 }
 ## =============================================================================
@@ -362,7 +362,7 @@
 ## 1. A list with fixed set of names
 ## 2. Individual element assertions should pass
 ## 3.
-.assert_archR_config <- function(config_var, given_seqs_size = NA) {
+.assert_archR_config <- function(config_var, seqs_size = NA) {
     ##TODO: Check assertions for new args modSelType, tol and bound
     expNames <- c("modSelType", "tol", "bound", "kFolds",
                     "parallelize", "nCoresUse", "nIterationsUse", 
@@ -380,13 +380,13 @@
         }
         .assert_archR_kFolds_independent(config_var$kFolds)
         .assert_archR_innerChunkSize_independent(config_var$innerChunkSize)
-        if (!is.na(given_seqs_size)) {
-            .assert_archR_kFolds_in_tandem(config_var$kFolds, given_seqs_size)
+        if (!is.na(seqs_size)) {
+            .assert_archR_kFolds_in_tandem(config_var$kFolds, seqs_size)
             .assert_archR_innerChunkSize_in_tandem(config_var$innerChunkSize,
-                                                    given_seqs_size)
-            .assert_archR_minSeqs_in_tandem(config_var$minSeqs, given_seqs_size)
+                                                    seqs_size)
+            .assert_archR_min_size_in_tandem(config_var$minSeqs, seqs_size)
         }
-        .assert_archR_minSeqs_independent(config_var$minSeqs)
+        .assert_archR_min_size_independent(config_var$minSeqs)
         .assert_archR_model_selection_params(config_var$paramRanges)
         .assert_archR_parallelization_params(config_var$parallelize,
                                             config_var$nCoresUse)
@@ -521,7 +521,6 @@
         ## timeFlag not set so timeInfo shouldn't be present
         topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", 
             "clustSol", "rawSeqs", "config", "call")
-        
     }
     if (is.null(archRresultObj)) {
         stop("archR result object is NULL")
@@ -539,7 +538,7 @@
         stop("archR result object has erroneous iter info for labels, 
                 basis vectors and/or timeInfo")
     }
-    
+    ##
     eq_seqs_length <- length(archRresultObj$rawSeqs)
     logi_seqs_length <- unlist(lapply(archRresultObj$seqsClustLabels, 
         function(x){
@@ -551,7 +550,7 @@
     if(!(eq_seqs_length == length(archRresultObj$clustSol$seqsClustLabels)))
         stop("Sequence labels for final clustering solution of inappropriate
                 length")
-    
+    ##
     ## assert if dimensions of clustBasisVectors are fine.
     ## Sequences can be encoded as monomers, dimers, etc.
     ## this should be 4L, (4^2)L, (4^3)L, and so on

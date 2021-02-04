@@ -12,6 +12,7 @@
     # size 4*seqlen
     dna_alphabet <- c("A", "C", "G", "T")
     seqlen <- length(givenSeq)
+    use_colnames <- .get_feat_names(alph=dna_alphabet, k=1, seqlen=seqlen)
     if (seqlen > 0) {
         one_hot_encoded <- matrix(rep(0, length(dna_alphabet) * seqlen),
                                     nrow = 1,
@@ -25,8 +26,11 @@
             1
         one_hot_encoded[, 3 * seqlen + which(givenSeq == dna_alphabet[4])] <-
             1
-        colnames(one_hot_encoded) <- paste(rep(dna_alphabet, 
-                            each = seqlen), seq_len(seqlen), sep=".")
+        # colnames(one_hot_encoded) <- paste(rep(dna_alphabet, 
+        #                     each = seqlen), seq_len(seqlen), sep=".")
+        ##
+        colnames(one_hot_encoded) <- use_colnames
+        ##
         return(one_hot_encoded)
     } else {
         stop("Empty or NULL found")
@@ -44,29 +48,30 @@
 # @return The one-hot encoded sequence.
 #
 .one_hot_encode_trinuc <- function(givenSeq) {
-    # Input: A DNA seq as a vector of caharacters (A/C/G/T)
+    # Input: A DNA seq as a vector of characters (A/C/G/T)
     # Returns: A row matrix of
     # size 4*seqlen
     dna_alphabet <- c("A", "C", "G", "T")
     dna_alphabet_trinuc <- do.call(paste0, expand.grid(dna_alphabet,
                                                         dna_alphabet,
                                                         dna_alphabet))
-    given_seqlen <- length(givenSeq)
-    givenSeq_trinuc <- unlist(lapply(seq_len(given_seqlen - 2), function(x) {
+    seqlen <- length(givenSeq)
+    givenSeq_trinuc <- unlist(lapply(seq_len(seqlen - 2), function(x) {
         paste0(givenSeq[x], givenSeq[x + 1], givenSeq[x + 2])
     }))
-    if (given_seqlen > 0) {
+    use_colnames <- .get_feat_names(alph=dna_alphabet, k=3, seqlen=seqlen)
+    if (seqlen > 0) {
         one_hot_encoded_trinuc_profile <- matrix(
             rep(0, length(dna_alphabet_trinuc) *
-                    given_seqlen), nrow = 1, byrow = TRUE)
+                    seqlen), nrow = 1, byrow = TRUE)
         #
         for (i in seq_along(dna_alphabet_trinuc)) {
-            one_hot_encoded_trinuc_profile[, (i - 1) * given_seqlen +
+            one_hot_encoded_trinuc_profile[, (i - 1) * seqlen +
                     which(givenSeq_trinuc == dna_alphabet_trinuc[i])] <- 1
         }
-        colnames(one_hot_encoded_trinuc_profile) <- 
-            paste(rep(dna_alphabet_trinuc, each = given_seqlen), 
-                seq_len(given_seqlen), sep=".")
+        ##
+        colnames(one_hot_encoded_trinuc_profile) <- use_colnames
+        ##
         return(one_hot_encoded_trinuc_profile)
     } else {
         stop("Empty or NULL found")
@@ -74,7 +79,16 @@
 }
 ## =============================================================================
 
-
+.get_feat_names <- function(alph = c('A', 'C', 'G', 'T'), k=1, seqlen){
+    stopifnot(k<=3)
+    if(k==1) kmers <- alph
+    if(k==2) kmers <- get_dimers_from_alphabet(alph)
+    if(k==3) kmers <- get_trimers_from_alphabet(alph)
+    use_feat_names <- paste(rep(kmers, each = seqlen), seq_len(seqlen), 
+                            sep=".")
+    use_feat_names
+}
+## =============================================================================
 
 # @title One-hot encode dinucleotide profiles
 #
@@ -91,22 +105,23 @@
     dna_alphabet <- c("A", "C", "G", "T")
     dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
                                                         dna_alphabet))
-    given_seqlen <- length(givenSeq)
-    givenSeq_dinuc <- unlist(lapply(seq_len(given_seqlen - 1), function(x) {
+    seqlen <- length(givenSeq)
+    givenSeq_dinuc <- unlist(lapply(seq_len(seqlen - 1), function(x) {
         paste0(givenSeq[x], givenSeq[x + 1])
     }))
-    if (given_seqlen > 0) {
+    use_colnames <- .get_feat_names(alph=dna_alphabet, k=2, seqlen=seqlen)
+    if (seqlen > 0) {
         one_hot_encoded_dinuc_profile <- matrix(
             rep(0, length(dna_alphabet_dinuc) *
-            given_seqlen), nrow = 1, byrow = TRUE)
+                seqlen), nrow = 1, byrow = TRUE)
         #
         for (i in seq_along(dna_alphabet_dinuc)) {
-            one_hot_encoded_dinuc_profile[, (i - 1) * given_seqlen +
+            one_hot_encoded_dinuc_profile[, (i - 1) * seqlen +
                     which(givenSeq_dinuc == dna_alphabet_dinuc[i])] <- 1
         }
-        colnames(one_hot_encoded_dinuc_profile) <- 
-            paste(rep(dna_alphabet_dinuc, each = given_seqlen), 
-                seq_len(given_seqlen), sep=".")
+        ##
+        colnames(one_hot_encoded_dinuc_profile) <- use_colnames
+        ##
         return(one_hot_encoded_dinuc_profile)
     } else {
         stop("Empty or NULL found")
@@ -157,8 +172,8 @@
 #'                         package = "archR", mustWork = TRUE)
 #' 
 #'                         
-#' rawFasta <- prepare_data_from_FASTA(inputFastaFilename = fname,
-#'                         rawSeq = TRUE)
+#' rawFasta <- prepare_data_from_FASTA(fasta_fname = fname,
+#'                         raw_seq = TRUE)
 #' 
 #' get_one_hot_encoded_seqs(seqs = rawFasta, sinuc_or_dinuc = "dinuc")
 #'                         
@@ -250,10 +265,10 @@ get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
 #' the length of the sequences (since the DNA alphabet is four characters) 
 #' for mono- and dinucleotide features respectively.
 #'
-#' @param inputFastaFilename Provide the name (with complete path) of the input
+#' @param fasta_fname Provide the name (with complete path) of the input
 #' FASTA file.
 #'
-#' @param rawSeq TRUE or FALSE, set this to TRUE if you want the raw sequences.
+#' @param raw_seq TRUE or FALSE, set this to TRUE if you want the raw sequences.
 #'
 #' @param sinuc_or_dinuc character string, 'sinuc' or 'dinuc' to select for
 #' mono- or dinucleotide profiles.
@@ -270,33 +285,33 @@ get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
 #'                         package = "archR", mustWork = TRUE)
 #' 
 #' # mononucleotides feature matrix
-#' prepare_data_from_FASTA(inputFastaFilename = fname,
+#' prepare_data_from_FASTA(fasta_fname = fname,
 #'                         sinuc_or_dinuc = "sinuc")
 #' 
 #' # dinucleotides feature matrix
-#' prepare_data_from_FASTA(inputFastaFilename = fname,
+#' prepare_data_from_FASTA(fasta_fname = fname,
 #'                         sinuc_or_dinuc = "dinuc")
 #'                        
 #' # FASTA sequences as a Biostrings::DNAStringSet
-#' prepare_data_from_FASTA(inputFastaFilename = fname,
-#'                         rawSeq = TRUE)
+#' prepare_data_from_FASTA(fasta_fname = fname,
+#'                         raw_seq = TRUE)
 #' 
 #' @export
-prepare_data_from_FASTA <- function(inputFastaFilename, rawSeq = FALSE,
+prepare_data_from_FASTA <- function(fasta_fname, raw_seq = FALSE,
                                     sinuc_or_dinuc = "sinuc") {
-    if (!file.exists(inputFastaFilename)) {
+    if (!file.exists(fasta_fname)) {
         stop("File not found, please check if it exists")
     }
     
-    if (rawSeq) {
+    if (raw_seq) {
         givenSeqs <- Biostrings::readDNAStringSet(
-            filepath = inputFastaFilename, format = "fasta", use.names = TRUE)
+            filepath = fasta_fname, format = "fasta", use.names = TRUE)
         givenSeqs <- Biostrings::DNAStringSet(toupper(givenSeqs))
         return(givenSeqs)
     } else {
         #
         givenSeqs <- Biostrings::readDNAStringSet(
-            filepath = inputFastaFilename, format = "fasta", use.names = FALSE)
+            filepath = fasta_fname, format = "fasta", use.names = FALSE)
         givenSeqs <- Biostrings::DNAStringSet(toupper(givenSeqs))
         .assert_seq_attributes(givenSeqs)
         message("Read ", length(givenSeqs), " sequences")

@@ -132,68 +132,49 @@
 }
 ## =============================================================================
 
+.grid_srch_par_df <- function(this_K, aBase, aPow, kFolds, nIter){
+    dummy_seed <- 1234
+    ## need this only as place filler for the seed_val column in the
+    ## grid_search_params df
+    grid_search_params <- expand.grid(list(
+        k_vals = this_K, 
+        alpha = aBase ^ aPow,
+        fold = seq_len(kFolds), iteration = seq_len(nIter),
+        seed_val = dummy_seed
+    ))
+    ##
+    seed_val_list <- sample.int(.Machine$integer.max, 
+        size = kFolds*nIter, replace = FALSE)
+    grid_search_params[, "seed_val"] <- seed_val_list
+    return(grid_search_params)
+}
 
-performSearchForK <- function(startVal, endVal, step = 1,
-                                # grid_search_params,
-                                prev_best_K = -1,
-                                best_K = 0,
-                                prev_df = NULL,
-                                param_ranges,
+
+
+performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
+                                best_K = 0, prev_df = NULL, param_ranges,
                                 kFolds, nIterations, set_verbose){
-    # message("setting seed_val")
-    seed_val <- 10208090
-    # need this only as place filler for the seed_val column in the
-    # grid_search_params df
-    ## Ensure prev_best_K, best_K and prev_df are properly set.
+    vrbs <- ifelse(set_verbose == 1, TRUE, FALSE)
+    dbg <- ifelse(set_verbose == 2, TRUE, FALSE)
     kValues <- seq(startVal, endVal, by = step)
-    ## Ensure there is no zero in kValues.
-    kValues <- setdiff(kValues, c(0))
-    if(set_verbose == 1) message("Checking K = [", 
-                            paste(kValues, collapse = ","), "]")
+    .msg_pstr("Checking K = [", paste(kValues, collapse = ","), "]", flg=vrbs)
     for (this_K in kValues){
-        
-        if(prev_best_K != best_K && !is.na(this_K)){
+        if(prev_best_K != best_K && !is.na(this_K) && this_K != 0){
             ##
-            grid_search_params <- expand.grid(list(
-                k_vals = this_K,
-                alpha = param_ranges$alphaBase ^ param_ranges$alphaPow,
-                fold = seq_len(kFolds),
-                iteration = seq_len(nIterations),
-                seed_val = seed_val
-                # verbose = set_verbose
-            ))
+            grid_search_params <- .grid_srch_par_df(this_K, 
+                aBase=param_ranges$alphaBase, aPow=param_ranges$alphaPow,
+                kFolds = kFolds, nIter = nIterations)
             ##
-            seed_val_list <- sample.int(.Machine$integer.max, 
-                                        size = kFolds*nIterations, 
-                                        replace = FALSE)
-            # message("Seeds in performSearchForK")
-            # message(seed_val_list[seq_len(10)])
-            # message(length(seed_val_list))
-            grid_search_params[, "seed_val"] <- seed_val_list
-            q2_vals <-
-                unlist(parallel::clusterApplyLB(cl = NULL,
-                                            seq_len(nrow(grid_search_params)),
-                                            function(i) {
-                                                .get_q2_using_py(
-                                                    grid_search_params[i,])
-                                            }))
-            # if(set_verbose == 2) message("q2_vals RETURNED")
-            # grid_search_params <-
-            #     dplyr::select(grid_search_params, k_vals, alpha, fold,
-            #                     iteration)
+            q2_vals <- unlist(parallel::clusterApplyLB(cl = NULL,
+                        seq_len(nrow(grid_search_params)), function(i) { 
+                            .get_q2_using_py( grid_search_params[i,] )
+                        }))
             ##
-            grid_search_results <- 
-                as.data.frame(grid_search_params[, 
+            grid_search_results <- as.data.frame(grid_search_params[, 
                     c("k_vals", "alpha", "fold", "iteration")],
                     col.names = c("k_vals", "alpha", "fold", "iteration"))
-            ##
-            # if(set_verbose == 2) message("SELECTING COLUMNS DONE")
-            # grid_search_results <-
-            #     tibble::add_column(grid_search_params, q2_vals)
-            ##
             grid_search_results$q2_vals <- q2_vals
             ##
-            # if(set_verbose == 2) message("COLUMN ADDED")
             if (is.null(prev_df)) {
                 best_K <- .get_best_K(grid_search_results)
                 prev_df <- grid_search_results
@@ -203,18 +184,14 @@ performSearchForK <- function(startVal, endVal, step = 1,
                 best_K <- .get_best_K(new_df)
                 prev_df <- new_df
             }
-            if(set_verbose == 2){
-                message("Prev best K: ", prev_best_K, 
-                        " Best K: ", best_K, 
-                        " This K: ", this_K)
-                message("Curr nrows: ", nrow(grid_search_results), 
-                        " Total nrows: ", nrow(prev_df))
-            }
+            .msg_pstr("Prev best K:", prev_best_K, "Best K:", best_K, "This K:",
+                        this_K, flg=dbg)
+            .msg_pstr("Curr nrows:", nrow(grid_search_results), "Total nrows:", 
+                        nrow(prev_df), flg=dbg)
         }
     }
-    if(set_verbose == 1) message("Best among them: ", best_K)
-    returnObject <- list(best_K = best_K,
-                        prev_best_K = prev_best_K,
+    .msg_pstr("Best K: ", best_K, flg=vrbs)
+    returnObject <- list(best_K = best_K, prev_best_K = prev_best_K,
                         return_df = prev_df)
 }
 
@@ -321,7 +298,6 @@ performSearchForK <- function(startVal, endVal, step = 1,
                         startVal = lo[kCGIdx],
                         endVal = hi[kCGIdx],
                         step = 1,
-                        # grid_search_params = grid_search_params,
                         prev_best_K = prev_best_K,
                         best_K = best_K,
                         prev_df = prev_df,
@@ -414,7 +390,6 @@ performSearchForK <- function(startVal, endVal, step = 1,
                     startVal = fgIL,
                     endVal = fgOL,
                     step = 1,
-                    # grid_search_params = grid_search_params,
                     prev_best_K = -1,
                     best_K = 0,
                     prev_df = NULL,
@@ -448,7 +423,6 @@ performSearchForK <- function(startVal, endVal, step = 1,
                                 startVal = fgIL,
                                 endVal = fgOL,
                                 step = 1,
-                                # grid_search_params = grid_search_params,
                                 prev_best_K = -1,
                                 best_K = 0,
                                 prev_df = combined_df,

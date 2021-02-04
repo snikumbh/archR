@@ -6,7 +6,7 @@
 \usage{
 plot_ggseqlogo_of_seqs(
   seqs,
-  position_labels,
+  pos_lab,
   xt_freq = 5,
   title = "Title",
   bits_yax = "auto"
@@ -15,7 +15,7 @@ plot_ggseqlogo_of_seqs(
 \arguments{
 \item{seqs}{Collection of sequences as a Biostrings::DNAStringSet object.}
 
-\item{position_labels}{Numeric vector of labels for sequence positions.
+\item{pos_lab}{Numeric vector of labels for sequence positions.
 This should be the same length as the width of the given sequences.}
 
 \item{xt_freq}{Specify the frequency of the x-axis ticks.}

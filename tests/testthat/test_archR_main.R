@@ -1,39 +1,37 @@
-# Sys.unsetenv("R_TESTS")
-
-
 context("archR main functionality")
 library(archR)
 
-
-
-
 test_that("archR (stability) works when timeFlag is FALSE", {
     ## Make toy objects and data
-    inputFastaFilename <- system.file("extdata", "example_data.fa",
+    fname <- system.file("extdata", "example_data.fa",
                                       package = "archR",
                                       mustWork = TRUE)
     
     
     
-    tssSeqs_sinuc <- suppressMessages(archR::prepare_data_from_FASTA(inputFastaFilename))
-    tssSeqsRaw <- suppressMessages(archR::prepare_data_from_FASTA(inputFastaFilename, rawSeq = TRUE))
+    tssSeqs_sinuc <- suppressMessages(archR::prepare_data_from_FASTA(fname))
+    tssSeqsRaw <- suppressMessages(archR::prepare_data_from_FASTA(fname, 
+                                    raw_seq = TRUE))
     
     nSeqs <- ncol(tssSeqs_sinuc)
     positions <- seq(1,100)
     
-    useFlags <- list(debugFlag = FALSE,
-                     verboseFlag = TRUE,
-                     plotVerboseFlag = FALSE,
-                     timeFlag = FALSE)
-    toyConfig <- archR::archRSetConfig(innerChunkSize = 100,
-                                       kMin = 2, kMax = 20, parallelize = FALSE,
-                                       modSelType = "stability", 
-                                       nIterationsUse = 50,
-                                       nCoresUse = NA,
-                                       flags = useFlags)
+    useFlags <- list(debug = FALSE,
+                     verbose = TRUE,
+                     plot = FALSE,
+                     time = FALSE)
+    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+                                        k_min = 2, k_max = 20, 
+                                        parallelize = FALSE,
+                                        mod_sel_type = "stability", 
+                                        n_iterations = 50,
+                                        n_cores = NA,
+                                        flags = useFlags)
     set.seed(1234)
-    archRresult <- suppressMessages(archR::archR(toyConfig, seqsRaw = tssSeqsRaw, 
-                                seqsMat = tssSeqs_sinuc, thresholdItr = 1))
+    archRresult <- suppressMessages(archR::archR(toyConfig, 
+                                seqs_raw = tssSeqsRaw, 
+                                seqs_ohe_mat = tssSeqs_sinuc, 
+                                threshold_itr = 1))
     ##
     expect_equal_to_reference(archRresult, "archRresult_stability_check_timeFalse.rds")
     ##
@@ -42,33 +40,37 @@ test_that("archR (stability) works when timeFlag is FALSE", {
 
 test_that("archR (cv) works when timeFlag is FALSE", {
     ## Make toy objects and data
-    inputFastaFilename <- system.file("extdata", "example_data.fa",
-                                      package = "archR",
-                                      mustWork = TRUE)
+    fname <- system.file("extdata", "example_data.fa",
+                                    package = "archR",
+                                    mustWork = TRUE)
     
     
     
-    tssSeqs_sinuc <- suppressMessages(archR::prepare_data_from_FASTA(inputFastaFilename))
-    tssSeqsRaw <- suppressMessages(archR::prepare_data_from_FASTA(inputFastaFilename, rawSeq = TRUE))
+    tssSeqs_sinuc <- 
+        suppressMessages(archR::prepare_data_from_FASTA(fname))
+    tssSeqsRaw <- 
+        suppressMessages(archR::prepare_data_from_FASTA(fname, 
+                            raw_seq = TRUE))
     
     nSeqs <- ncol(tssSeqs_sinuc)
     positions <- seq(1,100)
     
-    useFlags <- list(debugFlag = FALSE,
-                     verboseFlag = TRUE,
-                     plotVerboseFlag = FALSE,
-                     timeFlag = FALSE)
-    toyConfig <- archR::archRSetConfig(innerChunkSize = 100,
-                                       kMin = 2, kMax = 20, parallelize = TRUE,
-                                       modSelType = "cv",
-                                       nIterationsUse = 10,
-                                       nCoresUse = 2,
+    useFlags <- list(debug = FALSE,
+                     verbose = TRUE,
+                     plot = FALSE,
+                     time = FALSE)
+    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+                                       k_min = 2, k_max = 20, parallelize = TRUE,
+                                       mod_sel_type = "cv",
+                                       n_iterations = 10,
+                                       n_cores = 2,
                                        flags = useFlags)
     ## Test cross-validation-based model selection. This needs to parallel as TRUE.
     # skip_on_travis()
     set.seed(1234)
-    archRresult <- suppressMessages(archR::archR(toyConfig, seqsRaw = tssSeqsRaw,
-                                        seqsMat = tssSeqs_sinuc, thresholdItr = 1))
+    archRresult <- suppressMessages(archR::archR(toyConfig, seqs_raw = tssSeqsRaw,
+                                        seqs_ohe_mat = tssSeqs_sinuc, 
+                                        threshold_itr = 1))
     expect_equal_to_reference(archRresult, "archRresult_cv_check_timeFalse.rds")
 })
 
@@ -76,32 +78,33 @@ test_that("archR (cv) works when timeFlag is FALSE", {
 
 test_that("archR (stability) works when debug & timeFlag is FALSE", {
     ## Make toy objects and data
-    inputFastaFilename <- system.file("extdata", "example_data.fa",
+    fname <- system.file("extdata", "example_data.fa",
                                       package = "archR",
                                       mustWork = TRUE)
     
     
     
-    tssSeqs_sinuc <- suppressMessages(archR::prepare_data_from_FASTA(inputFastaFilename))
-    tssSeqsRaw <- suppressMessages(archR::prepare_data_from_FASTA(inputFastaFilename, rawSeq = TRUE))
+    tssSeqs_sinuc <- suppressMessages(archR::prepare_data_from_FASTA(fname))
+    tssSeqsRaw <- suppressMessages(archR::prepare_data_from_FASTA(fname, 
+                                raw_seq = TRUE))
     
     nSeqs <- ncol(tssSeqs_sinuc)
     positions <- seq(1,100)
-    ## keeping debugFlag as TRUE doesn't alter the archR result object which we 
+    ## keeping debug as TRUE doesn't alter the archR result object which we 
     ## check, but it helps hit many more debug message lines in the code
-    useFlags <- list(debugFlag = TRUE,
-                     verboseFlag = TRUE,
-                     plotVerboseFlag = FALSE,
-                     timeFlag = FALSE)
-    toyConfig <- archR::archRSetConfig(innerChunkSize = 100,
-                                       kMin = 2, kMax = 20, parallelize = FALSE,
-                                       modSelType = "stability", 
-                                       nIterationsUse = 50,
-                                       nCoresUse = NA,
+    useFlags <- list(debug = TRUE,
+                     verbose = TRUE,
+                     plot = FALSE,
+                     time = FALSE)
+    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+                                       k_min = 2, k_max = 20, parallelize = FALSE,
+                                       mod_sel_type = "stability", 
+                                       n_iterations = 50,
+                                       n_cores = NA,
                                        flags = useFlags)
     set.seed(1234)
-    archRresult <- suppressMessages(archR::archR(toyConfig, seqsRaw = tssSeqsRaw, 
-                                    seqsMat = tssSeqs_sinuc, thresholdItr = 1))
+    archRresult <- suppressMessages(archR::archR(toyConfig, seqs_raw = tssSeqsRaw, 
+                                    seqs_ohe_mat = tssSeqs_sinuc, threshold_itr = 1))
     ##
     expect_equal_to_reference(archRresult, "archRresult_stability_check_debugTrue.rds")
     ##
@@ -109,110 +112,123 @@ test_that("archR (stability) works when debug & timeFlag is FALSE", {
 
 
 test_that("Handles negative threshold iteration", {
-    # toyResult <- archR(toyConfig, seqsMat = tssSeqs, thresholdItr = -1)
+    useFlags <- list(debug = TRUE,
+        verbose = TRUE,
+        plot = FALSE,
+        time = FALSE)
+    # toyResult <- archR(toyConfig, seqs_ohe_mat = tssSeqs, threshold_itr = -1)
     expect_error(.assert_archR_thresholdIteration(-1),
                  "Expecting threshold iteration to be numeric and > 0")
-    expect_error(archR(toyConfig, seqsRaw = tssSeqsRaw, seqsMat = tssSeqs_sinuc, thresholdItr = -1),
+    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+        k_min = 2, k_max = 20, parallelize = FALSE,
+        mod_sel_type = "stability", 
+        n_iterations = 50,
+        n_cores = NA,
+        flags = useFlags)
+    expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, 
+                        seqs_ohe_mat = tssSeqs_sinuc, threshold_itr = -1),
                  "Expecting threshold iteration to be numeric and > 0")
 })
 
-test_that("Handles negative threshold iteration from archR main", {
-    expect_error(archR(toyConfig, seqsRaw = tssSeqsRaw, seqsMat = tssSeqs_sinuc, thresholdItr = -1))
-    expect_error(archR(toyConfig, seqsRaw = tssSeqsRaw, seqsMat = tssSeqs_sinuc, thresholdItr = -1),
-                 "Expecting threshold iteration to be numeric and > 0")
+# test_that("Handles negative threshold iteration from archR main", {
+#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, seqs_ohe_mat = tssSeqs_sinuc, threshold_itr = -1))
+#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, seqs_ohe_mat = tssSeqs_sinuc, threshold_itr = -1),
+#                  "Expecting threshold iteration to be numeric and > 0")
+# })
+
+
+test_that("Config handles: negative inner_chunk_size", {
+    expect_error(archR_set_config(inner_chunk_size = -500,
+                                k_min = 2, k_max = 8, parallelize = TRUE,
+                                cv_folds = 3, n_iterations = 50,
+                                n_cores = 2),
+                "'inner_chunk_size' should be > 0")
+})
+
+# This test is now null and void because if the flags variable is NULL,
+# we handle it by assigning the default flag values in set_config func itself
+# test_that("Config handles: NULL flags", {
+#     expect_error(archR_set_config(inner_chunk_size = 500,
+#                                 k_min = 2, k_max = 8, parallelize = TRUE,
+#                                 cv_folds = 3, n_iterations = 50,
+#                                 n_cores = 2,
+#                                 flags = NULL),
+#                  "'flags' are NULL")
+# })
+
+# test_that("Config handles: improper (names in) flags", {
+#     expect_error(archR_set_config(inner_chunk_size = 500,
+#                                 k_min = 2, k_max = 8, parallelize = TRUE,
+#                                 cv_folds = 3, n_iterations = 50,
+#                                 n_cores = 2,
+#                                 flags = list(debug = FALSE,
+#                                             plot = FALSE,
+#                                             verboseFl = TRUE,
+#                                             time = TRUE)),
+#                  "Unexpected names or no elements in flags variable")
+# })
+
+test_that("Config handles: improper (non-logical) flags", {
+    expect_error(archR_set_config(inner_chunk_size = 500,
+                                k_min = 2, k_max = 8, parallelize = TRUE,
+                                cv_folds = 3, n_iterations = 50,
+                                n_cores = 2,
+                                flags = list(debug = NULL,
+                                            plot = FALSE,
+                                            verbose = TRUE,
+                                            time = TRUE)),
+            "Expected only LOGICAL values in flag variable, found otherwise")
 })
 
 
-test_that("Config handles: negative innerChunkSize", {
-    expect_error(archRSetConfig(innerChunkSize = -500,
-                                kMin = 2, kMax = 8, parallelize = TRUE,
-                                cvFolds = 3, nIterationsUse = 50,
-                                nCoresUse = 2),
-                "'innerChunkSize' should be > 0")
-})
-
-
-test_that("Config handles: NULL flags", {
-    expect_error(archRSetConfig(innerChunkSize = 500,
-                                kMin = 2, kMax = 8, parallelize = TRUE,
-                                cvFolds = 3, nIterationsUse = 50,
-                                nCoresUse = 2,
-                                flags = NULL),
-                 "'flags' are NULL")
-})
-
-test_that("Config handles: improper flags", {
-    expect_error(archRSetConfig(innerChunkSize = 500,
-                                kMin = 2, kMax = 8, parallelize = TRUE,
-                                cvFolds = 3, nIterationsUse = 50,
-                                nCoresUse = 2,
-                                flags = list(bugFlag = NULL,
-                                             plotVerboseFlag = FALSE,
-                                             verboseFlag = TRUE,
-                                             timeFlag = TRUE)),
-                 "Unexpected names or no elements in flags variable")
-})
-
-test_that("Config handles: improper flags", {
-    expect_error(archRSetConfig(innerChunkSize = 500,
-                                kMin = 2, kMax = 8, parallelize = TRUE,
-                                cvFolds = 3, nIterationsUse = 50,
-                                nCoresUse = 2,
-                                flags = list(debugFlag = NULL,
-                                             plotVerboseFlag = FALSE,
-                                             verboseFlag = TRUE,
-                                             timeFlag = TRUE)),
-                 "Expected only LOGICAL values in flag variable,\n                        found otherwise")
-})
-
-
-test_that("Config handles: negative nIterations", {
-    expect_error(archRSetConfig(innerChunkSize = 500,
-                                kMin = 2, kMax = 8, parallelize = TRUE,
-                                cvFolds = 3, nIterationsUse = -50,
-                                nCoresUse = 2,
-                                flags = list(debugFlag = FALSE,
-                                                plotVerboseFlag = FALSE,
-                                                verboseFlag = TRUE,
-                                                timeFlag = TRUE)),
-                 "'nIterationsUse' should be > 0")
+test_that("Config handles: negative n_iterations", {
+    expect_error(archR_set_config(inner_chunk_size = 500,
+                                k_min = 2, k_max = 8, parallelize = TRUE,
+                                cv_folds = 3, n_iterations = -50,
+                                n_cores = 2,
+                                flags = list(debug = FALSE,
+                                            plot = FALSE,
+                                            verbose = TRUE,
+                                            time = TRUE)),
+                 "'n_iterations' should be > 0")
 })
 
 
 
-test_that("Config handles: negative minSeqs", {
-    expect_error(archRSetConfig(innerChunkSize = 500,
-                                kMin = 2, kMax = 8, parallelize = TRUE,
-                                cvFolds = 3, nIterationsUse = 50,
-                                nCoresUse = 2,
-                                minSeqs = -20,
-                                flags = list(debugFlag = FALSE,
-                                                plotVerboseFlag = FALSE,
-                                                verboseFlag = TRUE,
-                                                timeFlag = TRUE)),
-                    "'misSeqs' should be > 0")
+test_that("Config handles: negative min_size", {
+    expect_error(archR_set_config(inner_chunk_size = 500,
+                                k_min = 2, k_max = 8, parallelize = TRUE,
+                                cv_folds = 3, n_iterations = 50,
+                                n_cores = 2,
+                                min_size = -20,
+                                flags = list(debug = FALSE,
+                                                plot = FALSE,
+                                                verbose = TRUE,
+                                                time = TRUE)),
+                    "'min_size' should be > 0")
 })
 
 
 test_that("Config handles: negative alphaVal", {
-    expect_error(archRSetConfig(innerChunkSize = 500,
-                                kMin = 2, kMax = 8, parallelize = TRUE,
-                                cvFolds = 3, nIterationsUse = 50,
-                                nCoresUse = 2,
-                                minSeqs = 20,
-                                alphaBase = -3,
-                                alphaPow = 3,
-                                flags = list(debugFlag = FALSE,
-                                                plotVerboseFlag = FALSE,
-                                                verboseFlag = TRUE,
+    expect_error(archR_set_config(inner_chunk_size = 500,
+                                k_min = 2, k_max = 8, parallelize = TRUE,
+                                cv_folds = 3, n_iterations = 50,
+                                n_cores = 2,
+                                min_size = 20,
+                                alpha_base = -3,
+                                alpha_pow = 3,
+                                flags = list(debug = FALSE,
+                                                plot = FALSE,
+                                                verbose = TRUE,
                                                 timeFlag = TRUE)),
-                    "Resulting alpha value is < 0. Check 'alphaBase' and\n                    'alphaPow'")
+                    paste("Resulting alpha value is < 0.", 
+                            "Check 'alpha_base' and 'alpha_pow'"))
 })
 
 
-test_that("Config handles: innerChunkSize < nSeqs", {
+test_that("Config handles: inner_chunk_size < nSeqs", {
     expect_error(.assert_archR_innerChunkSize_in_tandem(500,450),
-                    "'innerChunkSize' should be <= number of input sequences")
+                    "'inner_chunk_size' should be <= number of input sequences")
 })
 
 test_that("Config handles: kFolds NULL", {
@@ -236,14 +252,14 @@ test_that("Config handles: kFolds <= nSeqs", {
 test_that("next iteration chunks list has a 0-length entry", {
     toyList <- vector("list", 5)
     toyList <- lapply(seq_along(toyList),
-                      function(x){
-                          if ( x != 3) {
-                              toyList[[x]] <- rep(seq(1:25),5)
-                          }
-                      })
+                        function(x){
+                            if ( x != 3) {
+                                toyList[[x]] <- rep(seq(1:25),5)
+                            }
+                        })
 
     expect_error(.assert_archR_OK_for_nextIteration(toyList),
-                 "Index 3 of zero length")
+                    "Index 3 of zero length")
 })
 
 test_that("next iteration chunks list is NULL", {

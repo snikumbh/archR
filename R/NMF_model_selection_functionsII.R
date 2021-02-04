@@ -13,65 +13,31 @@
                                     bound = 10^-6,
                                     flags = list(debugFlag = FALSE,
                                                 verboseFlag = TRUE,
-                                                plotFlag = FALSE,
+                                                plotVerboseFlag = FALSE,
                                                 timeFlag = FALSE)
                                     ){
+    dbg <- flags$debugFlag
+    vrbs <- flags$verboseFlag
     ##
-    foo_scores <- expand.grid(list(
-        kValue = param_ranges$k_vals,
-        ScoreType = c("AmariTypeDistance"),
-        nRuns = nIterations,
-        Score = -0.01
-    ))
+    foo_scores <- expand.grid(list(kValue = param_ranges$k_vals,
+                                    ScoreType = c("AmariTypeDistance"),
+                                    nRuns = nIterations, Score = -0.01
+                            ))
     ##
-    if(flags$debugFlag) message("Tolerance: ", tol, " & Bound : ", bound)
+    .msg_pstr("Tolerance: ", tol, " & Bound : ", bound, flg=dbg)
     ##
     bestK <- 1
     prev_amari <- NA
     for(kValue in param_ranges$k_vals){
-        if(flags$verboseFlag) message("Checking K = ", kValue)
-        resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
-                                                    alphaVal = 0,
-                                                    parallelDo = parallelDo,
-                                                    nCores = nCores,
-                                                    nRuns = nIterations,
-                                                    bootstrap = bootstrap)
-        featMatList <- lapply(resultList$nmf_result_list,
-                                    function(x){
-                                        get_features_matrix(x)
-                                    })
-
-        sampMatList <- lapply(resultList$nmf_result_list,
-                                    function(x){
-                                        get_samples_matrix(x)
-                                    })
-        ##
-        if(bootstrap){
-            sampMatListNew <- lapply(seq_len(length(sampMatList)),
-                            function(x){
-                                thisMat <- as.matrix(sampMatList[[x]])
-                                thisNR <- nrow(thisMat)
-                                thisNC <- ncol(thisMat)
-                                origOrdX <- matrix(rep(-100,thisNR*thisNC),
-                                                nrow = thisNR,
-                                                ncol =  thisNC)
-                                origOrdX[,resultList$new_ord[[x]]] <- thisMat
-                                origOrdX
-                            })
-            sampMatList <- sampMatListNew
-
-        }
-        ##
-        consensusMat <- getConsensusMat(sampMatList)
-        ##
-        this_amari <- computeAmariDistances(featMatList)
-        if(flags$debugFlag) message("AmariTypeDist : ", this_amari)
-
-        foo_scores[foo_scores$kValue == kValue, "Score"] <- this_amari
-        ##
+        .msg_pstr("Checking K = ", kValue, flg=vrbs)
+        this_amari <- .get_amari_for_k(X, kValue, parallelDo, nCores, 
+                                        nIterations, bootstrap )
         if(is.na(this_amari)){
             warning("NA in Amari-type distance computation")
         }
+        .msg_pstr("AmariTypeDist : ", this_amari, flg=dbg)
+
+        foo_scores[foo_scores$kValue == kValue, "Score"] <- this_amari
         ##
         if(this_amari == 0) {
             bestK <- 1
@@ -80,39 +46,79 @@
         ##
         if(this_amari > 0 && this_amari < bound){
             if(!is.na(prev_amari)){
-                magnitudeChange <- abs(floor(log10(this_amari)) -
-                                            floor(log10(prev_amari)))
-                if(flags$debugFlag){
-                    message("Change is : ", magnitudeChange)
-                }
-                if(magnitudeChange >= abs(log10(tol))){
-                    ## detected fall based on tolerance, choose and break loop
-                    bestK <- kValue - 1
-                    if(flags$debugFlag) {
-                        message("magnitude change higher than tolerance, ",
-                            abs(log10(tol)))
-                        message("This amariType Distance = ", this_amari)
-                        message("Would have choosen bestK as : ", bestK)
-                    }
-                    #break
-                }
+                ## Currently, tolerance is ignored
+                ignore <- TRUE
+                bestK <- .tol_best_k(kValue, this_amari, prev_amari, tol, dbg)
+                if(!ignore && !is.null(bestK)) break
             }
         }else{
             ## greater than bound, choose and break loop
-            ## Bug: If this is reached at kValue = 1, bestK would be assigned 0.
-            ## Avoid this.
+            ## Bug: Here, if kValue = 1, bestK would be assigned 0. Avoid this.
             if(kValue > 1) bestK <- kValue - 1
             break
         }
         ##
         prev_amari <- this_amari
     }
-    ##
     if(returnBestK) return(bestK)
-    ##
     return(foo_scores)
 }
 
+.mag_change <- function(A, B){
+    return(abs(floor(log10(A)) - floor(log10(B))))
+}
+
+
+.tol_best_k <- function(kValue, this_amari, prev_amari, tol, verbose){
+    magChange <- .mag_change(this_amari, prev_amari)
+    .msg_pstr("Change is : ", magChange, flg=verbose)
+    bestK <- NULL
+    if(magChange >= abs(log10(tol))){
+        ## detected fall based on tolerance, choose and break loop
+        bestK <- kValue - 1
+        .msg_pstr("magnitude change > tol, ", abs(log10(tol)), flg=verbose)
+        .msg_pstr("This amariType Distance = ", this_amari, flg=verbose)
+        .msg_pstr("Would have choosen bestK as : ", bestK, flg=verbose)
+    }
+    return(bestK)
+}
+
+
+.get_amari_for_k <- function(X, kValue, parallelDo, nCores, nIterations, 
+                            bootstrap){
+    resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
+        alphaVal = 0, parallelDo = parallelDo,
+        nCores = nCores, nRuns = nIterations,
+        bootstrap = bootstrap)
+    ##
+    featMatList <- lapply(resultList$nmf_result_list, function(x){
+        get_features_matrix(x)
+    })
+    ## This is required when measures related to samplesMat are used.
+    ## Examples are dispersion and cophenetic correlation
+    ## 
+    sampMatList <- lapply(resultList$nmf_result_list, function(x){
+        get_samples_matrix(x)
+    })
+    ##
+    if(bootstrap){
+        sampMatListNew <-
+            lapply(seq_len(length(sampMatList)), function(x){
+                thisMat <- as.matrix(sampMatList[[x]])
+                thisNR <- nrow(thisMat)
+                thisNC <- ncol(thisMat)
+                origOrdX <- matrix(rep(-100,thisNR*thisNC),
+                    nrow = thisNR, ncol =  thisNC)
+                origOrdX[,resultList$new_ord[[x]]] <- thisMat
+                origOrdX
+            })
+        sampMatList <- sampMatListNew
+    }
+    ## Not required for Amari-type distance
+    # consensusMat <- getConsensusMat(sampMatList)
+    ##
+    return(computeAmariDistances(featMatList))
+}
 
 amariDistance <- function(matA, matB) {
     K <- dim(matA)[2]

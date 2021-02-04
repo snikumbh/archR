@@ -17,6 +17,8 @@ test_that("One-hot encoding is correctly done", {
   nrow = 2, byrow = TRUE
   ))
   testAns <- Matrix::Matrix(testAns, sparse=  TRUE)
+  rownames(testAns) <- 
+    .get_feat_names(k=1, seqlen=nchar(testSeqs[1]))
   #
   givenAns1 <- .one_hot_encode_sinuc(testSeqsB[[1]])
   givenAns2 <- .one_hot_encode_sinuc(testSeqsB[[2]])

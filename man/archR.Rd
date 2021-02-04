@@ -8,60 +8,60 @@ composed of combination(s) of sequence elements (motifs).}
 \usage{
 archR(
   config,
-  seqsMat,
-  seqsRaw,
-  seqsPositions = NULL,
-  thresholdItr = 3,
-  setParsimony = c(FALSE, FALSE, FALSE),
-  setOCollation = c(TRUE, FALSE, FALSE),
+  seqs_ohe_mat,
+  seqs_raw,
+  seqs_pos = NULL,
+  threshold_itr = 3,
+  set_parsimony = c(FALSE, FALSE, FALSE),
+  set_ocollation = c(TRUE, FALSE, FALSE),
   fresh = TRUE,
-  UseOC = NULL,
-  oDir = NULL
+  use_oc = NULL,
+  o_dir = NULL
 )
 }
 \arguments{
 \item{config}{archR configuration object as returned by
-\code{\link{archRSetConfig}}. This is a required argument.}
+\code{\link{archR_set_config}}. This is a required argument.}
 
-\item{seqsMat}{A matrix of one-hot encoded sequences with sequences along
-columns. This is a required argument.}
+\item{seqs_ohe_mat}{A matrix of one-hot encoded sequences with sequences 
+along columns. This is a required argument.}
 
-\item{seqsRaw}{A Biostrings::DNAStringSet object. The FASTA sequences as a
+\item{seqs_raw}{A Biostrings::DNAStringSet object. The FASTA sequences as a
 DNAStringSet object. This argument required argument.}
 
-\item{seqsPositions}{Vector. Specify the tick labels for sequence positions.
+\item{seqs_pos}{Vector. Specify the tick labels for sequence positions.
 Default is NULL.}
 
-\item{thresholdItr}{Numeric. Specify the number of iterations to perform.
+\item{threshold_itr}{Numeric. Specify the number of iterations to perform.
 Default is 3.}
 
-\item{setParsimony}{Logical vector. Specify if model selection by
+\item{set_parsimony}{Logical vector. Specify if model selection by
 cross-validation should prefer parsimonious solutions. Not required when
 stability-based model selection is chosen. Length of the vector should match
-number of threshold iterations specified in thresholdItr argument. TRUE
-denotes parsimony is followed, FALSE otherwise.}
+number of iterations specified in 'threshold_itr' argument. TRUE denotes 
+parsimony is followed, FALSE otherwise.}
 
-\item{setOCollation}{Logical vector. Specify for every iteration of archR
+\item{set_ocollation}{Logical vector. Specify for every iteration of archR
 if collation of clusters from outer chunks should be performed. TRUE denotes
 clusters are collated, FALSE otherwise.}
 
 \item{fresh}{Logical. Specify if this is (not) a fresh run. Because
 archR enables checkpointing, it is possible to perform additional iterations
 upon clusters from an existing archR result (or a checkpoint) object. 
-See UseOC argument. For example, when processing a set of FASTA sequences, 
+See 'use_oc' argument. For example, when processing a set of FASTA sequences,
 if an earlier call to archR performed two iterations, and now you wish to 
-perform a third, the arguments `fresh` and `UseOC` can be used. Simply set 
+perform a third, the arguments `fresh` and `use_oc` can be used. Simply set 
 `fresh` to FALSE and assign the sequence clusters from iteration two from 
-the earlier result to `UseOC`. As of v0.1.3, with this setting, archR 
+the earlier result to `use_oc`. As of v0.1.3, with this setting, archR 
 returns a new result object as if the additional iteration performed is the 
 only iteration.}
 
-\item{UseOC}{List. Clusters to be further processed with archR. These can 
+\item{use_oc}{List. Clusters to be further processed with archR. These can 
 be from a previous archR result (in which case use 
 archRresult$clustSol$clusters), or simply clusters from any other method.
 Warning: This has not been rigorously tested yet (v0.1.3).}
 
-\item{oDir}{Character. Specify the output directory with its path. archR
+\item{o_dir}{Character. Specify the output directory with its path. archR
 will create this directory. If a directory with the given name exists at the
 given location, archR will add a suffix to the directory name. This
 change is reported to the user. Default is NULL. When NULL, just the result
@@ -82,14 +82,14 @@ Dimensions of the `basisVectors` matrix are 4*L x nBasisVectors
  
 \item{clustSol}{The clustering solution obtained upon processing the raw 
 clusters from the last iteration of archR's result. This is handled 
-internally by the function \code{\link{reorder_archRresult}} using the
+internally by the function \code{\link{collate_archR_result}} using the
 default setting of Euclidean distance and ward.D linkage hierarchical 
 clustering.}
  
 \item{rawSeqs}{The input sequences as a DNAStringSet object.}
 
 \item{timeInfo}{Stores the time taken (in minutes) for processing each 
-iteration. This element is added only if `timeFlag` is set to TRUE in 
+iteration. This element is added only if `time` flag is set to TRUE in 
 config.}
 
 \item{config}{The configuration used for processing.}
@@ -130,37 +130,37 @@ factorization, performing clustering, and visualization-related functions.
 
 \examples{
 
-inputFastaFilename <- system.file("extdata", "example_data.fa", 
+fname <- system.file("extdata", "example_data.fa", 
                         package = "archR", mustWork = TRUE)
 
 # Specifying 'dinuc' generates dinucleotide features
-inputSeqsMat <- archR::prepare_data_from_FASTA(inputFastaFilename,
+inputSeqsMat <- archR::prepare_data_from_FASTA(fasta_fname = fname,
     sinuc_or_dinuc = "dinuc")
 
-inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
-    rawSeq = TRUE)
+inputSeqsRaw <- archR::prepare_data_from_FASTA(fasta_fname = fname, 
+    raw_seq = TRUE)
 
 # Set archR configuration
-archRconfig <- archR::archRSetConfig(
+archRconfig <- archR::archR_set_config(
     parallelize = TRUE,
-    nCoresUse = 2,
-    nIterationsUse = 100,
-    kMin = 1,
-    kMax = 20,
-    modSelType = "stability",
+    n_cores = 2,
+    n_iterations = 100,
+    k_min = 1,
+    k_max = 20,
+    mod_sel_type = "stability",
     tol = 10^-4,
     bound = 10^-8,
-    innerChunkSize = 100,
-    flags = list(debugFlag = TRUE, timeFlag = TRUE, verboseFlag = TRUE,
-        plotVerboseFlag = FALSE)
+    inner_chunk_size = 100,
+    flags = list(debug = TRUE, time = TRUE, verbose = TRUE,
+        plot = FALSE)
 )
 
 # Run archR 
 archRresult <- archR::archR(config = archRconfig,
-                          seqsMat = inputSeqsMat,
-                          seqsRaw = inputSeqsRaw,
-                          seqsPositions = seq(1,100,by=1),
-                          thresholdItr = 2)
+                          seqs_ohe_mat = inputSeqsMat,
+                          seqs_raw = inputSeqsRaw,
+                          seqs_pos = seq(1,100,by=1),
+                          threshold_itr = 2)
 
  
 }

@@ -5,29 +5,29 @@
 \title{Plot cluster architectures as sequence logos.}
 \usage{
 plot_arch_for_clusters(
-  tss.seqs_raw,
-  list_of_elements,
-  position_labels,
+  seqs,
+  clust_list,
+  pos_lab,
   xt_freq = 5,
-  fwidth = 11,
-  fheight = 2,
-  PDFfname = "archR_sequence_architectures.pdf"
+  pdf_width = 11,
+  pdf_height = 2,
+  pdf_name = "archR_sequence_architectures.pdf"
 )
 }
 \arguments{
-\item{tss.seqs_raw}{Sequences as a DNAStringSet}
+\item{seqs}{Sequences as a DNAStringSet.}
 
-\item{list_of_elements}{Cluster elements as a list}
+\item{clust_list}{Clusters as a list of sequence IDs in each cluster.}
 
-\item{position_labels}{Labels for sequence positions, should be of same
-length as length of the sequences}
+\item{pos_lab}{Labels for sequence positions, should be of same
+length as length of the sequences.}
 
-\item{xt_freq}{Frequency of x-axis ticks}
+\item{xt_freq}{Frequency of x-axis ticks.}
 
-\item{fwidth, fheight}{Width and height in inches. Default values are 11 and 
-2}
+\item{pdf_width, pdf_height}{Width and height in inches of the PDF file. 
+Default values are 11 and 2.}
 
-\item{PDFfname}{Specify a filename to be saved as PDF}
+\item{pdf_name}{Specify the PDF filename.}
 }
 \description{
 Given a collection of FASTA sequences as a DNAStringSet object,

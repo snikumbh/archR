@@ -75,56 +75,77 @@ get_samples_matrix <- function(nmfResultObj){
 }
 ## =============================================================================
 
-
-get_dimers_from_alphabet <- function(alphabet){
-    if (!is.null(alphabet)) {
-        return(do.call(paste0, expand.grid(alphabet, alphabet)))
+get_trimers_from_alphabet <- function(alph){
+    if (!is.null(alph)) {
+        return(do.call(paste0, expand.grid(alph, alph, alph)))
     } else {
         stop("Expecting non-NULL alphabet")
     }
 }
 ## =============================================================================
 
+get_dimers_from_alphabet <- function(alph){
+    if (!is.null(alph)) {
+        return(do.call(paste0, expand.grid(alph, alph)))
+    } else {
+        stop("Expecting non-NULL alphabet")
+    }
+}
+## =============================================================================
+
+plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
+    allSequencesLogo <- plot_ggseqlogo_of_seqs(seqs = seqs_raw,
+        pos_lab = seqs_pos, 
+        title = paste("Sequence logo of all",
+            length(seqs_raw),"sequences" ))
+    ggsave(filename = file.path(dpath, "allSequencesLogo.pdf"),
+        plot = allSequencesLogo,
+        device = "pdf", width = 20, height = 2.5)
+}
+## =============================================================================
+
+
 #' @title
 #' Set archR run configuration
 #'
 #' @description This function sets the configuration for `archR`.
 #'
-#' @param innerChunkSize Numeric. Specify the size of the inner chunks of
+#' @param inner_chunk_size Numeric. Specify the size of the inner chunks of
 #' sequences.
-#' @param kMin Numeric. Specify the minimum of the range of values to be tested
+#' @param k_min Numeric. Specify the minimum of the range of values to be tested
 #' for number of NMF basis vectors.
-#' @param kMax Numeric. Specify the maximum of the range of values to be tested
+#' @param k_max Numeric. Specify the maximum of the range of values to be tested
 #' for number of NMF basis vectors.
-#' @param modSelType Character. Specify the model selection strategy to be used.
-#' Default is 'stability'. Another option is 'cv' short for cross-validation.
-#' Warning: The cross-validation approach can be time consuming and
-#' computationally expensive than the stability-based approach. 
+#' @param mod_sel_type Character. Specify the model selection strategy to 
+#' be used. Default is 'stability'. Another option is 'cv', short for 
+#' cross-validation. Warning: The cross-validation approach can be time 
+#' consuming and computationally expensive than the stability-based approach. 
 #' @param tol Numeric. Specify the tolerance value as criterion for choosing the
-#' most appropriate number of NMF factors. Default is 1e-03.
+#' most appropriate number of NMF factors. Default is 1e-03. Current, this is
+#' ignored.
 #' @param bound Numeric. Specify the lower bound value as criterion for choosing
 #' the most appropriate number of NMF factors. Default is 1e-08.
-#' @param cvFolds Numeric. Specify the number of cross-validation folds used for
-#' model selection. Only used when modSelType is set to 'cv'. Default value is 
-#' 5.
+#' @param cv_folds Numeric. Specify the number of cross-validation folds used 
+#' for model selection. Only used when mod_sel_type is set to 'cv'. Default 
+#' value is 5.
 #' @param parallelize Logical. Specify whether to parallelize the procedure.
 #' Note that running archR serially can be time consuming. Consider
 #' parallelizing with at least 2 or 4 cores. If Slurm is available, archR's
 #' graphical user interface, accessed with \code{\link{run_archR_UI}}, enables 
 #' providing all input data, setting archR configuration, and running archR 
-#' directly by submiting/monitoring slurm jobs through the user interface.
-#' @param nCoresUse The number of cores to be used when `parallelize` is set
-#' to TRUE. If `parallelize` is FALSE, nCoresUse is ignored.
-#' @param nIterationsUse Numeric. Specify the number of bootstrapped iterations
+#' directly by submitting/monitoring slurm jobs through the user interface.
+#' @param n_cores The number of cores to be used when `parallelize` is set
+#' to TRUE. If `parallelize` is FALSE, nCores is ignored.
+#' @param n_iterations Numeric. Specify the number of bootstrapped iterations
 #' to be performed with NMF. Default value is 100. When using cross-validation 
 #' more than 100 (upto 500) iterations may be needed.  
-#' @param alphaBase,alphaPow Specify the base value and the power for computing
-#' 'alpha' in performing model selection for NMF. alpha = alphaBase^alphaPow.
+#' @param alpha_base,alpha_pow Specify the base and the power for computing
+#' 'alpha' in performing model selection for NMF. alpha = alpha_base^alpha_pow.
 #' Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
 #' Warning: Currently, not used (for future).
-#' @param minSeqs Numeric. Specify the minimum number of sequences, such that
+#' @param min_size Numeric. Specify the minimum number of sequences, such that
 #' any cluster/chunk of size less than or equal to it will not be further
-#' processed/clustered.
+#' processed. Default is 25.
 #' @param checkpointing Logical. Specify whether to write intermediate 
 #' checkpoints to disk as RDS files. Checkpoints and the final result are 
 #' saved to disk provided the oDir argument is set in \code{\link{archR}}. 
@@ -132,71 +153,85 @@ get_dimers_from_alphabet <- function(alphabet){
 #' Default is TRUE. 
 #' @param flags List with four Logical elements as detailed.
 #' \describe{
-#'   \item{debugFlag}{Whether debug information for the run is printed}
-#'   \item{verboseFlag}{Whether verbose information for the run is printed}
-#'   \item{plotVerboseFlag}{Whether verbose plotting is performed for the run}
-#'   \item{timeFlag}{Whether timing information is printed for the run}
+#'   \item{debug}{Whether debug information for the run is printed}
+#'   \item{verbose}{Whether verbose information for the run is printed}
+#'   \item{plot}{Whether verbose plotting is performed for the run}
+#'   \item{time}{Whether timing information is printed for the run}
 #' }
 #'
 #' @return a list with all params for archR set
 #' 
 #' @examples 
 #' # Set archR configuration
-#' archRconfig <- archR::archRSetConfig(
+#' archRconfig <- archR::archR_set_config(
+#'     inner_chunk_size = 100,
 #'     parallelize = TRUE,
-#'     nCoresUse = 2,
-#'     nIterationsUse = 100,
-#'     kMin = 1,
-#'     kMax = 20,
-#'     modSelType = "stability",
+#'     n_cores = 2,
+#'     n_iterations = 100,
+#'     k_min = 1,
+#'     k_max = 20,
+#'     mod_sel_type = "stability",
 #'     tol = 10^-4,
 #'     bound = 10^-8,
-#'     innerChunkSize = 100,
-#'     flags = list(debugFlag = TRUE, timeFlag = TRUE, verboseFlag = TRUE,
-#'         plotVerboseFlag = FALSE)
+#'     flags = list(debug = TRUE, time = TRUE, verbose = TRUE,
+#'         plot = FALSE)
 #' )
 #' 
 #' 
 #' @export
-archRSetConfig <- function(innerChunkSize = 500,
-                            kMin = 2,
-                            kMax = 20,
-                            modSelType = "stability",
+archR_set_config <- function(inner_chunk_size = 500,
+                            k_min = 2,
+                            k_max = 20,
+                            mod_sel_type = "stability",
                             tol = 10^-3,
                             bound = 10^-8,
-                            cvFolds = 5,
+                            cv_folds = 5,
                             parallelize = FALSE,
-                            nCoresUse = NA,
-                            nIterationsUse = 500,
-                            alphaBase = 0,
-                            alphaPow = 1,
-                            minSeqs = 25,
+                            n_cores = NA,
+                            n_iterations = 500,
+                            alpha_base = 0,
+                            alpha_pow = 1,
+                            min_size = 25,
                             checkpointing = TRUE,
                             flags = list(
-                                debugFlag = FALSE,
-                                timeFlag = FALSE,
-                                verboseFlag = TRUE,
-                                plotVerboseFlag = FALSE)
+                                debug = FALSE,
+                                time = FALSE,
+                                verbose = TRUE,
+                                plot = FALSE)
                             ) {
     ## Configuration Params that can be set by user
     archRconfig <- NULL
-    archRconfig <- list(
-                        modSelType = modSelType,
+    ##
+    if(is.null(flags)){
+        useFlags <- list(
+            debugFlag = FALSE,
+            timeFlag = FALSE,
+            verboseFlag = TRUE,
+            plotVerboseFlag = FALSE)
+    }else{
+        useFlags <- list(
+            debugFlag = flags$debug,
+            timeFlag = flags$time,
+            verboseFlag = flags$verbose,
+            plotVerboseFlag = flags$plot)
+    }
+    ##
+    archRconfig <- list(modSelType = mod_sel_type,
                         tol = tol,
                         bound = bound,
-                        kFolds = cvFolds,
+                        kFolds = cv_folds,
                         parallelize = parallelize,
-                        nCoresUse = nCoresUse,
-                        nIterationsUse = nIterationsUse,
+                        nCoresUse = n_cores,
+                        nIterationsUse = n_iterations,
                         paramRanges = list(
-                            alphaBase = alphaBase,
-                            alphaPow = alphaPow,
-                            k_vals = seq(kMin, kMax, by = 1)
+                            alphaBase = alpha_base,
+                            alphaPow = alpha_pow,
+                            k_vals = seq(k_min, k_max, by = 1)
                         ),
-                        innerChunkSize = innerChunkSize,
+                        innerChunkSize = inner_chunk_size,
                         checkpointing = checkpointing,
-                        minSeqs = minSeqs,
-                        flags = flags
+                        minSeqs = min_size,
+                        flags = useFlags
                     )
     .assert_archR_config(archRconfig)
     return(archRconfig)
@@ -220,9 +255,9 @@ archRSetConfig <- function(innerChunkSize = 500,
 .decide_process_outer_chunk <- function(minThreshold, lengthOfOC, kFoldsVal) {
         # Assert that minThreshold > 4*kFoldsVal
         nFoldsCondition <- 4 * kFoldsVal
-        .assert_archR_minSeqs_independent(minThreshold)
+        .assert_archR_min_size_independent(minThreshold)
         if (minThreshold < nFoldsCondition) {
-            stop("'minSeqs' should be at least 4 times 'kFolds'")
+            stop("'min_size' should be at least 4 times 'kFolds'")
         }
         # base::stopifnot(minThreshold >= nFoldsCondition)
         doNotProcess <- FALSE
@@ -261,86 +296,96 @@ archRSetConfig <- function(innerChunkSize = 500,
     distMethods_hopach <- c("cosangle", "abscosangle", 
                             "abseuclid", "cor", "abscor")
     distMethods_stats <- c("euclid")
-    
-    if(!requireNamespace("TFBSTools", quietly = TRUE)){
-        warning("You chose 'modified Needleman-Wunsch' distance for 
-            computing distances between NMF factors. This requires R 
-            package 'TFBSTools', which is not available. Consider 
-            installing the 'TFBSTools' package from Bioconductor and 
-            re-run. Meanwhile, I am using the Euclidean distance.")
-    }else{
-        if(distMethod == "modNW"){
-            ## Turn the factors which are vectors into a 2D matrix of
-            ## dinucs x positions
-            dim_names <- get_dimers_from_alphabet(c("A", "C", "G", "T"))
-            nPositions <- nrow(factorsMat)/length(dim_names)
-            ##
-            factorsMatList_as2D <- lapply(seq_len(ncol(factorsMat)),
-                                function(x){
-                                    matrix(factorsMat[,x],
-                                        nrow = nrow(factorsMat)/nPositions,
-                                        byrow = TRUE,
-                                        dimnames = list(dim_names))
-                                })
-            ##
-            factorsMatList_asPFMs <- 
-                lapply(seq_len(length(factorsMatList_as2D)),
-            function(x){
-                sinucSparse <- collapse_into_sinuc_matrix(
-                    given_feature_mat = as.matrix(factorsMat[,x]),
-                    dinuc_mat = factorsMatList_as2D[[x]],
-                    feature_names = dim_names)
-                sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
-                                    nrow = 4, byrow = FALSE,
-                                    dimnames = list(rownames(sinucSparse)))
-            })
-            ##
-            lenPFMs <- length(factorsMatList_asPFMs)
-            scoresMat <- matrix(rep(0, lenPFMs*lenPFMs),
-                                nrow = lenPFMs)
-            rownames(scoresMat) <- seq(1,nrow(scoresMat),by=1)
-            colnames(scoresMat) <- seq(1,ncol(scoresMat),by=1)
-            
-            # relScoresMat <- scoresMat
-            
-            for(i in seq_len(lenPFMs)){
-                for(j in seq_len(lenPFMs)){
-                    temp <- TFBSTools::PFMSimilarity(
-                        factorsMatList_asPFMs[[i]], factorsMatList_asPFMs[[j]])
-                    scoresMat[i,j] <- temp["score"]
-                    # relScoresMat[i,j] <- temp["relScore"]
-                }
-            }
-            ## currently we use scoresMat, so we only return that
-            distMat <- max(scoresMat) - scoresMat
-            return(distMat)
-            ##
-        } else if(any(distMethod == distMethods_hopach)){
-            if(!requireNamespace("hopach", quietly = TRUE)){
-                stop("Please install R package 'hopach' to use ", distMethod,
-                    " distance.")
-            }else{
-                ## - these distance metrics are available in hopach pkg
-                ## - hopach::distancematrix func requires vectors along rows. 
-                ## - Distances are computed between row vectors
-                if (nrow(factorsMat) > ncol(factorsMat)){
-                    factorsMat <- t(factorsMat)
-                }
-                hopachDistMat <- hopach::distancematrix(factorsMat, 
-                    d = distMethod)
-                ## hopachDistMat is a hopach hdist object
-                stopifnot(hopachDistMat@Size == nrow(factorsMat))
-                return(hopachDistMat)
-            }
-            ##
-        }else if(any(distMethod == distMethods_stats)){
-            ## dist method from stats // standard
-            if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
-            as_dist <- stats::dist(factorsMat, method = "euclidean")
-            distMat <- as.matrix(as_dist)
-            return(distMat)
-        }
+    ##
+    if(distMethod == "modNW"){
+        distMat <- .get_modNW_dist(factorsMat)
+        return(distMat)
+    } 
+    if(any(distMethod == distMethods_hopach)){
+        distMat <- .get_hopach_dist(factorsMat, distMethod)
+        return(distMat)
     }
+    if(distMethod == distMethods_stats){
+        distMat <- .get_stats_dist(factorsMat)
+        return(distMat)
+    }
+}
+## =============================================================================
+
+.get_hopach_dist <- function(factorsMat, distMethod){
+    if(!requireNamespace("hopach", quietly = TRUE)){
+        stop("Please install R package 'hopach' to use ", distMethod, 
+            " distance.")
+    }else{
+        ## - these distance metrics are available in hopach pkg
+        ## - hopach::distancematrix func requires vectors along rows. 
+        ## - Distances are computed between row vectors
+        if (nrow(factorsMat) > ncol(factorsMat)){
+            factorsMat <- t(factorsMat)
+        }
+        hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
+        ## hopachDistMat is a hopach hdist object
+        stopifnot(hopachDistMat@Size == nrow(factorsMat))
+        ## make as.matrix as done for dist object in the 
+        ## stats::dist case (see Else condition next)
+        hopachDistMat <- hopach::as.matrix(hopachDistMat)
+        return(hopachDistMat)
+    }
+}
+## =============================================================================
+
+.get_stats_dist <- function(factorsMat){
+    ## dist method from stats // standard
+    if (nrow(factorsMat) > ncol(factorsMat)) factorsMat <- t(factorsMat)
+    as_dist <- stats::dist(factorsMat, method = "euclidean")
+    distMat <- as.matrix(as_dist)
+    return(distMat)
+}
+
+.get_modNW_dist <- function(factorsMat){
+    if(!requireNamespace("TFBSTools", quietly = TRUE)){
+        stop("Please install R package 'TFBSTools' for using modNW distance.")
+    }else{
+        ## Turn the factors which are vectors into a 2D matrix of
+        ## dinucs x positions
+        dim_names <- get_dimers_from_alphabet(c("A", "C", "G", "T"))
+        nPositions <- nrow(factorsMat)/length(dim_names)
+        ##
+        factorsMatList_as2D <- lapply(seq_len(ncol(factorsMat)),
+            function(x){matrix(factorsMat[,x],
+                            nrow = nrow(factorsMat)/nPositions,
+                            byrow = TRUE,
+                            dimnames = list(dim_names))
+            })
+        ##
+        factorsMatList_asPFMs <- lapply(seq_len(length(factorsMatList_as2D)),
+                function(x){
+                    sinucSparse <- collapse_into_sinuc_matrix(
+                        given_feature_mat = as.matrix(factorsMat[,x]),
+                        dinuc_mat = factorsMatList_as2D[[x]],
+                        feature_names = dim_names)
+                    sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
+                        nrow = 4, byrow = FALSE,
+                        dimnames = list(rownames(sinucSparse)))
+                })
+        ##
+        lenPFMs <- length(factorsMatList_asPFMs)
+        scoresMat <- matrix(rep(0, lenPFMs*lenPFMs), nrow = lenPFMs)
+        rownames(scoresMat) <- seq(1,nrow(scoresMat),by=1)
+        colnames(scoresMat) <- seq(1,ncol(scoresMat),by=1)
+        
+        for(i in seq_len(lenPFMs)){
+            for(j in seq_len(lenPFMs)){
+                temp <- TFBSTools::PFMSimilarity(
+                    factorsMatList_asPFMs[[i]], factorsMatList_asPFMs[[j]])
+                scoresMat[i,j] <- temp["score"]
+                # relScoresMat[i,j] <- temp["relScore"]
+            }
+        }
+        ## currently we use scoresMat, so we only return that
+        distMat <- max(scoresMat) - scoresMat
+    }
+    return(distMat)
 }
 ## =============================================================================
 
@@ -386,10 +431,11 @@ archRSetConfig <- function(innerChunkSize = 500,
                                     coarse_step = 10,
                                     askParsimony = TRUE,
                                     config){
-
     .assert_archR_flags(config$flags)
+    dbg <- config$flags$debugFlag
+    vrbs <- config$flags$verboseFlag
+    tym <- config$flags$timeFlag
     ##
-
     if (is.null(this_mat) || !is.matrix(this_mat) &&
         !is(this_mat, "dgCMatrix")) {
         stop("Input matrix to model selection procedure is NULL or not a
@@ -416,9 +462,7 @@ archRSetConfig <- function(innerChunkSize = 500,
     }
     #########################
     if(config$modSelType == "stability"){
-        if(config$flags$debugFlag) {
-            message("Performing stability-based model selection")
-        }
+        .msg_pstr("Performing stability-based model selection", flg=dbg)
         best_k <- .stability_model_select_pyNMF2(
             X = this_mat, param_ranges = config$paramRanges,
             parallelDo = config$parallelize, nCores = config$nCoresUse,
@@ -435,21 +479,14 @@ archRSetConfig <- function(innerChunkSize = 500,
                     "perhaps, further increasing 'nIterationsUse'\n"),
                 immediate. = TRUE)
     }
-    if (config$flags$verboseFlag) {
-        message("Best K for this subset: ", best_k)
-    }
-
-    ##
-    if (config$flags$timeFlag) { start <- Sys.time() }
+    .msg_pstr("Best K for this subset: ", best_k, flg=vrbs)
     ##
     if (best_k >= 1) {
         ## For fetching sequence clusters from samplesMat
         ## Cluster sequences
         ## New strategy, perform nRuns for bestK and use only the best one
         nRuns <- config$nIterationsUse
-        if(config$flags$verboseFlag) {
-            message("Fetching ", best_k, " clusters")
-        }
+        .msg_pstr("Fetching ", best_k, " clusters", flg=vrbs)
 
         featuresMatrixList <- vector("list", nRuns)
         samplesMatrixList <- vector("list", nRuns)
@@ -486,9 +523,7 @@ archRSetConfig <- function(innerChunkSize = 500,
                 bestOrd <- new_ord[[nR]]
             }
         }
-        if (config$flags$debugFlag) {
-            message("Best Q2 giving run found: ", bestQ2)
-        }
+        .msg_pstr("Best Q2 giving run found: ", bestQ2, flg=dbg)
         ##
         featuresMatrix <- bestFeatMat
         samplesMatrix <- bestSampMat
@@ -498,19 +533,13 @@ archRSetConfig <- function(innerChunkSize = 500,
         samplesMatrix <- matrix(rep(NA, length(tempM)), nrow = nrow(tempM))
         samplesMatrix[ ,bestOrd] <- tempM
         #####
-        if (config$flags$debugFlag) {
-            message("Fetching ", best_k," cluster(s) w/ NMF scores")
-        }
+        .msg_pstr("Fetching ", best_k," cluster(s) w/ NMF scores", flg=dbg)
         clusterMembershipsForSamples <-
-            .get_cluster_memberships_per_run(
-                samplesMatrix = samplesMatrix,
-                iChunksColl = innerChunksColl,
-                iChunkIdx = innerChunkIdx)
+            .get_cluster_memberships_per_run(samplesMatrix = samplesMatrix,
+                iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx)
         forGlobClustAssignments <- .assign_samples_to_clusters(
-            clusterMembershipsVec =
-                clusterMembershipsForSamples,
-            nClusters = best_k,
-            iChunkIdx = innerChunkIdx,
+            clusterMembershipsVec = clusterMembershipsForSamples,
+            nClusters = best_k, iChunkIdx = innerChunkIdx, 
             iChunksColl = innerChunksColl)
         ###############
         #
@@ -557,7 +586,7 @@ archRSetConfig <- function(innerChunkSize = 500,
 ## =============================================================================
 
 
-intermediateResultsPlot <- function(seqsClustLabels, tss.seqs_raw = NULL,
+intermediateResultsPlot <- function(seqsClustLabels, seqs_raw = NULL,
                                 positions = NULL, iterVal = 0, fname = NULL){
 ## This function plots and prints resulting clusters -- the sequence image
 ## matrix (PNG file) and the sequence logos (PDF file).
@@ -575,18 +604,17 @@ if(is.numeric(iterVal)){
     message("=== Final Result ===")
 }
 ##
-seqs_clusters_as_list_ordered <- get_seqs_clusters_in_a_list(seqsClustLabels)
-
+seqs_clust_list_ord <- get_seqs_clust_list(seqsClustLabels)
+seqs_clust_vec_ord <- unlist(seqs_clust_list_ord) 
 message("Generating unannotated map of clustered sequences...")
 image_fname <- paste0(fname, "ClusteringImage_", name_suffix, ".png")
 message("Sequence clustering image written to: ", image_fname)
 viz_seqs_as_acgt_mat_from_seqs(
-    rawSeqs =  as.character(
-                    tss.seqs_raw[unlist(seqs_clusters_as_list_ordered)]),
-                    position_labels = positions,
-                    savefilename = image_fname,
-                    fwidth = 450,
-                    fheight = 900,
+    seqs =  as.character(seqs_raw[seqs_clust_vec_ord]),
+                    pos_lab = positions,
+                    save_fname = image_fname,
+                    f_width = 450,
+                    f_height = 900,
                     xt_freq = 5,
                     yt_freq = 100)
 
@@ -594,11 +622,10 @@ viz_seqs_as_acgt_mat_from_seqs(
 message("Generating architectures for clusters of sequences...")
 arch_fname <- paste0(fname, "Architecture_SequenceLogos_", name_suffix, ".pdf")
 message("Architectures written to: ", arch_fname)
-plot_arch_for_clusters(
-    tss.seqs_raw,
-    list_of_elements = seqs_clusters_as_list_ordered,
-    position_labels = positions,
-    PDFfname = arch_fname)
+plot_arch_for_clusters(seqs = seqs_raw, 
+    clust_list = seqs_clust_list_ord,
+    pos_lab = positions,
+    pdf_name = arch_fname)
 
 }
 ## =============================================================================

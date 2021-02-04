@@ -12,7 +12,7 @@ test_that("Preparing sinuc/dinuc/trinuc data matrix", {
                                      package = "archR",
                                      mustWork = TRUE)
     # This returns empty string when file not found
-    rawSeqs <- prepare_data_from_FASTA(testSeqs_filename, rawSeq = TRUE)
+    rawSeqs <- prepare_data_from_FASTA(testSeqs_filename, raw_seq = TRUE)
     use_rawSeqs <- base::substr(rawSeqs[1:2], start = 1, stop = 5)
     # 20 x 2 sparse Matrix of class "dgCMatrix"
     # 
@@ -40,6 +40,8 @@ test_that("Preparing sinuc/dinuc/trinuc data matrix", {
     example_sinuc <- matrix(rep(0, 40), nrow = 20, ncol = 2)
     example_sinuc[c(3,11,17,19,20),1] <- example_sinuc[c(5,7,13,16,19),2] <- 1
     example_sinuc <- Matrix::Matrix(example_sinuc, sparse = TRUE)
+    rownames(example_sinuc) <- 
+          .get_feat_names(k=1, seqlen=Biostrings::width(use_rawSeqs[1]))
     
     expect_identical(get_one_hot_encoded_seqs(use_rawSeqs, 
                                              sinuc_or_dinuc = "sinuc"),
@@ -131,7 +133,8 @@ test_that("Preparing sinuc/dinuc/trinuc data matrix", {
     example_dinuc <- matrix(rep(0, 160), nrow = 80, ncol = 2)
     example_dinuc[c(17,63,71,79),1] <- example_dinuc[c(19,36,47,73),2] <- 1
     example_dinuc <- Matrix::Matrix(example_dinuc, sparse = TRUE)
-    
+    rownames(example_dinuc) <- 
+      .get_feat_names(k=2, seqlen=Biostrings::width(use_rawSeqs[1]))
     
     expect_identical(get_one_hot_encoded_seqs(use_rawSeqs, 
                                              sinuc_or_dinuc = "dinuc"),
@@ -140,6 +143,8 @@ test_that("Preparing sinuc/dinuc/trinuc data matrix", {
     example_trinuc <- matrix(rep(0, 640), nrow = 320, ncol = 2)
     example_trinuc[c(303,257,71),1] <- example_trinuc[c(287,196,73),2] <- 1
     example_trinuc <- Matrix::Matrix(example_trinuc, sparse = TRUE)
+    rownames(example_trinuc) <- 
+      .get_feat_names(k=3, seqlen=Biostrings::width(use_rawSeqs[1]))
     
     expect_identical(get_one_hot_encoded_seqs(use_rawSeqs, 
                                               sinuc_or_dinuc = "trinuc"),

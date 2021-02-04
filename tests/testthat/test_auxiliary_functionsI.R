@@ -46,9 +46,7 @@ test_that("unfurl_nodeList handles empty/null nodeList", {
 
 
 test_that("update_cluster_labels handles empty collatedClustAssignments", {
-    # set.seed(1234)
-    # toyClustLabels <- sample(x = rep(as.character(1:25),3), size = 75,
-    #                          replace = FALSE)
+    
     toyClustLabels <- c("9", "22", "20", "23", "12", "22", "1", "16", "20",
                         "9", "21", "10", "18", "8", "13", "1", "17", "18",
                         "11", "14", "11", "9", "25", "3", "12" 
@@ -59,7 +57,7 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
                         # "24", "13", "3", "15", "5", "13", "19", "5", "11", "23",
                         # "24", "24", "15", "16", "17", "2", "6", "19", "25", "3"
                         )
-    # collection <- sample.int(25)
+    
     collection <- as.numeric(c("3", "15", "24", "14", "19", "13", "1", "5", "12", "9",
                     "11", "8", "4", "17", "20", "16", "25", "10", "2", "7",
                     "6", "18", "21", "22", "23"))
@@ -70,8 +68,7 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
                                            tempList[[x]] <- round(10*runif(5))
                                        }
                                    })
-    # set.seed(1234)
-    # collection <- sample.int(25)
+    
     idx <- rep(1:5,5)
     collatedClustAssignments <- lapply(seq_along(tempList),
                                    function(x){
@@ -82,43 +79,23 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
                                         collatedClustAssignmentsErr),
                  "Cluster assignments variable has a 0-length entry")
     ####
-    #### Test flag set to NULL instead of expected logical
-    toyFlags <- list(debugFlag = NULL,
-                        plotVerboseFlag = FALSE,
-                        verboseFlag = FALSE,
-                        timeFlag = TRUE)
-
-    ## this tests the flags' assertion
-    expect_error(.update_cluster_labels(toyClustLabels, collatedClustAssignments,
-                                        toyFlags),
-                    "Expected only LOGICAL values in flag variable,
-                        found otherwise")
-    #### Setting flags properly
-    toyFlags$debugFlag <- FALSE
-    toyFlags$verboseFlag <- FALSE
-
     foo <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
                  "1", "4", "2", "1", "4", "2", "5", "5", "3", "4", "5", "3", "2")
     ## this tests the updated cluster labels
     ## -- the updated labels should have 5 unique cluster labels since
     ## globClustAssignments has 5 clusters
     ## --
-    # print("\n")
-    # print(foo)
-    # print("\n")
-    foo_ans <- .update_cluster_labels(toyClustLabels, collatedClustAssignments,
-                                          toyFlags)
-    # cat(paste(shQuote(foo_ans, type="cmd"), collapse=", "))
+
+    foo_ans <- .update_cluster_labels(toyClustLabels, collatedClustAssignments)
 
     expect_equal(foo_ans, foo)
-    # 
-    # expect_identical(sort(unique(foo_ans)), sort(unique(foo)))
+
 })
 
-# test_that("get_seqs_clusters_in_a_list works", {
+# test_that("get_seqs_clust_list works", {
 #     seqsClustLabels <- foo <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
 #                                     "1", "4", "2", "1", "4", "2", "5", "5", "3", "4", "5", "3", "2")
-#     ansList <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
+#     ansList <- archR::get_seqs_clust_list(seqsClustLabels)
 #     expect_length(ansList, 5)
 #     })
 
@@ -142,8 +119,8 @@ test_that("get seq clusters as list works fine", {
     toyClustLabels <- sample(x = rep(as.character(1:14),3), size = 42, replace = FALSE)
     seqsClustLabels <- toyClustLabels
     expAns <- 14
-    expect_equal(length(get_seqs_clusters_in_a_list(seqsClustLabels)), 14)
-    expect_error(get_seqs_clusters_in_a_list(NULL))
+    expect_equal(length(get_seqs_clust_list(seqsClustLabels)), 14)
+    expect_error(get_seqs_clust_list(NULL))
 })
 
 
@@ -157,7 +134,7 @@ test_that("prepare_chunks handles negative chunkSize", {
                                        tempList[[x]] <- round(10*runif(5))
                                    })
     expect_error(.prepare_chunks(seqsClustLabels, -25),
-                 "'innerChunkSize' should be > 0")
+                 "'inner_chunk_size' should be > 0")
 })
 
 

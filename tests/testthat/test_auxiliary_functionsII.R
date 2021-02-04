@@ -16,7 +16,7 @@ test_that("decide_process_outer_chunk works fine", {
     expect_true(.decide_process_outer_chunk(25, 24, 5))
     expect_false(.decide_process_outer_chunk(25, 30, 5))
     expect_error(.decide_process_outer_chunk(15, 30, 4),
-                    "'minSeqs' should be at least 4 times 'kFolds'")
+                    "'min_size' should be at least 4 times 'kFolds'")
     expect_error(.decide_process_outer_chunk(25, 0, 5),
                     "Outer chunk of size 0")
 })

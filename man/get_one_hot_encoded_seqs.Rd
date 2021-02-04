@@ -4,10 +4,10 @@
 \alias{get_one_hot_encoded_seqs}
 \title{Get one-hot encoded sequences}
 \usage{
-get_one_hot_encoded_seqs(givenFastaSeqs, sinuc_or_dinuc = "sinuc")
+get_one_hot_encoded_seqs(seqs, sinuc_or_dinuc = "sinuc")
 }
 \arguments{
-\item{givenFastaSeqs}{A DNAStringSet object holding the given DNA sequences}
+\item{seqs}{A DNAStringSet object holding the given DNA sequences}
 
 \item{sinuc_or_dinuc}{'sinuc' or 'dinuc'}
 }
@@ -23,11 +23,10 @@ fname <- system.file("extdata", "example_data.fa",
                         package = "archR", mustWork = TRUE)
 
                         
-rawFasta <- prepare_data_from_FASTA(inputFastaFilename = fname,
-                        rawSeq = TRUE)
+rawFasta <- prepare_data_from_FASTA(fasta_fname = fname,
+                        raw_seq = TRUE)
 
-get_one_hot_encoded_seqs(givenFastaSeqs = rawFasta,
-                                sinuc_or_dinuc = "dinuc")
+get_one_hot_encoded_seqs(seqs = rawFasta, sinuc_or_dinuc = "dinuc")
                         
 }
 \seealso{

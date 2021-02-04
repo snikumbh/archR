@@ -4,17 +4,13 @@
 \alias{prepare_data_from_FASTA}
 \title{Generate one-hot encoding of sequences given as FASTA file}
 \usage{
-prepare_data_from_FASTA(
-  inputFastaFilename,
-  rawSeq = FALSE,
-  sinuc_or_dinuc = "sinuc"
-)
+prepare_data_from_FASTA(fasta_fname, raw_seq = FALSE, sinuc_or_dinuc = "sinuc")
 }
 \arguments{
-\item{inputFastaFilename}{Provide the name (with complete path) of the input
+\item{fasta_fname}{Provide the name (with complete path) of the input
 FASTA file.}
 
-\item{rawSeq}{TRUE or FALSE, set this to TRUE if you want the raw sequences.}
+\item{raw_seq}{TRUE or FALSE, set this to TRUE if you want the raw sequences.}
 
 \item{sinuc_or_dinuc}{character string, 'sinuc' or 'dinuc' to select for
 mono- or dinucleotide profiles.}
@@ -37,16 +33,16 @@ fname <- system.file("extdata", "example_data.fa",
                         package = "archR", mustWork = TRUE)
 
 # mononucleotides feature matrix
-prepare_data_from_FASTA(inputFastaFilename = fname,
+prepare_data_from_FASTA(fasta_fname = fname,
                         sinuc_or_dinuc = "sinuc")
 
 # dinucleotides feature matrix
-prepare_data_from_FASTA(inputFastaFilename = fname,
+prepare_data_from_FASTA(fasta_fname = fname,
                         sinuc_or_dinuc = "dinuc")
                        
 # FASTA sequences as a Biostrings::DNAStringSet
-prepare_data_from_FASTA(inputFastaFilename = fname,
-                        rawSeq = TRUE)
+prepare_data_from_FASTA(fasta_fname = fname,
+                        raw_seq = TRUE)
 
 }
 \seealso{
