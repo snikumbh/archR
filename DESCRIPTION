@@ -34,7 +34,6 @@ Imports:
     graphics,
     cvTools (>= 0.3.2),
     MASS,
-    NMF,
     Matrix,
     methods,
     stats,
@@ -71,7 +70,8 @@ biocViews:
     Genetics,
     Clustering,
     DimensionReduction,
-    FeatureExtraction
+    FeatureExtraction,
+    DNASeq
 Encoding: UTF-8
 LazyData: false
 RoxygenNote: 7.1.1
