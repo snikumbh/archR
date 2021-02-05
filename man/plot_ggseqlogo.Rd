@@ -4,27 +4,22 @@
 \alias{plot_ggseqlogo}
 \title{Visualize a given (PWM) matrix as a sequence logo.}
 \usage{
-plot_ggseqlogo(
-  pwm_mat,
-  plot_method = "custom",
-  pos_lab = NULL,
-  pdf_fname = NULL
-)
+plot_ggseqlogo(pwm_mat, method = "custom", pos_lab = NULL, pdf_name = NULL)
 }
 \arguments{
 \item{pwm_mat}{Matrix (usually a PWM, but can be any non-normalized matrix) 
 to be represented as a sequence logo.}
 
-\item{plot_method}{For \code{ggseqlogo}; either of 'custom', 'bits', or
+\item{method}{For \code{ggseqlogo}; either of 'custom', 'bits', or
 'probability'. Default is 'custom'.}
 
 \item{pos_lab}{Labels of the positions in the sequences.}
 
-\item{pdf_fname}{Name of the file which will be saved as PDF.}
+\item{pdf_name}{Name of the file which will be saved as PDF.}
 }
 \value{
 A ggplot2 object so you can simply call \code{print} or \code{save}
-on it later. If \code{pdf_fname} is given, it is also saved in addition to 
+on it later. If \code{pdf_name} is given, it is also saved in addition to 
 returning the ggplot object.
 }
 \description{
