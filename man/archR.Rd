@@ -4,7 +4,8 @@
 \name{archR}
 \alias{archR}
 \title{archR: A package for de novo discovery of different sequence architectures 
-composed of combination(s) of sequence elements (motifs).}
+with characteristic combination(s) of sequence elements (motifs) or 
+nucleotide compositions.}
 \usage{
 archR(
   config,
@@ -26,8 +27,8 @@ archR(
 \item{seqs_ohe_mat}{A matrix of one-hot encoded sequences with sequences 
 along columns. This is a required argument.}
 
-\item{seqs_raw}{A Biostrings::DNAStringSet object. The FASTA sequences as a
-DNAStringSet object. This argument required argument.}
+\item{seqs_raw}{A \code{\link{Biostrings::DNAStringSet}} object. The FASTA 
+sequences as a DNAStringSet object. This argument required argument.}
 
 \item{seqs_pos}{Vector. Specify the tick labels for sequence positions.
 Default is NULL.}
@@ -97,8 +98,10 @@ config.}
 }
 }
 \description{
-Given a set of DNA sequences, \code{archR} enables discovery of
-clusters of sequence with characteristic sequence architectures.
+Given a set of DNA sequences, \code{archR} enables unsupervised 
+discovery of _de novo_ clusters with characteristic sequence architectures 
+characterized by position-specific motifs or composition of stretches of 
+nucleotides, e.g., CG-richness, etc.
 
 Call this function to process a data set using archR.
 }
@@ -124,12 +127,13 @@ factorization, performing clustering, and visualization-related functions.
 \item \code{\link{viz_basis_vectors_as_seqlogo}}
 \item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 \item \code{\link{plot_arch_for_clusters}}
+plot_ggseqlogo_of_seqs
 \item \code{\link{viz_seqs_as_acgt_mat_from_seqs}}
 }
 }
 
 \examples{
-\dontrun{
+
 fname <- system.file("extdata", "example_data.fa", 
                         package = "archR", mustWork = TRUE)
 
@@ -161,6 +165,6 @@ archRresult <- archR::archR(config = archRconfig,
                           seqs_raw = inputSeqsRaw,
                           seqs_pos = seq(1,100,by=1),
                           threshold_itr = 2)
-}
+
  
 }
