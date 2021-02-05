@@ -13,33 +13,33 @@
 #' for plotting combined heatmaps and sequence logos.
 #' @export
 #'
-viz_basis_vectors_as_heatmap <- function(featuresMatrix, position_labels = NA,
+viz_basis_vectors_as_heatmap <- function(feat_mat, pos_lab = NA,
                                         add_pseudo_counts = FALSE,
-                                        savePDFfilename = NULL,
+                                        pdf_name = NULL,
                                         sinuc_or_dinuc = "sinuc") {
     # Visualize all basis factors (expected as columns of the given features
     # matrix) as heatmaps
-    if (!is.matrix(featuresMatrix)) {
-        stop("featuresMatrix not of type matrix")
+    if (!is.matrix(feat_mat)) {
+        stop("feat_mat not of type matrix")
     }
-    if (sum(dim(featuresMatrix)) == 2 && is.na(featuresMatrix)) {
-        stop("Empty featuresMatrix")
+    if (sum(dim(feat_mat)) == 2 && is.na(feat_mat)) {
+        stop("Empty feat_mat")
     }
 
     if (sinuc_or_dinuc == "sinuc") {
-        invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
+        invisible(apply(feat_mat, MARGIN = 2, function(x) {
             pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
-            p1 <- plot_ggheatmap(pwmMat = pwm,
-                                    position_labels = position_labels,
-                                    savePDFfilename = savePDFfilename)
+            p1 <- plot_ggheatmap(pwm_mat = pwm,
+                                    pos_lab = pos_lab,
+                                    pdf_name = pdf_name)
             base::suppressMessages(print(p1))
         }))
     } else if (sinuc_or_dinuc == "dinuc") {
-        invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
+        invisible(apply(feat_mat, MARGIN = 2, function(x) {
             pwm <- make_dinuc_PWMs(x, add_pseudo_counts = FALSE)
-            p1 <- plot_ggheatmap(pwmMat = pwm,
-                                    position_labels = position_labels,
-                                    savePDFfilename = savePDFfilename)
+            p1 <- plot_ggheatmap(pwm_mat = pwm,
+                                    pos_lab = pos_lab,
+                                    pdf_name = pdf_name)
             base::suppressMessages(print(p1))
         }))
     }

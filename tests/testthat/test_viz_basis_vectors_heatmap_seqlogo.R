@@ -8,7 +8,7 @@ test_that("Given object is matrix", {
   expect_error(
     viz_basis_vectors_in_combined_heatmaps_seqlogos(
       testFeaturesMat,
-      position_labels = testPositionLabels),
+      pos_lab = testPositionLabels),
     "not of type matrix"
   )
 })
@@ -19,7 +19,7 @@ test_that("Handling empty matrix", {
   expect_error(
     viz_basis_vectors_in_combined_heatmaps_seqlogos(
       testFeaturesMat,
-      position_labels = testPositionLabels
+      pos_lab = testPositionLabels
     ),
     "Empty"
   )
@@ -31,7 +31,7 @@ test_that("Position labels inadequate", {
   expect_error(
     viz_basis_vectors_in_combined_heatmaps_seqlogos(
       testFeaturesMat,
-      position_labels = testPositionLabels),
+      pos_lab = testPositionLabels),
     "Inadequate"
   )
 })
@@ -42,7 +42,7 @@ test_that("Position labels over-abundant", {
   expect_error(
     viz_basis_vectors_in_combined_heatmaps_seqlogos(
       testFeaturesMat,
-      position_labels = testPositionLabels),
+      pos_lab = testPositionLabels),
     "Overabundant"
   )
 })
@@ -60,6 +60,6 @@ test_that("Position labels over-abundant", {
 #     "heatmap seqlogo plot ex",
 #     viz_basis_vectors_in_combined_heatmaps_seqlogos(
 #       featuresMatrix = testFeaturesMat,
-#       position_labels = testPositionLabels)
+#       pos_lab = testPositionLabels)
 #   )
 # })

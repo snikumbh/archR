@@ -16,21 +16,21 @@
 #' @import ggplot2
 #' @import ggseqlogo
 #'
-viz_basis_vectors_as_seqlogo <- function(featuresMatrix,
-                                        plotMethod = "custom",
-                                        position_labels = NA,
+viz_basis_vectors_as_seqlogo <- function(feat_mat,
+                                        method = "custom",
+                                        pos_lab = NA,
                                         add_pseudo_counts = FALSE,
-                                        savePDFfilename = NULL,
+                                        pdf_name = NULL,
                                         sinuc_or_dinuc = "sinuc") {
     # Visualize all basis factors (expected as columns of the given features
     # matrix) as seqlogos
-    if (!is.matrix(featuresMatrix)) {
-        stop("featuresMatrix not of type matrix")
+    if (!is.matrix(feat_mat)) {
+        stop("feat_mat not of type matrix")
     }
-    if (sum(dim(featuresMatrix)) == 2 && is.na(featuresMatrix)) {
-        stop("Empty featuresMatrix")
+    if (sum(dim(feat_mat)) == 2 && is.na(feat_mat)) {
+        stop("Empty feat_mat")
     }
-    invisible(apply(featuresMatrix, MARGIN = 2, function(x) {
+    invisible(apply(feat_mat, MARGIN = 2, function(x) {
         if (sinuc_or_dinuc == "dinuc") {
             dna_alphabet <- c("A", "C", "G", "T")
             dna_alphabet_dinuc <- do.call(paste0, expand.grid(dna_alphabet,
@@ -39,9 +39,9 @@ viz_basis_vectors_as_seqlogo <- function(featuresMatrix,
         } else if (sinuc_or_dinuc == "sinuc") {
             pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
         }
-        p1 <- plot_ggseqlogo(pwmMat = pwm, plotMethod = plotMethod,
-                                position_labels = position_labels,
-                                savePDFfilename = savePDFfilename)
+        p1 <- plot_ggseqlogo(pwm_mat = pwm, method = method,
+                                pos_lab = pos_lab,
+                                pdf_name = pdf_name)
         base::suppressMessages(print(p1))
     }))
 }

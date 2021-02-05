@@ -7,7 +7,7 @@ test_that("Given object is matrix", {
   testFeaturesMat <- rnorm(10000) # err
   testPositionLabels <- seq(25)
   expect_error(
-    viz_basis_vectors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels),
+    viz_basis_vectors_as_seqlogo(testFeaturesMat, pos_lab = testPositionLabels),
     "not of type matrix"
   )
 })
@@ -17,7 +17,7 @@ test_that("Handling empty matrix", {
   testPositionLabels <- seq(25)
   expect_error(
     viz_basis_vectors_as_seqlogo(testFeaturesMat,
-      position_labels = testPositionLabels
+      pos_lab = testPositionLabels
     ),
     "Empty"
   )
@@ -27,7 +27,7 @@ test_that("Position labels inadequate", {
   testFeaturesMat <- matrix(rnorm(10000), nrow = 200)
   testPositionLabels <- seq(20)
   expect_error(
-    viz_basis_vectors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels),
+    viz_basis_vectors_as_seqlogo(testFeaturesMat, pos_lab = testPositionLabels),
     "Inadequate"
   )
 })
@@ -36,7 +36,7 @@ test_that("Position labels over-abundant", {
   testFeaturesMat <- matrix(rnorm(10000), nrow = 200)
   testPositionLabels <- seq(60)
   expect_error(
-    viz_basis_vectors_as_seqlogo(testFeaturesMat, position_labels = testPositionLabels),
+    viz_basis_vectors_as_seqlogo(testFeaturesMat, pos_lab = testPositionLabels),
     "Overabundant"
   )
 })
@@ -48,8 +48,9 @@ test_that("Position labels over-abundant", {
 #   # test variables
 #   testPositionLabels <- seq(25)
 #   testFeaturesMat <- matrix(rnorm(100), ncol=1)
-#   # test plot, include the function directly inside because it returns nothing.
+#   # test plot, include the function directly inside because it returns 
+#   nothing.
 #   vdiffr::expect_doppelganger("combined heatmap seqlogo plot example",
-#                               viz_all_factors_as_seqlogo(featuresMatrix = testFeaturesMat,                                                                                        position_labels = testPositionLabels))
+#                 viz_all_factors_as_seqlogo(featuresMatrix = testFeaturesMat,                                                                              pos_lab = testPositionLabels))
 #
 # })
