@@ -7,8 +7,8 @@
 #' \code{\link{archR_set_config}}. This is a required argument.
 #' @param seqs_ohe_mat A matrix of one-hot encoded sequences with sequences 
 #' along columns. This is a required argument.
-#' @param seqs_raw A Biostrings::DNAStringSet object. The FASTA sequences as a
-#' DNAStringSet object. This argument required argument.
+#' @param seqs_raw A \code{\link{Biostrings::DNAStringSet}} object. The FASTA 
+#' sequences as a DNAStringSet object. This argument required argument.
 #' @param seqs_pos Vector. Specify the tick labels for sequence positions.
 #' Default is NULL.
 #' @param threshold_itr Numeric. Specify the number of iterations to perform.
@@ -72,7 +72,7 @@
 #' }
 #' 
 #' @examples 
-#' \dontrun{
+#' 
 #' fname <- system.file("extdata", "example_data.fa", 
 #'                         package = "archR", mustWork = TRUE)
 #' 
@@ -104,7 +104,7 @@
 #'                           seqs_raw = inputSeqsRaw,
 #'                           seqs_pos = seq(1,100,by=1),
 #'                           threshold_itr = 2)
-#' }
+#' 
 #'  
 #' @export
 archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
