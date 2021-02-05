@@ -89,7 +89,19 @@ get_clBasVec <- function(res, iter){
 #' Using `ord = FALSE` fetches the sequences by their original order. 
 #' 
 #' @examples
+#' \dontrun{
+#' res <- system.file("extdata", "example_archRresult.rds", 
+#'          package = "archR", mustWork = TRUE)
+#'          
+#' # Fetch sequences from 2nd cluster of archR's final solution
+#' ans <- archR::seqs_str(result, iter=NULL, cl=2)
 #' 
+#' # Fetch all sequences ordered by the final clustering
+#' ans <- archR::seqs_str(res, iter=NULL, cl=NULL, ord=TRUE)
+#' 
+#' # Fetch sequences belonging to first cluster in archR's first iteration
+#' ans <- archR::seqs_str(res, iter=1, cl=1)
+#' }
 #' 
 seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     

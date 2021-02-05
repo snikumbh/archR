@@ -28,7 +28,7 @@ reference:
 - title: All functions
   contents:
   - '`archR`'
-  - '`archRSetConfig`'
+  - '`archR_set_config`'
   - '`example_data`'
   - '`get_one_hot_encoded_seqs`'
   - '`get_seqs_clusters_in_a_list`'
@@ -45,7 +45,7 @@ reference:
   - '`viz_seqs_as_acgt_mat_from_seqs`'
   - '`make_sinuc_PWMs`'
   - '`make_dinuc_PWMs`'
-  - '`reorder_archRresult`'
+  - '`collate_archR_result`'
 
 
 articles:

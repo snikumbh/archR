@@ -72,7 +72,7 @@
 #' }
 #' 
 #' @examples 
-#' 
+#' \dontrun{
 #' fname <- system.file("extdata", "example_data.fa", 
 #'                         package = "archR", mustWork = TRUE)
 #' 
@@ -104,7 +104,7 @@
 #'                           seqs_raw = inputSeqsRaw,
 #'                           seqs_pos = seq(1,100,by=1),
 #'                           threshold_itr = 2)
-#' 
+#' }
 #'  
 #' @export
 archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,

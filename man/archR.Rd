@@ -129,7 +129,7 @@ factorization, performing clustering, and visualization-related functions.
 }
 
 \examples{
-
+\dontrun{
 fname <- system.file("extdata", "example_data.fa", 
                         package = "archR", mustWork = TRUE)
 
@@ -161,6 +161,6 @@ archRresult <- archR::archR(config = archRconfig,
                           seqs_raw = inputSeqsRaw,
                           seqs_pos = seq(1,100,by=1),
                           threshold_itr = 2)
-
+}
  
 }
