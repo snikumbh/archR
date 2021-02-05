@@ -11,11 +11,12 @@ plot_arch_for_clusters(
   xt_freq = 5,
   pdf_width = 11,
   pdf_height = 2,
-  pdf_name = "archR_sequence_architectures.pdf"
+  pdf_name = "archR_sequence_architectures.pdf",
+  ...
 )
 }
 \arguments{
-\item{seqs}{Sequences as a DNAStringSet.}
+\item{seqs}{Sequences as a \code{\link{Biostrings::DNAStringSet}}.}
 
 \item{clust_list}{Clusters as a list of sequence IDs in each cluster.}
 
@@ -28,6 +29,13 @@ length as length of the sequences.}
 Default values are 11 and 2.}
 
 \item{pdf_name}{Specify the PDF filename.}
+
+\item{...}{Additional arguments passed to the graphic device.}
+}
+\value{
+A list of (ggplot2-based) sequence logo plots is returned. When a 
+valid file name is specified, the list of plots is also written to the PDF 
+file (one plot per page).
 }
 \description{
 Given a collection of FASTA sequences as a DNAStringSet object,

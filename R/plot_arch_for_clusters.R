@@ -1,19 +1,32 @@
 #' @title Plot cluster architectures as sequence logos.
+#' 
 #' @description Given a collection of FASTA sequences as a DNAStringSet object,
 #' and the clusters information, this function plots the architectures for all
 #' clusters. If a name for the PDF file is provided, the resulting set of
 #' architecture sequence logos are saved as a multi-page PDF.
 #'
-#' @param seqs Sequences as a DNAStringSet.
+#' @param seqs Sequences as a \code{\link{Biostrings::DNAStringSet}}.
+#' 
 #' @param clust_list Clusters as a list of sequence IDs in each cluster.
+#' 
 #' @param pos_lab Labels for sequence positions, should be of same
 #' length as length of the sequences.
+#' 
 #' @param xt_freq Frequency of x-axis ticks.
+#' 
 #' @param pdf_width,pdf_height Width and height in inches of the PDF file. 
 #' Default values are 11 and 2.
-#' @param pdf_name Specify the PDF filename.
+#' 
+#' @param pdf_name Specify the PDF filename. 
+#' 
+#' @param ... Additional arguments passed to the graphic device.
+#'
+#' @return A list of (ggplot2-based) sequence logo plots is returned. When a 
+#' valid file name is specified, the list of plots is also written to the PDF 
+#' file (one plot per page).
 #'
 #' @importFrom grDevices pdf dev.off
+#' 
 #' @export
 plot_arch_for_clusters <- function(seqs,
                                 clust_list,
@@ -21,7 +34,8 @@ plot_arch_for_clusters <- function(seqs,
                                 xt_freq = 5,
                                 pdf_width = 11,
                                 pdf_height = 2,
-                                pdf_name = "archR_sequence_architectures.pdf"){
+                                pdf_name = "archR_sequence_architectures.pdf",
+                                ...){
     ##
     stopifnot(!is.null(clust_list))
     stopifnot(!is.null(seqs))
@@ -41,42 +55,19 @@ plot_arch_for_clusters <- function(seqs,
                             clust_starts[x], clust_ends[x])
     })
     ##
-    plot_list <- lapply(seq_along(clust_list), function(x){
+    suppressMessages(plot_list <- lapply(seq_along(clust_list), function(x){
         plot_ggseqlogo_of_seqs(seqs=seqs[clust_list[[x]]],
             pos_lab = pos_lab,
             xt_freq = xt_freq,
             title = plot_titles[[x]])
-    })
+    }))
     
-    if(is.null(pdf_name)){
-        print(plot_list)
-    }else{
+    if(!is.null(pdf_name)){
         grDevices::pdf(file=pdf_name, width=pdf_width, height=pdf_height)
-        print(plot_list)
+        lapply(plot_list, print)
         dev.off()
     }
-    
-    ##
-    # for (i in seq_along(clust_list)) {
-    #     startN <- ifelse(i > 1, (1+cumsums_clust_lens[i-1]), 1)
-    #     endN <- cumsums_clust_lens[i]
-    #     ##
-    #     plot_title <- paste0("(", i , "/", length(clust_list), 
-    #                         ") Arch `",
-    #                         cluster_names[i], "': ",
-    #                         length(clust_list[[i]]),
-    #                         " sequences (",  startN, "-",  endN, ")")
-    #     ##
-    #     foo_p <- plot_ggseqlogo_of_seqs(seqs = seqs[ clust_list[[i]] ],
-    #                                 pos_lab = pos_lab,
-    #                                 xt_freq = xt_freq,
-    #                                 title = plot_title)
-    #     ##
-    #     suppressMessages(print(foo_p))
-    # }
-    # if(!is.null(pdf_name)) {
-    #     dev.off()
-    # }
+    return(plot_list)
 }
 
 make_plot_title_str <- function(i, n, name, this_size, st, ed){
@@ -90,10 +81,14 @@ make_plot_title_str <- function(i, n, name, this_size, st, ed){
 #' sequences, this function plots the sequence logo.
 #'
 #' @param seqs Collection of sequences as a Biostrings::DNAStringSet object.
+#' 
 #' @param pos_lab Numeric vector of labels for sequence positions.
 #' This should be the same length as the width of the given sequences.
+#' 
 #' @param xt_freq Specify the frequency of the x-axis ticks.
+#' 
 #' @param title The title for the plot.
+#' 
 #' @param bits_yax Specify 'full' if the information content y-axis limits 
 #' should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
 #' the y-axis limits according to the maximum information content of the 
