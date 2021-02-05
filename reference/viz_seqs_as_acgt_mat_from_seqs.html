@@ -129,27 +129,27 @@ matrix.</p>
     </div>
 
     <pre class="usage"><span class='fu'>viz_seqs_as_acgt_mat_from_seqs</span><span class='op'>(</span>
-  <span class='va'>rawSeqs</span>,
-  position_labels <span class='op'>=</span> <span class='cn'>NULL</span>,
-  xt_freq <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>position_labels</span><span class='op'>)</span>, <span class='fl'>5</span><span class='op'>)</span>,
-  yt_freq <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>rawSeqs</span><span class='op'>)</span>, <span class='fl'>100</span><span class='op'>)</span>,
+  <span class='va'>seqs</span>,
+  pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xt_freq <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>pos_lab</span><span class='op'>)</span>, <span class='fl'>5</span><span class='op'>)</span>,
+  yt_freq <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>seqs</span><span class='op'>)</span>, <span class='fl'>100</span><span class='op'>)</span>,
   col <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"darkgreen"</span>, <span class='st'>"blue"</span>, <span class='st'>"orange"</span>, <span class='st'>"red"</span><span class='op'>)</span>,
-  savefilename <span class='op'>=</span> <span class='cn'>NULL</span>,
-  filetype <span class='op'>=</span> <span class='st'>"PNG"</span>,
-  fwidth <span class='op'>=</span> <span class='fl'>450</span>,
-  fheight <span class='op'>=</span> <span class='fl'>900</span>,
-  funits <span class='op'>=</span> <span class='st'>"px"</span>
+  save_fname <span class='op'>=</span> <span class='cn'>NULL</span>,
+  file_type <span class='op'>=</span> <span class='st'>"PNG"</span>,
+  f_width <span class='op'>=</span> <span class='fl'>450</span>,
+  f_height <span class='op'>=</span> <span class='fl'>900</span>,
+  f_units <span class='op'>=</span> <span class='st'>"px"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>rawSeqs</th>
+      <th>seqs</th>
       <td><p>The sequences as a DNAStringSet object.</p></td>
     </tr>
     <tr>
-      <th>position_labels</th>
+      <th>pos_lab</th>
       <td><p>The labels to be used for the sequence positions.
 Default: Sequence positions are labeled from 1 to the length of the
 sequences.</p></td>
@@ -170,26 +170,26 @@ than number of sequences. Default is 100.</p></td>
 that order).</p></td>
     </tr>
     <tr>
-      <th>savefilename</th>
+      <th>save_fname</th>
       <td><p>Specify the filename (with extension) for saving the
 plot to disk.</p></td>
     </tr>
     <tr>
-      <th>filetype</th>
+      <th>file_type</th>
       <td><p>Specify the file type, namely PNG, JPEG, TIFF.</p></td>
     </tr>
     <tr>
-      <th>fwidth</th>
+      <th>f_width</th>
       <td><p>Specify the width for the plot. This depends on the length of
 sequences.</p></td>
     </tr>
     <tr>
-      <th>fheight</th>
-      <td><p>Specify the height for the plot. This depends on the number of
-sequences.</p></td>
+      <th>f_height</th>
+      <td><p>Specify the height for the plot. This depends on the number 
+of sequences.</p></td>
     </tr>
     <tr>
-      <th>funits</th>
+      <th>f_units</th>
       <td><p>Specify the units in which the height and width are given.</p></td>
     </tr>
     </table>

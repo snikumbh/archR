@@ -7,7 +7,10 @@
     <loc>http://snikumbh.github.io/archR/reference/archR.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/archRSetConfig.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/archR_set_config.html</loc>
+  </url>
+  <url>
+    <loc>http://snikumbh.github.io/archR/reference/collate_archR_result.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/example_data.html</loc>
@@ -16,7 +19,7 @@
     <loc>http://snikumbh.github.io/archR/reference/get_one_hot_encoded_seqs.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/get_seqs_clusters_in_a_list.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/get_seqs_clust_list.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/handle_dir_creation.html</loc>
@@ -43,10 +46,10 @@
     <loc>http://snikumbh.github.io/archR/reference/prepare_data_from_FASTA.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/reorder_archRresult.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/run_archR_UI.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/run_archR_UI.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/seqs_str.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/reference/viz_basis_vectors_as_heatmap.html</loc>

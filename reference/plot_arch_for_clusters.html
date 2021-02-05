@@ -133,43 +133,43 @@ architecture sequence logos are saved as a multi-page PDF.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_arch_for_clusters</span><span class='op'>(</span>
-  <span class='va'>tss.seqs_raw</span>,
-  <span class='va'>list_of_elements</span>,
-  <span class='va'>position_labels</span>,
+  <span class='va'>seqs</span>,
+  <span class='va'>clust_list</span>,
+  <span class='va'>pos_lab</span>,
   xt_freq <span class='op'>=</span> <span class='fl'>5</span>,
-  fwidth <span class='op'>=</span> <span class='fl'>11</span>,
-  fheight <span class='op'>=</span> <span class='fl'>2</span>,
-  PDFfname <span class='op'>=</span> <span class='st'>"archR_sequence_architectures.pdf"</span>
+  pdf_width <span class='op'>=</span> <span class='fl'>11</span>,
+  pdf_height <span class='op'>=</span> <span class='fl'>2</span>,
+  pdf_name <span class='op'>=</span> <span class='st'>"archR_sequence_architectures.pdf"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tss.seqs_raw</th>
-      <td><p>Sequences as a DNAStringSet</p></td>
+      <th>seqs</th>
+      <td><p>Sequences as a DNAStringSet.</p></td>
     </tr>
     <tr>
-      <th>list_of_elements</th>
-      <td><p>Cluster elements as a list</p></td>
+      <th>clust_list</th>
+      <td><p>Clusters as a list of sequence IDs in each cluster.</p></td>
     </tr>
     <tr>
-      <th>position_labels</th>
+      <th>pos_lab</th>
       <td><p>Labels for sequence positions, should be of same
-length as length of the sequences</p></td>
+length as length of the sequences.</p></td>
     </tr>
     <tr>
       <th>xt_freq</th>
-      <td><p>Frequency of x-axis ticks</p></td>
+      <td><p>Frequency of x-axis ticks.</p></td>
     </tr>
     <tr>
-      <th>fwidth, fheight</th>
-      <td><p>Width and height in inches. Default values are 11 and 
-2</p></td>
+      <th>pdf_width, pdf_height</th>
+      <td><p>Width and height in inches of the PDF file. 
+Default values are 11 and 2.</p></td>
     </tr>
     <tr>
-      <th>PDFfname</th>
-      <td><p>Specify a filename to be saved as PDF</p></td>
+      <th>pdf_name</th>
+      <td><p>Specify the PDF filename.</p></td>
     </tr>
     </table>
 

@@ -79,7 +79,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2021-02-02</h4>
+            <h4 class="date">2021-02-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -214,23 +214,23 @@
 <div id="reading-input-as-fasta-file" class="section level3">
 <h3 class="hasAnchor">
 <a href="#reading-input-as-fasta-file" class="anchor"></a>Reading input as FASTA file</h3>
-<p>The function <code><a href="../reference/prepare_data_from_FASTA.html">archR::prepare_data_from_FASTA()</a></code> enables one-hot-encoding the DNA sequences in the given FASTA file. The one-hot-encoded sequences are returned as a sparse matrix with as many columns as the number of sequences in the FASTA file and (#sequences x <span class="math inline">\(4^{2}\)</span>) rows when dinucleotide profiles is selected. The number of rows will be (#sequences x <span class="math inline">\(4\)</span>) when mononucleotide profiles is selected. See the <code>sinuc_or_dinuc</code> argument.</p>
-<p>Upon setting the logical argument <code>rawSeq</code> to <code>TRUE</code>, the function returns the raw sequences as a <code><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-class.html">Biostrings::DNAStringSet</a></code> object, with <code>FALSE</code> it returns the column-wise one-hot encoded representation as noted above. When <code>rawSeq</code> is <code>TRUE</code>, <code>sinuc_or_dinuc</code> argument is ignored.</p>
+<p>The function <code><a href="../reference/prepare_data_from_FASTA.html">archR::prepare_data_from_FASTA()</a></code> enables one-hot-encoding the DNA sequences in the given FASTA file. The one-hot-encoded sequences are returned as a sparse matrix with as many columns as the number of sequences in the FASTA file and (sequence length x <span class="math inline">\(4^{2}\)</span>) rows when dinucleotide profiles is selected. The number of rows will be (sequence length x <span class="math inline">\(4\)</span>) when mononucleotide profiles is selected. See the <code>sinuc_or_dinuc</code> argument.</p>
+<p>Upon setting the logical argument <code>rawSeq</code> to <code>TRUE</code>, the function returns the raw sequences as a <code><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-class.html">Biostrings::DNAStringSet</a></code> object, with <code>FALSE</code> it returns the column-wise one-hot encoded representation as noted above. When <code>raw_seq</code> is <code>TRUE</code>, <code>sinuc_or_dinuc</code> argument is ignored.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Creation of one-hot encoded data matrix from FASTA file</span>
-<span class="va">inputFastaFilename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_data.fa"</span>, 
+<span class="va">inputFname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_data.fa"</span>, 
                                   package <span class="op">=</span> <span class="st">"archR"</span>, 
                                   mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># Specifying `dinuc` generates dinucleotide features</span>
-<span class="va">inputSeqsMat</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare_data_from_FASTA.html">prepare_data_from_FASTA</a></span><span class="op">(</span><span class="va">inputFastaFilename</span>,
+<span class="va">inputSeqsMat</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare_data_from_FASTA.html">prepare_data_from_FASTA</a></span><span class="op">(</span>fasta_fname <span class="op">=</span> <span class="va">inputFname</span>,
                                                   sinuc_or_dinuc <span class="op">=</span> <span class="st">"dinuc"</span><span class="op">)</span>
 <span class="co">#&gt; Sequences OK,</span>
 <span class="co">#&gt; Read 200 sequences</span>
 <span class="co">#&gt; Generating dinucleotide profiles</span>
 
-<span class="va">inputSeqsRaw</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare_data_from_FASTA.html">prepare_data_from_FASTA</a></span><span class="op">(</span><span class="va">inputFastaFilename</span>, 
-                                               rawSeq <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">inputSeqsRaw</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare_data_from_FASTA.html">prepare_data_from_FASTA</a></span><span class="op">(</span>fasta_fname <span class="op">=</span> <span class="va">inputFname</span>, 
+                                               raw_seq <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="va">nSeqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">inputSeqsRaw</span><span class="op">)</span>
 <span class="va">positions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu">Biostrings</span><span class="fu">::</span><span class="fu">width</span><span class="op">(</span><span class="va">inputSeqsRaw</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
@@ -242,7 +242,7 @@
 <p>If you already have a <code><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-class.html">Biostrings::DNAStringSet</a></code> object, you can use the <code><a href="../reference/get_one_hot_encoded_seqs.html">get_one_hot_encoded_seqs()</a></code> function which directly accepts a <code>DNAStringSet</code> object.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Creation of one-hot encoded data matrix from a DNAStringSet object</span>
-<span class="va">inputSeqs_direct</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/get_one_hot_encoded_seqs.html">get_one_hot_encoded_seqs</a></span><span class="op">(</span><span class="va">inputSeqsRaw</span>, 
+<span class="va">inputSeqs_direct</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/get_one_hot_encoded_seqs.html">get_one_hot_encoded_seqs</a></span><span class="op">(</span>seqs <span class="op">=</span> <span class="va">inputSeqsRaw</span>, 
                                                   sinuc_or_dinuc <span class="op">=</span> <span class="st">"dinuc"</span><span class="op">)</span>
 <span class="co">#&gt; Generating dinucleotide profiles</span>
 <span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="va">inputSeqs_direct</span>, <span class="va">inputSeqsMat</span><span class="op">)</span>
@@ -253,13 +253,11 @@
 <h2 class="hasAnchor">
 <a href="#visualize-input-sequences-as-an-image" class="anchor"></a>Visualize input sequences as an image</h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Visualize the sequences in a image matrix where the DNA bases are assigned fixed</span>
-<span class="co"># colors</span>
+<code class="sourceCode R"><span class="co"># Visualize the sequences in a image matrix where the DNA bases are </span>
+<span class="co"># assigned fixed colors</span>
 
 <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">inputSeqsRaw</span><span class="op">)</span>, 
-                          position_labels <span class="op">=</span> <span class="va">positions</span>, 
-                          savefilename <span class="op">=</span> <span class="cn">NULL</span>
-                          <span class="op">)</span></code></pre></div>
+                          pos_lab <span class="op">=</span> <span class="va">positions</span>, save_fname <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <p><img src="archR_files/figure-html/plot-seqs-1.png" width="480"></p>
 </div>
 <div id="calling-archr" class="section level2">
@@ -269,97 +267,90 @@
 <p>Setup archR configuration as follows.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Set archR configuration</span>
-<span class="va">archRconfig</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/archRSetConfig.html">archRSetConfig</a></span><span class="op">(</span>
+<span class="va">archRconfig</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/archR_set_config.html">archR_set_config</a></span><span class="op">(</span>
         parallelize <span class="op">=</span> <span class="cn">TRUE</span>,
-        nCoresUse <span class="op">=</span> <span class="fl">2</span>,
-        nIterationsUse <span class="op">=</span> <span class="fl">100</span>,
-        kMin <span class="op">=</span> <span class="fl">1</span>,
-        kMax <span class="op">=</span> <span class="fl">20</span>,
-        modSelType <span class="op">=</span> <span class="st">"stability"</span>,
+        n_cores <span class="op">=</span> <span class="fl">2</span>,
+        n_iterations <span class="op">=</span> <span class="fl">100</span>,
+        k_min <span class="op">=</span> <span class="fl">1</span>,
+        k_max <span class="op">=</span> <span class="fl">20</span>,
+        mod_sel_type <span class="op">=</span> <span class="st">"stability"</span>,
         tol <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">4</span>,
         bound <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">8</span>,
-        innerChunkSize <span class="op">=</span> <span class="fl">100</span>,
-        flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>debugFlag <span class="op">=</span> <span class="cn">FALSE</span>, timeFlag <span class="op">=</span> <span class="cn">TRUE</span>, verboseFlag <span class="op">=</span> <span class="cn">TRUE</span>,
-                     plotVerboseFlag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+        inner_chunk_size <span class="op">=</span> <span class="fl">100</span>,
+        flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>debug <span class="op">=</span> <span class="cn">FALSE</span>, time <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>,
+                     plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>Once the configuration is setup, call the <code><a href="../reference/archR.html">archR::archR</a></code> function with user-specified iterations.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Call/Run archR</span>
 <span class="va">perform_iters</span> <span class="op">&lt;-</span> <span class="fl">2</span>
 <span class="va">archRresult</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/archR.html">archR</a></span><span class="op">(</span>config <span class="op">=</span> <span class="va">archRconfig</span>,
-                               seqsMat <span class="op">=</span> <span class="va">inputSeqsMat</span>,
-                               seqsRaw <span class="op">=</span> <span class="va">inputSeqsRaw</span>,
-                               seqsPositions <span class="op">=</span> <span class="va">positions</span>,
-                               thresholdItr <span class="op">=</span> <span class="va">perform_iters</span><span class="op">)</span>
-<span class="co">#&gt; Parallelization with 2 cores</span>
+                            seqs_ohe_mat <span class="op">=</span> <span class="va">inputSeqsMat</span>,
+                            seqs_raw <span class="op">=</span> <span class="va">inputSeqsRaw</span>,
+                            seqs_pos <span class="op">=</span> <span class="va">positions</span>,
+                            threshold_itr <span class="op">=</span> <span class="va">perform_iters</span><span class="op">)</span>
 <span class="co">#&gt; Model selection by factor stability</span>
 <span class="co">#&gt; Tolerance: 1e-04 &amp; Bound: 1e-08</span>
-<span class="co">#&gt; === Iteration 1, 1 chunk(s) ===</span>
-<span class="co">#&gt; [Outer chunk 1/1] [Size: 200]</span>
+<span class="co">#&gt; === Iteration  1 ,  1  chunk(s) ===</span>
+<span class="co">#&gt; [Outer chunk  1 / 1 ]  [Size:  200 ]</span>
 <span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk 1/2] [Size: 100]</span>
-<span class="co">#&gt; Checking K = 1</span>
-<span class="co">#&gt; Checking K = 2</span>
-<span class="co">#&gt; Checking K = 3</span>
-<span class="co">#&gt; Checking K = 4</span>
-<span class="co">#&gt; Best K for this subset: 3</span>
-<span class="co">#&gt; Fetching 3 clusters</span>
-<span class="co">#&gt; [Inner chunk 2/2] [Size: 100]</span>
-<span class="co">#&gt; Checking K = 1</span>
-<span class="co">#&gt; Checking K = 2</span>
-<span class="co">#&gt; Checking K = 3</span>
-<span class="co">#&gt; Checking K = 4</span>
-<span class="co">#&gt; Best K for this subset: 3</span>
-<span class="co">#&gt; Fetching 3 clusters</span>
+<span class="co">#&gt; [Inner chunk  1 / 2 ]  [Size:  100 ]</span>
+<span class="co">#&gt; Checking K =  1</span>
+<span class="co">#&gt; Checking K =  2</span>
+<span class="co">#&gt; Checking K =  3</span>
+<span class="co">#&gt; Checking K =  4</span>
+<span class="co">#&gt; Best K for this subset:  3</span>
+<span class="co">#&gt; Fetching  3  clusters</span>
+<span class="co">#&gt; [Inner chunk  2 / 2 ]  [Size:  100 ]</span>
+<span class="co">#&gt; Checking K =  1</span>
+<span class="co">#&gt; Checking K =  2</span>
+<span class="co">#&gt; Checking K =  3</span>
+<span class="co">#&gt; Checking K =  4</span>
+<span class="co">#&gt; Best K for this subset:  3</span>
+<span class="co">#&gt; Fetching  3  clusters</span>
 <span class="co">#&gt; [Outer chunk 1/1] complete</span>
 <span class="co">#&gt; [Iteration 1] complete</span>
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Updating sequence cluster labels</span>
-<span class="co">#&gt; #Clusters: 3</span>
-<span class="co">#&gt; Iteration 1 completed in 0.702 mins</span>
-<span class="co">#&gt; 0.702 mins ellapsed since start</span>
-<span class="co">#&gt; === Iteration 2, 3 chunk(s) ===</span>
-<span class="co">#&gt; [Outer chunk 1/3] [Size: 100]</span>
+<span class="co">#&gt; Iteration 1 completed  in 0.841 mins</span>
+<span class="co">#&gt; 0.841 mins  ellapsed since start</span>
+<span class="co">#&gt; === Iteration  2 ,  3  chunk(s) ===</span>
+<span class="co">#&gt; [Outer chunk  1 / 3 ]  [Size:  100 ]</span>
 <span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk 1/1] [Size: 100]</span>
-<span class="co">#&gt; Checking K = 1</span>
-<span class="co">#&gt; Checking K = 2</span>
-<span class="co">#&gt; Checking K = 3</span>
-<span class="co">#&gt; Best K for this subset: 2</span>
-<span class="co">#&gt; Fetching 2 clusters</span>
+<span class="co">#&gt; [Inner chunk  1 / 1 ]  [Size:  100 ]</span>
+<span class="co">#&gt; Checking K =  1</span>
+<span class="co">#&gt; Checking K =  2</span>
+<span class="co">#&gt; Checking K =  3</span>
+<span class="co">#&gt; Best K for this subset:  2</span>
+<span class="co">#&gt; Fetching  2  clusters</span>
 <span class="co">#&gt; [Outer chunk 1/3] complete</span>
-<span class="co">#&gt; [Outer chunk 2/3] [Size: 50]</span>
+<span class="co">#&gt; [Outer chunk  2 / 3 ]  [Size:  50 ]</span>
 <span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk 1/1] [Size: 50]</span>
-<span class="co">#&gt; Checking K = 1</span>
-<span class="co">#&gt; Checking K = 2</span>
-<span class="co">#&gt; Best K for this subset: 1</span>
-<span class="co">#&gt; Fetching 1 clusters</span>
+<span class="co">#&gt; [Inner chunk  1 / 1 ]  [Size:  50 ]</span>
+<span class="co">#&gt; Checking K =  1</span>
+<span class="co">#&gt; Checking K =  2</span>
+<span class="co">#&gt; Best K for this subset:  1</span>
+<span class="co">#&gt; Fetching  1  clusters</span>
 <span class="co">#&gt; [Outer chunk 2/3] complete</span>
-<span class="co">#&gt; [Outer chunk 3/3] [Size: 50]</span>
+<span class="co">#&gt; [Outer chunk  3 / 3 ]  [Size:  50 ]</span>
 <span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk 1/1] [Size: 50]</span>
-<span class="co">#&gt; Checking K = 1</span>
-<span class="co">#&gt; Checking K = 2</span>
-<span class="co">#&gt; Best K for this subset: 1</span>
-<span class="co">#&gt; Fetching 1 clusters</span>
+<span class="co">#&gt; [Inner chunk  1 / 1 ]  [Size:  50 ]</span>
+<span class="co">#&gt; Checking K =  1</span>
+<span class="co">#&gt; Checking K =  2</span>
+<span class="co">#&gt; Best K for this subset:  1</span>
+<span class="co">#&gt; Fetching  1  clusters</span>
 <span class="co">#&gt; [Outer chunk 3/3] complete</span>
 <span class="co">#&gt; [Iteration 2] complete</span>
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
-<span class="co">#&gt; Updating sequence cluster labels</span>
-<span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; Iteration 2 completed in 0.635 mins</span>
-<span class="co">#&gt; 1.34 mins ellapsed since start</span>
-<span class="co">#&gt; Updating sequence cluster labels</span>
-<span class="co">#&gt; #Clusters: 4</span>
-<span class="co">#&gt; archR exiting, 1.34 mins</span></code></pre></div>
+<span class="co">#&gt; Iteration 2 completed  in 0.859 mins</span>
+<span class="co">#&gt; 1.7 mins  ellapsed since start</span>
+<span class="co">#&gt; Collating clusters</span>
+<span class="co">#&gt; archR exiting , 1.7 mins</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#understanding-the-result-object-from-archr" class="anchor"></a>Understanding the result object from <em>archR</em>
 </h2>
-<p>In the version 0.1.4, <em>archR</em> naively returns a result object which is a nested list. The list elements include: 1. the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; 2. the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; 3. the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; 4. the raw sequences provided [<code>rawSeqs</code>]; 5. the configuration setting [<code>config</code>]; and 6. the call itself [<code>call</code>].</p>
+<p>In the version 0.1.4, <em>archR</em> naively returns a result object which is a nested list. The list elements include: 1. the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; 2. the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; 3. the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; 4. the raw sequences provided [<code>rawSeqs</code>]; 5. if timeFlag is set, timing information (in minutes) per iteration [<code>timeInfo</code>]; 6. the configuration setting [<code>config</code>]; and 7. the call itself [<code>call</code>].</p>
 <div id="nmf-basis-vectors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nmf-basis-vectors" class="anchor"></a>NMF basis vectors</h3>
@@ -386,11 +377,6 @@
 <a href="#visualize-results-from-archr" class="anchor"></a>Visualize results from <em>archR</em>
 </h2>
 <p>In this section we demonstrate how to visualize results from <em>archR</em>. One can visualize the NMF basis vectors as well as the sequence clusters.</p>
-<!-- ### Visualizing NMF basis vectors at any iteration -->
-<!-- We can visualize the basis vectors corresponding to each cluster at any  -->
-<!-- iteration.  -->
-<!-- These per-iteration basis vectors are available from the `archRresult` object  -->
-<!-- (see above Section). -->
 <!-- ```{r viz-BV-1, echo=TRUE, fig.height=2, fig.width=25} -->
 <!-- archR::viz_basis_vectors_as_seqlogo( -->
 <!--     archRresult$clustBasisVectors[[1]]$basisVectors, -->
@@ -411,14 +397,6 @@
 <!--   archRresult$clustBasisVectors[[2]]$basisVectors, -->
 <!--   position_labels = positions) -->
 <!-- ``` -->
-<!-- ```{r visualize-basis-vectors-combined, echo=TRUE, fig.height=4, fig.width=25} -->
-<!-- archR::viz_basis_vectors_in_combined_heatmaps_seqlogos( -->
-<!--   archRresult$clustBasisVectors[[2]]$basisVectors, -->
-<!--   position_labels = positions, plotMethod = "bits", savePDFfilename = NULL -->
-<!-- ) -->
-<!-- ``` -->
-<!-- The `plotMethod` argument to functions producing sequence logos is supplied to  -->
-<!-- the call to `ggseqlogo`. The possible values are `custom`, `bits`. -->
 <p>The clustered output from <em>archR</em> can again be visualized as a matrix. Simply sort the sequences based on the cluster labels assigned to them and call <code><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">archR::viz_seqs_as_acgt_mat_from_seqs</a></code> with the sorted order as shown.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -427,11 +405,11 @@
 <span class="va">sorted_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">seqsClustLabels</span>, index.return <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 
-<span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">inputSeqsRaw</span><span class="op">[</span><span class="va">sorted_order</span><span class="op">$</span><span class="va">ix</span><span class="op">]</span><span class="op">)</span>,
-                         position_labels <span class="op">=</span> <span class="va">positions</span>,
-                         savefilename <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+<span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">inputSeqsRaw</span><span class="op">[</span><span class="va">sorted_order</span><span class="op">$</span><span class="va">ix</span><span class="op">]</span><span class="op">)</span>, pos_lab <span class="op">=</span> <span class="va">positions</span>,
+  save_fname <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="archR_files/figure-html/visualize-clusters-itr1-1.png" alt="Figure: Clusters at iteration 1" width="480"><p class="caption">
+<img src="archR_files/figure-html/clust-itr1-1.png" alt="Figure: Clusters at iteration 1" width="480"><p class="caption">
 Figure: Clusters at iteration 1
 </p>
 </div>
@@ -442,25 +420,21 @@ Figure: Clusters at iteration 1
 <span class="va">sorted_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">seqsClustLabels</span>, index.return <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 
-<span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">inputSeqsRaw</span><span class="op">[</span><span class="va">sorted_order</span><span class="op">$</span><span class="va">ix</span><span class="op">]</span><span class="op">)</span>,
-                         position_labels <span class="op">=</span> <span class="va">positions</span>,
-                         savefilename <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+<span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">inputSeqsRaw</span><span class="op">[</span><span class="va">sorted_order</span><span class="op">$</span><span class="va">ix</span><span class="op">]</span><span class="op">)</span>, pos_lab <span class="op">=</span> <span class="va">positions</span>,
+  save_fname <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="archR_files/figure-html/visualize-clusters-itr2-1.png" alt="Figure: Clusters at iteration 2" width="480"><p class="caption">
+<img src="archR_files/figure-html/clust-itr2-1.png" alt="Figure: Clusters at iteration 2" width="480"><p class="caption">
 Figure: Clusters at iteration 2
 </p>
 </div>
-<!-- ![_archR_ result on example data w/ clusters](./archR-result-example-data.png) -->
-<!-- This output in Figure 1 was generated by performing 100 bootstrapped iterations,  -->
-<!-- parallely by setting the following configuration parameters to _archR_: -->
-<!-- `nIterations = 100, nCoresUse = 4, parallelize = TRUE`. -->
 </div>
 </div>
 <div id="conclusion" class="section level1">
 <h1 class="hasAnchor">
 <a href="#conclusion" class="anchor"></a>Conclusion</h1>
 <p><em>archR</em> can detect <em>de novo</em> sequence features and simultaneously identify the complex interactions of different features together with their positional specificities.</p>
-<p>Note that the sequence architectures identified by <em>archR</em> have no limitations due to the size of the motifs or gaps in them, distance between motifs, compositional and positional variations in the individual motifs and their effects on the complex interactions, and number of motifs involved in any interaction. <!-- It is advisable to perform a large number of bootstrapped iterations for NMF in  --> <!-- _archR_.  --> <!-- This potentially affects the computation time of _archR_.  --> <!-- But being an  --> <!-- embarrasingly parallelizable case, this issue is alleviated.  --> <!-- There are already  --> <!-- provisions in _archR_ to choose parallelization for speeding up computations. --></p>
+<p>Note that the sequence architectures identified by <em>archR</em> have no limitations due to the size of the motifs or gaps in them, distance between motifs, compositional and positional variations in the individual motifs and their effects on the complex interactions, and number of motifs involved in any interaction.</p>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
@@ -483,63 +457,24 @@ Figure: Clusters at iteration 2
 <span class="co">#&gt; [8] methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] Biobase_2.50.0      Biostrings_2.58.0   XVector_0.30.0     </span>
-<span class="co">#&gt; [4] IRanges_2.24.1      S4Vectors_0.28.1    BiocGenerics_0.36.0</span>
-<span class="co">#&gt; [7] archR_0.1.4        </span>
+<span class="co">#&gt; [1] Biostrings_2.58.0   XVector_0.30.0      IRanges_2.24.1     </span>
+<span class="co">#&gt; [4] S4Vectors_0.28.1    BiocGenerics_0.36.0 archR_0.1.4        </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;   [1] bitops_1.0-6                matrixStats_0.58.0         </span>
-<span class="co">#&gt;   [3] fs_1.5.0                    DirichletMultinomial_1.32.0</span>
-<span class="co">#&gt;   [5] TFBSTools_1.28.0            bit64_4.0.5                </span>
-<span class="co">#&gt;   [7] httr_1.4.2                  doParallel_1.0.16          </span>
-<span class="co">#&gt;   [9] RColorBrewer_1.1-2          rprojroot_2.0.2            </span>
-<span class="co">#&gt;  [11] GenomeInfoDb_1.26.2         tools_4.0.3                </span>
-<span class="co">#&gt;  [13] R6_2.5.0                    seqLogo_1.56.0             </span>
-<span class="co">#&gt;  [15] DBI_1.1.1                   colorspace_2.0-0           </span>
-<span class="co">#&gt;  [17] withr_2.4.1                 tidyselect_1.1.0           </span>
-<span class="co">#&gt;  [19] bit_4.0.4                   compiler_4.0.3             </span>
-<span class="co">#&gt;  [21] textshaping_0.2.1           desc_1.2.0                 </span>
-<span class="co">#&gt;  [23] DelayedArray_0.16.1         pkgmaker_0.32.2            </span>
-<span class="co">#&gt;  [25] rtracklayer_1.50.0          caTools_1.18.1             </span>
-<span class="co">#&gt;  [27] scales_1.1.1                readr_1.4.0                </span>
-<span class="co">#&gt;  [29] NMF_0.23.0                  pkgdown_1.6.1              </span>
-<span class="co">#&gt;  [31] Rsamtools_2.6.0             systemfonts_1.0.0          </span>
-<span class="co">#&gt;  [33] stringr_1.4.0               digest_0.6.27              </span>
-<span class="co">#&gt;  [35] R.utils_2.10.1              rmarkdown_2.6              </span>
-<span class="co">#&gt;  [37] pkgconfig_2.0.3             htmltools_0.5.1.1          </span>
-<span class="co">#&gt;  [39] MatrixGenerics_1.2.1        BSgenome_1.58.0            </span>
-<span class="co">#&gt;  [41] fastmap_1.1.0               highr_0.8                  </span>
-<span class="co">#&gt;  [43] rlang_0.4.10                RSQLite_2.2.3              </span>
-<span class="co">#&gt;  [45] generics_0.1.0              BiocParallel_1.24.1        </span>
-<span class="co">#&gt;  [47] gtools_3.8.2                R.oo_1.24.0                </span>
-<span class="co">#&gt;  [49] dplyr_1.0.3                 RCurl_1.98-1.2             </span>
-<span class="co">#&gt;  [51] magrittr_2.0.1              GO.db_3.12.1               </span>
-<span class="co">#&gt;  [53] GenomeInfoDbData_1.2.4      Matrix_1.2-18              </span>
-<span class="co">#&gt;  [55] Rcpp_1.0.6                  munsell_0.5.0              </span>
-<span class="co">#&gt;  [57] R.methodsS3_1.8.1           lifecycle_0.2.0            </span>
-<span class="co">#&gt;  [59] stringi_1.5.3               yaml_2.2.1                 </span>
-<span class="co">#&gt;  [61] SummarizedExperiment_1.20.0 zlibbioc_1.36.0            </span>
-<span class="co">#&gt;  [63] plyr_1.8.6                  grid_4.0.3                 </span>
-<span class="co">#&gt;  [65] ggseqlogo_0.1               blob_1.2.1                 </span>
-<span class="co">#&gt;  [67] crayon_1.4.0                CNEr_1.26.0                </span>
-<span class="co">#&gt;  [69] lattice_0.20-41             annotate_1.68.0            </span>
-<span class="co">#&gt;  [71] KEGGREST_1.30.1             hms_1.0.0                  </span>
-<span class="co">#&gt;  [73] knitr_1.31                  pillar_1.4.7               </span>
-<span class="co">#&gt;  [75] GenomicRanges_1.42.0        rngtools_1.5               </span>
-<span class="co">#&gt;  [77] reshape2_1.4.4              codetools_0.2-16           </span>
-<span class="co">#&gt;  [79] TFMPvalue_0.0.8             XML_3.99-0.5               </span>
-<span class="co">#&gt;  [81] glue_1.4.2                  evaluate_0.14              </span>
-<span class="co">#&gt;  [83] png_0.1-7                   vctrs_0.3.6                </span>
-<span class="co">#&gt;  [85] foreach_1.5.1               poweRlaw_0.70.6            </span>
-<span class="co">#&gt;  [87] gtable_0.3.0                purrr_0.3.4                </span>
-<span class="co">#&gt;  [89] assertthat_0.2.1            cachem_1.0.1               </span>
-<span class="co">#&gt;  [91] ggplot2_3.3.3               xfun_0.20                  </span>
-<span class="co">#&gt;  [93] gridBase_0.4-7              xtable_1.8-4               </span>
-<span class="co">#&gt;  [95] pracma_2.3.3                ragg_0.4.1                 </span>
-<span class="co">#&gt;  [97] tibble_3.0.6                iterators_1.0.13           </span>
-<span class="co">#&gt;  [99] AnnotationDbi_1.52.0        GenomicAlignments_1.26.0   </span>
-<span class="co">#&gt; [101] registry_0.5-1              memoise_2.0.0              </span>
-<span class="co">#&gt; [103] cluster_2.1.0               ellipsis_0.3.1</span></code></pre></div>
+<span class="co">#&gt;  [1] tidyselect_1.1.0  xfun_0.20         purrr_0.3.4       reshape2_1.4.4   </span>
+<span class="co">#&gt;  [5] lattice_0.20-41   colorspace_2.0-0  vctrs_0.3.6       generics_0.1.0   </span>
+<span class="co">#&gt;  [9] htmltools_0.5.1.1 yaml_2.2.1        rlang_0.4.10      pkgdown_1.6.1    </span>
+<span class="co">#&gt; [13] pillar_1.4.7      glue_1.4.2        lifecycle_0.2.0   plyr_1.8.6       </span>
+<span class="co">#&gt; [17] stringr_1.4.0     ggseqlogo_0.1     zlibbioc_1.36.0   munsell_0.5.0    </span>
+<span class="co">#&gt; [21] gtable_0.3.0      ragg_0.4.1        memoise_2.0.0     evaluate_0.14    </span>
+<span class="co">#&gt; [25] Biobase_2.50.0    knitr_1.31        fastmap_1.1.0     highr_0.8        </span>
+<span class="co">#&gt; [29] Rcpp_1.0.6        scales_1.1.1      cachem_1.0.3      hopach_2.50.0    </span>
+<span class="co">#&gt; [33] desc_1.2.0        systemfonts_1.0.0 fs_1.5.0          textshaping_0.2.1</span>
+<span class="co">#&gt; [37] ggplot2_3.3.3     digest_0.6.27     stringi_1.5.3     dplyr_1.0.4      </span>
+<span class="co">#&gt; [41] grid_4.0.3        rprojroot_2.0.2   tools_4.0.3       magrittr_2.0.1   </span>
+<span class="co">#&gt; [45] tibble_3.0.6      cluster_2.1.0     crayon_1.4.0      pkgconfig_2.0.3  </span>
+<span class="co">#&gt; [49] ellipsis_0.3.1    Matrix_1.2-18     assertthat_0.2.1  rmarkdown_2.6    </span>
+<span class="co">#&gt; [53] R6_2.5.0          compiler_4.0.3</span></code></pre></div>
 </div>
   </div>
 

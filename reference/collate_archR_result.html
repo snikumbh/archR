@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot sequence logo of a collection of sequences — plot_ggseqlogo_of_seqs • archR</title>
+<title>Collate raw clusters at the chosen iteration of archR result — collate_archR_result • archR</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Plot sequence logo of a collection of sequences — plot_ggseqlogo_of_seqs" />
-<meta property="og:description" content="A wrapper to ggseqlogo plotting. Given a collection of
-sequences, this function plots the sequence logo." />
+<meta property="og:title" content="Collate raw clusters at the chosen iteration of archR result — collate_archR_result" />
+<meta property="og:description" content="We use hierarchical clustering for reordering/collating raw
+clusters from archR's given iteration." />
 
 
 
@@ -118,53 +118,95 @@ sequences, this function plots the sequence logo." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot sequence logo of a collection of sequences</h1>
-    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/plot_arch_for_clusters.R'><code>R/plot_arch_for_clusters.R</code></a></small>
-    <div class="hidden name"><code>plot_ggseqlogo_of_seqs.Rd</code></div>
+    <h1>Collate raw clusters at the chosen iteration of archR result</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/archR_auxiliary_functionsI.R'><code>R/archR_auxiliary_functionsI.R</code></a></small>
+    <div class="hidden name"><code>collate_archR_result.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A wrapper to ggseqlogo plotting. Given a collection of
-sequences, this function plots the sequence logo.</p>
+    <p>We use hierarchical clustering for reordering/collating raw
+clusters from archR's given iteration.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_ggseqlogo_of_seqs</span><span class='op'>(</span>
-  <span class='va'>seqs</span>,
-  <span class='va'>pos_lab</span>,
-  xt_freq <span class='op'>=</span> <span class='fl'>5</span>,
-  title <span class='op'>=</span> <span class='st'>"Title"</span>,
-  bits_yax <span class='op'>=</span> <span class='st'>"auto"</span>
+    <pre class="usage"><span class='fu'>collate_archR_result</span><span class='op'>(</span>
+  <span class='va'>result</span>,
+  iter <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>result</span><span class='op'>$</span><span class='va'>seqsClustLabels</span><span class='op'>)</span>,
+  clust_method <span class='op'>=</span> <span class='st'>"hc"</span>,
+  aggl_method <span class='op'>=</span> <span class='st'>"ward.D"</span>,
+  dist_method <span class='op'>=</span> <span class='st'>"euclid"</span>,
+  regularize <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  topn <span class='op'>=</span> <span class='fl'>50</span>,
+  collate <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>flags</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>seqs</th>
-      <td><p>Collection of sequences as a Biostrings::DNAStringSet object.</p></td>
+      <th>result</th>
+      <td><p>The archR result object.</p></td>
     </tr>
     <tr>
-      <th>pos_lab</th>
-      <td><p>Numeric vector of labels for sequence positions.
-This should be the same length as the width of the given sequences.</p></td>
+      <th>iter</th>
+      <td><p>Specify clusters at which iteration of archR are to be 
+reordered/collated. Default is the last iteration of the archR result object.</p></td>
     </tr>
     <tr>
-      <th>xt_freq</th>
-      <td><p>Specify the frequency of the x-axis ticks.</p></td>
+      <th>clust_method</th>
+      <td><p>Specify 'hc' for hierarchical clustering. Currently, only
+hierarchical clustering is supported.</p></td>
     </tr>
     <tr>
-      <th>title</th>
-      <td><p>The title for the plot.</p></td>
+      <th>aggl_method</th>
+      <td><p>One of linkage values as specified for hierarchical 
+clustering with <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></code>. Default is 'ward.D'.</p></td>
     </tr>
     <tr>
-      <th>bits_yax</th>
-      <td><p>Specify 'full' if the information content y-axis limits 
-should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
-the y-axis limits according to the maximum information content of the 
-sequence logo. Default is 'auto'.</p></td>
+      <th>dist_method</th>
+      <td><p>Distance measure to be used with hierarchical clustering. 
+Available options are "euclid" (default), "cor" for correlation, "cosangle" 
+for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
+<code><a href='https://rdrr.io/pkg/TFBSTools/man/PFMSimilarity-methods.html'>PFMSimilarity</a></code>).</p></td>
+    </tr>
+    <tr>
+      <th>regularize</th>
+      <td><p>Logical. Specify TRUE if regularization is to be performed 
+before comparison. Default is FALSE. Also see argument 'topN'.</p></td>
+    </tr>
+    <tr>
+      <th>topn</th>
+      <td><p>Use only the top N dimensions of each basis vector for 
+comparing them. Note that since each basis vector has 4L or 16L (mono- or 
+dinucleotides) dimensions, each dimension is a combination of nucleotide and 
+its position in the sequence. This argument selects the top N dimensions of 
+the basis vector. This is ignored when argument 'regularize' is FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>collate</th>
+      <td><p>Logical. Specify TRUE if collation using 
+hierarchical agglomerative clustering is to be performed, otherwise FALSE. 
+This argument is used by archR internally to obtain the ordering instead of 
+collated clusters.</p></td>
+    </tr>
+    <tr>
+      <th>flags</th>
+      <td><p>Pass the flags object similar to the flags in configuration 
+of the archR result object.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>ignored</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns the collated clusters. When `collate' is FALSE, 
+it returns the already existing basis vectors, each as singleton clusters. 
+The sequence cluster labels and sequence clusters are also handled 
+accordingly.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
