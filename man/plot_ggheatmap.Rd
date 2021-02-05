@@ -4,19 +4,19 @@
 \alias{plot_ggheatmap}
 \title{Plot a given position weight matrix as a heatmap using ggplot2}
 \usage{
-plot_ggheatmap(pwmMat, position_labels = NULL, savePDFfilename = NULL)
+plot_ggheatmap(pwm_mat, pos_lab = NULL, pdf_name = NULL)
 }
 \arguments{
-\item{pwmMat}{Matrix (usually a PWM, but can be non-normalized/any matrix)
+\item{pwm_mat}{Matrix (usually a PWM, but can be non-normalized/any matrix)
 to be represented as a heatmap.}
 
-\item{position_labels}{Labels of the positions in the sequences.}
+\item{pos_lab}{Labels of the positions in the sequences.}
 
-\item{savePDFfilename}{Name of the file which will be saved as PDF.}
+\item{pdf_name}{Name of the file which will be saved as PDF.}
 }
 \value{
 A ggplot object so you can simply call \code{print} or \code{save}
-on it later. If \code{savePDFfilename} is given, it is also saved and the
+on it later. If \code{pdf_name} is given, it is also saved and the
 \code{ggplot} object returned.
 }
 \description{

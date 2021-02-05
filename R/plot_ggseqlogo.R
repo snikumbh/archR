@@ -70,3 +70,28 @@ plot_ggseqlogo <- function(pwm_mat, method = "custom", pos_lab = NULL,
     }
     return(p1)
 }
+
+check_vars <- function(pwm_mat, pos_lab){
+    if (!is.matrix(pwm_mat)) {
+        stop("Expecting a matrix with 4 rows")
+    }
+    if (sum(dim(pwm_mat)) == 2 && is.na(pwm_mat)) {
+        stop("Empty matrix")
+    }
+    if (!(nrow(pwm_mat) == 4)) {
+        stop("Expecting a matrix with 4 rows corresponding to DNA chars ",
+            "'A', 'C', 'G', 'T'")
+    }
+    ##
+    if (length(pos_lab) < ncol(pwm_mat)) {
+        stop(paste0("Inadequate position labels supplied", 
+            ncol(pwm_mat) - length(pos_lab)
+        ))
+    }
+    ##
+    if (length(pos_lab) > ncol(pwm_mat)) {
+        stop(paste0("Overabundant position labels supplied",
+            length(pos_lab) - ncol(pwm_mat)
+        ))
+    }
+}

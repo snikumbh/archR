@@ -3,62 +3,36 @@
 #' @description The given matrix is plotted as a heatmap using \code{ggplot2}'s
 #' \code{geom_tile}.
 #'
-#' @param pwmMat Matrix (usually a PWM, but can be non-normalized/any matrix)
+#' @param pwm_mat Matrix (usually a PWM, but can be non-normalized/any matrix)
 #' to be represented as a heatmap.
-#' @param position_labels Labels of the positions in the sequences.
-#' @param savePDFfilename Name of the file which will be saved as PDF.
+#' @param pos_lab Labels of the positions in the sequences.
+#' @param pdf_name Name of the file which will be saved as PDF.
 #'
 #' @return A ggplot object so you can simply call \code{print} or \code{save}
-#' on it later. If \code{savePDFfilename} is given, it is also saved and the
+#' on it later. If \code{pdf_name} is given, it is also saved and the
 #' \code{ggplot} object returned.
+#' 
 #' @export
+#' 
 #' @family visualization functions
+#' 
 #' @seealso \code{\link{plot_ggseqlogo}} for plotting PWMs as sequence logos
+#' 
 #' @importFrom reshape2 melt
-#' @import ggplot2
+#' @import ggplot2 
 #' @import ggseqlogo
 #'
-plot_ggheatmap <- function(pwmMat, position_labels = NULL,
-                            savePDFfilename = NULL) {
-    if (!is.matrix(pwmMat)) {
-        stop("Expecting a matrix with 4 rows")
-    }
-    if (sum(dim(pwmMat)) == 2 && is.na(pwmMat)) {
-        stop("Empty matrix")
-    }
-    if (!(nrow(pwmMat) == 4)) {
-        stop("Expecting a matrix with 4 rows corresponding to DNA chars ",
-                "'A', 'C', 'G', 'T'")
-    }
+plot_ggheatmap <- function(pwm_mat, pos_lab = NULL, pdf_name = NULL) {
+    check_vars(pwm_mat, pos_lab)
     ##
-    if (length(position_labels) < ncol(pwmMat)) {
-        stop(paste0(
-            "Inadequate position labels supplied",
-            ncol(pwmMat) - length(position_labels)
-        ))
-    }
-    ##
-    if (length(position_labels) > ncol(pwmMat)) {
-        stop(paste0(
-            "Overabundant position labels supplied",
-            length(position_labels) - ncol(pwmMat)
-        ))
-    }
-    ##
-    ## Convert pwmMat to df, heatmap by ggplot-way
-    pwmMat_df <- as.data.frame(pwmMat)
-
-    # pwmMat_df <- tibble::add_column(pwmMat_df, Nucleotides = 
-    #         rownames(pwmMat_df))
-    ##
-    pwmMat_df$Nucleotides <- rownames(pwmMat_df)
-    ##
-    colnames(pwmMat_df) <- c(position_labels, "Nucleotides")
-    ##
-    pwmMat_df_for_ggheatmap <- melt(pwmMat_df, id.vars = c("Nucleotides"),
+    ## Convert pwm_mat to df, heatmap by ggplot-way
+    pwm_mat_df <- as.data.frame(pwm_mat)
+    pwm_mat_df$Nucleotides <- rownames(pwm_mat_df)
+    colnames(pwm_mat_df) <- c(pos_lab, "Nucleotides")
+    pwm_mat_df_for_ggheatmap <- melt(pwm_mat_df, id.vars = c("Nucleotides"),
                                     variable.name = "positions")
     ##
-    p1 <- ggplot2::ggplot(data = pwmMat_df_for_ggheatmap, mapping = aes(
+    p1 <- ggplot2::ggplot(data = pwm_mat_df_for_ggheatmap, mapping = aes(
         x = positions,
         ## Here, 'positions' is the column_name, see previous statement.
         ## Do not change it to position_labels
@@ -68,25 +42,101 @@ plot_ggheatmap <- function(pwmMat, position_labels = NULL,
         ggplot2::geom_tile() +
         ggplot2::theme_bw() +
         ggplot2::xlab(label = "Positions") +
-        ggplot2::scale_fill_gradient2(
-            name = "",
-            low = "white",
-            mid = "white",
-            high = "#012345"
-        ) +
+        ggplot2::scale_fill_gradient2(name = "", low = "white",
+                                mid = "white", high = "#012345") +
         ggplot2::coord_fixed(ratio = 2.0, clip = "on") +
-        ggplot2::theme(
-            legend.position = "top",
+        ggplot2::theme(legend.position = "top", 
             legend.justification = "center",
-            axis.text.x = element_text(size = rel(0.5), angle = 90, hjust = 1)
+            axis.text.x = element_text(size = rel(0.5), angle = 90, 
+                            hjust = 1, vjust=0.5)
         )
 
-    if (!is.null(savePDFfilename)) {
-        if (file.exists(savePDFfilename)) {
+    if (!is.null(pdf_name)) {
+        if (file.exists(pdf_name)) {
             warning("File exists, will overwrite", immediate. = TRUE)
         }
         ggplot2::ggsave(p1, device = "pdf", width = 20, height = 2.5)
     }
     return(p1)
 }
+## =============================================================================
 
+#' @title Visualize a given (PWM) matrix as a sequence logo.
+#'
+#' @param pwm_mat Matrix (usually a PWM, but can be any non-normalized matrix) 
+#' to be represented as a sequence logo.
+#' 
+#' @param method For \code{ggseqlogo}; either of 'custom', 'bits', or
+#' 'probability'. Default is 'custom'.
+#' 
+#' @param pos_lab Labels of the positions in the sequences.
+#' 
+#' @param pdf_name Name of the file which will be saved as PDF.
+#'
+#' @return A ggplot2 object so you can simply call \code{print} or \code{save}
+#' on it later. If \code{pdf_name} is given, it is also saved in addition to 
+#' returning the ggplot object.
+#' 
+#' @export
+#' 
+#' @family visualization functions
+#' 
+#' @seealso \code{\link{plot_ggheatmap}} for plotting PWMs as heatmaps,
+#' \code{\link{plot_ggseqlogo_of_seqs}} for visualizing a collection of 
+#' sequences by their sequence logo.
+#' 
+#' @import ggplot2
+#' @import ggseqlogo
+plot_ggseqlogo <- function(pwm_mat, method = "custom", pos_lab = NULL, 
+    pdf_name = NULL) {
+    ##
+    check_vars(pwm_mat, pos_lab)
+    ##
+    p1 <- ggplot() +
+        geom_logo(pwm_mat, method = method, seq_type = "dna") +
+        theme_logo() +
+        ##
+        ggplot2::scale_x_continuous(breaks = seq_len(ncol(pwm_mat)),
+            labels = pos_lab,
+            expand = expansion(mult = c(0, 0))) +
+        ##
+        ggplot2::theme(axis.text.x = element_text(size = rel(0.5),
+            angle = 90, hjust = 1),
+            axis.text.y = element_text(size = rel(0.5)))
+    ##
+    if (!is.null(pdf_name)) {
+        if (file.exists(pdf_name)) {
+            warning("File exists, will overwrite", immediate. = TRUE)
+        }
+        ggsave(p1, device = "pdf", width = 25, height = 0.5)
+    }
+    return(p1)
+}
+## =============================================================================
+
+
+
+check_vars <- function(pwm_mat, pos_lab){
+    if (!is.matrix(pwm_mat)) {
+        stop("Expecting a matrix with 4 rows")
+    }
+    if (sum(dim(pwm_mat)) == 2 && is.na(pwm_mat)) {
+        stop("Empty matrix")
+    }
+    if (!(nrow(pwm_mat) == 4)) {
+        stop("Expecting a matrix with 4 rows corresponding to DNA chars ",
+            "'A', 'C', 'G', 'T'")
+    }
+    ##
+    if (length(pos_lab) < ncol(pwm_mat)) {
+        stop(paste0("Inadequate position labels supplied", 
+            ncol(pwm_mat) - length(pos_lab)
+        ))
+    }
+    ##
+    if (length(pos_lab) > ncol(pwm_mat)) {
+        stop(paste0("Overabundant position labels supplied",
+            length(pos_lab) - ncol(pwm_mat)
+        ))
+    }
+}
