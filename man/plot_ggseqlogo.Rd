@@ -2,36 +2,38 @@
 % Please edit documentation in R/plot_ggseqlogo.R
 \name{plot_ggseqlogo}
 \alias{plot_ggseqlogo}
-\title{Visualize a given (PWM) matrix as a sequence logo}
+\title{Visualize a given (PWM) matrix as a sequence logo.}
 \usage{
 plot_ggseqlogo(
-  pwmMat,
-  plotMethod = "custom",
-  position_labels = NULL,
-  savePDFfilename = NULL
+  pwm_mat,
+  plot_method = "custom",
+  pos_lab = NULL,
+  pdf_fname = NULL
 )
 }
 \arguments{
-\item{pwmMat}{Matrix (usually a PWM, but can be any non-normalized matrix) to
-be represented as a sequence logo.}
+\item{pwm_mat}{Matrix (usually a PWM, but can be any non-normalized matrix) 
+to be represented as a sequence logo.}
 
-\item{plotMethod}{For \code{ggseqlogo}; either of 'custom', 'bits', or
+\item{plot_method}{For \code{ggseqlogo}; either of 'custom', 'bits', or
 'probability'. Default is 'custom'.}
 
-\item{position_labels}{Labels of the positions in the sequences.}
+\item{pos_lab}{Labels of the positions in the sequences.}
 
-\item{savePDFfilename}{Name of the file which will be saved as PDF.}
+\item{pdf_fname}{Name of the file which will be saved as PDF.}
 }
 \value{
-A ggplot object so you can simply call \code{print} or \code{save}
-on it later. If \code{savePDFfilename} is given, it is also saved and the
-\code{ggplot} object returned.
+A ggplot2 object so you can simply call \code{print} or \code{save}
+on it later. If \code{pdf_fname} is given, it is also saved in addition to 
+returning the ggplot object.
 }
 \description{
-Visualize a given (PWM) matrix as a sequence logo
+Visualize a given (PWM) matrix as a sequence logo.
 }
 \seealso{
-\code{\link{plot_ggheatmap}} for plotting PWMs as heatmaps
+\code{\link{plot_ggheatmap}} for plotting PWMs as heatmaps,
+\code{\link{plot_ggseqlogo_of_seqs}} for visualizing a collection of 
+sequences by their sequence logo.
 
 Other visualization functions: 
 \code{\link{plot_ggheatmap}()},
