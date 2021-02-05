@@ -14,12 +14,15 @@
 #' 
 #' @param xt_freq Frequency of x-axis ticks.
 #' 
+#' @param method Specify either 'bits' for information content or 
+#' 'prob' for probability.
+#' 
 #' @param pdf_width,pdf_height Width and height in inches of the PDF file. 
 #' Default values are 11 and 2.
 #' 
 #' @param pdf_name Specify the PDF filename. 
 #' 
-#' @param ... Additional arguments passed to the graphic device.
+#' @param ... Additional args passed to \code{\link{plot_ggseqlogo_of_seqs}}.
 #'
 #' @return A list of (ggplot2-based) sequence logo plots is returned. When a 
 #' valid file name is specified, the list of plots is also written to the PDF 
@@ -32,6 +35,7 @@ plot_arch_for_clusters <- function(seqs,
                                 clust_list,
                                 pos_lab,
                                 xt_freq = 5,
+                                set_titles = TRUE,
                                 pdf_width = 11,
                                 pdf_height = 2,
                                 pdf_name = "archR_sequence_architectures.pdf",
@@ -43,31 +47,41 @@ plot_arch_for_clusters <- function(seqs,
         stop("Expecting a DNAStringSet object as 'seqs'")
     }
     ##
-    nClust <- length(clust_list)
-    clust_lens <- unlist(lapply(clust_list, length))
-    cumsums_clust_lens <- cumsum(clust_lens)
-    clust_names <- sort(as.character(seq_along(clust_list)))
-    ##
-    clust_starts <- c(1, 1+cumsums_clust_lens[seq_len(nClust-1)])
-    clust_ends <- cumsums_clust_lens
-    plot_titles <- lapply(seq_along(clust_starts), function(x){
-        make_plot_title_str(x, nClust, clust_names[x], clust_lens[x], 
-                            clust_starts[x], clust_ends[x])
-    })
-    ##
+    plot_titles <- make_plot_titles(clust_list, set_titles)
     suppressMessages(plot_list <- lapply(seq_along(clust_list), function(x){
         plot_ggseqlogo_of_seqs(seqs=seqs[clust_list[[x]]],
             pos_lab = pos_lab,
             xt_freq = xt_freq,
-            title = plot_titles[[x]])
+            title = plot_titles[[x]],
+            ...)
     }))
-    
+    ##
     if(!is.null(pdf_name)){
         grDevices::pdf(file=pdf_name, width=pdf_width, height=pdf_height)
         lapply(plot_list, print)
         dev.off()
     }
     return(plot_list)
+}
+
+make_plot_titles <- function(clust_list, set_titles){
+    if(set_titles){
+        nClust <- length(clust_list)
+        clust_lens <- unlist(lapply(clust_list, length))
+        cumsums_clust_lens <- cumsum(clust_lens)
+        clust_names <- sort(as.character(seq_along(clust_list)))
+        ##
+        clust_starts <- c(1, 1+cumsums_clust_lens[seq_len(nClust-1)])
+        clust_ends <- cumsums_clust_lens
+        ##
+        pl_titles <- lapply(seq_along(clust_starts), function(x){
+            make_plot_title_str(x, nClust, clust_names[x], clust_lens[x], 
+                clust_starts[x], clust_ends[x])
+        })
+    }else{
+        pl_titles <- lapply(seq_along(clust_starts), function(x) NULL)
+    }
+    pl_titles
 }
 
 make_plot_title_str <- function(i, n, name, this_size, st, ed){
@@ -87,6 +101,9 @@ make_plot_title_str <- function(i, n, name, this_size, st, ed){
 #' 
 #' @param xt_freq Specify the frequency of the x-axis ticks.
 #' 
+#' @param method Specify either 'bits' for information content or 
+#' 'prob' for probability.
+#' 
 #' @param title The title for the plot.
 #' 
 #' @param bits_yax Specify 'full' if the information content y-axis limits 
@@ -94,10 +111,15 @@ make_plot_title_str <- function(i, n, name, this_size, st, ed){
 #' the y-axis limits according to the maximum information content of the 
 #' sequence logo. Default is 'auto'.
 #' 
+#' @return A sequence logo plot of the given DNA sequences.
+#' 
+#' @seealso \code{link{plot_arch_for_clusters}} for obtaining a list of 
+#' sequence logo plots.
+#' 
 #' @importFrom Biostrings width
 #' 
 #' @export
-plot_ggseqlogo_of_seqs <- function(seqs, pos_lab, xt_freq = 5,
+plot_ggseqlogo_of_seqs <- function(seqs, pos_lab, xt_freq = 5, method = "bits",
                                     title = "Title", bits_yax = "auto"){
     ##
     if(xt_freq > Biostrings::width(seqs[1])){
@@ -113,24 +135,22 @@ plot_ggseqlogo_of_seqs <- function(seqs, pos_lab, xt_freq = 5,
         ggseqlogo::ggseqlogo(
             as.character(seqs),
             seq_type = "dna",
-            method = "bits"
+            method = method
         ) +
         ggplot2::theme_linedraw() +
         ggplot2::theme(axis.text.x = element_text(size = rel(0.9),
-                                                    angle = 90,
-                                                    hjust = 1),
+                                        angle = 90, hjust = 1, vjust=0.5),
                         axis.text.y = element_text(size = rel(0.9)),
                         panel.grid = element_blank()
         ) +
         ## Add additional bold tick labels
         ggplot2::scale_x_continuous(breaks = xtick_cal,
                                     labels = pos_lab[xtick_cal],
-                                    expand = expansion(mult = c(0, 0))) +
-        ggplot2::ggtitle(title)
-    if(bits_yax == 'full'){
-        foo_p <- foo_p + ggplot2::ylim(0.0, 2.0) 
-    }
+                                    expand = expansion(mult = c(0, 0)))
+    ##
+    if(!is.null(title)) foo_p <- foo_p + ggplot2::ggtitle(title)
+    if(bits_yax == 'full') foo_p <- foo_p + ggplot2::ylim(0.0, 2.0) 
+    ##
     message("Plot title:", title)
-
     foo_p
 }

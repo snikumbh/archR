@@ -9,6 +9,7 @@ plot_arch_for_clusters(
   clust_list,
   pos_lab,
   xt_freq = 5,
+  set_titles = TRUE,
   pdf_width = 11,
   pdf_height = 2,
   pdf_name = "archR_sequence_architectures.pdf",
@@ -30,7 +31,10 @@ Default values are 11 and 2.}
 
 \item{pdf_name}{Specify the PDF filename.}
 
-\item{...}{Additional arguments passed to the graphic device.}
+\item{...}{Additional args passed to \code{\link{plot_ggseqlogo_of_seqs}}.}
+
+\item{method}{Specify either 'bits' for information content or 
+'prob' for probability.}
 }
 \value{
 A list of (ggplot2-based) sequence logo plots is returned. When a 
