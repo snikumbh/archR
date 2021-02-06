@@ -237,6 +237,8 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                                     # monolinear = FALSE,
                                     debugFlag = FALSE,
                                     verboseFlag = TRUE) {
+    dbg <- debugFlag
+    vrbs <- verboseFlag
     if (!is.matrix(X) && !is(X, "dgCMatrix")) {
         stop("X not of type matrix/dgCMatrix")
     }
@@ -269,9 +271,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
             ##
             set_verbose <- ifelse(debugFlag, 2, ifelse(verboseFlag, 1, 0))
             if(cgfglinear){
-                if(verboseFlag) {
-                    message("Coarse-grained, fine-grained binary search")
-                }
+                .msg_pstr("Coarse-fine grained binary search", flg=vrbs)
                 prev_df <- NULL
                 #go_fine <- FALSE 
                 ## when either lo or hi values are best, so we need to perform 
@@ -303,7 +303,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
 
                     if(best_K == mi[kCGIdx]){
                         ## Work done, leave loop?
-                        if(debugFlag) message("mi value is best")
+                        .msg_pstr("mi value is best", flg=dbg)
                         if(askParsimony){
                             ## When mi value is chosen as best, in order for 
                             ## the 1-SE rule, it would be a good idea compute 
@@ -331,8 +331,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                             fgIL <- max(mi[kCGIdx]-5, 1) 
                             ## shield against setting 0
                             fgOL <- max(lo[kCGIdx]-1, 1)
-                            if(verboseFlag) message("Choosing interval: ", 
-                                fgIL, "-", fgOL)
+                            .msg_range(fgIL, fgOL, vrbs)
                         }else{
                             ## Added to handle case when 1-SE rule is not 
                             ## applied
@@ -340,43 +339,38 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                             fgIL <- max(mi[kCGIdx]-1, 1) 
                             ## shield against setting 0
                             fgOL <- max(mi[kCGIdx]-1, 1)
-                            if(verboseFlag) message("Choosing interval: ", 
-                                fgIL, "-", fgOL)
+                            .msg_range(fgIL, fgOL, vrbs)
                         }
                         break
                         ##
                     } else if(best_K == lo[kCGIdx]){
                         if (best_K == min(lo)){ ## fgIL is 1
-                            if(debugFlag) message("min(lo) is best")
+                            .msg_pstr("min(lo) is best", flg=dbg)
                             fgIL <- 1
                             fgOL <- min(lo)-1
-                            if(verboseFlag) message("Choosing interval: ", 
-                                fgIL, "-", fgOL)
+                            .msg_range(fgIL, fgOL, vrbs)
                             break
                         } else{
                             ## go fine over interval (hi[kCGIdx]+1 , lo[kCGIdx])
-                            if(debugFlag) message("lo value is best")
+                            .msg_pstr("lo value is best", flg=dbg)
                             fgOL <- lo[kCGIdx]-1    # fine-grained search outer 
                             fgIL <- hi[kCGIdx-1]+1  # and inner limit
-                            if(verboseFlag) message("Choosing interval: ", 
-                                fgIL, "-", fgOL)
+                            .msg_range(fgIL, fgOL, vrbs)
                             break
                         }
                         ##
                     } else if(kCGIdx > 1 && best_K == hi[kCGIdx-1]){
-                        if(debugFlag) message("prev hi is best")
+                        .msg_pstr("prev hi is best", flg=dbg)
                         fgIL <- hi[kCGIdx-1]+1
                         fgOL <- lo[kCGIdx]-1
-                        if(verboseFlag){
-                            message("Choosing interval: ", fgIL, "-", fgOL)
-                        }
+                        .msg_range(fgIL, fgOL, vrbs)
                         break
                     }
                     else if(best_K == hi[kCGIdx]){
                         ## best_K is == hi, go to next coarse-grained iteration
-                        if(verboseFlag){
-                            message("Next interval of coarse-grained grid")
-                        }
+                        .msg_pstr("Next interval of coarse-grained grid", 
+                                    flg=vrbs)
+                        
                     }
                 }
                 ## Fine-grained search
@@ -399,10 +393,8 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                 # minKInDF <- min(as.numeric(unlist(combined_df["k_vals"])))
                 kValsInDF <- as.numeric(unlist(combined_df["k_vals"]))
                 if(best_K != 1 && !any((best_K-1) - kValsInDF == 0)){
-                    if(debugFlag){
-                        message("Chosen best value happens to be the lowest.")
-                        message("Making sure...")
-                    }
+                    .msg_pstr("Chosen best value happens to be the lowest.", 
+                        "Making sure...", flg=vrbs)
                     attemptCount <- 1
                     makeSureK <- best_K
                     while(makeSureK != 1 && 
@@ -410,9 +402,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                         # Ensure the new value is not already computed
                         fgIL <- max(best_K - 1*attemptCount, 1)
                         fgOL <- fgIL
-                        if(debugFlag){
-                            message("Choosing interval: ", fgIL, "-", fgOL)
-                        }
+                        .msg_range(fgIL, fgOL, vrbs)
                         searchReturnFine <- performSearchForK(
                                 startVal = fgIL,
                                 endVal = fgOL,
@@ -428,7 +418,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                         # combined_df <- rbind(combined_df, fine_prev_df)
                         makeSureK <- .get_best_K(combined_df, 
                                                     parsimony = askParsimony)
-                        if(debugFlag) message("MAKE_SURE_K:", makeSureK)
+                        # if(debugFlag) message("MAKE_SURE_K:", makeSureK)
                         attemptCount <- attemptCount + 1
                         # minKInDF <- min(as.numeric(
                         #               unlist(combined_df["k_vals"])))
@@ -436,7 +426,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                         kValsInDF <- as.numeric(unlist(combined_df["k_vals"]))
                     }
                     best_K <- makeSureK
-                    if(debugFlag) message("Made sure, best K is: ", best_K)
+                    .msg_pstr("Made sure, best K is: ", best_K, flg=dbg)
                 }
 
             }
@@ -447,11 +437,15 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                 best_K , " is already the maximum value for K specified.
                                 Try increasing therange")
     }
-    if(debugFlag) message("BEST K:", best_K)
-    if(debugFlag) message("done!")
+    .msg_pstr("BEST K:", best_K, "\ndone!", flg=dbg)
+    ##
     return(best_K)
 }
 ## =============================================================================
+
+.msg_range <- function(fgIL, fgOL, vrbs){
+    .msg_pstr("Choosing interval:", fgIL, "-", fgOL, flg=vrbs)
+}
 
 
 .setup_par_cluster <- function(vlist){
@@ -585,7 +579,7 @@ check_par_conditions <- function(nCores){
         c("k_vals", "alpha", "fold", "iteration",
             "q2_vals")
     )) > 0) {
-        message(names(x))
+        .msg_pstr(names(x), flg=FALSE)
         stop(paste0(
             "Check colnames in data.frame, expecting five element names: ",
             c("k_vals", "alpha", "fold", "iteration", "q2_vals")
