@@ -4,22 +4,15 @@
 \alias{handle_dir_creation}
 \title{Handle directory creation}
 \usage{
-handle_dir_creation(
-  givenODir,
-  flags = list(debugFlag = FALSE, verboseFlag = FALSE, plotFlag = FALSE, timeFlag =
-    FALSE)
-)
+handle_dir_creation(o_dir, vrbs)
 }
 \arguments{
-\item{givenODir}{Specify the output directory name with its complete path.}
+\item{o_dir}{Specify the output directory name with its complete path.}
 
-\item{flags}{List with four Logical elements as detailed.
-\describe{
-  \item{debugFlag}{Whether debug information for the run is printed}
-  \item{verboseFlag}{Whether verbose information for the run is printed}
-  \item{plotVerboseFlag}{Whether verbose plotting is performed for the run}
-  \item{timeFlag}{Whether timing information is printed for the run}
-}}
+\item{vrbs}{Set verbosity to TRUE or FALSE}
+}
+\value{
+The (updated) dir name
 }
 \description{
 Given the output directory name with its complete path, this

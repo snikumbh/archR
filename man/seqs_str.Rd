@@ -22,6 +22,10 @@ clustering solution (`archRresult$clustSol$clusters`).}
 ordering of the sequences can be fetched by setting `iter` to NULL and `ord` 
 to FALSE.}
 }
+\value{
+The selected DNA sequences from the DNAStringSet object as a 
+character vector.
+}
 \description{
 Wrapper to fetch sequences from the archR result object as 
 character
@@ -34,7 +38,7 @@ the set of sequences returned can be ordered by clusters with `ord = TRUE`.
 Using `ord = FALSE` fetches the sequences by their original order.
 }
 \examples{
-\dontrun{
+\donttest{
 res <- system.file("extdata", "example_archRresult.rds", 
          package = "archR", mustWork = TRUE)
          

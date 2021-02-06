@@ -4,10 +4,10 @@
 \alias{make_sinuc_PWMs}
 \title{Make a PWM-resembling matrix out of a given n-vector}
 \usage{
-make_sinuc_PWMs(givenMatrix, add_pseudo_counts = TRUE, scale = TRUE)
+make_sinuc_PWMs(mat, add_pseudo_counts = TRUE, scale = TRUE)
 }
 \arguments{
-\item{givenMatrix}{Actually a vector that will be reshaped into a (PWM)
+\item{mat}{Actually a vector that will be reshaped into a (PWM)
 matrix of DNA sequences.}
 
 \item{add_pseudo_counts}{Boolean, taking values TRUE/T or FALSE/F, specifying
