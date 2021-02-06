@@ -7,7 +7,7 @@
 #' \code{\link{archR_set_config}}. This is a required argument.
 #' @param seqs_ohe_mat A matrix of one-hot encoded sequences with sequences 
 #' along columns. This is a required argument.
-#' @param seqs_raw A \code{\link{Biostrings::DNAStringSet}} object. The FASTA 
+#' @param seqs_raw A \code{\link[Biostrings]{DNAStringSet}} object. The FASTA 
 #' sequences as a DNAStringSet object. This argument required argument.
 #' @param seqs_pos Vector. Specify the tick labels for sequence positions.
 #' Default is NULL.
@@ -141,7 +141,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     ##
     if(!is.null(o_dir)){
         if(fresh){
-            o_dir <- handle_dir_creation(o_dir, flags)
+            o_dir <- handle_dir_creation(o_dir, vrbs||dbg)
         }else{
             if(!dir.exists(o_dir)){
                 stop(o_dir, " not found")
