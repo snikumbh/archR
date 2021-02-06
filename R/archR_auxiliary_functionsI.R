@@ -34,7 +34,6 @@ get_clBasVec_m <- function(res, iter){
 #' @seealso \code{\link{seqs_str}}
 #' @export
 get_seqClLab <- function(res, iter){
-    
     if(is.null(iter)){
         return(res$clustSol$seqsClustLabels)
     }else{

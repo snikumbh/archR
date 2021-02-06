@@ -79,10 +79,11 @@ get_dimers_from_alphabet <- function(alph){
 ## =============================================================================
 
 plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
-    allSequencesLogo <- plot_ggseqlogo_of_seqs(seqs = seqs_raw,
+    allSequencesLogo <- plot_ggseqlogo_of_seqs(
+        seqs = seqs_raw,
         pos_lab = seqs_pos, 
-        title = paste("Sequence logo of all",
-            length(seqs_raw),"sequences" ))
+        title = paste("Sequence logo of all", length(seqs_raw),"sequences" ))
+    ##
     ggsave(filename = file.path(dpath, "allSequencesLogo.pdf"),
         plot = allSequencesLogo,
         device = "pdf", width = 20, height = 2.5)
@@ -250,7 +251,7 @@ archR_set_config <- function(inner_chunk_size = 500,
         doNotProcess <- FALSE
         if (lengthOfOC <= minThreshold) {
             doNotProcess <- TRUE
-            .msg_pstr("Sorry, will not process this small a chunk: ",
+            .msg_pstr("Sorry, will not process this small a chunk:",
                     lengthOfOC, flg=TRUE)
         }
         ##
@@ -428,10 +429,8 @@ archR_set_config <- function(inner_chunk_size = 500,
     if(config$modSelType == "cv"){
         suffix_str <- ", without parsimony"
         if(askParsimony) suffix_str <- ", with parsimony"
-        if(config$flags$debugFlag) {
-            message("Performing cross validation-based model selection",
-                suffix_str)
-        }
+        .msg_pstr("Performing cross validation-based model selection",
+                suffix_str, flg=dbg)
         best_k <- .cv_model_select_pyNMF2(
                 X = this_mat, param_ranges = config$paramRanges,
                 kFolds = config$kFolds, parallelDo = config$parallelize,
@@ -569,32 +568,28 @@ archR_set_config <- function(inner_chunk_size = 500,
 ## =============================================================================
 
 
-intermediateResultsPlot <- function(seqsClustLabels, seqs_raw = NULL,
-                                positions = NULL, iterVal = 0, fname = NULL){
+intermediateResultsPlot <- function(seq_lab, seqs_raw = NULL,
+                                pos_lab = NULL, iter = 0, fname = NULL,
+                                vrbs = TRUE){
 ## This function plots and prints resulting clusters -- the sequence image
 ## matrix (PNG file) and the sequence logos (PDF file).
-## Input arguments: vector (size:nseqs) of cluster labels for sequence 
-## (for given iteration)
-## Output: Nothing returned, files written to disk at specified location 
-## (fname)
-##
 
-if(is.numeric(iterVal)){
-    name_suffix <- paste0("Iteration", iterVal)
-    message("=== Intermediate Result ===")
+if(is.numeric(iter)){
+    name_suffix <- paste0("Iteration", iter)
+    .msg_pstr("=== Intermediate Result ===", flg=vrbs)
 }else{
     name_suffix <- paste0("Final")
-    message("=== Final Result ===")
+    .msg_pstr("=== Final Result ===", flg=vrbs)
 }
 ##
-seqs_clust_list_ord <- get_seqs_clust_list(seqsClustLabels)
-seqs_clust_vec_ord <- unlist(seqs_clust_list_ord) 
-message("Generating unannotated map of clustered sequences...")
+seqs_clust_list_ord <- get_seqs_clust_list(seq_lab)
+seqs_clust_vec_ord <- unlist(seqs_clust_list_ord)
+.msg_pstr("Generating unannotated map of clustered sequences...", flg=vrbs)
 image_fname <- paste0(fname, "ClusteringImage_", name_suffix, ".png")
-message("Sequence clustering image written to: ", image_fname)
+.msg_pstr("Sequence clustering image written to: ", image_fname, flg=vrbs)
 viz_seqs_as_acgt_mat_from_seqs(
     seqs =  as.character(seqs_raw[seqs_clust_vec_ord]),
-                    pos_lab = positions,
+                    pos_lab = pos_lab,
                     save_fname = image_fname,
                     f_width = 450,
                     f_height = 900,
@@ -602,13 +597,12 @@ viz_seqs_as_acgt_mat_from_seqs(
                     yt_freq = 100)
 
 ##
-message("Generating architectures for clusters of sequences...")
+.msg_pstr("Generating architectures for clusters of sequences...", flg=vrbs)
 arch_fname <- paste0(fname, "Architecture_SequenceLogos_", name_suffix, ".pdf")
-message("Architectures written to: ", arch_fname)
+.msg_pstr("Architectures written to: ", arch_fname, flg=vrbs)
 plot_arch_for_clusters(seqs = seqs_raw, 
-    clust_list = seqs_clust_list_ord,
-    pos_lab = positions,
-    pdf_name = arch_fname)
-
+                        clust_list = seqs_clust_list_ord,
+                        pos_lab = pos_lab,
+                        pdf_name = arch_fname)
 }
 ## =============================================================================
