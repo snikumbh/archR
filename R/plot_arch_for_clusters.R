@@ -115,8 +115,8 @@ make_plot_title_str <- function(i, n, name, this_size, st, ed){
 #' 
 #' @return A sequence logo plot of the given DNA sequences.
 #' 
-#' @seealso \code{link{plot_arch_for_clusters}} for obtaining a list of 
-#' sequence logo plots.
+#' @seealso \code{\link{plot_arch_for_clusters}} for obtaining multiple 
+#' sequence logo plots as a list.
 #' 
 #' @importFrom Biostrings width
 #' 

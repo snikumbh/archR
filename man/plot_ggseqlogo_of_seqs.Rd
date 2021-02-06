@@ -39,6 +39,6 @@ A wrapper to ggseqlogo plotting. Given a collection of
 sequences, this function plots the sequence logo.
 }
 \seealso{
-\code{link{plot_arch_for_clusters}} for obtaining a list of 
-sequence logo plots.
+\code{\link{plot_arch_for_clusters}} for obtaining multiple 
+sequence logo plots as a list.
 }
