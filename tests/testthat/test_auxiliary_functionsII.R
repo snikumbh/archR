@@ -18,7 +18,7 @@ test_that("decide_process_outer_chunk works fine", {
     expect_error(.decide_process_outer_chunk(15, 30, 4),
                     "'min_size' should be at least 4 times 'kFolds'")
     expect_error(.decide_process_outer_chunk(25, 0, 5),
-                    "Outer chunk of size 0")
+                    "lengthOfOC > 0 is not TRUE")
 })
 
 # test_that("handle_chunk_w_NMF works fine", {
