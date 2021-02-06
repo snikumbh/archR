@@ -143,12 +143,17 @@
         seed_val = dummy_seed
     ))
     ##
-    seed_val_list <- sample.int(.Machine$integer.max, 
-        size = kFolds*nIter, replace = FALSE)
+    seed_val_list <- get_n_seeds(n = kFolds*nIter)
+    # seed_val_list <- sample.int(.Machine$integer.max, 
+    #     size = kFolds*nIter, replace = FALSE)
     grid_search_params[, "seed_val"] <- seed_val_list
     return(grid_search_params)
 }
 
+
+get_n_seeds <- function(n){
+    return(sample.int(.Machine$integer.max, size = n, replace = FALSE))
+}
 
 
 performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
@@ -210,7 +215,6 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
 # @param nIterations Number of iterations for NMF.
 # @param nCores If \code{parallel} is set to \code{1}
 # @param seed_val The seed to be set.
-# @param logfile The log file name.
 # @param set_verbose Default to \code{0} which will not print any messages, or
 # can be set to \code{1} which will print messages. Value passed to the
 # \code{get_q2_val} function
@@ -231,7 +235,6 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                                     coarse_step = 10,
                                     askParsimony = FALSE,
                                     # monolinear = FALSE,
-                                    # logfile = "outfile.txt",
                                     debugFlag = FALSE,
                                     verboseFlag = TRUE) {
     if (!is.matrix(X) && !is(X, "dgCMatrix")) {
@@ -261,18 +264,9 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
         #### New strategy
         if(returnBestK) {
             # message("===Cluster ready?===")
-            
-            cl <- parallel::getDefaultCluster()
-            parallel::clusterEvalQ(cl, 
-                        suppressWarnings(require(MASS, quietly = TRUE)))
-            # message("===Seems OK===")
-            ## ^for pseudo-inverse using function `ginv`
-            parallel::clusterExport(
-                cl = NULL,
-                varlist = c(".get_q2_using_py", ".compute_q2", "X", "cvfolds"),
-                envir = environment()
-            )
-            ####
+            cl <- .setup_par_cluster(vlist= 
+                c(".get_q2_using_py", ".compute_q2", "X", "cvfolds"))
+            ##
             set_verbose <- ifelse(debugFlag, 2, ifelse(verboseFlag, 1, 0))
             if(cgfglinear){
                 if(verboseFlag) {
@@ -460,72 +454,92 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
 ## =============================================================================
 
 
+.setup_par_cluster <- function(vlist){
+    ## from perform_multiple_NMF_runs
+    cl <- parallel::getDefaultCluster()
+    parallel::clusterEvalQ(cl, suppressWarnings(require(MASS, quietly = TRUE)))
+    parallel::clusterExport(cl = NULL, varlist = vlist,
+        envir = parent.frame(n=1))
+    # ## ^for pseudo-inverse using function `ginv` (CV-based model selection)
+    # if(is.null(X)){
+    #     print("NULL")
+    #     print(vlist)
+    #     parallel::clusterExport(cl = NULL, varlist = vlist,
+    #                     envir = environment())
+    # 
+    # }else{
+    #     print("NotNULL")
+    #     print(vlist)
+    #     parallel::clusterExport(cl = NULL, varlist = vlist,
+    #         envir = parent.frame(n=1))
+    # 
+    # }
+    
+    return(cl)
+    
+    #####
+    # ## from cv_model_select_pyNMF2
+    # cl <- parallel::getDefaultCluster()
+    # parallel::clusterEvalQ(cl, 
+    #     suppressWarnings(require(MASS, quietly = TRUE)))
+    # # message("===Seems OK===")
+    # ## ^for pseudo-inverse using function `ginv`
+    # parallel::clusterExport(
+    #     cl = NULL,
+    #     varlist = c(".get_q2_using_py", ".compute_q2", "X", "cvfolds"),
+    #     envir = environment()
+    # )
+}
+
+
+check_par_conditions <- function(nCores){
+    if (is.na(nCores)) {
+        ## raise error or handle
+        stop("'parallelize' is TRUE, but 'nCores' not specified")
+    } else {
+        if (nCores <= parallel::detectCores()) {
+            ##
+        } else {
+            stop("Specified more than available cores. Stopping")
+        }
+    }
+}
 
 # return A list of two lists: one containing feature matrices, the other samples
 # matrices
-.perform_multiple_NMF_runs <- function(X, kVal, alphaVal,
-                                        parallelDo = TRUE, nCores = NA,
-                                        nRuns = 100,
-                                        bootstrap = TRUE,
-                                        logfile = "outfile_nRuns.txt") {
-    # message("Kval is: ", kVal)
+.perform_multiple_NMF_runs <- function(X, kVal, alphaVal, parallelDo = TRUE, 
+                                nCores = NA, nRuns = 100, bootstrap = TRUE) {
+    ##
+    new_ord <- lapply(seq_len(nRuns), function(x){seq_len(ncol(X))})
     if(bootstrap){
         new_ord <- lapply(seq_len(nRuns), function(x){
-            sample(ncol(X), ncol(X), replace = FALSE)
-        })
-    }else{
-        new_ord <- lapply(seq_len(nRuns), function(x){seq_len(ncol(X))})
+            sample(ncol(X), ncol(X), replace = FALSE)})
     }
-    ###
-    seed_val_list <- sample.int(.Machine$integer.max, size = nRuns,
-                                replace = FALSE)
-    # message("Seeds for performing multiple runs")
-    # print(seed_val_list)
-
+    ##
+    seed_val_list <- get_n_seeds(n = nRuns)
     ## In parallel
     if (parallelDo) {
         #TODO: ?
-        if (is.na(nCores)) {
-            ## raise error or handle
-            stop("'parallelize' is TRUE, but 'nCores' not specified")
-        } else {
-            if (nCores <= parallel::detectCores()) {
-                ##
-            } else {
-                stop("Specified more than available cores. Stopping")
-            }
-        }
-        cl <- parallel::getDefaultCluster()
-        parallel::clusterEvalQ(cl, suppressWarnings(require(MASS,
-                                                            quietly = TRUE)))
-        ## ^for pseudo-inverse using function `ginv` (CV-based model selection)
-        parallel::clusterExport(
-            cl = NULL,
-            varlist = c(".perform_single_NMF_run"),
-            envir = environment()
-        )
-        ###
-        nmf_result_list <- parallel::clusterApplyLB(cl = cl,
-                                        seq_len(nRuns),
-                                        function(i) {
-                                            .perform_single_NMF_run(
-                                                X = X[,new_ord[[i]]],
-                                                kVal = kVal,
-                                                alphaVal = alphaVal,
-                                                seedVal = seed_val_list[i])
-                                        })
+        check_par_conditions(nCores=nCores)
+        ##
+        cl <- .setup_par_cluster(vlist=c(".perform_single_NMF_run"))
+        ##
+        nmf_result_list <- parallel::clusterApplyLB(cl = cl, seq_len(nRuns), 
+                            function(i) {
+                                .perform_single_NMF_run(
+                                X = X[,new_ord[[i]]], kVal = kVal,
+                                alphaVal = alphaVal, seedVal = seed_val_list[i])
+                            })
         return(list(nmf_result_list = nmf_result_list, new_ord = new_ord))
         ##
     } else{
         ## In serial
-        nmf_result_list <- lapply(seq_len(nRuns),
-                                function(i) {
+        nmf_result_list <- lapply(seq_len(nRuns), 
+                            function(i) {
                                 .perform_single_NMF_run(
-                                    X = X[,new_ord[[i]]],
-                                    kVal = kVal,
-                                    alphaVal = alphaVal,
-                                    seedVal = seed_val_list[i])
-                                })
+                                X = X[,new_ord[[i]]], kVal = kVal,
+                                alphaVal = alphaVal, seedVal = seed_val_list[i])
+                            })
         return(list(nmf_result_list = nmf_result_list, new_ord = new_ord))
         ##
     }
