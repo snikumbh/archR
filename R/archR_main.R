@@ -232,7 +232,6 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
 
     ##
     ##-------------------------------------------------------------------------
-    ##    message("=== archR to perform ", threshold_itr, " iteration(s) ===")
     while (test_itr <= threshold_itr) {
         iterStartTime <- Sys.time()
         totOuterChunksColl <- length(outerChunksColl)
@@ -484,8 +483,9 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         if(plt){
             if(!is.null(o_dir)){
                 intermediateResultsPlot(seqsClustLabelsList[[test_itr]],
-                                    seqs_raw, positions = seqs_pos,
-                                    iterVal = test_itr, fname = o_dir)
+                                    seqs_raw, pos_lab = seqs_pos,
+                                    iter = test_itr, fname = o_dir,
+                                    vrbs=vrbs||dbg)
             }
         }
         ##
@@ -575,9 +575,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     ## Print final stage output files to disk
     if(plt){
         if(!is.null(o_dir)){
-            intermediateResultsPlot(temp_res_reord$seqsClustLabels,
-                                    seqs_raw, positions = seqs_pos,
-                                    iterVal = "Final", fname = o_dir)
+            intermediateResultsPlot(seq_lab = temp_res_reord$seqsClustLabels,
+                                    seqs_raw = seqs_raw, pos_lab = seqs_pos,
+                                    iter = "Final", fname = o_dir,
+                                    vrbs=vrbs||dbg)
         }
     }
     ##
