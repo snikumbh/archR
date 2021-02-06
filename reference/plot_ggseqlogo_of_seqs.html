@@ -73,7 +73,7 @@ sequences, this function plots the sequence logo." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -132,6 +132,7 @@ sequences, this function plots the sequence logo.</p>
   <span class='va'>seqs</span>,
   <span class='va'>pos_lab</span>,
   xt_freq <span class='op'>=</span> <span class='fl'>5</span>,
+  method <span class='op'>=</span> <span class='st'>"bits"</span>,
   title <span class='op'>=</span> <span class='st'>"Title"</span>,
   bits_yax <span class='op'>=</span> <span class='st'>"auto"</span>
 <span class='op'>)</span></pre>
@@ -153,6 +154,11 @@ This should be the same length as the width of the given sequences.</p></td>
       <td><p>Specify the frequency of the x-axis ticks.</p></td>
     </tr>
     <tr>
+      <th>method</th>
+      <td><p>Specify either 'bits' for information content or 
+'prob' for probability.</p></td>
+    </tr>
+    <tr>
       <th>title</th>
       <td><p>The title for the plot.</p></td>
     </tr>
@@ -165,6 +171,13 @@ sequence logo. Default is 'auto'.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A sequence logo plot of the given DNA sequences.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code>link{plot_arch_for_clusters}</code> for obtaining a list of 
+sequence logo plots.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

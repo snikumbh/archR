@@ -75,7 +75,7 @@ architecture sequence logos are saved as a multi-page PDF." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -137,9 +137,11 @@ architecture sequence logos are saved as a multi-page PDF.</p>
   <span class='va'>clust_list</span>,
   <span class='va'>pos_lab</span>,
   xt_freq <span class='op'>=</span> <span class='fl'>5</span>,
+  set_titles <span class='op'>=</span> <span class='cn'>TRUE</span>,
   pdf_width <span class='op'>=</span> <span class='fl'>11</span>,
   pdf_height <span class='op'>=</span> <span class='fl'>2</span>,
-  pdf_name <span class='op'>=</span> <span class='st'>"archR_sequence_architectures.pdf"</span>
+  pdf_name <span class='op'>=</span> <span class='st'>"archR_sequence_architectures.pdf"</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -147,7 +149,7 @@ architecture sequence logos are saved as a multi-page PDF.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>seqs</th>
-      <td><p>Sequences as a DNAStringSet.</p></td>
+      <td><p>Sequences as a <code><a href='https://rdrr.io/pkg/Biostrings/man/XStringSet-class.html'>DNAStringSet</a></code>.</p></td>
     </tr>
     <tr>
       <th>clust_list</th>
@@ -163,6 +165,13 @@ length as length of the sequences.</p></td>
       <td><p>Frequency of x-axis ticks.</p></td>
     </tr>
     <tr>
+      <th>set_titles</th>
+      <td><p>Specify TRUE if titles are to be written for the plots.
+With FALSE, there are no titles for the plots. The title for each plot 
+includes the current cluster number, total number of clusters, start and 
+end sequence numbers in the collection.</p></td>
+    </tr>
+    <tr>
       <th>pdf_width, pdf_height</th>
       <td><p>Width and height in inches of the PDF file. 
 Default values are 11 and 2.</p></td>
@@ -171,8 +180,17 @@ Default values are 11 and 2.</p></td>
       <th>pdf_name</th>
       <td><p>Specify the PDF filename.</p></td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional args passed to <code><a href='plot_ggseqlogo_of_seqs.html'>plot_ggseqlogo_of_seqs</a></code>.</p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list of (ggplot2-based) sequence logo plots is returned. When a 
+valid file name is specified, the list of plots is also written to the PDF 
+file (one plot per page).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

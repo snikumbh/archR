@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2021-02-05</h4>
+            <h4 class="date">2021-02-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -111,7 +111,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"snikumbh/archR"</span><span class="op">)</span>
  </code></pre></div>
-<p>In case of any errors, please consider looking up <a href="https://github.com/snikumbh/archR">https://github.com/snikumbh/archR</a>. If none of the already noted points with regards to troubleshooting <em>archR</em>’s installation help, please file a <a href="https://github.com/snikumbh/archR/issues/new">new issue</a>.</p>
+<p>In case of any errors, please consider looking up: <a href="https://github.com/snikumbh/archR">https://github.com/snikumbh/archR</a>. If none of the already noted points with regards to troubleshooting <em>archR</em>’s installation help, please file a <a href="https://github.com/snikumbh/archR/issues/new">new issue</a>.</p>
 </div>
 <div id="working-with-archr" class="section level1">
 <h1 class="hasAnchor">
@@ -152,8 +152,7 @@
 
 
 <span class="co"># Set seed for reproducibility</span>
-<span class="va">seed_val</span> <span class="op">&lt;-</span> <span class="fl">11992288</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="va">seed_val</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></code></pre></div>
 <div id="synthetic-data-explained" class="section level2">
 <h2 class="hasAnchor">
 <a href="#synthetic-data-explained" class="anchor"></a>Synthetic data explained</h2>
@@ -274,7 +273,6 @@
         k_min <span class="op">=</span> <span class="fl">1</span>,
         k_max <span class="op">=</span> <span class="fl">20</span>,
         mod_sel_type <span class="op">=</span> <span class="st">"stability"</span>,
-        tol <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">4</span>,
         bound <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">8</span>,
         inner_chunk_size <span class="op">=</span> <span class="fl">100</span>,
         flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>debug <span class="op">=</span> <span class="cn">FALSE</span>, time <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -290,7 +288,7 @@
                             seqs_pos <span class="op">=</span> <span class="va">positions</span>,
                             threshold_itr <span class="op">=</span> <span class="va">perform_iters</span><span class="op">)</span>
 <span class="co">#&gt; Model selection by factor stability</span>
-<span class="co">#&gt; Tolerance: 1e-04 &amp; Bound: 1e-08</span>
+<span class="co">#&gt; Tolerance: 0.001 &amp; Bound: 1e-08</span>
 <span class="co">#&gt; === Iteration  1 ,  1  chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk  1 / 1 ]  [Size:  200 ]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -311,8 +309,8 @@
 <span class="co">#&gt; [Outer chunk 1/1] complete</span>
 <span class="co">#&gt; [Iteration 1] complete</span>
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
-<span class="co">#&gt; Iteration 1 completed  in 0.841 mins</span>
-<span class="co">#&gt; 0.841 mins  ellapsed since start</span>
+<span class="co">#&gt; Iteration 1 completed  in 1.09 mins</span>
+<span class="co">#&gt; 1.1 mins  ellapsed since start</span>
 <span class="co">#&gt; === Iteration  2 ,  3  chunk(s) ===</span>
 <span class="co">#&gt; [Outer chunk  1 / 3 ]  [Size:  100 ]</span>
 <span class="co">#&gt; Decision: Processing</span>
@@ -341,16 +339,16 @@
 <span class="co">#&gt; [Outer chunk 3/3] complete</span>
 <span class="co">#&gt; [Iteration 2] complete</span>
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
-<span class="co">#&gt; Iteration 2 completed  in 0.859 mins</span>
-<span class="co">#&gt; 1.7 mins  ellapsed since start</span>
+<span class="co">#&gt; Iteration 2 completed  in 0.812 mins</span>
+<span class="co">#&gt; 1.91 mins  ellapsed since start</span>
 <span class="co">#&gt; Collating clusters</span>
-<span class="co">#&gt; archR exiting , 1.7 mins</span></code></pre></div>
+<span class="co">#&gt; archR exiting , 1.91 mins</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#understanding-the-result-object-from-archr" class="anchor"></a>Understanding the result object from <em>archR</em>
 </h2>
-<p>In the version 0.1.4, <em>archR</em> naively returns a result object which is a nested list. The list elements include: 1. the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; 2. the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; 3. the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; 4. the raw sequences provided [<code>rawSeqs</code>]; 5. if timeFlag is set, timing information (in minutes) per iteration [<code>timeInfo</code>]; 6. the configuration setting [<code>config</code>]; and 7. the call itself [<code>call</code>].</p>
+<p>In the version 0.1.5, <em>archR</em> naively returns a result object which is a nested list. The list elements include: 1. the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; 2. the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; 3. the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; 4. the raw sequences provided [<code>rawSeqs</code>]; 5. if timeFlag is set, timing information (in minutes) per iteration [<code>timeInfo</code>]; 6. the configuration setting [<code>config</code>]; and 7. the call itself [<code>call</code>].</p>
 <div id="nmf-basis-vectors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nmf-basis-vectors" class="anchor"></a>NMF basis vectors</h3>
@@ -364,12 +362,12 @@
 <span class="co">#&gt; [1] 1600    4</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">archRresult</span><span class="op">$</span><span class="va">clustBasisVectors</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">basisVectors</span><span class="op">)</span>
 <span class="co">#&gt;             [,1]       [,2]       [,3]       [,4]</span>
-<span class="co">#&gt; [1,] 0.120738792 0.07407943 0.05168607 0.08186580</span>
-<span class="co">#&gt; [2,] 0.087064002 0.08679650 0.02486037 0.07917296</span>
-<span class="co">#&gt; [3,] 0.080387155 0.03793825 0.05076204 0.05196331</span>
-<span class="co">#&gt; [4,] 0.074604999 0.04276979 0.09945618 0.05334238</span>
-<span class="co">#&gt; [5,] 0.080342833 0.11748608 0.07484865 0.10758754</span>
-<span class="co">#&gt; [6,] 0.007200647 0.11873504 0.05051104 0.10543655</span></code></pre></div>
+<span class="co">#&gt; [1,] 0.120740995 0.07407753 0.05168607 0.08186580</span>
+<span class="co">#&gt; [2,] 0.087066440 0.08679174 0.02486037 0.07917296</span>
+<span class="co">#&gt; [3,] 0.080389797 0.03793642 0.05076204 0.05196331</span>
+<span class="co">#&gt; [4,] 0.074610342 0.04276400 0.09945618 0.05334238</span>
+<span class="co">#&gt; [5,] 0.080347189 0.11747636 0.07484865 0.10758754</span>
+<span class="co">#&gt; [6,] 0.007201571 0.11872570 0.05051104 0.10543655</span></code></pre></div>
 </div>
 </div>
 <div id="visualize-results-from-archr" class="section level2">
@@ -458,7 +456,7 @@ Figure: Clusters at iteration 2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt; [1] Biostrings_2.58.0   XVector_0.30.0      IRanges_2.24.1     </span>
-<span class="co">#&gt; [4] S4Vectors_0.28.1    BiocGenerics_0.36.0 archR_0.1.4        </span>
+<span class="co">#&gt; [4] S4Vectors_0.28.1    BiocGenerics_0.36.0 archR_0.1.5        </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;  [1] tidyselect_1.1.0  xfun_0.20         purrr_0.3.4       reshape2_1.4.4   </span>

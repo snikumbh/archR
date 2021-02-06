@@ -6,8 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>archR: A package for de novo discovery of different sequence architectures 
-composed of combination(s) of sequence elements (motifs). — archR • archR</title>
+<title>archR: A package for de novo discovery of different sequence 
+architectures with characteristic combination(s) of sequence 
+elements (motifs) or nucleotide compositions. — archR • archR</title>
 
 
 <!-- jquery -->
@@ -40,10 +41,13 @@ composed of combination(s) of sequence elements (motifs). — archR • archR</t
 
 
 
-<meta property="og:title" content="archR: A package for de novo discovery of different sequence architectures 
-composed of combination(s) of sequence elements (motifs). — archR" />
-<meta property="og:description" content="Given a set of DNA sequences, archR enables discovery of
-clusters of sequence with characteristic sequence architectures.
+<meta property="og:title" content="archR: A package for de novo discovery of different sequence 
+architectures with characteristic combination(s) of sequence 
+elements (motifs) or nucleotide compositions. — archR" />
+<meta property="og:description" content="Given a set of DNA sequences, archR enables unsupervised 
+discovery of _de novo_ clusters with characteristic sequence 
+architectures characterized by position-specific motifs or composition 
+of stretches of nucleotides, e.g., CG-richness, etc.
 Call this function to process a data set using archR." />
 
 
@@ -76,7 +80,7 @@ Call this function to process a data set using archR." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -121,15 +125,18 @@ Call this function to process a data set using archR." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>archR: A package for de novo discovery of different sequence architectures 
-composed of combination(s) of sequence elements (motifs).</h1>
+    <h1>archR: A package for de novo discovery of different sequence 
+architectures with characteristic combination(s) of sequence 
+elements (motifs) or nucleotide compositions.</h1>
     <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/archR.R'><code>R/archR.R</code></a>, <a href='https://github.com/snikumbh/archR/blob/master/R/archR_main.R'><code>R/archR_main.R</code></a></small>
     <div class="hidden name"><code>archR.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Given a set of DNA sequences, <code>archR</code> enables discovery of
-clusters of sequence with characteristic sequence architectures.</p>
+    <p>Given a set of DNA sequences, <code>archR</code> enables unsupervised 
+discovery of _de novo_ clusters with characteristic sequence 
+architectures characterized by position-specific motifs or composition 
+of stretches of nucleotides, e.g., CG-richness, etc.</p>
 <p>Call this function to process a data set using archR.</p>
     </div>
 
@@ -161,8 +168,8 @@ along columns. This is a required argument.</p></td>
     </tr>
     <tr>
       <th>seqs_raw</th>
-      <td><p>A Biostrings::DNAStringSet object. The FASTA sequences as a
-DNAStringSet object. This argument required argument.</p></td>
+      <td><p>A <code><a href='https://rdrr.io/pkg/Biostrings/man/XStringSet-class.html'>DNAStringSet</a></code> object. The FASTA 
+sequences as a DNAStringSet object. This argument required argument.</p></td>
     </tr>
     <tr>
       <th>seqs_pos</th>
@@ -251,8 +258,9 @@ config.</p></dd>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The archR package provides three categories of important functions:
-related to data preparation and manipulation, performing non-negative matrix
-factorization, performing clustering, and visualization-related functions.</p>
+related to data preparation and manipulation, performing non-negative 
+matrix factorization, performing clustering, and visualization-related 
+functions.</p>
     <h2 class="hasAnchor" id="functions-for-data-preparation-and-manipulation"><a class="anchor" href="#functions-for-data-preparation-and-manipulation"></a>Functions for data preparation and manipulation</h2>
 
     
@@ -272,20 +280,21 @@ factorization, performing clustering, and visualization-related functions.</p>
 <li><p><code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a></code></p></li>
 <li><p><code><a href='viz_basis_vectors_as_seqlogo.html'>viz_basis_vectors_as_seqlogo</a></code></p></li>
 <li><p><code><a href='viz_basis_vectors_in_combined_heatmaps_seqlogos.html'>viz_basis_vectors_in_combined_heatmaps_seqlogos</a></code></p></li>
-<li><p><code><a href='plot_arch_for_clusters.html'>plot_arch_for_clusters</a></code></p></li>
+<li><p><code><a href='plot_arch_for_clusters.html'>plot_arch_for_clusters</a></code>
+plot_ggseqlogo_of_seqs</p></li>
 <li><p><code><a href='viz_seqs_as_acgt_mat_from_seqs.html'>viz_seqs_as_acgt_mat_from_seqs</a></code></p></li>
 </ul>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+    <pre class="examples"><div class='input'>
 <span class='va'>fname</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"example_data.fa"</span>, 
                         package <span class='op'>=</span> <span class='st'>"archR"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># Specifying 'dinuc' generates dinucleotide features</span>
 <span class='va'>inputSeqsMat</span> <span class='op'>&lt;-</span> <span class='fu'>archR</span><span class='fu'>::</span><span class='fu'><a href='prepare_data_from_FASTA.html'>prepare_data_from_FASTA</a></span><span class='op'>(</span>fasta_fname <span class='op'>=</span> <span class='va'>fname</span>,
     sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"dinuc"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='message'>Sequences OK, </span></div><div class='output co'>#&gt; <span class='message'>Read 200 sequences</span></div><div class='output co'>#&gt; <span class='message'>Generating dinucleotide profiles</span></div><div class='input'>
 <span class='va'>inputSeqsRaw</span> <span class='op'>&lt;-</span> <span class='fu'>archR</span><span class='fu'>::</span><span class='fu'><a href='prepare_data_from_FASTA.html'>prepare_data_from_FASTA</a></span><span class='op'>(</span>fasta_fname <span class='op'>=</span> <span class='va'>fname</span>, 
     raw_seq <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
@@ -310,7 +319,30 @@ factorization, performing clustering, and visualization-related functions.</p>
                           seqs_raw <span class='op'>=</span> <span class='va'>inputSeqsRaw</span>,
                           seqs_pos <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>100</span>,by<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,
                           threshold_itr <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-<span class='op'>}</span>
+</div><div class='output co'>#&gt; <span class='message'>Parallelization w/  2  cores</span></div><div class='output co'>#&gt; <span class='message'>list(con = 5, host = "localhost", rank = 1)list(con = 6, host = "localhost", rank = 2)</span></div><div class='output co'>#&gt; <span class='message'>Model selection by factor stability</span></div><div class='output co'>#&gt; <span class='message'>Tolerance: 1e-04 &amp; Bound: 1e-08</span></div><div class='output co'>#&gt; <span class='message'>=== Iteration  1 ,  1  chunk(s) ===</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk  1 / 1 ]  [Size:  200 ]</span></div><div class='output co'>#&gt; <span class='message'>Decision: Processing</span></div><div class='output co'>#&gt; <span class='message'>[Inner chunk  1 / 2 ]  [Size:  100 ]</span></div><div class='output co'>#&gt; <span class='message'>Performing stability-based model selection</span></div><div class='output co'>#&gt; <span class='message'>Tolerance:  1e-04  &amp; Bound :  1e-08</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  1</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  2.15315980533364e-17</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  2</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  7.48895894792606e-17</span></div><div class='output co'>#&gt; <span class='message'>Change is :  0</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  3</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  1.82659723485804e-16</span></div><div class='output co'>#&gt; <span class='message'>Change is :  1</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  4</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  4.8923605148522e-07</span></div><div class='output co'>#&gt; <span class='message'>Best K for this subset:  3</span></div><div class='output co'>#&gt; <span class='message'>Fetching  3  clusters</span></div><div class='output co'>#&gt; <span class='message'>Best Q2 giving run found:  0.0416069700312701</span></div><div class='output co'>#&gt; <span class='message'>Fetching  3  cluster(s) w/ NMF scores</span></div><div class='output co'>#&gt; <span class='message'>[Inner chunk  2 / 2 ]  [Size:  100 ]</span></div><div class='output co'>#&gt; <span class='message'>Performing stability-based model selection</span></div><div class='output co'>#&gt; <span class='message'>Tolerance:  1e-04  &amp; Bound :  1e-08</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  1</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  2.51201977288924e-17</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  2</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  7.13234185516767e-18</span></div><div class='output co'>#&gt; <span class='message'>Change is :  1</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  3</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  2.73885515838114e-14</span></div><div class='output co'>#&gt; <span class='message'>Change is :  4</span></div><div class='output co'>#&gt; <span class='message'>magnitude change &gt; tol,  4</span></div><div class='output co'>#&gt; <span class='message'>This amariType Distance =  2.73885515838114e-14</span></div><div class='output co'>#&gt; <span class='message'>Would have choosen bestK as :  2</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  4</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  1.32872604209591e-08</span></div><div class='output co'>#&gt; <span class='message'>Best K for this subset:  3</span></div><div class='output co'>#&gt; <span class='message'>Fetching  3  clusters</span></div><div class='output co'>#&gt; <span class='message'>Best Q2 giving run found:  0.0496099954482235</span></div><div class='output co'>#&gt; <span class='message'>Fetching  3  cluster(s) w/ NMF scores</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk 1/1] complete</span></div><div class='output co'>#&gt; <span class='message'>[Iteration 1] complete</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk 1/1] complete</span></div><div class='output co'>#&gt; <span class='message'>current total factors: 6</span></div><div class='output co'>#&gt; <span class='message'>Current total chunks for next iteration: 6</span></div><div class='output co'>#&gt; <span class='message'>Managing clusters from outer chunk(s)</span></div><div class='output co'>#&gt; <span class='message'>totOuterChunks:  1</span></div><div class='output co'>#&gt; <span class='message'>6</span></div><div class='output co'>#&gt; <span class='message'>3,3</span></div><div class='output co'>#&gt; <span class='message'>Collation this iter: TRUE ; #InnerChunks:  2 ; #OuterChunks:  1</span></div><div class='output co'>#&gt; <span class='message'>Decision for outer chunk collation: Yes</span></div><div class='output co'>#&gt; <span class='message'>meanClustersIC:  3</span></div><div class='output co'>#&gt; <span class='message'>Cluster order by  complete  linkage w/  cor  distance:</span></div><div class='output co'>#&gt; <span class='message'>New order:  2, 5, 1, 4, 3, 6</span></div><div class='output co'>#&gt; <span class='message'>2, 5 = 0.152557212876135</span></div><div class='output co'>#&gt; <span class='message'>5, 1 = 1.02077746938011</span></div><div class='output co'>#&gt; <span class='message'>1, 4 = 0.12349918960008</span></div><div class='output co'>#&gt; <span class='message'>4, 3 = 1.00251332610003</span></div><div class='output co'>#&gt; <span class='message'>3, 6 = 0.166336035282179</span></div><div class='output co'>#&gt; <span class='message'>New order:  2, 5, 1, 4, 3, 6</span></div><div class='output co'>#&gt; <span class='message'>=== Fetching clusters === </span></div><div class='output co'>#&gt; <span class='message'>minClusters is  3</span></div><div class='output co'>#&gt; <span class='message'>Max. sil score at index = 2 , h: 0.17349918960008</span></div><div class='output co'>#&gt; <span class='message'>#Clusts using sil.vals: 3</span></div><div class='output co'>#&gt; <span class='message'>c(1, 4)</span>
+#&gt; <span class='message'>c(2, 5)</span>
+#&gt; <span class='message'>c(3, 6)</span></div><div class='output co'>#&gt; <span class='message'>Final #Clusters:  3</span></div><div class='output co'>#&gt; <span class='message'>c(1, 4)</span>
+#&gt; <span class='message'>c(2, 5)</span>
+#&gt; <span class='message'>c(3, 6)</span></div><div class='output co'>#&gt; <span class='message'>#Clusters:  3</span></div><div class='output co'>#&gt; <span class='message'>c(1, 4)c(2, 5)c(3, 6)</span></div><div class='output co'>#&gt; <span class='message'>== DONE == </span>
+#&gt; <span class='message'>ClustList:  c(1, 4)</span>
+#&gt; <span class='message'>c(2, 5)</span>
+#&gt; <span class='message'>c(3, 6)</span></div><div class='output co'>#&gt; <span class='message'>=== This is what I got ===</span></div><div class='output co'>#&gt; <span class='message'>c(3, 5, 7, 8, 10, 12, 13, 16, 17, 18, 19, 22, 25, 30, 31, 36, 37, 38, 39, 41, 43, 45, 47, 49, 51, 53, 54, 55, 56, 58, 59, 60, 61, 64, 67, 69, 70, 73, 77, 84, 89, 91, 94, 95, 98)</span>
+#&gt; <span class='message'>c(1, 2, 6, 11, 20, 23, 32, 46, 50, 52, 63, 68, 71, 72, 75, 80, 82, 83, 85, 86, 87, 88, 92, 99)</span>
+#&gt; <span class='message'>c(4, 9, 14, 15, 21, 24, 26, 27, 28, 29, 33, 34, 35, 40, 42, 44, 48, 57, 62, 65, 66, 74, 76, 78, 79, 81, 90, 93, 96, 97, 100)</span>
+#&gt; <span class='message'>c(103, 106, 107, 109, 115, 117, 118, 119, 120, 121, 122, 124, 125, 126, 128, 130, 132, 133, 134, 135, 136, 140, 141, 142, 144, 150, 152, 153, 154, 156, 159, 160, 161, 162, 164, 166, 170, 173, 175, 177, 180, 183, 184, 185, 186, 188, 189, 191, 193, 194, 195, 196, 198, 199, 200)</span>
+#&gt; <span class='message'>c(102, 104, 105, 112, 114, 116, 123, 131, 137, 138, 143, 145, 146, 147, 148, 151, 158, 165, 167, 168, 171, 176, 179, 182, 190, 197)</span>
+#&gt; <span class='message'>c(101, 108, 110, 111, 113, 127, 129, 139, 149, 155, 157, 163, 169, 172, 174, 178, 181, 187, 192)</span></div><div class='output co'>#&gt; <span class='message'>=== INFO ===</span></div><div class='output co'>#&gt; <span class='message'>1, 4</span></div><div class='output co'>#&gt; <span class='message'>Size:100</span></div><div class='output co'>#&gt; <span class='message'>=== INFO ===</span></div><div class='output co'>#&gt; <span class='message'>2, 5</span></div><div class='output co'>#&gt; <span class='message'>Size:50</span></div><div class='output co'>#&gt; <span class='message'>=== INFO ===</span></div><div class='output co'>#&gt; <span class='message'>3, 6</span></div><div class='output co'>#&gt; <span class='message'>Size:50</span></div><div class='output co'>#&gt; <span class='message'>=== I am returning ===</span></div><div class='output co'>#&gt; <span class='message'>c(3, 5, 7, 8, 10, 12, 13, 16, 17, 18, 19, 22, 25, 30, 31, 36, 37, 38, 39, 41, 43, 45, 47, 49, 51, 53, 54, 55, 56, 58, 59, 60, 61, 64, 67, 69, 70, 73, 77, 84, 89, 91, 94, 95, 98, 103, 106, 107, 109, 115, 117, 118, 119, 120, 121, 122, 124, 125, 126, 128, 130, 132, 133, 134, 135, 136, 140, 141, 142, 144, 150, 152, 153, 154, 156, 159, 160, 161, 162, 164, 166, 170, 173, 175, 177, 180, 183, 184, 185, 186, 188, 189, 191, 193, 194, 195, 196, 198, 199, 200)</span>
+#&gt; <span class='message'>c(1, 2, 6, 11, 20, 23, 32, 46, 50, 52, 63, 68, 71, 72, 75, 80, 82, 83, 85, 86, 87, 88, 92, 99, 102, 104, 105, 112, 114, 116, 123, 131, 137, 138, 143, 145, 146, 147, 148, 151, 158, 165, 167, 168, 171, 176, 179, 182, 190, 197)</span>
+#&gt; <span class='message'>c(4, 9, 14, 15, 21, 24, 26, 27, 28, 29, 33, 34, 35, 40, 42, 44, 48, 57, 62, 65, 66, 74, 76, 78, 79, 81, 90, 93, 96, 97, 100, 101, 108, 110, 111, 113, 127, 129, 139, 149, 155, 157, 163, 169, 172, 174, 178, 181, 187, 192)</span></div><div class='output co'>#&gt; <span class='message'>Iteration 1 completed  in 0.845 mins</span></div><div class='output co'>#&gt; <span class='message'>0.846 mins  ellapsed since start</span></div><div class='output co'>#&gt; <span class='message'>=== Iteration  2 ,  3  chunk(s) ===</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk  1 / 3 ]  [Size:  100 ]</span></div><div class='output co'>#&gt; <span class='message'>Decision: Processing</span></div><div class='output co'>#&gt; <span class='message'>[Inner chunk  1 / 1 ]  [Size:  100 ]</span></div><div class='output co'>#&gt; <span class='message'>Performing stability-based model selection</span></div><div class='output co'>#&gt; <span class='message'>Tolerance:  1e-04  &amp; Bound :  1e-08</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  1</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  1.61711272879745e-17</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  2</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  4.75160915776556e-11</span></div><div class='output co'>#&gt; <span class='message'>Change is :  6</span></div><div class='output co'>#&gt; <span class='message'>magnitude change &gt; tol,  4</span></div><div class='output co'>#&gt; <span class='message'>This amariType Distance =  4.75160915776556e-11</span></div><div class='output co'>#&gt; <span class='message'>Would have choosen bestK as :  1</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  3</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  0.0035786011862791</span></div><div class='output co'>#&gt; <span class='message'>Best K for this subset:  2</span></div><div class='output co'>#&gt; <span class='message'>Fetching  2  clusters</span></div><div class='output co'>#&gt; <span class='message'>Best Q2 giving run found:  0.114541701362898</span></div><div class='output co'>#&gt; <span class='message'>Fetching  2  cluster(s) w/ NMF scores</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk 1/3] complete</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk 1/3] complete</span></div><div class='output co'>#&gt; <span class='message'>current total factors: 2</span></div><div class='output co'>#&gt; <span class='message'>Current total chunks for next iteration: 2</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk  2 / 3 ]  [Size:  50 ]</span></div><div class='output co'>#&gt; <span class='message'>Decision: Processing</span></div><div class='output co'>#&gt; <span class='message'>[Inner chunk  1 / 1 ]  [Size:  50 ]</span></div><div class='output co'>#&gt; <span class='message'>Performing stability-based model selection</span></div><div class='output co'>#&gt; <span class='message'>Tolerance:  1e-04  &amp; Bound :  1e-08</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  1</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  1.59019823123078e-17</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  2</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  2.57849364933938e-06</span></div><div class='output co'>#&gt; <span class='message'>Best K for this subset:  1</span></div><div class='output co'>#&gt; <span class='message'>Fetching  1  clusters</span></div><div class='output co'>#&gt; <span class='message'>Best Q2 giving run found:  0.197789465153941</span></div><div class='output co'>#&gt; <span class='message'>Fetching  1  cluster(s) w/ NMF scores</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk 2/3] complete</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk 2/3] complete</span></div><div class='output co'>#&gt; <span class='message'>current total factors: 3</span></div><div class='output co'>#&gt; <span class='message'>Current total chunks for next iteration: 3</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk  3 / 3 ]  [Size:  50 ]</span></div><div class='output co'>#&gt; <span class='message'>Decision: Processing</span></div><div class='output co'>#&gt; <span class='message'>[Inner chunk  1 / 1 ]  [Size:  50 ]</span></div><div class='output co'>#&gt; <span class='message'>Performing stability-based model selection</span></div><div class='output co'>#&gt; <span class='message'>Tolerance:  1e-04  &amp; Bound :  1e-08</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  1</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  3.17142496327267e-17</span></div><div class='output co'>#&gt; <span class='message'>Checking K =  2</span></div><div class='output co'>#&gt; <span class='message'>AmariTypeDist :  7.67125992969052e-05</span></div><div class='output co'>#&gt; <span class='message'>Best K for this subset:  1</span></div><div class='output co'>#&gt; <span class='message'>Fetching  1  clusters</span></div><div class='output co'>#&gt; <span class='message'>Best Q2 giving run found:  0.153271954789996</span></div><div class='output co'>#&gt; <span class='message'>Fetching  1  cluster(s) w/ NMF scores</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk 3/3] complete</span></div><div class='output co'>#&gt; <span class='message'>[Iteration 2] complete</span></div><div class='output co'>#&gt; <span class='message'>[Outer chunk 3/3] complete</span></div><div class='output co'>#&gt; <span class='message'>current total factors: 4</span></div><div class='output co'>#&gt; <span class='message'>Current total chunks for next iteration: 4</span></div><div class='output co'>#&gt; <span class='message'>Managing clusters from outer chunk(s)</span></div><div class='output co'>#&gt; <span class='message'>totOuterChunks:  3</span></div><div class='output co'>#&gt; <span class='message'>2,1,1</span></div><div class='output co'>#&gt; <span class='message'>1</span></div><div class='output co'>#&gt; <span class='message'>Collation this iter: FALSE ; #InnerChunks:  1 ; #OuterChunks:  3</span></div><div class='output co'>#&gt; <span class='message'>Decision for outer chunk collation: No</span></div><div class='output co'>#&gt; <span class='message'>Iteration 2 completed  in 0.83 mins</span></div><div class='output co'>#&gt; <span class='message'>1.68 mins  ellapsed since start</span></div><div class='output co'>#&gt; <span class='message'>Collating clusters</span></div><div class='output co'>#&gt; <span class='message'>Cluster order by  complete  linkage w/  cor  distance:</span></div><div class='output co'>#&gt; <span class='message'>New order:  4, 3, 1, 2</span></div><div class='output co'>#&gt; <span class='message'>4, 3 = 1.0195776654507</span></div><div class='output co'>#&gt; <span class='message'>3, 1 = 1.01582316608627</span></div><div class='output co'>#&gt; <span class='message'>1, 2 = 0.488767841906371</span></div><div class='output co'>#&gt; <span class='message'>New order:  4, 3, 1, 2</span></div><div class='output co'>#&gt; <span class='message'>=== Fetching clusters === </span></div><div class='output co'>#&gt; <span class='message'>minClusters is  3</span></div><div class='output co'>#&gt; <span class='message'>Max. sil score at index = 1 , h: 0.488767841906371</span></div><div class='output co'>#&gt; <span class='message'>#Clusts using sil.vals: 3</span></div><div class='output co'>#&gt; <span class='message'>1:2</span>
+#&gt; <span class='message'>3</span>
+#&gt; <span class='message'>4</span></div><div class='output co'>#&gt; <span class='message'>Final #Clusters:  3</span></div><div class='output co'>#&gt; <span class='message'>1:2</span>
+#&gt; <span class='message'>3</span>
+#&gt; <span class='message'>4</span></div><div class='output co'>#&gt; <span class='message'>#Clusters:  3</span></div><div class='output co'>#&gt; <span class='message'>1:234</span></div><div class='output co'>#&gt; <span class='message'>== DONE == </span>
+#&gt; <span class='message'>ClustList:  1:2</span>
+#&gt; <span class='message'>3</span>
+#&gt; <span class='message'>4</span></div><div class='output co'>#&gt; <span class='message'>Factor clustering done, returning:</span></div><div class='output co'>#&gt; <span class='message'>Returning:  1:2</span>
+#&gt; <span class='message'>3</span>
+#&gt; <span class='message'>4</span></div><div class='output co'>#&gt; <span class='message'>Stopping cluster...</span></div><div class='output co'>#&gt; <span class='message'>archR exiting , 1.68 mins</span></div><div class='input'>
  
 </div></pre>
   </div>

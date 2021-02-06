@@ -75,7 +75,7 @@ proceeds to create the directory." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -132,31 +132,24 @@ yes, then it adds a suffix (a number) to the given directory name, and
 proceeds to create the directory.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>handle_dir_creation</span><span class='op'>(</span>
-  <span class='va'>givenODir</span>,
-  flags <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>debugFlag <span class='op'>=</span> <span class='cn'>FALSE</span>, verboseFlag <span class='op'>=</span> <span class='cn'>FALSE</span>, plotFlag <span class='op'>=</span> <span class='cn'>FALSE</span>, timeFlag <span class='op'>=</span>
-    <span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>handle_dir_creation</span><span class='op'>(</span><span class='va'>o_dir</span>, <span class='va'>vrbs</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>givenODir</th>
+      <th>o_dir</th>
       <td><p>Specify the output directory name with its complete path.</p></td>
     </tr>
     <tr>
-      <th>flags</th>
-      <td><p>List with four Logical elements as detailed.</p><dl>
-  <dt>debugFlag</dt><dd><p>Whether debug information for the run is printed</p></dd>
-  <dt>verboseFlag</dt><dd><p>Whether verbose information for the run is printed</p></dd>
-  <dt>plotVerboseFlag</dt><dd><p>Whether verbose plotting is performed for the run</p></dd>
-  <dt>timeFlag</dt><dd><p>Whether timing information is printed for the run</p></dd>
-
-</dl></td>
+      <th>vrbs</th>
+      <td><p>Set verbosity to TRUE or FALSE</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The (updated) dir name</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

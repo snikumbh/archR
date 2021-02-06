@@ -73,7 +73,7 @@ geom_tile." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -128,22 +128,22 @@ geom_tile." />
 <code>geom_tile</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_ggheatmap</span><span class='op'>(</span><span class='va'>pwmMat</span>, position_labels <span class='op'>=</span> <span class='cn'>NULL</span>, savePDFfilename <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_ggheatmap</span><span class='op'>(</span><span class='va'>pwm_mat</span>, pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>, pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>pwmMat</th>
+      <th>pwm_mat</th>
       <td><p>Matrix (usually a PWM, but can be non-normalized/any matrix)
 to be represented as a heatmap.</p></td>
     </tr>
     <tr>
-      <th>position_labels</th>
+      <th>pos_lab</th>
       <td><p>Labels of the positions in the sequences.</p></td>
     </tr>
     <tr>
-      <th>savePDFfilename</th>
+      <th>pdf_name</th>
       <td><p>Name of the file which will be saved as PDF.</p></td>
     </tr>
     </table>
@@ -151,7 +151,7 @@ to be represented as a heatmap.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A ggplot object so you can simply call <code>print</code> or <code>save</code>
-on it later. If <code>savePDFfilename</code> is given, it is also saved and the
+on it later. If <code>pdf_name</code> is given, it is also saved and the
 <code>ggplot</code> object returned.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

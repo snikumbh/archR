@@ -75,7 +75,7 @@ DNA sequence, it is reshaped to have 4 rows and then visualized." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -133,11 +133,11 @@ DNA sequence, it is reshaped to have 4 rows and then visualized.</p>
     </div>
 
     <pre class="usage"><span class='fu'>viz_basis_vectors_as_seqlogo</span><span class='op'>(</span>
-  <span class='va'>featuresMatrix</span>,
-  plotMethod <span class='op'>=</span> <span class='st'>"custom"</span>,
-  position_labels <span class='op'>=</span> <span class='cn'>NA</span>,
+  <span class='va'>feat_mat</span>,
+  method <span class='op'>=</span> <span class='st'>"custom"</span>,
+  pos_lab <span class='op'>=</span> <span class='cn'>NA</span>,
   add_pseudo_counts <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  savePDFfilename <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pdf_name <span class='op'>=</span> <span class='cn'>NULL</span>,
   sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"sinuc"</span>
 <span class='op'>)</span></pre>
 
@@ -145,20 +145,20 @@ DNA sequence, it is reshaped to have 4 rows and then visualized.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>featuresMatrix</th>
+      <th>feat_mat</th>
       <td><p>The features matrix output from NMF. Expected
 dimensionality: number of columns represent the number of factors from NMF,
 and the number of rows is 4 times the length of the sequences in the
 collection.</p></td>
     </tr>
     <tr>
-      <th>plotMethod</th>
+      <th>method</th>
       <td><p>For <code>ggseqlogo</code>; either of "custom", "bits", or
 "probability".
 Default is "custom".</p></td>
     </tr>
     <tr>
-      <th>position_labels</th>
+      <th>pos_lab</th>
       <td><p>Labels of the positions in the sequences.</p></td>
     </tr>
     <tr>
@@ -170,7 +170,7 @@ set
  matrix.</p></td>
     </tr>
     <tr>
-      <th>savePDFfilename</th>
+      <th>pdf_name</th>
       <td><p>Name of the file which will be saved as PDF
 (also provide the extension).</p></td>
     </tr>
