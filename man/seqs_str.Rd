@@ -2,7 +2,7 @@
 % Please edit documentation in R/archR_auxiliary_functionsI.R
 \name{seqs_str}
 \alias{seqs_str}
-\title{seqs_str}
+\title{Get sequences fro mthe archR result object}
 \usage{
 seqs_str(res, iter = NULL, cl = NULL, ord = FALSE)
 }
@@ -38,18 +38,18 @@ the set of sequences returned can be ordered by clusters with `ord = TRUE`.
 Using `ord = FALSE` fetches the sequences by their original order.
 }
 \examples{
-\donttest{
+
 res <- system.file("extdata", "example_archRresult.rds", 
          package = "archR", mustWork = TRUE)
          
 # Fetch sequences from 2nd cluster of archR's final solution
-ans <- archR::seqs_str(res, iter=NULL, cl=2)
+ans <- archR::seqs_str(readRDS(res), iter=NULL, cl=2)
 
 # Fetch all sequences ordered by the final clustering
-ans <- archR::seqs_str(res, iter=NULL, cl=NULL, ord=TRUE)
+ans <- archR::seqs_str(readRDS(res), iter=NULL, cl=NULL, ord=TRUE)
 
 # Fetch sequences belonging to first cluster in archR's first iteration
-ans <- archR::seqs_str(res, iter=1, cl=1)
-}
+ans <- archR::seqs_str(readRDS(res), iter=1, cl=1)
+
 
 }
