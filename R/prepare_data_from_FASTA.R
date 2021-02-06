@@ -188,11 +188,11 @@ get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
                 encoded_seqs <- lapply(seqs_split_as_list,
                                         .one_hot_encode_sinuc)
             } else if (sinuc_or_dinuc == "dinuc") {
-                message("Generating dinucleotide profiles")
+                .msg_pstr("Generating dinucleotide profiles", flg=TRUE)
                 encoded_seqs <-
                     lapply(seqs_split_as_list, .one_hot_encode_dinuc)
             }  else if (sinuc_or_dinuc == "trinuc") {
-                message("Generating trinucleotide profiles")
+                .msg_pstr("Generating trinucleotide profiles", flg=TRUE)
                 encoded_seqs <-
                     lapply(seqs_split_as_list, .one_hot_encode_trinuc)
             }
@@ -248,7 +248,7 @@ get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
 
     } else {
         # All OK!
-        message("Sequences OK, ", levels(length_vals)[1])
+        .msg_pstr("Sequences OK, ", levels(length_vals)[1], flg=TRUE)
     }
 }
 ## =============================================================================
@@ -314,7 +314,7 @@ prepare_data_from_FASTA <- function(fasta_fname, raw_seq = FALSE,
             filepath = fasta_fname, format = "fasta", use.names = FALSE)
         givenSeqs <- Biostrings::DNAStringSet(toupper(givenSeqs))
         .assert_seq_attributes(givenSeqs)
-        message("Read ", length(givenSeqs), " sequences")
+        .msg_pstr("Read ", length(givenSeqs), " sequences", flg=TRUE)
         #
         oheSeqs <- get_one_hot_encoded_seqs(givenSeqs,
                                             sinuc_or_dinuc = sinuc_or_dinuc)

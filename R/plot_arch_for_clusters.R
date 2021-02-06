@@ -153,6 +153,6 @@ plot_ggseqlogo_of_seqs <- function(seqs, pos_lab, xt_freq = 5, method = "bits",
     if(!is.null(title)) foo_p <- foo_p + ggplot2::ggtitle(title)
     if(bits_yax == 'full') foo_p <- foo_p + ggplot2::ylim(0.0, 2.0) 
     ##
-    message("Plot title:", title)
+    .msg_pstr("Plot title:", title, flg=TRUE)
     foo_p
 }
