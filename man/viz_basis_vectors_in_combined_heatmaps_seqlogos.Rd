@@ -7,25 +7,25 @@
 plot}
 \usage{
 viz_basis_vectors_in_combined_heatmaps_seqlogos(
-  featuresMatrix,
-  plotMethod = "custom",
-  position_labels = NA,
+  feat_mat,
+  method = "custom",
+  pos_lab = NA,
   add_pseudo_counts = FALSE,
-  savePDFfilename = NULL,
+  pdf_name = NULL,
   sinuc_or_dinuc = "sinuc"
 )
 }
 \arguments{
-\item{featuresMatrix}{The features matrix output from NMF. Expected
+\item{feat_mat}{The features matrix output from NMF. Expected
 dimensionality: number of columns represent the number of factors from NMF,
 and the number of rows is 4 times the length of the sequences in the
 collection.}
 
-\item{plotMethod}{For \code{ggseqlogo}; either of "custom", "bits", or
+\item{method}{For \code{ggseqlogo}; either of "custom", "bits", or
 "probability".
 Default is "custom".}
 
-\item{position_labels}{Labels of the positions in the sequences.}
+\item{pos_lab}{Labels of the positions in the sequences.}
 
 \item{add_pseudo_counts}{Boolean, taking values TRUE/T or FALSE/F, default
 set
@@ -33,7 +33,7 @@ set
  features
  matrix.}
 
-\item{savePDFfilename}{Name of the file which will be saved as PDF
+\item{pdf_name}{Name of the file which will be saved as PDF
 (also provide the extension).}
 
 \item{sinuc_or_dinuc}{"sinuc" or "dinuc"}
