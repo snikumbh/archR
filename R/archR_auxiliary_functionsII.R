@@ -5,51 +5,36 @@
 #' yes, then it adds a suffix (a number) to the given directory name, and
 #' proceeds to create the directory.
 #'
-#' @param givenODir Specify the output directory name with its complete path.
+#' @param o_dir Specify the output directory name with its complete path.
 #'
+#' @param vrbs Set verbosity to TRUE or FALSE
 #'
-#' @param flags List with four Logical elements as detailed.
-#' \describe{
-#'   \item{debugFlag}{Whether debug information for the run is printed}
-#'   \item{verboseFlag}{Whether verbose information for the run is printed}
-#'   \item{plotVerboseFlag}{Whether verbose plotting is performed for the run}
-#'   \item{timeFlag}{Whether timing information is printed for the run}
-#' }
+#' @return The (updated) dir name
 #'
 #' @export
-handle_dir_creation <- function(givenODir, 
-    flags = list(debugFlag = FALSE,
-        verboseFlag = FALSE,
-        plotFlag = FALSE,
-        timeFlag = FALSE)){
-    if(dir.exists(givenODir)){
-        if(flags$verboseFlag) {
-            message("-- Directory exists: -- ")
-            message(givenODir)
-            message("-- Changing name to: -- ")
-        }
-        allExistingDirs <- list.dirs(path = dirname(givenODir),
+handle_dir_creation <- function(o_dir, vrbs){
+    ##
+    if(dir.exists(o_dir)){
+        .msg_pstr("-- Directory exists: -- ", o_dir, 
+            "-- Changing name to: -- ", flg=vrbs)
+        allExistingDirs <- list.dirs(path = dirname(o_dir),
                                         recursive = FALSE)
-        dirsThatMatch <- grep(pattern = basename(givenODir), allExistingDirs,
+        dirsThatMatch <- grep(pattern = basename(o_dir), allExistingDirs,
                                 value = TRUE)
         ## Suffix an integer, because directory with given name (oDir)
         ## exists for length(dirsThatMatch) times
         name_suffix <- length(dirsThatMatch)
-        givenODir <- paste(givenODir, name_suffix, sep = "_")
-        while(dir.exists(givenODir)){
+        o_dir <- paste(o_dir, name_suffix, sep = "_")
+        while(dir.exists(o_dir)){
             name_suffix <- name_suffix + 1
-            givenODir <- paste(givenODir, name_suffix, sep = "_")
+            o_dir <- paste(o_dir, name_suffix, sep = "_")
         }
-        if(flags$verboseFlag) {
-            message(givenODir)
-        }
+        .msg_pstr(o_dir, flg=vrbs)
     }
-    retVal <- dir.create(paste0(givenODir, "/"), showWarnings = TRUE)
+    retVal <- dir.create(paste0(o_dir, "/"), showWarnings = TRUE)
     stopifnot(retVal)
-    returnODirName <- paste0(givenODir, "/")
-    if(flags$verboseFlag) {
-        message("-- Directory created for writing results -- ")
-    }
+    returnODirName <- paste0(o_dir, "/")
+    .msg_pstr("-- Directory created for writing results -- ", flg=vrbs)
     returnODirName
 }
 ## =============================================================================
