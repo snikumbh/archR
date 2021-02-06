@@ -98,9 +98,9 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' @param inner_chunk_size Numeric. Specify the size of the inner chunks of
 #' sequences.
 #' @param k_min Numeric. Specify the minimum of the range of values to be tested
-#' for number of NMF basis vectors.
+#' for number of NMF basis vectors. Default is 1.
 #' @param k_max Numeric. Specify the maximum of the range of values to be tested
-#' for number of NMF basis vectors.
+#' for number of NMF basis vectors. Default is 20.
 #' @param mod_sel_type Character. Specify the model selection strategy to 
 #' be used. Default is 'stability'. Another option is 'cv', short for 
 #' cross-validation. Warning: The cross-validation approach can be time 
@@ -165,7 +165,7 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' 
 #' @export
 archR_set_config <- function(inner_chunk_size = 500,
-                            k_min = 2,
+                            k_min = 1,
                             k_max = 20,
                             mod_sel_type = "stability",
                             tol = 10^-3,
@@ -238,24 +238,22 @@ archR_set_config <- function(inner_chunk_size = 500,
 ## If the lengthOfOC < minThreshold, DO NOT PROCESS/return TRUE
 ##
 .decide_process_outer_chunk <- function(minThreshold, lengthOfOC, kFoldsVal) {
-        # Assert that minThreshold > 4*kFoldsVal
+        stopifnot(lengthOfOC > 0)
+        stopifnot(minThreshold > 0)
+        ## Assert that minThreshold > 4*kFoldsVal
         nFoldsCondition <- 4 * kFoldsVal
         .assert_archR_min_size_independent(minThreshold)
         if (minThreshold < nFoldsCondition) {
             stop("'min_size' should be at least 4 times 'kFolds'")
         }
-        # base::stopifnot(minThreshold >= nFoldsCondition)
+        ##
         doNotProcess <- FALSE
-        if (lengthOfOC > 0) {
-            if (lengthOfOC < minThreshold) {
-                doNotProcess <- TRUE
-                message("Sorry, will not process this small a chunk: ",
-                        lengthOfOC)
-            }
-        } else {
-            # doNotProcess <- TRUE
-            stop("Outer chunk of size 0")
+        if (lengthOfOC <= minThreshold) {
+            doNotProcess <- TRUE
+            .msg_pstr("Sorry, will not process this small a chunk: ",
+                    lengthOfOC, flg=TRUE)
         }
+        ##
         return(doNotProcess)
     }
 ## =============================================================================

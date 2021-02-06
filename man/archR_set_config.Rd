@@ -6,7 +6,7 @@
 \usage{
 archR_set_config(
   inner_chunk_size = 500,
-  k_min = 2,
+  k_min = 1,
   k_max = 20,
   mod_sel_type = "stability",
   tol = 10^-3,
@@ -27,10 +27,10 @@ archR_set_config(
 sequences.}
 
 \item{k_min}{Numeric. Specify the minimum of the range of values to be tested
-for number of NMF basis vectors.}
+for number of NMF basis vectors. Default is 1.}
 
 \item{k_max}{Numeric. Specify the maximum of the range of values to be tested
-for number of NMF basis vectors.}
+for number of NMF basis vectors. Default is 20.}
 
 \item{mod_sel_type}{Character. Specify the model selection strategy to 
 be used. Default is 'stability'. Another option is 'cv', short for 
