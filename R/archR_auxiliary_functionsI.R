@@ -1,44 +1,38 @@
-# @title Get cluster labels for chosen level/iteration
-#
-# @description Given a seqsClustLabels, collect cluster labels for sequences at
-#  the chosen iteration/level.
-#
-# @param given_seqsClustLabels from archR result object
-# @param chooseLevel choose a level/iteration. This value is number of
-# iterations + 1
-#
-# @return A numeric vector of the same size as seqsClustLabels, with labels
-# only up to the chosen iteration
-#'
-# collect_cluster_labels <- function(given_seqsClustLabels, chooseLevel = 1) {
-#     ## Check if all_ok, all elements should have same length
-#     .assert_archR_seqsClustLabels_at_end(given_seqsClustLabels)
-#     splitChar <- "-"
-#     elements_length <- unique(unlist(lapply(strsplit(given_seqsClustLabels,
-#                                                     split = splitChar),
-#                                                     length)))
-#     if (chooseLevel > elements_length) {
-#         stop("Choose_levels (", chooseLevel,
-#         ") greater than levels present in cluster_labels(",
-#         elements_length, ").")
-#     } else {
-#         selectedLabels <- unlist(lapply(strsplit(given_seqsClustLabels,
-#                                                 split = splitChar),
-#                                         function(x) {
-#                                             paste0(x[seq_len(chooseLevel)],
-#                                                 collapse = splitChar)
-#                                         }))
-#     }
-#     .assert_archR_seqsClustLabels_at_end(selectedLabels)
-#     return(selectedLabels)
-# }
-# 
-
 ## Getter functions ============================================================
 
 ## get functions for components of archR's result object
-## These keeps such accesses in other functions agnostic to how they are 
+## These keep such accesses in other functions agnostic to how they are 
 ## maintained in the archR result object
+
+#' @title Get functions for archR result object
+#'
+#' @param res archR result object.
+#' @param iter Choose the iteration of archR result to get from.
+#' 
+#' @export
+get_clBasVec <- function(res, iter){
+    return(res$clustBasisVectors[[iter]])
+}
+
+
+#' @describeIn get_clBasVec Number of basis vectors (clusters) at the 
+#' selected iteration.
+#' @export
+get_clBasVec_k <- function(res, iter){
+    return(res$clustBasisVectors[[iter]]$nBasisVectors)
+}
+
+#' @describeIn get_clBasVec The basis vectors matrix at the chosen 
+#' iteration. Note that eatures along rows.
+#' @export
+get_clBasVec_m <- function(res, iter){
+    return(res$clustBasisVectors[[iter]]$basisVectors)
+}
+
+#' @describeIn get_clBasVec The cluster IDs for each sequence. Note that 
+#' order of sequences here is as per the input. 
+#' @seealso \code{\link{seqs_str}}
+#' @export
 get_seqClLab <- function(res, iter){
     
     if(is.null(iter)){
@@ -48,22 +42,9 @@ get_seqClLab <- function(res, iter){
     }
 }
 
-get_clBasVec_k <- function(res, iter){
-    
-    return(res$clustBasisVectors[[iter]]$nBasisVectors)
-}
 
-get_clBasVec_m <- function(res, iter){
-    
-    return(res$clustBasisVectors[[iter]]$basisVectors)
-}
 
-get_clBasVec <- function(res, iter){
-    
-    return(res$clustBasisVectors[[iter]])
-}
-
-#' @title seqs_str
+#' @title Get sequences fro mthe archR result object
 #' @description Wrapper to fetch sequences from the archR result object as 
 #' character
 #'
@@ -94,19 +75,19 @@ get_clBasVec <- function(res, iter){
 #' @export
 #' 
 #' @examples
-#' \donttest{
+#' 
 #' res <- system.file("extdata", "example_archRresult.rds", 
 #'          package = "archR", mustWork = TRUE)
 #'          
 #' # Fetch sequences from 2nd cluster of archR's final solution
-#' ans <- archR::seqs_str(res, iter=NULL, cl=2)
+#' ans <- archR::seqs_str(readRDS(res), iter=NULL, cl=2)
 #' 
 #' # Fetch all sequences ordered by the final clustering
-#' ans <- archR::seqs_str(res, iter=NULL, cl=NULL, ord=TRUE)
+#' ans <- archR::seqs_str(readRDS(res), iter=NULL, cl=NULL, ord=TRUE)
 #' 
 #' # Fetch sequences belonging to first cluster in archR's first iteration
-#' ans <- archR::seqs_str(res, iter=1, cl=1)
-#' }
+#' ans <- archR::seqs_str(readRDS(res), iter=1, cl=1)
+#' 
 #' 
 seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     
@@ -124,12 +105,14 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         return(as.character(res$rawSeqs[cl_mem]))
     }
     if(!is.null(iter) && !is.null(cl)){
-        clust_list <- get_seqs_clust_list(res$seqsClustLabels[[iter]])
+        # clust_list <- get_seqs_clust_list(res$seqsClustLabels[[iter]])
+        clust_list <- get_seqs_clust_list(get_seqClLab(res, iter))
         cl_mem <- clust_list[[cl]]
         return(as.character(res$rawSeqs[cl_mem]))
     }
     if(!is.null(iter) && is.null(cl) && ord){
-        clust_list <- get_seqs_clust_list(res$seqsClustLabels[[iter]])
+        # clust_list <- get_seqs_clust_list(res$seqsClustLabels[[iter]])
+        clust_list <- get_seqs_clust_list(get_seqClLab(res, iter))
         use_ord <- unlist(clust_list)
         return(as.character(res$rawSeqs[use_ord]))
     }
@@ -154,8 +137,8 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     clustMemberships <- apply(samplesMatrix, 2, which.max)
     ##
     if (length(unique(clustMemberships)) != nClusters) {
-        message("WARNING: Basis vector that got no sequences assigned: ",
-                setdiff( unique(clustMemberships), seq_len(nClusters)))
+        warning("Basis vector that got no sequences assigned: ",
+            setdiff( unique(clustMemberships), seq_len(nClusters)))
     } else {
         ##
     }
@@ -197,42 +180,31 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## @param globClustAssignments A list of cluster assignments
 ##
 ## @return collatedClustAssignments A list
-.collate_clusters2 <- function(clustList, globClustAssignments,
-                                flags = list(debugFlag = FALSE,
-                                            verboseFlag = FALSE,
-                                            plotVerboseFlag = FALSE,
-                                            timeFlag = FALSE)) {
+.collate_clusters2 <- function(clustList, globClAssign, dbg = FALSE) {
     if (is.null(clustList)) {
         ## When/if factor clustering is not performed, the 
         ## globClustAssingments variable is directly assigned
-        collatedClustAssignments <- globClustAssignments
-        return(collatedClustAssignments)
+        return(globClAssign)
     }else{
-        if(flags$debugFlag){
-            message("=== This is what I got ===")
-            message(.msg_print(globClustAssignments))
-        }
-        .assert_archR_globClustAssignments(globClustAssignments)
+        .msg_pstr("=== This is what I got ===", flg=dbg)
+        .msg_pstr(.msg_print(globClAssign), flg=dbg)
+        .assert_archR_globClustAssignments(globClAssign)
+        ##
         nClusters <- length(clustList)
         clustSizes <- unlist(lapply(clustList, length))
         ##
-        collatedClustAssignments <- vector("list", nClusters)
-        for(clustIdx in seq_along(collatedClustAssignments)){
+        collClAssign <- vector("list", nClusters)
+        for(clustIdx in seq_along(collClAssign)){
             temp <- unlist(lapply(clustList[[clustIdx]], function(x){
-                globClustAssignments[[x]]
+                globClAssign[[x]]
             }))
-            if(flags$debugFlag){
-                message("=== INFO ===")
-                message(.msg_print(clustList[[clustIdx]]))
-                message("Size:", length(temp))
-            }
-            collatedClustAssignments[[clustIdx]] <- temp
+            .msg_pstr("=== INFO ===", .msg_print(clustList[[clustIdx]]), 
+                    "Size:", length(temp), flg=dbg)
+            collClAssign[[clustIdx]] <- temp
         }
-        if(flags$debugFlag){
-            message("=== I am returning ===")
-            message(.msg_print(collatedClustAssignments))
-        }
-        return(collatedClustAssignments)
+        .msg_pstr("=== I am returning ===", .msg_print(collClAssign), flg=dbg)
+        ##
+        return(collClAssign)
     }
 }
 ## =============================================================================

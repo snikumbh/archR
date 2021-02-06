@@ -459,7 +459,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
 
             nxtOuterChunksColl <-
                 .collate_clusters2(intClustFactorsClusteringEucCom,
-                                    nxtOuterChunksColl, flags)
+                                    nxtOuterChunksColl, dbg)
 
             ## Updating cluster labels for sequences can be done later after 
             ## the clusters have been rearranged
