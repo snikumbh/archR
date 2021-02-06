@@ -88,8 +88,11 @@ get_clBasVec <- function(res, iter){
 #' the set of sequences returned can be ordered by clusters with `ord = TRUE`. 
 #' Using `ord = FALSE` fetches the sequences by their original order. 
 #' 
+#' @return The selected DNA sequences from the DNAStringSet object as a 
+#' character vector
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' res <- system.file("extdata", "example_archRresult.rds", 
 #'          package = "archR", mustWork = TRUE)
 #'          
@@ -426,7 +429,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
             clustList <- lapply(seq_len(max(clustList[[1]])), 
                                 function(x){x})   
         }
-        .msg_pstr("=== DONE ===", "\nClustList: ", .msg_print(clustList), flg=dbg)
+        .msg_pstr("== DONE ==", "\nClustList: ", .msg_print(clustList), flg=dbg)
         return(clustList)
     }
 }
