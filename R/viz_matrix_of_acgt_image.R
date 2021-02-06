@@ -13,13 +13,11 @@
     nPos <- length(pos_lab)
     ## handling single- and di-nucleotides separately
     if (sinuc_or_dinuc == "sinuc") {
-        nuc_list <- unlist(lapply(seq_along(seqs),
-                                function(x) {
-                                    str_seq <- seqs[x]
-                                    nucleotides <-
-                                        unlist(strsplit(str_seq,
-                                                split = NULL))
-                                }))
+        nuc_list <- unlist(lapply(
+                    seq_along(seqs),
+                    function(x) {str_seq <- seqs[x]
+                        nucleotides <- unlist(strsplit(str_seq, split = NULL))
+                    }))
         nuc_list[which(nuc_list == "A")] <- 1
         nuc_list[which(nuc_list == "C")] <- 2
         nuc_list[which(nuc_list == "G")] <- 3
