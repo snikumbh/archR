@@ -5,7 +5,7 @@
 #' clusters. If a name for the PDF file is provided, the resulting set of
 #' architecture sequence logos are saved as a multi-page PDF.
 #'
-#' @param seqs Sequences as a \code{\link{Biostrings::DNAStringSet}}.
+#' @param seqs Sequences as a \code{\link[Biostrings]{DNAStringSet}}.
 #' 
 #' @param clust_list Clusters as a list of sequence IDs in each cluster.
 #' 
@@ -14,8 +14,10 @@
 #' 
 #' @param xt_freq Frequency of x-axis ticks.
 #' 
-#' @param method Specify either 'bits' for information content or 
-#' 'prob' for probability.
+#' @param set_titles Specify TRUE if titles are to be written for the plots.
+#' With FALSE, there are no titles for the plots. The title for each plot 
+#' includes the current cluster number, total number of clusters, start and 
+#' end sequence numbers in the collection.
 #' 
 #' @param pdf_width,pdf_height Width and height in inches of the PDF file. 
 #' Default values are 11 and 2.

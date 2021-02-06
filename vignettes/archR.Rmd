@@ -74,7 +74,8 @@ install.packages("remotes")
 remotes::install_github("snikumbh/archR")
  
 ```
-In case of any errors, please consider looking up [https://github.com/snikumbh/archR](https://github.com/snikumbh/archR). 
+In case of any errors, please consider looking up:
+[https://github.com/snikumbh/archR](https://github.com/snikumbh/archR).
 If none of the already noted points with regards to troubleshooting
 _archR_'s installation help, please file a 
 [new issue](https://github.com/snikumbh/archR/issues/new).
@@ -89,8 +90,7 @@ library(Biostrings, quietly = TRUE)
 
 
 # Set seed for reproducibility
-seed_val <- 11992288
-set.seed(seed_val)
+set.seed(1234)
 
 ```
 

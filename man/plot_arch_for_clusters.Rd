@@ -17,7 +17,7 @@ plot_arch_for_clusters(
 )
 }
 \arguments{
-\item{seqs}{Sequences as a \code{\link{Biostrings::DNAStringSet}}.}
+\item{seqs}{Sequences as a \code{\link[Biostrings]{DNAStringSet}}.}
 
 \item{clust_list}{Clusters as a list of sequence IDs in each cluster.}
 
@@ -26,15 +26,17 @@ length as length of the sequences.}
 
 \item{xt_freq}{Frequency of x-axis ticks.}
 
+\item{set_titles}{Specify TRUE if titles are to be written for the plots.
+With FALSE, there are no titles for the plots. The title for each plot 
+includes the current cluster number, total number of clusters, start and 
+end sequence numbers in the collection.}
+
 \item{pdf_width, pdf_height}{Width and height in inches of the PDF file. 
 Default values are 11 and 2.}
 
 \item{pdf_name}{Specify the PDF filename.}
 
 \item{...}{Additional args passed to \code{\link{plot_ggseqlogo_of_seqs}}.}
-
-\item{method}{Specify either 'bits' for information content or 
-'prob' for probability.}
 }
 \value{
 A list of (ggplot2-based) sequence logo plots is returned. When a 
