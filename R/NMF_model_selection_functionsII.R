@@ -3,19 +3,18 @@
 
 
 .stability_model_select_pyNMF2 <- function(X,
-                                    param_ranges,
-                                    parallelDo = FALSE,
-                                    nCores = NA,
-                                    nIterations = 100,
-                                    bootstrap = TRUE,
-                                    returnBestK = TRUE,
-                                    tol = 10^-3,
-                                    bound = 10^-6,
-                                    flags = list(debugFlag = FALSE,
-                                                verboseFlag = TRUE,
-                                                plotVerboseFlag = FALSE,
-                                                timeFlag = FALSE)
-                                    ){
+                            param_ranges,
+                            parallelDo = FALSE,
+                            nCores = NA,
+                            nIterations = 100,
+                            bootstrap = TRUE,
+                            returnBestK = TRUE,
+                            tol = 10^-3,
+                            bound = 10^-6,
+                            flags = list(debugFlag = FALSE,
+                                verboseFlag = TRUE, plotVerboseFlag = FALSE,
+                                        timeFlag = FALSE)
+                            ){
     dbg <- flags$debugFlag
     vrbs <- flags$verboseFlag
     ##
@@ -24,7 +23,7 @@
                                     nRuns = nIterations, Score = -0.01
                             ))
     ##
-    .msg_pstr("Tolerance: ", tol, " & Bound : ", bound, flg=dbg)
+    .msg_pstr("Bound : ", bound, flg=dbg)
     ##
     bestK <- 1
     prev_amari <- NA

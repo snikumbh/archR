@@ -46,27 +46,13 @@
     ## 1. Setup params
     ## 2. NMF call, using python/scikit-learn NMF
     nmf_submatrixD_result <- .perform_single_NMF_run(X = submatrixD,
-                                            kVal = as.integer(this_k),
-                                            alphaVal = this_alpha,
-                                            seedVal = this_seed
-                                            #seedVal = seed_val
-                                            )
+                                kVal = as.integer(this_k),
+                                alphaVal = this_alpha, seedVal = this_seed)
     D_W <- nmf_submatrixD_result$featuresMatrix
     D_H <- nmf_submatrixD_result$samplesMatrix
     ##
-    # nmf_submatrixD <- perform_nmf_func(submatrixD,
-    #                                     nPatterns = as.integer(this_k),
-    #                                     nIter = as.integer(1000),
-    #                                     givenAlpha = this_alpha,
-    #                                     givenL1_ratio = 1,
-    #                                     seed_val = as.integer(seed_val)
-    #                     )
-    # D_W <- nmf_submatrixD[[1]]
-    # D_H <- nmf_submatrixD[[2]]
-    ##
     reconstructed_submatrixA <- as.matrix(submatrixB) %*% 
         MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% as.matrix(submatrixC)
-    ##
     ##
     q2 <- .compute_q2(as.matrix(submatrixA), reconstructed_submatrixA)
     return(q2)
@@ -573,7 +559,36 @@ check_par_conditions <- function(nCores){
 .get_best_K <- function(x, parsimony = FALSE) {
     # Assumes, max q2_val is best
     # Returns simply the best performing K value
-    # Check names in param_ranges list, the function relies on it below
+    check_names_params(x)
+    ##
+    averages <-
+        .get_q2_aggregates_chosen_var(x, chosen_var = x$k_vals, base::mean)
+    ######
+    ## Using the one-std error rule for selecting a parsimonious model
+    sd_by_K <- .get_q2_aggregates_chosen_var(x, x$k_vals, stats::sd)
+    se_by_K <- sd_by_K / sqrt(nrow(x)/nrow(sd_by_K))
+    ##
+    averages$SD <- sd_by_K$q2_vals
+    averages$SE <- se_by_K$q2_vals
+    ##
+    ######
+    idx_best <- as.numeric(which.max(unlist(averages["q2_vals"])))
+    ##
+    best_K <- as.numeric(averages[idx_best, "rel_var"])
+    if(parsimony){
+        ## Return the value of K using the one SE rule
+        se_rule_threshold <- averages[idx_best, "q2_vals"] - 
+            averages[idx_best, "SE"]
+        best_K_by_se_rule <- averages[
+            which(unlist(averages["q2_vals"]) > se_rule_threshold), "rel_var"]
+        best_K_by_se_rule_chosen <- min(best_K_by_se_rule)
+        return(best_K_by_se_rule_chosen)
+    }
+    return(best_K)
+}
+## =============================================================================
+
+check_names_params <- function(x){
     if (length(setdiff(
         names(x),
         c("k_vals", "alpha", "fold", "iteration",
@@ -585,52 +600,7 @@ check_par_conditions <- function(nCores){
             c("k_vals", "alpha", "fold", "iteration", "q2_vals")
         ))
     }
-    ##
-    averages <-
-        .get_q2_aggregates_chosen_var(x, chosen_var = x$k_vals, base::mean)
-    ######
-    ## Using the one-std error rule for selecting a parsimonious model
-    sd_by_K <- .get_q2_aggregates_chosen_var(x, x$k_vals, stats::sd)
-    se_by_K <- sd_by_K / sqrt(nrow(x)/nrow(sd_by_K))
-    # averages <- tibble::add_column(averages, 
-    #                                 "SD" = sd_by_K$q2_vals, 
-    #                                 "SE" = se_by_K$q2_vals)
-    ##
-    averages$SD <- sd_by_K$q2_vals
-    averages$SE <- se_by_K$q2_vals
-    ##
-    ######
-    idx_best <- as.numeric(which.max(unlist(averages["q2_vals"])))
-    ## Print Q2 values and differences
-    # print(averages)
-    # if(set_verbose) message("Best idx:", idx_best, 
-    #                 ", Avg.Val: ", averages[idx_best, "q2_vals"])
-    ##
-    ##
-    ## TO-DO: Check this
-    ## q2_std <- unlist(aggregate(x, by=list(k = x$k_vals), sd)["q2_vals"])
-    ## q2_threshold <- as.numeric( x[idx_best,"q2_vals"] - q2_std )
-    ##
-    best_K <- as.numeric(averages[idx_best, "rel_var"])
-    if(parsimony){
-        ## Return the value of K using the one SE rule
-        ## best_K_by_mean <- best_K
-        se_rule_threshold <- averages[idx_best, "q2_vals"] - 
-            averages[idx_best, "SE"]
-        # if(set_verbose) message("SE_RULE_THRESHOLD = ", se_rule_threshold)
-        best_K_by_se_rule <- averages[
-            which(unlist(averages["q2_vals"]) > se_rule_threshold), "rel_var"]
-        best_K_by_se_rule_chosen <- min(best_K_by_se_rule)
-        # if(set_verbose){
-        #     message("MATCHES = ", 
-        #                 paste0(best_K_by_se_rule, collapse = ","))
-        #     message("SE RULE BEST K chosen = ", best_K_by_se_rule_chosen)
-        # }
-        return(best_K_by_se_rule_chosen)
-    }
-    return(best_K)
 }
-## =============================================================================
 
 
 # @title Aggregate \eqn{Q^2} Values

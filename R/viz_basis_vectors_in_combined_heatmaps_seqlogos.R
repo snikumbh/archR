@@ -36,6 +36,58 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
         add_pseudo_counts = FALSE, pdf_name = NULL,
                 sinuc_or_dinuc = "sinuc") {
     ##
+    check_vars2(feat_mat)
+    # if(!requireNamespace("ggpubr", quietly = TRUE)){
+    #     stop("Please install the R package 'ggpubr' to use this function")
+    # }else{
+    #     if (!is.matrix(feat_mat)) {
+    #         stop("feat_mat not of type matrix")
+    #     }
+    #     if (sum(dim(feat_mat)) == 2 && is.na(feat_mat)) {
+    #         stop("Empty feat_mat")
+    #     }
+    invisible(apply(feat_mat, MARGIN = 2, function(x) {
+    if (sinuc_or_dinuc == "dinuc") {
+        dna_alphabet <- c("A", "C", "G", "T")
+        dna_alphabet_dinuc <- do.call(paste0, 
+                        expand.grid(dna_alphabet, dna_alphabet))
+        pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = FALSE,
+                            scale = FALSE)
+    } else if (sinuc_or_dinuc == "sinuc") {
+        pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE, 
+                            scale = FALSE)
+    }
+    ## Heatmap on top
+    p1 <- plot_ggheatmap(pwm_mat = pwm, pos_lab = pos_lab,
+                    pdf_name = pdf_name)
+    p1 + theme(
+        plot.margin = grid::unit(c(0, 0, 0, 0), "mm")
+    )
+    ## Seqlogo below
+    p2 <- plot_ggseqlogo(pwm_mat = pwm, method = method,
+        pos_lab = pos_lab, pdf_name = pdf_name
+    )
+    ## Make adjustments for alignment
+    p2 + theme(plot.margin = grid::unit(c(0, 0, 0, 0), "mm"))
+    final_p <- ggpubr::ggarrange(p1, p2, ncol = 1, heights = c(1,1),
+                        widths = c(1,1), align = 'v')
+    ##
+    if (!is.null(pdf_name)) {
+        if (file.exists(pdf_name)) {
+            warning("File exists, will overwrite", immediate. = TRUE)
+        }
+        ggplot2::ggsave(final_p, device = "pdf", width = 20, 
+                            height = 2.5)
+    } else {
+        base::suppressMessages(print(final_p))
+    }
+}))
+    
+}
+## =============================================================================
+
+
+check_vars2 <- function(feat_mat){
     if(!requireNamespace("ggpubr", quietly = TRUE)){
         stop("Please install the R package 'ggpubr' to use this function")
     }else{
@@ -45,50 +97,5 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
         if (sum(dim(feat_mat)) == 2 && is.na(feat_mat)) {
             stop("Empty feat_mat")
         }
-        invisible(apply(feat_mat, MARGIN = 2, function(x) {
-            if (sinuc_or_dinuc == "dinuc") {
-                dna_alphabet <- c("A", "C", "G", "T")
-                dna_alphabet_dinuc <- do.call(paste0, 
-                                expand.grid(dna_alphabet, dna_alphabet))
-                pwm <- make_dinuc_PWMs(as.matrix(x), add_pseudo_counts = FALSE,
-                                    scale = FALSE)
-            } else if (sinuc_or_dinuc == "sinuc") {
-                pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE, 
-                                    scale = FALSE)
-            }
-            ## Heatmap on top
-            p1 <- plot_ggheatmap(
-                pwm_mat = pwm,
-                pos_lab = pos_lab,
-                pdf_name = pdf_name
-            )
-            p1 + theme(
-                plot.margin = grid::unit(c(0, 0, 0, 0), "mm")
-            )
-            ## Seqlogo below
-            p2 <- plot_ggseqlogo(
-                pwm_mat = pwm,
-                method = method,
-                pos_lab = pos_lab,
-                pdf_name = pdf_name
-            )
-            ## Make adjustments for alignment
-            p2 + theme(
-                plot.margin = grid::unit(c(0, 0, 0, 0), "mm")
-            )
-            final_p <- ggpubr::ggarrange(p1, p2, ncol = 1, heights = c(1,1),
-                                widths = c(1,1), align = 'v')
-            ##
-            if (!is.null(pdf_name)) {
-                if (file.exists(pdf_name)) {
-                    warning("File exists, will overwrite", immediate. = TRUE)
-                }
-                ggplot2::ggsave(final_p, device = "pdf", width = 20, 
-                                    height = 2.5)
-            } else {
-                base::suppressMessages(print(final_p))
-            }
-        }))
     }
 }
-## =============================================================================
