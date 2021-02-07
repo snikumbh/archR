@@ -21,14 +21,14 @@ get_seqClLab(res, iter)
 \item{iter}{Choose the iteration of archR result to get from.}
 }
 \description{
-Get functions for archR result object
+Basis vectors' information for the selected iteration.
 }
 \section{Functions}{
 \itemize{
 \item \code{get_clBasVec_k}: Number of basis vectors (clusters) at the 
 selected iteration.
 
-\item \code{get_clBasVec_m}: The basis vectors matrix at the chosen 
+\item \code{get_clBasVec_m}: The basis vectors matrix at the selected 
 iteration. Note that eatures along rows.
 
 \item \code{get_seqClLab}: The cluster IDs for each sequence. Note that 

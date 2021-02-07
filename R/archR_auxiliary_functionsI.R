@@ -6,6 +6,8 @@
 
 #' @title Get functions for archR result object
 #'
+#' @description Basis vectors' information for the selected iteration.
+#' 
 #' @param res archR result object.
 #' @param iter Choose the iteration of archR result to get from.
 #' 
@@ -22,7 +24,7 @@ get_clBasVec_k <- function(res, iter){
     return(res$clustBasisVectors[[iter]]$nBasisVectors)
 }
 
-#' @describeIn get_clBasVec The basis vectors matrix at the chosen 
+#' @describeIn get_clBasVec The basis vectors matrix at the selected 
 #' iteration. Note that eatures along rows.
 #' @export
 get_clBasVec_m <- function(res, iter){
@@ -43,7 +45,7 @@ get_seqClLab <- function(res, iter){
 
 
 
-#' @title Get sequences fro mthe archR result object
+#' @title Get sequences from the archR result object
 #' @description Wrapper to fetch sequences from the archR result object as 
 #' character
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/archR_auxiliary_functionsI.R
 \name{seqs_str}
 \alias{seqs_str}
-\title{Get sequences fro mthe archR result object}
+\title{Get sequences from the archR result object}
 \usage{
 seqs_str(res, iter = NULL, cl = NULL, ord = FALSE)
 }
