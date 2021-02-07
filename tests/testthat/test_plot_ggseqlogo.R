@@ -7,7 +7,8 @@ test_that("Matrix has 4 rows", {
   testPositionLabels <- seq(25)
   expect_error(
     plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels),
-    "Expecting a matrix with 4 rows corresponding to DNA alphabet"
+    paste("Expecting a matrix with 4 rows corresponding to DNA chars",
+      "'A', 'C', 'G', 'T'")
   )
 })
 
