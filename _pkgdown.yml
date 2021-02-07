@@ -1,5 +1,12 @@
 url: http://snikumbh.github.io/archR 
 
+template:
+  params:
+      bootswatch: flatly
+      ganalytics: UA-67848084-3
+      
+
+
 navbar:
   structure:
     left:
@@ -20,36 +27,62 @@ navbar:
     intro:
       text: Get started
       href: articles/archR.html
+    news:
+      text: News 
+      href: news/index.html 
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/snikumbh/archR/
 
 reference:
-- title: All functions
+- title: Main functions
+  desc: Most basic functions
   contents:
-  - '`archR`'
-  - '`archR_set_config`'
-  - '`example_data`'
-  - '`get_one_hot_encoded_seqs`'
-  - '`get_seqs_clusters_in_a_list`'
-  - '`plot_arch_for_clusters_new`'
-  - '`plot_ggheatmap`'
-  - '`plot_ggseqlogo`'
-  - '`plot_ggseqlogo_of_seqs`'
-  - '`prepare_data_from_FASTA`'
-  - '`run_archR_UI`'
-  - '`viz_basis_vectors_as_heatmap`'
-  - '`viz_basis_vectors_as_seqlogo`'
-  - '`viz_basis_vectors_in_combined_heatmaps_seqlogos`'
-  - '`viz_seqs_as_acgt_mat_from_ohe`'
-  - '`viz_seqs_as_acgt_mat_from_seqs`'
-  - '`make_sinuc_PWMs`'
-  - '`make_dinuc_PWMs`'
-  - '`collate_archR_result`'
+    - archR
+    - archR_set_config
+
+- title: Prepare input
+  desc: Functions enabling preparation of input
+  contents:
+    - prepare_data_from_FASTA
+    - get_one_hot_encoded_seqs
+    
+- title: Getter functions
+  desc: Getter functions for archR result object
+  contents:
+    - get_clBasVec
+    - get_clBasVec_k
+    - get_clBasVec_m
+    - get_seqClLab
+    - seqs_str 
+
+- title: Visualization functions
+  desc: Functions enabling visualization of intermediate and final output
+  contents:
+    - plot_arch_for_clusters
+    - plot_ggseqlogo_of_seqs
+    - viz_basis_vectors_as_heatmap
+    - plot_ggheatmap
+    - viz_basis_vectors_as_seqlogo
+    - plot_ggseqlogo
+    - viz_basis_vectors_in_combined_heatmaps_seqlogos
+    - viz_seqs_as_acgt_mat_from_seqs
+    
+- title: Manipulate archR result
+  desc: Functions to manipulate elements from archR result
+  contents:
+    - collate_archR_result
+    - get_seqs_clust_list
+    - make_sinuc_PWMs
+    - make_dinuc_PWMs
+    
+- title: Shiny app
+  desc: Use archR via its shiny app
+  contents:
+    - run_archR_UI
 
 
 articles:
 - title: All vignettes
   desc: ~
   contents: '`archR`'
-
