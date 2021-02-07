@@ -10,7 +10,8 @@
 #' @param clust_list Clusters as a list of sequence IDs in each cluster.
 #' 
 #' @param pos_lab Labels for sequence positions, should be of same
-#' length as length of the sequences.
+#' length as length of the sequences. Default value is NULL, when the 
+#' positions are labeled from 1 to the length of the sequences.
 #' 
 #' @param xt_freq Frequency of x-axis ticks.
 #' 
@@ -32,10 +33,35 @@
 #'
 #' @importFrom grDevices pdf dev.off
 #' 
+#' @examples 
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'          package = "archR", mustWork = TRUE))
+#' 
+#' ## default position labels 1 to length of the sequences.
+#' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
+#'                                   clust_list = res$clustSol$clusters,
+#'                                   pos_lab = NULL
+#' arch_pl
+#' 
+#' ## Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
+#' ## 50 basepairs upstream and 49 downstream of the transcription start site 
+#' ## located at position 0.
+#' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
+#'                                   clust_list = res$clustSol$clusters,
+#'                                   pos_lab = seq(-50,49)
+#' arch_pl
+#' 
+#' \dontrun{
+#' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
+#'                                   clust_list = res$clustSol$clusters,
+#'                                   pos_lab = seq_len(100),
+#'                                   pdf_name = "final_clust_arch.pdf")
+#' }
+#'  
 #' @export
 plot_arch_for_clusters <- function(seqs,
                                 clust_list,
-                                pos_lab,
+                                pos_lab = NULL,
                                 xt_freq = 5,
                                 set_titles = TRUE,
                                 pdf_width = 11,
@@ -47,6 +73,10 @@ plot_arch_for_clusters <- function(seqs,
     stopifnot(!is.null(seqs))
     if(!is(seqs, "DNAStringSet")){
         stop("Expecting a DNAStringSet object as 'seqs'")
+    }
+    ##
+    if(is.null(pos_lab)){
+        pos_lab <- seq_len(Biostrings::width(seqs[1]))
     }
     ##
     plot_titles <- make_plot_titles(clust_list, set_titles)
