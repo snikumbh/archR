@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="Visualize a given (PWM) matrix as a sequence logo. — plot_ggseqlogo" />
-<meta property="og:description" content="Visualize a given (PWM) matrix as a sequence logo.
-Visualize a given (PWM) matrix as a sequence logo." />
+<meta property="og:description" content="Visualize a given (PWM) matrix as a sequence logo." />
 
 
 
@@ -55,6 +54,16 @@ Visualize a given (PWM) matrix as a sequence logo." />
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-67848084-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-67848084-3');
+</script>
 
 
   </head>
@@ -95,7 +104,7 @@ Visualize a given (PWM) matrix as a sequence logo." />
   <a href="../articles/index.html">Articles</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -119,18 +128,15 @@ Visualize a given (PWM) matrix as a sequence logo." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Visualize a given (PWM) matrix as a sequence logo.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/plot_ggheatmap.R'><code>R/plot_ggheatmap.R</code></a>, <a href='https://github.com/snikumbh/archR/blob/master/R/plot_ggseqlogo.R'><code>R/plot_ggseqlogo.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/plot_ggheatmap.R'><code>R/plot_ggheatmap.R</code></a></small>
     <div class="hidden name"><code>plot_ggseqlogo.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Visualize a given (PWM) matrix as a sequence logo.</p>
-<p>Visualize a given (PWM) matrix as a sequence logo.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_ggseqlogo</span><span class='op'>(</span><span class='va'>pwm_mat</span>, method <span class='op'>=</span> <span class='st'>"custom"</span>, pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>, pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='fu'>plot_ggseqlogo</span><span class='op'>(</span><span class='va'>pwm_mat</span>, method <span class='op'>=</span> <span class='st'>"custom"</span>, pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>, pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_ggseqlogo</span><span class='op'>(</span><span class='va'>pwm_mat</span>, method <span class='op'>=</span> <span class='st'>"custom"</span>, pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>, pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,23 +166,11 @@ to be represented as a sequence logo.</p></td>
     <p>A ggplot2 object so you can simply call <code>print</code> or <code>save</code>
 on it later. If <code>pdf_name</code> is given, it is also saved in addition to 
 returning the ggplot object.</p>
-<p>A ggplot2 object so you can simply call <code>print</code> or <code>save</code>
-on it later. If <code>pdf_name</code> is given, it is also saved in addition to 
-returning the ggplot object.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='plot_ggheatmap.html'>plot_ggheatmap</a></code> for plotting PWMs as heatmaps,
 <code><a href='plot_ggseqlogo_of_seqs.html'>plot_ggseqlogo_of_seqs</a></code> for visualizing a collection of 
 sequences by their sequence logo.</p>
-<p><code><a href='plot_ggheatmap.html'>plot_ggheatmap</a></code> for plotting PWMs as heatmaps,
-<code><a href='plot_ggseqlogo_of_seqs.html'>plot_ggseqlogo_of_seqs</a></code> for visualizing a collection of 
-sequences by their sequence logo.</p>
-<p>Other visualization functions: 
-<code><a href='plot_ggheatmap.html'>plot_ggheatmap</a>()</code>,
-<code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a>()</code>,
-<code><a href='viz_basis_vectors_as_seqlogo.html'>viz_basis_vectors_as_seqlogo</a>()</code>,
-<code><a href='viz_basis_vectors_in_combined_heatmaps_seqlogos.html'>viz_basis_vectors_in_combined_heatmaps_seqlogos</a>()</code>,
-<code><a href='viz_seqs_as_acgt_mat_from_seqs.html'>viz_seqs_as_acgt_mat_from_seqs</a>()</code></p>
 <p>Other visualization functions: 
 <code><a href='plot_ggheatmap.html'>plot_ggheatmap</a>()</code>,
 <code><a href='viz_basis_vectors_as_heatmap.html'>viz_basis_vectors_as_heatmap</a>()</code>,

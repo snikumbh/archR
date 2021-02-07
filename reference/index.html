@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -54,6 +54,16 @@
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-67848084-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-67848084-3');
+</script>
+
 
   </head>
 
@@ -93,7 +103,7 @@
   <a href="../articles/index.html">Articles</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -130,8 +140,8 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
+          <h2 id="section-main-functions" class="hasAnchor"><a href="#section-main-functions" class="anchor"></a>Main functions</h2>
+          <p class="section-desc"><p>Most basic functions</p></p>
         </th>
       </tr>
       
@@ -153,24 +163,75 @@ elements (motifs) or nucleotide compositions.</p></td>
           <p><code><a href="archR_set_config.html">archR_set_config()</a></code> </p>
         </td>
         <td><p>Set archR run configuration</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-prepare-input" class="hasAnchor"><a href="#section-prepare-input" class="anchor"></a>Prepare input</h2>
+          <p class="section-desc"><p>Functions enabling preparation of input</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="prepare_data_from_FASTA.html">prepare_data_from_FASTA()</a></code> </p>
+        </td>
+        <td><p>Generate one-hot encoding of sequences given as FASTA file</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="get_one_hot_encoded_seqs.html">get_one_hot_encoded_seqs()</a></code> </p>
         </td>
         <td><p>Get one-hot encoded sequences</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-getter-functions" class="hasAnchor"><a href="#section-getter-functions" class="anchor"></a>Getter functions</h2>
+          <p class="section-desc"><p>Getter functions for archR result object</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="get_clBasVec.html">get_clBasVec()</a></code> <code><a href="get_clBasVec.html">get_clBasVec_k()</a></code> <code><a href="get_clBasVec.html">get_clBasVec_m()</a></code> <code><a href="get_clBasVec.html">get_seqClLab()</a></code> </p>
+        </td>
+        <td><p>Get functions for archR result object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plot_ggheatmap.html">plot_ggheatmap()</a></code> </p>
+          <p><code><a href="seqs_str.html">seqs_str()</a></code> </p>
         </td>
-        <td><p>Plot a given position weight matrix as a heatmap using ggplot2</p></td>
-      </tr><tr>
+        <td><p>Get sequences from the archR result object</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-visualization-functions" class="hasAnchor"><a href="#section-visualization-functions" class="anchor"></a>Visualization functions</h2>
+          <p class="section-desc"><p>Functions enabling visualization of intermediate and final output</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
-          <p><code><a href="plot_ggseqlogo.html">plot_ggseqlogo()</a></code> <code><a href="plot_ggseqlogo.html">plot_ggseqlogo()</a></code> </p>
+          <p><code><a href="plot_arch_for_clusters.html">plot_arch_for_clusters()</a></code> </p>
         </td>
-        <td><p>Visualize a given (PWM) matrix as a sequence logo.</p></td>
+        <td><p>Plot cluster architectures as sequence logos.</p></td>
       </tr><tr>
         
         <td>
@@ -180,27 +241,27 @@ elements (motifs) or nucleotide compositions.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="prepare_data_from_FASTA.html">prepare_data_from_FASTA()</a></code> </p>
-        </td>
-        <td><p>Generate one-hot encoding of sequences given as FASTA file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="run_archR_UI.html">run_archR_UI()</a></code> </p>
-        </td>
-        <td><p>Launch archR's graphical user interface</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="viz_basis_vectors_as_heatmap.html">viz_basis_vectors_as_heatmap()</a></code> </p>
         </td>
         <td><p>Visualize the NMF basis vectors as a heatmap</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plot_ggheatmap.html">plot_ggheatmap()</a></code> </p>
+        </td>
+        <td><p>Plot a given position weight matrix as a heatmap using ggplot2</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="viz_basis_vectors_as_seqlogo.html">viz_basis_vectors_as_seqlogo()</a></code> </p>
         </td>
         <td><p>Visualize the NMF basis vectors as a sequence logo</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_ggseqlogo.html">plot_ggseqlogo()</a></code> </p>
+        </td>
+        <td><p>Visualize a given (PWM) matrix as a sequence logo.</p></td>
       </tr><tr>
         
         <td>
@@ -214,6 +275,31 @@ plot</p></td>
           <p><code><a href="viz_seqs_as_acgt_mat_from_seqs.html">viz_seqs_as_acgt_mat_from_seqs()</a></code> </p>
         </td>
         <td><p>Visualize raw DNA sequences as an image</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-manipulate-archr-result" class="hasAnchor"><a href="#section-manipulate-archr-result" class="anchor"></a>Manipulate archR result</h2>
+          <p class="section-desc"><p>Functions to manipulate elements from archR result</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="collate_archR_result.html">collate_archR_result()</a></code> </p>
+        </td>
+        <td><p>Collate raw clusters at the chosen iteration of archR result</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_seqs_clust_list.html">get_seqs_clust_list()</a></code> </p>
+        </td>
+        <td><p>Retrieve sequence clusters as a list from the sequence labels</p></td>
       </tr><tr>
         
         <td>
@@ -227,12 +313,25 @@ plot</p></td>
         </td>
         <td><p>Similarly to the PWM-like matrix for mononucleotides, make one for 
  dinucleotides</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-shiny-app" class="hasAnchor"><a href="#section-shiny-app" class="anchor"></a>Shiny app</h2>
+          <p class="section-desc"><p>Use archR via its shiny app</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
-          <p><code><a href="collate_archR_result.html">collate_archR_result()</a></code> </p>
+          <p><code><a href="run_archR_UI.html">run_archR_UI()</a></code> </p>
         </td>
-        <td><p>Collate raw clusters at the chosen iteration of archR result</p></td>
+        <td><p>Launch archR's graphical user interface</p></td>
       </tr>
     </tbody>
     </table>

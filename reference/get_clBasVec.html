@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make a PWM-resembling matrix out of a given n-vector — make_sinuc_PWMs • archR</title>
+<title>Get functions for archR result object — get_clBasVec • archR</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Make a PWM-resembling matrix out of a given n-vector — make_sinuc_PWMs" />
-<meta property="og:description" content="The given matrix (or simply a vector) is reshaped to have four
-rows for four nucleotides and a relevant number of columns." />
+<meta property="og:title" content="Get functions for archR result object — get_clBasVec" />
+<meta property="og:description" content="Basis vectors' information for the selected iteration." />
 
 
 
@@ -128,43 +127,58 @@ rows for four nucleotides and a relevant number of columns." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Make a PWM-resembling matrix out of a given n-vector</h1>
-    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/make_sinuc_PWMs.R'><code>R/make_sinuc_PWMs.R</code></a></small>
-    <div class="hidden name"><code>make_sinuc_PWMs.Rd</code></div>
+    <h1>Get functions for archR result object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/archR_auxiliary_functionsI.R'><code>R/archR_auxiliary_functionsI.R</code></a></small>
+    <div class="hidden name"><code>get_clBasVec.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The given matrix (or simply a vector) is reshaped to have four
-rows for four nucleotides and a relevant number of columns.</p>
+    <p>Basis vectors' information for the selected iteration.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>make_sinuc_PWMs</span><span class='op'>(</span><span class='va'>mat</span>, add_pseudo_counts <span class='op'>=</span> <span class='cn'>TRUE</span>, scale <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_clBasVec</span><span class='op'>(</span><span class='va'>res</span>, <span class='va'>iter</span><span class='op'>)</span>
+
+<span class='fu'>get_clBasVec_k</span><span class='op'>(</span><span class='va'>res</span>, <span class='va'>iter</span><span class='op'>)</span>
+
+<span class='fu'>get_clBasVec_m</span><span class='op'>(</span><span class='va'>res</span>, <span class='va'>iter</span><span class='op'>)</span>
+
+<span class='fu'>get_seqClLab</span><span class='op'>(</span><span class='va'>res</span>, <span class='va'>iter</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mat</th>
-      <td><p>Actually a vector that will be reshaped into a (PWM)
-matrix of DNA sequences.</p></td>
+      <th>res</th>
+      <td><p>archR result object.</p></td>
     </tr>
     <tr>
-      <th>add_pseudo_counts</th>
-      <td><p>Boolean, taking values TRUE/T or FALSE/F, specifying
-whether or not pseudocounts are added to the matrix.</p></td>
-    </tr>
-    <tr>
-      <th>scale</th>
-      <td><p>Boolean, taking values TRUE/T or FALSE/F, specifying whether or
-not the matrix is scaled column-wise, i.e., all columns summed to 1.</p></td>
+      <th>iter</th>
+      <td><p>Choose the iteration of archR result to get from.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A (PWM) matrix with 4 rows corresponding to the 4 nucleotides (A, C,
-G, T) and the relevant number of columns (i.e., number of elements in given
-vector/4)</p>
+    <p>A list with two elements `nBasisVectors` (integer) and 
+`basisVectors` (matrix).</p>
+<p>The number of basis vectors (integer).</p>
+<p>The basis vectors' matrix with features along the rows of the 
+matrix.</p>
+<p>A character vector denoting the cluster IDs for each sequence.</p>
+    <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
+
+    
+<ul>
+<li><p><code>get_clBasVec_k</code>: Get the number of basis vectors (clusters) 
+at the  selected iteration.</p></li>
+<li><p><code>get_clBasVec_m</code>: The basis vectors matrix at the selected 
+iteration. Note that eatures along rows.</p></li>
+<li><p><code>get_seqClLab</code>: Get the cluster IDs for each sequence. Note that 
+order of sequences here is as per the input.</p></li>
+</ul>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='seqs_str.html'>seqs_str</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

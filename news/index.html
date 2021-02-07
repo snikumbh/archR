@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -54,6 +54,16 @@
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-67848084-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-67848084-3');
+</script>
+
 
   </head>
 
@@ -93,7 +103,7 @@
   <a href="../articles/index.html">Articles</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -120,6 +130,76 @@
       <small>Source: <a href='https://github.com/snikumbh/archR/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="archr-015" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.5">
+<a href="#archr-015" class="anchor"></a>archR 0.1.5</h1>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h2>
+<ul>
+<li>(User-facing) Getter functions to fetch archR result object elements.
+<ul>
+<li>
+<code><a href="../reference/seqs_str.html">seqs_str()</a></code> to fetch DNA sequences for a particular cluster, iteration etc.</li>
+<li>
+<code><a href="../reference/get_clBasVec.html">get_clBasVec()</a></code> to fetch basis vectors element at given iteration.</li>
+<li>
+<code><a href="../reference/get_clBasVec.html">get_clBasVec_k()</a></code> to fetch number of basis vectors/clusters.</li>
+<li>
+<code><a href="../reference/get_clBasVec.html">get_clBasVec_m()</a></code> to fetch basis vectors.</li>
+<li>
+<code><a href="../reference/get_clBasVec.html">get_seqClLab()</a></code> to fetch cluster Ids for each sequence.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<ul>
+<li>(User-facing) Arguments of all functions consistently use underscores.</li>
+</ul>
+</div>
+</div>
+    <div id="archr-012" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.2">
+<a href="#archr-012" class="anchor"></a>archR 0.1.2</h1>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Fix staged installation error. This enables seamless installation on macOS.</li>
+</ul>
+</div>
+<div id="new-features-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New features</h2>
+<ul>
+<li>CI with GHA.</li>
+<li>(User-facing) archR result list has new elements:
+<ul>
+<li>
+<code>timeInfo</code> if timeFlag is TRUE;</li>
+<li>
+<code>clustSol</code> storing combined clusters from the last iteration of archR.</li>
+</ul>
+</li>
+<li>(User-facing) Architectures/clusters sequence logos can be plotted with <code>auto</code> y-axis limits for information content (0-max instead of 0-2).</li>
+<li>(User-facing) TFBSTools moved from dependency to suggests. This eases installation of archR by reducing possibility of failed installation.</li>
+</ul>
+</div>
+</div>
+    <div id="archr-0993" class="section level1">
+<h1 class="page-header" data-toc-text="0.99.3">
+<a href="#archr-0993" class="anchor"></a>archR 0.99.3</h1>
+<div id="new-features-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features-2" class="anchor"></a>New features</h2>
+<ul>
+<li>Accepts FASTA sequences as DNAStringSet object(s)</li>
+</ul>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
