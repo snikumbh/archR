@@ -29,7 +29,7 @@
 #' \item \code{\link{viz_basis_vectors_as_seqlogo}}
 #' \item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 #' \item \code{\link{plot_arch_for_clusters}}
-#' plot_ggseqlogo_of_seqs
+#' \item \code{\link{plot_ggseqlogo_of_seqs}}
 #' \item \code{\link{viz_seqs_as_acgt_mat_from_seqs}}
 #' }
 #'
