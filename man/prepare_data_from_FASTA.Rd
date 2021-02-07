@@ -33,15 +33,15 @@ fname <- system.file("extdata", "example_data.fa",
                         package = "archR", mustWork = TRUE)
 
 # mononucleotides feature matrix
-prepare_data_from_FASTA(fasta_fname = fname,
+rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
                         sinuc_or_dinuc = "sinuc")
 
 # dinucleotides feature matrix
-prepare_data_from_FASTA(fasta_fname = fname,
+rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
                         sinuc_or_dinuc = "dinuc")
                        
 # FASTA sequences as a Biostrings::DNAStringSet
-prepare_data_from_FASTA(fasta_fname = fname,
+rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
                         raw_seq = TRUE)
 
 }

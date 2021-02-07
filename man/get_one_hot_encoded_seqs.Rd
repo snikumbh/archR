@@ -23,10 +23,10 @@ fname <- system.file("extdata", "example_data.fa",
                         package = "archR", mustWork = TRUE)
 
                         
-rawFasta <- prepare_data_from_FASTA(fasta_fname = fname,
+rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
                         raw_seq = TRUE)
 
-get_one_hot_encoded_seqs(seqs = rawFasta, sinuc_or_dinuc = "dinuc")
+get_one_hot_encoded_seqs(seqs = rawSeqs, sinuc_or_dinuc = "dinuc")
                         
 }
 \seealso{

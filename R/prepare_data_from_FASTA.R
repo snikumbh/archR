@@ -172,10 +172,10 @@
 #'                         package = "archR", mustWork = TRUE)
 #' 
 #'                         
-#' rawFasta <- prepare_data_from_FASTA(fasta_fname = fname,
+#' rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
 #'                         raw_seq = TRUE)
 #' 
-#' get_one_hot_encoded_seqs(seqs = rawFasta, sinuc_or_dinuc = "dinuc")
+#' get_one_hot_encoded_seqs(seqs = rawSeqs, sinuc_or_dinuc = "dinuc")
 #'                         
 #' @export
 get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
@@ -285,15 +285,15 @@ get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
 #'                         package = "archR", mustWork = TRUE)
 #' 
 #' # mononucleotides feature matrix
-#' prepare_data_from_FASTA(fasta_fname = fname,
+#' rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
 #'                         sinuc_or_dinuc = "sinuc")
 #' 
 #' # dinucleotides feature matrix
-#' prepare_data_from_FASTA(fasta_fname = fname,
+#' rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
 #'                         sinuc_or_dinuc = "dinuc")
 #'                        
 #' # FASTA sequences as a Biostrings::DNAStringSet
-#' prepare_data_from_FASTA(fasta_fname = fname,
+#' rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
 #'                         raw_seq = TRUE)
 #' 
 #' @export
