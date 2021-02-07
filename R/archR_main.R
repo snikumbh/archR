@@ -94,7 +94,7 @@
 #'     tol = 10^-4,
 #'     bound = 10^-8,
 #'     inner_chunk_size = 100,
-#'     flags = list(debug = TRUE, time = TRUE, verbose = TRUE,
+#'     flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
 #'         plot = FALSE)
 #' )
 #' 
