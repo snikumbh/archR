@@ -11,14 +11,20 @@
 #' @param res archR result object.
 #' @param iter Choose the iteration of archR result to get from.
 #' 
+#' @return A list with two elements `nBasisVectors` (integer) and 
+#' `basisVectors` (matrix).
+#' 
 #' @export
 get_clBasVec <- function(res, iter){
     return(res$clustBasisVectors[[iter]])
 }
 
 
-#' @describeIn get_clBasVec Number of basis vectors (clusters) at the 
-#' selected iteration.
+#' @describeIn get_clBasVec Get the number of basis vectors (clusters) 
+#' at the  selected iteration.
+#' 
+#' @return The number of basis vectors (integer).
+#' 
 #' @export
 get_clBasVec_k <- function(res, iter){
     return(res$clustBasisVectors[[iter]]$nBasisVectors)
@@ -26,13 +32,20 @@ get_clBasVec_k <- function(res, iter){
 
 #' @describeIn get_clBasVec The basis vectors matrix at the selected 
 #' iteration. Note that eatures along rows.
+#' 
+#' @return The basis vectors' matrix with features along the rows of the 
+#' matrix.
+#' 
 #' @export
 get_clBasVec_m <- function(res, iter){
     return(res$clustBasisVectors[[iter]]$basisVectors)
 }
 
-#' @describeIn get_clBasVec The cluster IDs for each sequence. Note that 
+#' @describeIn get_clBasVec Get the cluster IDs for each sequence. Note that 
 #' order of sequences here is as per the input. 
+#' 
+#' @return A character vector denoting the cluster IDs for each sequence. 
+#' 
 #' @seealso \code{\link{seqs_str}}
 #' @export
 get_seqClLab <- function(res, iter){

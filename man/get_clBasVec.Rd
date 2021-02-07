@@ -20,18 +20,29 @@ get_seqClLab(res, iter)
 
 \item{iter}{Choose the iteration of archR result to get from.}
 }
+\value{
+A list with two elements `nBasisVectors` (integer) and 
+`basisVectors` (matrix).
+
+The number of basis vectors (integer).
+
+The basis vectors' matrix with features along the rows of the 
+matrix.
+
+A character vector denoting the cluster IDs for each sequence.
+}
 \description{
 Basis vectors' information for the selected iteration.
 }
 \section{Functions}{
 \itemize{
-\item \code{get_clBasVec_k}: Number of basis vectors (clusters) at the 
-selected iteration.
+\item \code{get_clBasVec_k}: Get the number of basis vectors (clusters) 
+at the  selected iteration.
 
 \item \code{get_clBasVec_m}: The basis vectors matrix at the selected 
 iteration. Note that eatures along rows.
 
-\item \code{get_seqClLab}: The cluster IDs for each sequence. Note that 
+\item \code{get_seqClLab}: Get the cluster IDs for each sequence. Note that 
 order of sequences here is as per the input.
 }}
 
