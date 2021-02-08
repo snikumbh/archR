@@ -55,35 +55,32 @@ inputSeqsMat <- archR::prepare_data_from_FASTA(inputFastaFilename,
                                                   sinuc_or_dinuc = "dinuc")
 
 inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename, 
-                                               rawSeq = TRUE)
+                                               raw_seq = TRUE)
 
 nSeqs <- length(inputSeqsRaw)
 positions <- seq(1, Biostrings::width(inputSeqsRaw[1]))
-sinuc <- Biostrings::DNA_BASES
 
 # Set archR configuration
 # Most arguments have default values
-archRconfig <- archR::archRSetConfig(
+archRconfig <- archR::archR_set_config(
         parallelize = TRUE,
-        nCoresUse = 4,
-        nIterationsUse = 100,
-        kMin = 1,
-        kMax = 20,
-        modSelType = "stability",
-        tol = 10^-4,
+        n_cores = 4,
+        n_iterations = 100,
+        k_min = 1,
+        k_max = 20,
+        mod_sel_type = "stability",
         bound = 10^-8,
-        innerChunkSize = 500,
-        flags = list(debugFlag = FALSE, timeFlag = TRUE, verboseFlag = TRUE,
-                     plotVerboseFlag = FALSE)
+        inner_chunk_size = 500,
+        flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
+                     plot = FALSE)
 
 #
 ### Call/Run archR
-perform_iters <- 2
 archRresult <- archR::archR(config = archRconfig,
-                               seqsMat = inputSeqsMat,
-                               seqsRaw = inputSeqsRaw,
-                               seqsPositions = positions,
-                               thresholdItr = perform_iters)
+                               seqs_ohe_mat = inputSeqsMat,
+                               seqs_raw = inputSeqsRaw,
+                               seqs_pos = positions,
+                               threshold_itr = 2)
 
 ```
 

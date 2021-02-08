@@ -336,23 +336,36 @@ archR_set_config <- function(inner_chunk_size = 500,
         dim_names <- get_dimers_from_alphabet(c("A", "C", "G", "T"))
         nPositions <- nrow(factorsMat)/length(dim_names)
         ##
-        factorsMatList_as2D <- lapply(seq_len(ncol(factorsMat)),
-            function(x){matrix(factorsMat[,x],
-                            nrow = nrow(factorsMat)/nPositions,
-                            byrow = TRUE,
-                            dimnames = list(dim_names))
+        # factorsMatList_as2D <- lapply(seq_len(ncol(factorsMat)),
+        #     function(x){matrix(factorsMat[,x],
+        #                     nrow = nrow(factorsMat)/nPositions,
+        #                     byrow = TRUE,
+        #                     dimnames = list(dim_names))
+        #     })
+        # ##
+        # factorsMatList_asPFMs <- lapply(seq_len(length(factorsMatList_as2D)),
+        #         function(x){
+        #             sinucSparse <- collapse_into_sinuc_matrix(
+        #                 given_feature_mat = as.matrix(factorsMat[,x]),
+        #                 dinuc_mat = factorsMatList_as2D[[x]],
+        #                 feature_names = dim_names)
+        #             sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
+        #                 nrow = 4, byrow = FALSE,
+        #                 dimnames = list(rownames(sinucSparse)))
+        #         })
+        ## After collapse_into_sinuc_matrix was updated, the above is changed
+        ## to:
+        factorsMatList_asPFMs <- lapply(seq_len(ncol(factorsMat)),
+            function(x){
+                ## A 16 x nPositions 2D matrix is obtained
+                sinucSparse <- make_dinuc_PWMs(factorsMat[,x],
+                                            add_pseudo_counts = FALSE,
+                                            scale = FALSE)
+                sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
+                                    nrow = 4, byrow = FALSE,
+                                    dimnames = list(rownames(sinucSparse)))
             })
-        ##
-        factorsMatList_asPFMs <- lapply(seq_len(length(factorsMatList_as2D)),
-                function(x){
-                    sinucSparse <- collapse_into_sinuc_matrix(
-                        given_feature_mat = as.matrix(factorsMat[,x]),
-                        dinuc_mat = factorsMatList_as2D[[x]],
-                        feature_names = dim_names)
-                    sinucSparseInt <- matrix(as.integer(round(sinucSparse)),
-                        nrow = 4, byrow = FALSE,
-                        dimnames = list(rownames(sinucSparse)))
-                })
+        
         ##
         lenPFMs <- length(factorsMatList_asPFMs)
         scoresMat <- matrix(rep(0, lenPFMs*lenPFMs), nrow = lenPFMs)
@@ -588,7 +601,7 @@ seqs_clust_vec_ord <- unlist(seqs_clust_list_ord)
 .msg_pstr("Generating unannotated map of clustered sequences...", flg=vrbs)
 image_fname <- paste0(fname, "ClusteringImage_", name_suffix, ".png")
 .msg_pstr("Sequence clustering image written to: ", image_fname, flg=vrbs)
-viz_seqs_as_acgt_mat_from_seqs(
+viz_seqs_acgt_mat_from_seqs(
     seqs =  as.character(seqs_raw[seqs_clust_vec_ord]),
                     pos_lab = pos_lab,
                     save_fname = image_fname,

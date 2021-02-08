@@ -8,12 +8,12 @@
 make_dinuc_PWMs(vec, add_pseudo_counts = TRUE, scale = TRUE)
 }
 \arguments{
+\item{vec}{Column vector of the basis matrix}
+
 \item{add_pseudo_counts}{Whether pesudocounts are to be added. TRUE or FALSE.}
 
 \item{scale}{Whether to perform per position scaling of the matrix. TRUE or 
 FALSE}
-
-\item{mat}{Column vector of the basis matrix}
 }
 \value{
 A (PWM) matrix with 16 rows corresponding to the dinucleotide 

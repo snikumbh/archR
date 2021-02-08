@@ -57,7 +57,8 @@ res <- readRDS(system.file("extdata", "example_archRresult.rds",
 # Default position labels 1 to length of the sequences.
 arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
                                   clust_list = res$clustSol$clusters,
-                                  pos_lab = NULL)
+                                  pos_lab = NULL,
+                                  pdf_name = NULL)
 arch_pl
 
 # Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
@@ -65,7 +66,8 @@ arch_pl
 # located at position 0.
 arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
                                   clust_list = res$clustSol$clusters,
-                                  pos_lab = seq(-50,49))
+                                  pos_lab = seq(-50,49),
+                                  pdf_name = NULL)
 arch_pl
 
 # Plotting architecture sequence logos with probability instead of 
@@ -73,7 +75,8 @@ arch_pl
 arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
                                   clust_list = res$clustSol$clusters,
                                   pos_lab = seq(-50,49),
-                                  method = "prob")
+                                  method = "prob",
+                                  pdf_name = NULL)
 arch_pl
  
 }

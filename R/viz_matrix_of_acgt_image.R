@@ -72,18 +72,18 @@
 #'          package = "archR", mustWork = TRUE))
 #' 
 #' # Image matrix of sequences in the input order 
-#' viz_seqs_as_acgt_mat_from_seqs(seqs = seqs_str(res))
+#' viz_seqs_acgt_mat_from_seqs(seqs = seqs_str(res))
 #' 
 #' # Image matrix of sequences ordered by the clustering from archR
 #' use_seqs <- seqs_str(res, iter = NULL, cl = NULL, ord = TRUE)
-#' viz_seqs_as_acgt_mat_from_seqs(seqs = use_seqs)
+#' viz_seqs_acgt_mat_from_seqs(seqs = use_seqs)
 #' 
 #' # Image matrix of sequences belonging to a single cluster
 #' use_seqs <- seqs_str(res, iter = 2, cl = 2)
-#' viz_seqs_as_acgt_mat_from_seqs(seqs = use_seqs)
+#' viz_seqs_acgt_mat_from_seqs(seqs = use_seqs)
 #' 
 #' @export
-viz_seqs_as_acgt_mat_from_seqs <- function(seqs, pos_lab = NULL,
+viz_seqs_acgt_mat_from_seqs <- function(seqs, pos_lab = NULL,
                                     xt_freq = min(length(pos_lab), 5), 
                                     yt_freq = min(length(seqs), 100),
                                     col = c("darkgreen", "blue",

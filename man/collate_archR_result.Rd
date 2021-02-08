@@ -54,10 +54,20 @@ of the archR result object.}
 \item{...}{ignored}
 }
 \value{
-Returns the collated clusters. When `collate' is FALSE, 
+When `collate` is TRUE, a list with the following elements is 
+returned:
+\describe{
+\item{basisVectorsCLust}{A list storing collation information of the 
+basis vectors, i.e, IDs of basis vectors that were collated into one.}
+\item{clusters}{A list of sequences in each collated cluster.}
+\item{seqClustLabels}{Cluster labels for all sequences according to the 
+collated clustering.}
+}
+
+When `collate' is FALSE, 
 it returns the already existing basis vectors, each as singleton clusters. 
 The sequence cluster labels and sequence clusters are also handled 
-accordingly.
+accordingly. All are available as part of the same list as the earlier case.
 }
 \description{
 We use hierarchical clustering for reordering/collating raw
@@ -71,7 +81,7 @@ res <- readRDS(system.file("extdata", "example_archRresult.rds",
 # ward.D agglomeration, one can choose to use different settings, say,
 # correlation distance and complete linkage, and also regularizing to use 
 # only top 50 dimensions (nucleotide-positions combinations)
-collated_res <- collate(result = res, iter = 2, 
+collated_res <- collate_archR_result(result = res, iter = 2, 
                         aggl_method = "complete", dist_method = "cor", 
                         regularize = TRUE, topn = 50)
                         

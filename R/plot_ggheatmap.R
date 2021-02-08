@@ -25,15 +25,15 @@
 #' @import ggseqlogo
 #' 
 #' @examples 
-#' \dontshow{
+#' 
 #' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
 #'          package = "archR", mustWork = TRUE))
-#' pwm <- make_sinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
-#'                         add_pseudo_counts = FALSE)
-#' }
-#' plot_ggheatmap(pwm_mat = pwm)
 #' 
-#'
+#' pwm <- archR::make_dinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+#'                         add_pseudo_counts = FALSE)
+#' 
+#' plot_ggseqlogo(pwm_mat = pwm)
+#' 
 plot_ggheatmap <- function(pwm_mat, pos_lab = NULL, pdf_name = NULL) {
     if(is.null(pos_lab)) pos_lab <- set_default_pos_lab2(pwm_mat)
     check_vars(pwm_mat, pos_lab)
@@ -54,12 +54,12 @@ plot_ggheatmap <- function(pwm_mat, pos_lab = NULL, pdf_name = NULL) {
     )) +
         ggplot2::geom_tile() +
         ggplot2::theme_bw() +
-        ggplot2::xlab(label = "Positions") +
+        ggplot2::xlab(label = element_blank()) +
         ggplot2::scale_fill_gradient2(name = "", low = "white",
                                 mid = "white", high = "#012345") +
-        ggplot2::coord_fixed(ratio = 2.0, clip = "on") +
         ggplot2::theme(legend.position = "top", 
-            legend.justification = "center",
+            legend.justification = "center", 
+            legend.margin = margin(0,-1,0,0),
             axis.text.x = element_text(size = rel(0.5), angle = 90, 
                             hjust = 1, vjust=0.5)
         )
@@ -104,13 +104,13 @@ plot_ggheatmap <- function(pwm_mat, pos_lab = NULL, pdf_name = NULL) {
 #' @import ggseqlogo
 #' 
 #' @examples 
-#' \dontshow{
+#' 
 #' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
 #'          package = "archR", mustWork = TRUE))
 #' 
-#' pwm <- make_sinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+#' pwm <- archR::make_dinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
 #'                         add_pseudo_counts = FALSE)
-#' }
+#' 
 #' plot_ggseqlogo(pwm_mat = pwm)
 #' 
 plot_ggseqlogo <- function(pwm_mat, method = "custom", pos_lab = NULL, 
@@ -120,8 +120,13 @@ plot_ggseqlogo <- function(pwm_mat, method = "custom", pos_lab = NULL,
     check_vars(pwm_mat, pos_lab)
     ##
     p1 <- ggplot() +
-        geom_logo(pwm_mat, method = method, seq_type = "dna") +
-        theme_logo() +
+        ggseqlogo::geom_logo(pwm_mat, method = method, seq_type = "dna") +
+        ggplot2::theme_linedraw() +
+        ggplot2::theme(axis.text.x = element_text(size = rel(0.9),
+            angle = 90, hjust = 1, vjust=0.5),
+            axis.text.y = element_text(size = rel(0.9)),
+            panel.grid = element_blank()) +
+        ggplot2::xlab(label = "Positions") +
         ##
         ggplot2::scale_x_continuous(breaks = seq_len(ncol(pwm_mat)),
             labels = pos_lab,
@@ -129,7 +134,15 @@ plot_ggseqlogo <- function(pwm_mat, method = "custom", pos_lab = NULL,
         ##
         ggplot2::theme(axis.text.x = element_text(size = rel(0.5),
             angle = 90, hjust = 1),
-            axis.text.y = element_text(size = rel(0.5)))
+            axis.text.y = element_text(size = rel(0.5))) +
+        ggplot2::ylim(0.0, 2.0)
+    
+    if(method == "prob"){
+        p1 <- p1 + ggplot2::ylab(label = "Probability")
+    }else if(method == "bits"){
+        p1 <- p1 + ggplot2::ylab(label = "Bits")
+    }
+    
     ##
     if (!is.null(pdf_name)) {
         if (file.exists(pdf_name)) {
@@ -141,6 +154,15 @@ plot_ggseqlogo <- function(pwm_mat, method = "custom", pos_lab = NULL,
 }
 ## =============================================================================
 
+# @examples 
+# \dontshow{
+# res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#          package = "archR", mustWork = TRUE))
+# 
+# pwm <- make_dinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+#                         add_pseudo_counts = FALSE)
+# }
+# plot_ggseqlogo(pwm_mat = pwm)
 set_default_pos_lab2 <- function(pwm_mat){
     
     pos_lab <- seq_len(ncol(pwm_mat))

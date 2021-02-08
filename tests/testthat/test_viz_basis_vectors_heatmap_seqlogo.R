@@ -6,7 +6,7 @@ test_that("Given object is matrix", {
   testFeaturesMat <- rnorm(10000) # err
   testPositionLabels <- seq(25)
   expect_error(
-    viz_basis_vectors_in_combined_heatmaps_seqlogos(
+    viz_bas_vec_heatmap_seqlogo(
       testFeaturesMat,
       pos_lab = testPositionLabels),
     "not of type matrix"
@@ -17,7 +17,7 @@ test_that("Handling empty matrix", {
   testFeaturesMat <- matrix()
   testPositionLabels <- seq(25)
   expect_error(
-    viz_basis_vectors_in_combined_heatmaps_seqlogos(
+    viz_bas_vec_heatmap_seqlogo(
       testFeaturesMat,
       pos_lab = testPositionLabels
     ),
@@ -29,7 +29,7 @@ test_that("Position labels inadequate", {
   testFeaturesMat <- matrix(rnorm(10000), nrow = 200)
   testPositionLabels <- seq(20)
   expect_error(
-    viz_basis_vectors_in_combined_heatmaps_seqlogos(
+    viz_bas_vec_heatmap_seqlogo(
       testFeaturesMat,
       pos_lab = testPositionLabels),
     "Inadequate"
@@ -40,7 +40,7 @@ test_that("Position labels over-abundant", {
   testFeaturesMat <- matrix(rnorm(10000), nrow = 200)
   testPositionLabels <- seq(60)
   expect_error(
-    viz_basis_vectors_in_combined_heatmaps_seqlogos(
+    viz_bas_vec_heatmap_seqlogo(
       testFeaturesMat,
       pos_lab = testPositionLabels),
     "Overabundant"
@@ -58,7 +58,7 @@ test_that("Position labels over-abundant", {
 #   # test plot, include the function directly inside because it returns nothing.
 #   vdiffr::expect_doppelganger(
 #     "heatmap seqlogo plot ex",
-#     viz_basis_vectors_in_combined_heatmaps_seqlogos(
+#     viz_bas_vec_heatmap_seqlogo(
 #       featuresMatrix = testFeaturesMat,
 #       pos_lab = testPositionLabels)
 #   )

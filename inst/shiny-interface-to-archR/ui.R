@@ -250,10 +250,10 @@ body <- shinydashboard::dashboardBody(
                             width = "150px"),
                ##
                checkboxGroupInput("flags", "Set flags for output display:",
-                                  c("Debug" = "debugFlag",
-                                    "Verbosity" = "verboseFlag",
-                                    "Plotting" = "plotVerboseFlag",
-                                    "Time" = "timeFlag"), inline = TRUE),
+                                  c("Debug" = "debugging info",
+                                    "Verbosity" = "general verbose",
+                                    "Plotting" = "plots",
+                                    "Time" = "timing info"), inline = TRUE),
                ##
                textInput(inputId = "resultLocation",
                          label = "Location to save archR result:",

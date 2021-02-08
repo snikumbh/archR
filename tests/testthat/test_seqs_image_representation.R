@@ -13,7 +13,7 @@ test_that("Handling image representation of sequences", {
     vdiffr::expect_doppelganger(
             "Sample image of sequences",
             suppressMessages(
-                archR::viz_seqs_as_acgt_mat_from_seqs(as.character(testSeqsOK),
+                archR::viz_seqs_acgt_mat_from_seqs(as.character(testSeqsOK),
                                     pos_lab = positionLabelsTest,
                                     xt_freq = 25, yt_freq = 200))
     )

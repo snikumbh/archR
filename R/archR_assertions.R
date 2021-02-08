@@ -227,9 +227,8 @@
     }
     ## Check if any chunk in the collection is of zero-length?
     if (any(lapply(nxtOuterChunksColl, length) == 0)) {
-        message("WARNING: Chunks for next iteration have a problem")
-        stop("Index ",
-                which(lapply(nxtOuterChunksColl, length) == 0),
+        stop("Chunks for next iteration have a problem. ",
+        "Index ", which(lapply(nxtOuterChunksColl, length) == 0),
                 " of zero length")
     }
 }

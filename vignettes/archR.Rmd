@@ -178,7 +178,7 @@ identical(inputSeqs_direct, inputSeqsMat)
 # Visualize the sequences in a image matrix where the DNA bases are 
 # assigned fixed colors
 
-archR::viz_seqs_as_acgt_mat_from_seqs(as.character(inputSeqsRaw), 
+archR::viz_seqs_acgt_mat_from_seqs(as.character(inputSeqsRaw), 
                           pos_lab = positions, save_fname = NULL)
 
 ```
@@ -222,20 +222,20 @@ archRresult <- archR::archR(config = archRconfig,
 ## Understanding the result object from _archR_
 
 In the version `r packageVersion("archR")`, _archR_ naively returns a result 
-object which is a nested list.
-The list elements include: 
-1. the sequence cluster labels per iteration [`seqsClustLabels`]; 
-2. the collection of NMF basis vectors per iteration [`clustBasisVectors`]: 
+object which is a nested list of seven elements.
+These include: 
+- the sequence cluster labels per iteration [`seqsClustLabels`]; 
+- the collection of NMF basis vectors per iteration [`clustBasisVectors`]: 
 each is a list of two elements `nBasisVectors` and `basisVectors`;
-3. the clustering solution, [`clustSol`], which is obtained upon combining raw 
+- the clustering solution, [`clustSol`], which is obtained upon combining raw 
 clusters from the last iteration of archR. This element stores the clustering 
 of NMF basis vectors [`basisVectorsClust`] and the sequence clusters 
 [`clusters`]; 
-4. the raw sequences provided [`rawSeqs`]; 
-5. if timeFlag is set, timing information (in minutes) per iteration 
+- the raw sequences provided [`rawSeqs`]; 
+- if timeFlag is set, timing information (in minutes) per iteration 
 [`timeInfo`];
-6. the configuration setting [`config`]; and 
-7. the call itself [`call`].
+- the configuration setting [`config`]; and 
+- the call itself [`call`].
 
 
 
@@ -250,9 +250,11 @@ basis vectors (`nBasisVectors`) and the basis vectors
 ```{r archR-result-clust-factors}
 
 # Basis vectors at iteration 2
-archRresult$clustBasisVectors[[2]]$nBasisVectors
-dim(archRresult$clustBasisVectors[[2]]$basisVectors)
-head(archRresult$clustBasisVectors[[2]]$basisVectors)
+archR::get_clBasVec_k(archRresult, iter=2)
+
+i2_bv <- archR::get_clBasVec_m(archRresult, iter=2)
+dim(i2_bv)
+head(i2_bv)
 ```
 
 
@@ -263,30 +265,19 @@ One can visualize the NMF basis vectors as well as the sequence clusters.
 
 
 
-<!-- ```{r viz-BV-1, echo=TRUE, fig.height=2, fig.width=25} -->
-<!-- archR::viz_basis_vectors_as_seqlogo( -->
-<!--     archRresult$clustBasisVectors[[1]]$basisVectors, -->
-<!--     position_labels = positions, -->
-<!--     plotMethod = "bits" -->
-<!-- ) -->
+```{r viz-BV-1, echo=TRUE, fig.height=2, fig.width=25}
+archR::viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(archRresult, 1), 
+                                  method = "bits", sinuc_or_dinuc = "dinuc")
 
-<!-- archR::viz_basis_vectors_as_heatmap( -->
-<!--     archRresult$clustBasisVectors[[1]]$basisVectors, -->
-<!--     position_labels = positions) -->
-<!-- ``` -->
+```
 
 
-<!-- ```{r viz-BV-2, fig.height=2, fig.width=25, echo=TRUE} -->
-<!-- archR::viz_basis_vectors_as_seqlogo( -->
-<!--     archRresult$clustBasisVectors[[2]]$basisVectors, -->
-<!--     position_labels = positions, -->
-<!--     plotMethod = "bits" -->
-<!-- ) -->
+```{r viz-BV-2, fig.height=2, fig.width=25, echo=TRUE} 
+archR::viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(archRresult, 2), 
+                                  method = "bits", sinuc_or_dinuc = "dinuc")
 
-<!-- archR::viz_basis_vectors_as_heatmap( -->
-<!--   archRresult$clustBasisVectors[[2]]$basisVectors, -->
-<!--   position_labels = positions) -->
-<!-- ``` -->
+
+```
 
 
 
@@ -296,28 +287,18 @@ One can visualize the NMF basis vectors as well as the sequence clusters.
 The clustered output from _archR_ can again be visualized as a matrix. 
 Simply sort the sequences based on the cluster labels assigned to them and call 
 `archR::viz_seqs_as_acgt_mat_from_seqs` with the sorted order as shown.
-```{r clust-itr1, fig.dim=c(5,6), fig.cap="Figure: Clusters at iteration 1"}
+```{r clust-itr1, fig.dim=c(3,6), fig.cap="Figure: Clusters at iteration 1"}
 
-itr <- 1
-seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
-sorted_order <- sort(seqsClustLabels, index.return = TRUE)
+archR::viz_seqs_acgt_mat_from_seqs(seqs_str(archRresult, iter = 1, ord = TRUE),
+                                  pos_lab = positions)
 
-
-archR::viz_seqs_as_acgt_mat_from_seqs(
-  as.character(inputSeqsRaw[sorted_order$ix]), pos_lab = positions,
-  save_fname = NULL)
 ```
 
 ```{r clust-itr2, fig.dim=c(5,6), fig.cap="Figure: Clusters at iteration 2"}
 
-itr <- 2
-seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
-sorted_order <- sort(seqsClustLabels, index.return = TRUE)
+archR::viz_seqs_acgt_mat_from_seqs(seqs_str(archRresult, iter = 2, ord = TRUE),
+                                  pos_lab = positions)
 
-
-archR::viz_seqs_as_acgt_mat_from_seqs(
-  as.character(inputSeqsRaw[sorted_order$ix]), pos_lab = positions,
-  save_fname = NULL)
 ```
 
 

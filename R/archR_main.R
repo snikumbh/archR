@@ -91,7 +91,6 @@
 #'     k_min = 1,
 #'     k_max = 20,
 #'     mod_sel_type = "stability",
-#'     tol = 10^-4,
 #'     bound = 10^-8,
 #'     inner_chunk_size = 100,
 #'     flags = list(debug = FALSE, time = TRUE, verbose = TRUE,

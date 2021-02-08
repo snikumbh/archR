@@ -20,10 +20,10 @@
 #' 
 #' k <- get_clBasVec_k(res=res, iter=2)
 #'
-#' bMat <- getclBasVec_m(res=res, iter=1)
+#' bMat <- get_clBasVec_m(res=res, iter=2)
 #' 
 #' ## cluster labels of sequences from final clustering
-#' scLab <- get_seqClLab(res=res)
+#' scLab <- get_seqClLab(res=res, iter=2)
 #'   
 #' @export
 get_clBasVec <- function(res, iter){
@@ -59,7 +59,7 @@ get_clBasVec_m <- function(res, iter){
 #' 
 #' @seealso \code{\link{seqs_str}}
 #' @export
-get_seqClLab <- function(res, iter){
+get_seqClLab <- function(res, iter = NULL){
     if(is.null(iter)){
         return(res$clustSol$seqsClustLabels)
     }else{
@@ -761,10 +761,20 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #'
 #' @param ... ignored
 #'
-#' @return Returns the collated clusters. When `collate' is FALSE, 
+#' @return When `collate` is TRUE, a list with the following elements is 
+#' returned:
+#' \describe{
+#' \item{basisVectorsCLust}{A list storing collation information of the 
+#' basis vectors, i.e, IDs of basis vectors that were collated into one.}
+#' \item{clusters}{A list of sequences in each collated cluster.}
+#' \item{seqClustLabels}{Cluster labels for all sequences according to the 
+#' collated clustering.}
+#' }
+#' 
+#' When `collate' is FALSE, 
 #' it returns the already existing basis vectors, each as singleton clusters. 
 #' The sequence cluster labels and sequence clusters are also handled 
-#' accordingly.
+#' accordingly. All are available as part of the same list as the earlier case.
 #' 
 #' @examples 
 #' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
@@ -774,7 +784,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #' # ward.D agglomeration, one can choose to use different settings, say,
 #' # correlation distance and complete linkage, and also regularizing to use 
 #' # only top 50 dimensions (nucleotide-positions combinations)
-#' collated_res <- collate(result = res, iter = 2, 
+#' collated_res <- collate_archR_result(result = res, iter = 2, 
 #'                         aggl_method = "complete", dist_method = "cor", 
 #'                         regularize = TRUE, topn = 50)
 #'                         

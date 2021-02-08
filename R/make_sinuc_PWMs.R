@@ -14,8 +14,9 @@
 #' G, T) and the relevant number of columns (i.e., number of elements in given
 #' vector/4)
 #'
-make_sinuc_PWMs <- function(mat, add_pseudo_counts = TRUE,
-                            scale = TRUE) {
+#' @export
+#' 
+make_sinuc_PWMs <- function(mat, add_pseudo_counts = TRUE, scale = TRUE) {
     ## return PWM matrix TO-DO: Make more clear whether a matrix or a column
     ## vector is expected
     ## if(!is.matrix(mat)){
@@ -48,7 +49,7 @@ make_sinuc_PWMs <- function(mat, add_pseudo_counts = TRUE,
 #' of dinucleotide information into matrix of dimension 
 #' 16 x (sequence_length) for visualization.
 #' 
-#' @param mat Column vector of the basis matrix
+#' @param vec Column vector of the basis matrix
 #' @param add_pseudo_counts Whether pesudocounts are to be added. TRUE or FALSE.
 #' @param scale Whether to perform per position scaling of the matrix. TRUE or 
 #' FALSE
@@ -57,9 +58,9 @@ make_sinuc_PWMs <- function(mat, add_pseudo_counts = TRUE,
 #' combinations of the four nucleotides (A, C, G, T) and the relevant number 
 #' of columns (i.e., number of elements in given vector/16)
 #' 
-#'
-make_dinuc_PWMs <- function(vec, add_pseudo_counts = TRUE,
-                            scale = TRUE) {
+#' @export
+#' 
+make_dinuc_PWMs <- function(vec, add_pseudo_counts = TRUE, scale = TRUE) {
     
     # column vector is expected as input
     dna_alphabet <- c("A", "C", "G", "T")
@@ -72,8 +73,6 @@ make_dinuc_PWMs <- function(vec, add_pseudo_counts = TRUE,
     rownames(this_mat) <- dinuc
     if (scale) {
         this_mat <- base::sweep(this_mat, 2, colSums(this_mat), "/")
-    } else {
-        return(this_mat)
     }
     return_mat <- collapse_into_sinuc_matrix(dinuc_mat = this_mat, 
                                             feat_names = dinuc)

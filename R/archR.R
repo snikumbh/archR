@@ -1,6 +1,5 @@
 #' archR: A package for de novo discovery of different sequence 
-#' architectures with characteristic combination(s) of sequence 
-#' elements (motifs) or nucleotide compositions.
+#' architectures
 #'
 #' Given a set of DNA sequences, \code{archR} enables unsupervised 
 #' discovery of _de novo_ clusters with characteristic sequence 
@@ -23,14 +22,14 @@
 #'
 #' @section Functions for visualizations:
 #' \itemize{
-#' \item \code{\link{plot_ggseqlogo}}
-#' \item \code{\link{plot_ggheatmap}}
-#' \item \code{\link{viz_basis_vectors_as_heatmap}}
-#' \item \code{\link{viz_basis_vectors_as_seqlogo}}
-#' \item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 #' \item \code{\link{plot_arch_for_clusters}}
 #' \item \code{\link{plot_ggseqlogo_of_seqs}}
-#' \item \code{\link{viz_seqs_as_acgt_mat_from_seqs}}
+#' \item \code{\link{viz_bas_vec_heatmap}}
+#' \item \code{\link{viz_bas_vec_seqlogo}}
+#' \item \code{\link{viz_bas_vec_heatmap_seqlogo}}
+#' \item \code{\link{viz_seqs_acgt_mat_from_seqs}}
+#' \item \code{\link{plot_ggseqlogo}}
+#' \item \code{\link{plot_ggheatmap}}
 #' }
 #'
 #' @docType package

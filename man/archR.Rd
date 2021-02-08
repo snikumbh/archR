@@ -4,8 +4,7 @@
 \name{archR}
 \alias{archR}
 \title{archR: A package for de novo discovery of different sequence 
-architectures with characteristic combination(s) of sequence 
-elements (motifs) or nucleotide compositions.}
+architectures}
 \usage{
 archR(
   config,
@@ -122,14 +121,14 @@ functions.
 \section{Functions for visualizations}{
 
 \itemize{
-\item \code{\link{plot_ggseqlogo}}
-\item \code{\link{plot_ggheatmap}}
-\item \code{\link{viz_basis_vectors_as_heatmap}}
-\item \code{\link{viz_basis_vectors_as_seqlogo}}
-\item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 \item \code{\link{plot_arch_for_clusters}}
 \item \code{\link{plot_ggseqlogo_of_seqs}}
-\item \code{\link{viz_seqs_as_acgt_mat_from_seqs}}
+\item \code{\link{viz_bas_vec_heatmap}}
+\item \code{\link{viz_bas_vec_seqlogo}}
+\item \code{\link{viz_bas_vec_heatmap_seqlogo}}
+\item \code{\link{viz_seqs_acgt_mat_from_seqs}}
+\item \code{\link{plot_ggseqlogo}}
+\item \code{\link{plot_ggheatmap}}
 }
 }
 
@@ -153,7 +152,6 @@ archRconfig <- archR::archR_set_config(
     k_min = 1,
     k_max = 20,
     mod_sel_type = "stability",
-    tol = 10^-4,
     bound = 10^-8,
     inner_chunk_size = 100,
     flags = list(debug = FALSE, time = TRUE, verbose = TRUE,

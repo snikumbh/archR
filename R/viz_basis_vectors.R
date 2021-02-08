@@ -1,25 +1,24 @@
 #' @title Visualize the NMF basis vectors in a paired heatmap and sequence logo
 #' plot
 #'
-#' @description The given features matrix (with 4 rows) is represented as a
-#' heatmap followed by a sequence logo where the positions are aligned for
-#' better visualization.
+#' @description The given features matrix is visualized as a heatmap followed 
+#' by a sequence logo where the positions are aligned for better 
+#' visualization.
 #'
-#' @param feat_mat The features matrix output from NMF. Expected
-#' dimensionality: number of columns represent the number of factors from NMF,
-#' and the number of rows is 4 times the length of the sequences in the
-#' collection.
+#' @param feat_mat The features matrix (basis vectors matrix) from archR. 
+#' 
 #' @param method For \code{ggseqlogo} -- either of "custom", "bits", or
 #' "probability". Default is "custom".
 #' @param pos_lab Labels for sequence positions, should be of same
 #' length as that of the sequences. Default value is NULL, when the 
 #' positions are labeled from 1 to the length of the sequences.
-#' @param add_pseudo_counts Boolean, taking values TRUE/T or FALSE/F, default
+#' @param add_pseudo_counts Logical, taking values TRUE or FALSE, default
 #' set to FALSE. Setting it to TRUE will enable adding pseudo-counts to the
 #' features matrix.
 #' @param pdf_name Name of the file which will be saved as PDF
 #' (also provide the extension).
-#' @param sinuc_or_dinuc "sinuc" or "dinuc"
+#' @param sinuc_or_dinuc "sinuc" or "dinuc" for choosing between mono- and
+#' dinucleotide profiles respectively.
 #'
 #' @return nothing
 #'
@@ -33,15 +32,13 @@
 #' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
 #'          package = "archR", mustWork = TRUE))
 #' 
-#' viz_basis_vectors_in_combined_heatmaps_seqlogos(
-#'                   feat_mat = get_clBasVec_m(res,iter=1))
+#' viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(res,iter=1))
 #' 
-#' 
-viz_basis_vectors_in_combined_heatmaps_seqlogos <-
-    function(feat_mat, method = "custom", pos_lab = NULL, 
-                add_pseudo_counts = FALSE, pdf_name = NULL,
-                sinuc_or_dinuc = "sinuc") {
-    check_ggpubr()
+viz_bas_vec_heatmap_seqlogo <- function(feat_mat, 
+                                    method = "custom", pos_lab = NULL, 
+                                    add_pseudo_counts = FALSE, pdf_name = NULL,
+                                    sinuc_or_dinuc = "sinuc") {
+    check_cowplot()
     check_vars2(feat_mat)
     ##
     if(is.null(pos_lab)){
@@ -57,14 +54,13 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
     ## Heatmap on top
     p1 <- plot_ggheatmap(pwm_mat = pwm, pos_lab = pos_lab,
                     pdf_name = pdf_name)
-    p1 <- p1 + theme(plot.margin = grid::unit(c(0, 0, 0, 0), "mm"))
+    p1 <- p1 + theme(plot.margin = margin(0,0,0,0))
     ## Seqlogo below
     p2 <- plot_ggseqlogo(pwm_mat = pwm, method = method,
-        pos_lab = pos_lab, pdf_name = pdf_name)
+                    pos_lab = pos_lab, pdf_name = pdf_name)
     ## Make adjustments for alignment
-    p2 <- p2 + theme(plot.margin = grid::unit(c(0, 0, 0, 0), "mm"))
-    final_p <- ggpubr::ggarrange(p1, p2, ncol = 1, heights = c(1.2,1),
-                        widths = c(1,1), align = 'v')
+    p2 <- p2 + theme(plot.margin = margin(0,0,0,0))
+    final_p <- cowplot::plot_grid(p1, p2, nrow = 2, rel_heights = c(1,0.8))
     ##
     if (!is.null(pdf_name)) {
         if (file.exists(pdf_name)) {
@@ -82,25 +78,20 @@ viz_basis_vectors_in_combined_heatmaps_seqlogos <-
 
 
 
-#' @describeIn viz_basis_vectors_in_combined_heatmaps_seqlogos Visualize the 
-#' NMF basis vectors as a sequence logo
+#' @describeIn viz_bas_vec_heatmap_seqlogo Visualize the NMF basis vectors 
+#' as a sequence logo
 #' 
-#' @return nothing.
 #'
 #' @examples 
-#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
-#'          package = "archR", mustWork = TRUE))
-#' 
-#' viz_basis_vectors_as_seqlogo(feat_mat = get_clBasVec_m(res,iter=1))
-#'          
+#' viz_bas_vec_seqlogo(feat_mat = get_clBasVec_m(res,iter=1))
 #'
 #' @export
-viz_basis_vectors_as_seqlogo <- function(feat_mat,
-                                            method = "custom",
-                                            pos_lab = NULL,
-                                            add_pseudo_counts = FALSE,
-                                            pdf_name = NULL,
-                                            sinuc_or_dinuc = "sinuc") {
+viz_bas_vec_seqlogo <- function(feat_mat,
+                                method = "custom",
+                                pos_lab = NULL,
+                                add_pseudo_counts = FALSE,
+                                pdf_name = NULL,
+                                sinuc_or_dinuc = "sinuc") {
     ## Visualize all basis factors (expected as columns of the given features
     ## matrix) as seqlogos
     check_vars2(feat_mat)
@@ -123,23 +114,18 @@ viz_basis_vectors_as_seqlogo <- function(feat_mat,
 }
 ## =============================================================================
 
-#' @describeIn viz_basis_vectors_in_combined_heatmaps_seqlogos Visualize the 
+#' @describeIn viz_bas_vec_heatmap_seqlogo Visualize the 
 #' NMF basis vectors as a heatmap
 #' 
-#' @return nothing.
 #'
 #' @examples 
-#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
-#'          package = "archR", mustWork = TRUE))
-#' 
-#' viz_basis_vectors_as_seqlogo(feat_mat = get_clBasVec_m(res,iter=1))
-#'          
+#' viz_bas_vec_heatmap(feat_mat = get_clBasVec_m(res,iter=1))
 #'
 #' @export
-viz_basis_vectors_as_heatmap <- function(feat_mat, pos_lab = NULL,
-                                        add_pseudo_counts = FALSE,
-                                        pdf_name = NULL,
-                                        sinuc_or_dinuc = "sinuc") {
+viz_bas_vec_heatmap <- function(feat_mat, pos_lab = NULL,
+                                add_pseudo_counts = FALSE,
+                                pdf_name = NULL,
+                                sinuc_or_dinuc = "sinuc") {
     # Visualize all basis factors (expected as columns of the given features
     # matrix) as heatmaps
     ##
@@ -180,9 +166,9 @@ set_default_pos_lab <- function(feat_mat, sinuc_or_dinuc){
     pos_lab
 }
 
-check_ggpubr <- function(){
-    if(!requireNamespace("ggpubr", quietly = TRUE)){
-        stop("Please install the R package 'ggpubr' to use this function")
+check_cowplot <- function(){
+    if(!requireNamespace("cowplot", quietly = TRUE)){
+        stop("Please install the R package 'cowplot' to use this function")
     }
 }
 ## =============================================================================

@@ -52,23 +52,22 @@ setArchRConfig <- function(input){
 
     fl <- flagsLogicalVector(input$flags)
 
-    archRconfig <- archR::archRSetConfig(
-        innerChunkSize = as.numeric(input$innerChunkSize),
-        cvFolds = as.numeric(input$cvFolds),
+    archRconfig <- archR::archR_set_config(
+        inner_chunk_size = as.numeric(input$innerChunkSize),
+        cv_folds = as.numeric(input$cvFolds),
         parallelize = parallelSetting,
-        nCoresUse = as.numeric(input$nCoresUse),
-        nIterationsUse = as.numeric(input$nIterationsUse),
-        kMin = 1,
-        kMax = as.numeric(input$kMax),
-        modSelType = input$modSelType,
+        n_cores = as.numeric(input$nCoresUse),
+        n_iterations = as.numeric(input$nIterationsUse),
+        k_min = 1,
+        k_max = as.numeric(input$kMax),
+        mod_sel_type = input$modSelType,
         tol = 10^as.numeric(input$tol),
         bound = 10^as.numeric(input$bound),
         checkpointing = checkpointSetting,
-        modSelLogFile = "log.txt",
-        flags = list(debugFlag = fl$debugFlag,
-                     verboseFlag = fl$verboseFlag,
-                     plotVerboseFlag = fl$plotVerboseFlag,
-                     timeFlag = fl$timeFlag)
+        flags = list(debug = fl$debugFlag,
+                     verbose = fl$verboseFlag,
+                     plot = fl$plotVerboseFlag,
+                     time = fl$timeFlag)
     )
 
     return(archRconfig)
@@ -332,9 +331,9 @@ getFasta <- function(fname){
     expFormatStr <- "Input file is expected to be a valid FASTA file"
     raw_seq <- NULL
     raw_seq <- tryCatch({
-        archR::prepare_data_from_FASTA(fname,
+        archR::prepare_data_from_FASTA(fasta_fname = fname, 
                                        sinuc_or_dinuc = "dinuc",
-                                       rawSeq = TRUE)
+                                       raw_seq = TRUE)
     }, error = function(err){
         if(err$message == "unknown input format"){
             thisMsg <- paste("Wrong file format.",
@@ -484,7 +483,7 @@ observeEvent(input$callArchR, {
         fname <- input$inputFastaFilename$datapath
         tssSeqs_raw <- getFasta(fname)
         if(!is.null(tssSeqs_raw)){
-        tssSeqs <- archR::prepare_data_from_FASTA(fname,
+        tssSeqs <- archR::prepare_data_from_FASTA(fasta_fname = fname,
                                     sinuc_or_dinuc = "dinuc")
         nSeqs <- ncol(tssSeqs)
         ##
@@ -493,7 +492,7 @@ observeEvent(input$callArchR, {
         if(archRconfig$parallelize){
             if(!is.null(input$useSlurm)){
                 if(input$useSlurm){
-                    job_dir <- archR::handle_dir_creation(
+                    job_dir <- handle_dir_creation(
                         file.path(input$jobLocation,
                                paste0("_rslurm_", input$jobName)
                                )
@@ -522,11 +521,11 @@ observeEvent(input$callArchR, {
                         archR_slurm_call(dir_path = input$jobLocation,
                         archR::archR,
                         list(config = archRconfig,
-                            seqsMat = tssSeqs,
-                            seqsRaw = tssSeqs_raw,
-                            seqsPositions = positions,
-                            thresholdItr = as.numeric(input$thresholdsItr),
-                            oDir = input$resultLocation),
+                            seqs_ohe_mat = tssSeqs,
+                            seqs_raw = tssSeqs_raw,
+                            seqs_pos = positions,
+                            threshold_itr = as.numeric(input$thresholdsItr),
+                            o_dir = input$resultLocation),
                        jobname = manipulatedJobname, #input$jobName,
                        r_template = system.file("templates",
                                                 "archR_r_template.txt",
@@ -595,22 +594,22 @@ observeEvent(input$callArchR, {
                     ## Have a short wrapper function do this outside shiny
                     message("Running archR in parallel")
                     archR_result <- archR::archR(config = archRconfig,
-                                 seqsMat = tssSeqs,
-                                 seqsRaw = tssSeqs_raw,
-                                 seqsPositions = positions,
-                                 thresholdItr = as.numeric(input$thresholdsItr),
-                                 oDir = input$resultLocation
+                                    seqs_ohe_mat = tssSeqs,
+                                    seqs_raw = tssSeqs_raw,
+                                    seqs_pos = positions,
+                                    threshold_itr = as.numeric(input$thresholdsItr),
+                                    o_dir = input$resultLocation
                                 )
                 }}
         }else{
             message("Running archR serially")
             ##
             archR_result <- archR::archR(config = archRconfig,
-                            seqsMat = tssSeqs,
-                            seqsRaw = tssSeqs_raw,
-                            seqsPositions = positions,
-                            thresholdItr = as.numeric(input$thresholdsItr),
-                            oDir = input$resultLocation
+                seqs_ohe_mat = tssSeqs,
+                seqs_raw = tssSeqs_raw,
+                seqs_pos = positions,
+                threshold_itr = as.numeric(input$thresholdsItr),
+                o_dir = input$resultLocation
                             )
             ##
         }
@@ -763,10 +762,10 @@ getMatImagePlot <- function(itr = NULL){
             }else{
                 xt_val <- as.numeric(input$xtickFreqMAT)
             }
-            return(archR::viz_matrix_of_acgt_image(
+            return(archR::viz_seqs_acgt_mat_from_seqs(
                 as.character(archRresult$rawSeqs),
-                position_labels = pos_labels,
-                savefilename = NULL,
+                pos_lab = pos_labels,
+                save_fname = NULL,
                 xt_freq = xt_val,
                 yt_freq = as.numeric(input$ytickFreq)
                 )
@@ -782,10 +781,10 @@ getMatImagePlot <- function(itr = NULL){
                 xt_val <- as.numeric(input$xtickFreqMAT)
             }
 
-            return(archR::viz_matrix_of_acgt_image(
+            return(archR::viz_seqs_acgt_mat_from_seqs(
                 as.character(archRresult$rawSeqs[sorted_order$ix]),
-                position_labels = pos_labels,
-                savefilename = NULL,
+                pos_lab = pos_labels,
+                save_fname = NULL,
                 xt_freq = xt_val,
                 yt_freq = as.numeric(input$ytickFreq)))
         }
@@ -831,7 +830,7 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
             }
             return(archR::plot_ggseqlogo_of_seqs(
                 seqs = archRresult$rawSeqs,
-                position_labels = pos_labels,
+                pos_lab = pos_labels,
                 xt_freq = xt_val,
                 title = paste("Sequence logo of all ",
                     length(archRresult$rawSeqs), " sequences" ))
@@ -857,7 +856,7 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
                 # PDFfname = NULL)
                 archR::plot_ggseqlogo_of_seqs(
                     seqs = selectedRawSeqs,
-                    position_labels = pos_labels,
+                    pos_lab = pos_labels,
                     xt_freq = xt_val,
                     title = plotTitle)
             )
@@ -866,7 +865,7 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
             ##
             seqsClustLabels <- archRresult$seqsClustLabels[[itr]]
             sorted_order <- sort(seqsClustLabels, index.return = TRUE)
-            clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
+            clusters_ord <- archR::get_seqs_clust_list(seqsClustLabels)
             ##
             # message("Generating architectures...itr", itr)
             if(as.numeric(input$xtickFreqPWM) == 0){
@@ -876,11 +875,11 @@ getArchPWMPlot <- function(itr = NULL, selectedRawSeqs = NULL,
             }
             return(
                 archR::plot_arch_for_clusters(
-                archRresult$rawSeqs,
-                list_of_elements = clusters_ord,
-                position_labels = pos_labels,
-                xt_freq = xt_val,
-                PDFfname = NULL)
+                seqs = archRresult$rawSeqs,
+                clust_list = clusters_ord,
+                pos_lab = pos_labels,
+                xt_freq = xt_val, 
+                pdf_name = NULL)
                 # archR::plot_ggseqlogo_of_seqs(
                 #     seqs = selectedRawSeqs,
                 #     position_labels = pos_labels,
@@ -1030,7 +1029,7 @@ observeEvent(input$plotACGTMatrix, {
             #
             seqsClustLabels <- archRresult$seqsClustLabels[[choose_itr]]
             sorted_order <- sort(seqsClustLabels, index.return = TRUE)
-            clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
+            clusters_ord <- archR::get_seqs_clust_list(seqsClustLabels)
             plotName <- paste0("plotMatImage",choose_itr)
             message("[", Sys.time(), "] Plotting ", plotName)
             output[[plotName]] <- renderPlot({
@@ -1080,7 +1079,7 @@ observeEvent(input$plotArchPWMs, {
                                     choose_itr))
             seqsClustLabels <- archRresult$seqsClustLabels[[choose_itr]]
             sorted_order <- sort(seqsClustLabels, index.return = TRUE)
-            clusters_ord <- archR::get_seqs_clusters_in_a_list(seqsClustLabels)
+            clusters_ord <- archR::get_seqs_clust_list(seqsClustLabels)
             plotName <- paste0("plotPWM",choose_itr)
             output[[plotName]] <- renderUI({
                 withCallingHandlers({

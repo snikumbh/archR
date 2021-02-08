@@ -13,7 +13,7 @@ get_clBasVec_k(res, iter)
 
 get_clBasVec_m(res, iter)
 
-get_seqClLab(res, iter)
+get_seqClLab(res, iter = NULL)
 }
 \arguments{
 \item{res}{archR result object.}
@@ -52,10 +52,10 @@ res <- readRDS(system.file("extdata", "example_archRresult.rds",
 
 k <- get_clBasVec_k(res=res, iter=2)
 
-bMat <- getclBasVec_m(res=res, iter=1)
+bMat <- get_clBasVec_m(res=res, iter=2)
 
 ## cluster labels of sequences from final clustering
-scLab <- get_seqClLab(res=res)
+scLab <- get_seqClLab(res=res, iter=2)
   
 }
 \seealso{

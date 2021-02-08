@@ -40,7 +40,8 @@
 #' # Default position labels 1 to length of the sequences.
 #' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
 #'                                   clust_list = res$clustSol$clusters,
-#'                                   pos_lab = NULL)
+#'                                   pos_lab = NULL,
+#'                                   pdf_name = NULL)
 #' arch_pl
 #' 
 #' # Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
@@ -48,7 +49,8 @@
 #' # located at position 0.
 #' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
 #'                                   clust_list = res$clustSol$clusters,
-#'                                   pos_lab = seq(-50,49))
+#'                                   pos_lab = seq(-50,49),
+#'                                   pdf_name = NULL)
 #' arch_pl
 #' 
 #' # Plotting architecture sequence logos with probability instead of 
@@ -56,7 +58,8 @@
 #' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
 #'                                   clust_list = res$clustSol$clusters,
 #'                                   pos_lab = seq(-50,49),
-#'                                   method = "prob")
+#'                                   method = "prob",
+#'                                   pdf_name = NULL)
 #' arch_pl
 #'  
 #' @export
@@ -72,8 +75,13 @@ plot_arch_for_clusters <- function(seqs,
     ##
     stopifnot(!is.null(clust_list))
     stopifnot(!is.null(seqs))
-    if(!is(seqs, "DNAStringSet")){
-        stop("Expecting a DNAStringSet object as 'seqs'")
+    ## seqs can be a DNAStringSet object or a character vector
+    if(is(seqs, "character") && length(seqs) > 0){
+        ## OK
+    }else if(is(seqs, "DNAStringSet")){
+        ## OK
+    }else{
+        stop("Expecting either a DNAStringSet object or a character vector")
     }
     ##
     if(is.null(pos_lab)){
