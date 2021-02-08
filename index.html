@@ -140,35 +140,32 @@
 <span id="cb2-14"><a href="#cb2-14"></a>                                                  <span class="dt">sinuc_or_dinuc =</span> <span class="st">"dinuc"</span>)</span>
 <span id="cb2-15"><a href="#cb2-15"></a></span>
 <span id="cb2-16"><a href="#cb2-16"></a>inputSeqsRaw &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">prepare_data_from_FASTA</span>(inputFastaFilename, </span>
-<span id="cb2-17"><a href="#cb2-17"></a>                                               <span class="dt">rawSeq =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb2-17"><a href="#cb2-17"></a>                                               <span class="dt">raw_seq =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb2-18"><a href="#cb2-18"></a></span>
 <span id="cb2-19"><a href="#cb2-19"></a>nSeqs &lt;-<span class="st"> </span><span class="kw">length</span>(inputSeqsRaw)</span>
 <span id="cb2-20"><a href="#cb2-20"></a>positions &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>, Biostrings<span class="op">::</span><span class="kw">width</span>(inputSeqsRaw[<span class="dv">1</span>]))</span>
-<span id="cb2-21"><a href="#cb2-21"></a>sinuc &lt;-<span class="st"> </span>Biostrings<span class="op">::</span>DNA_BASES</span>
-<span id="cb2-22"><a href="#cb2-22"></a></span>
-<span id="cb2-23"><a href="#cb2-23"></a><span class="co"># Set archR configuration</span></span>
-<span id="cb2-24"><a href="#cb2-24"></a><span class="co"># Most arguments have default values</span></span>
-<span id="cb2-25"><a href="#cb2-25"></a>archRconfig &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">archRSetConfig</span>(</span>
-<span id="cb2-26"><a href="#cb2-26"></a>        <span class="dt">parallelize =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb2-27"><a href="#cb2-27"></a>        <span class="dt">nCoresUse =</span> <span class="dv">4</span>,</span>
-<span id="cb2-28"><a href="#cb2-28"></a>        <span class="dt">nIterationsUse =</span> <span class="dv">100</span>,</span>
-<span id="cb2-29"><a href="#cb2-29"></a>        <span class="dt">kMin =</span> <span class="dv">1</span>,</span>
-<span id="cb2-30"><a href="#cb2-30"></a>        <span class="dt">kMax =</span> <span class="dv">20</span>,</span>
-<span id="cb2-31"><a href="#cb2-31"></a>        <span class="dt">modSelType =</span> <span class="st">"stability"</span>,</span>
-<span id="cb2-32"><a href="#cb2-32"></a>        <span class="dt">tol =</span> <span class="dv">10</span><span class="op">^-</span><span class="dv">4</span>,</span>
-<span id="cb2-33"><a href="#cb2-33"></a>        <span class="dt">bound =</span> <span class="dv">10</span><span class="op">^-</span><span class="dv">8</span>,</span>
-<span id="cb2-34"><a href="#cb2-34"></a>        <span class="dt">innerChunkSize =</span> <span class="dv">500</span>,</span>
-<span id="cb2-35"><a href="#cb2-35"></a>        <span class="dt">flags =</span> <span class="kw">list</span>(<span class="dt">debugFlag =</span> <span class="ot">FALSE</span>, <span class="dt">timeFlag =</span> <span class="ot">TRUE</span>, <span class="dt">verboseFlag =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb2-36"><a href="#cb2-36"></a>                     <span class="dt">plotVerboseFlag =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb2-37"><a href="#cb2-37"></a></span>
-<span id="cb2-38"><a href="#cb2-38"></a><span class="co">#</span></span>
-<span id="cb2-39"><a href="#cb2-39"></a><span class="co">### Call/Run archR</span></span>
-<span id="cb2-40"><a href="#cb2-40"></a>perform_iters &lt;-<span class="st"> </span><span class="dv">2</span></span>
-<span id="cb2-41"><a href="#cb2-41"></a>archRresult &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">archR</span>(<span class="dt">config =</span> archRconfig,</span>
-<span id="cb2-42"><a href="#cb2-42"></a>                               <span class="dt">seqsMat =</span> inputSeqsMat,</span>
-<span id="cb2-43"><a href="#cb2-43"></a>                               <span class="dt">seqsRaw =</span> inputSeqsRaw,</span>
-<span id="cb2-44"><a href="#cb2-44"></a>                               <span class="dt">seqsPositions =</span> positions,</span>
-<span id="cb2-45"><a href="#cb2-45"></a>                               <span class="dt">thresholdItr =</span> perform_iters)</span></code></pre></div>
+<span id="cb2-21"><a href="#cb2-21"></a></span>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="co"># Set archR configuration</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="co"># Most arguments have default values</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a>archRconfig &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">archR_set_config</span>(</span>
+<span id="cb2-25"><a href="#cb2-25"></a>        <span class="dt">parallelize =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb2-26"><a href="#cb2-26"></a>        <span class="dt">n_cores =</span> <span class="dv">4</span>,</span>
+<span id="cb2-27"><a href="#cb2-27"></a>        <span class="dt">n_iterations =</span> <span class="dv">100</span>,</span>
+<span id="cb2-28"><a href="#cb2-28"></a>        <span class="dt">k_min =</span> <span class="dv">1</span>,</span>
+<span id="cb2-29"><a href="#cb2-29"></a>        <span class="dt">k_max =</span> <span class="dv">20</span>,</span>
+<span id="cb2-30"><a href="#cb2-30"></a>        <span class="dt">mod_sel_type =</span> <span class="st">"stability"</span>,</span>
+<span id="cb2-31"><a href="#cb2-31"></a>        <span class="dt">bound =</span> <span class="dv">10</span><span class="op">^-</span><span class="dv">8</span>,</span>
+<span id="cb2-32"><a href="#cb2-32"></a>        <span class="dt">inner_chunk_size =</span> <span class="dv">500</span>,</span>
+<span id="cb2-33"><a href="#cb2-33"></a>        <span class="dt">flags =</span> <span class="kw">list</span>(<span class="dt">debug =</span> <span class="ot">FALSE</span>, <span class="dt">time =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb2-34"><a href="#cb2-34"></a>                     <span class="dt">plot =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb2-35"><a href="#cb2-35"></a></span>
+<span id="cb2-36"><a href="#cb2-36"></a><span class="co">#</span></span>
+<span id="cb2-37"><a href="#cb2-37"></a><span class="co">### Call/Run archR</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a>archRresult &lt;-<span class="st"> </span>archR<span class="op">::</span><span class="kw">archR</span>(<span class="dt">config =</span> archRconfig,</span>
+<span id="cb2-39"><a href="#cb2-39"></a>                               <span class="dt">seqs_ohe_mat =</span> inputSeqsMat,</span>
+<span id="cb2-40"><a href="#cb2-40"></a>                               <span class="dt">seqs_raw =</span> inputSeqsRaw,</span>
+<span id="cb2-41"><a href="#cb2-41"></a>                               <span class="dt">seqs_pos =</span> positions,</span>
+<span id="cb2-42"><a href="#cb2-42"></a>                               <span class="dt">threshold_itr =</span> <span class="dv">2</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="troubleshooting-installation" class="section level2">

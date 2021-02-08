@@ -52,16 +52,10 @@
     <loc>http://snikumbh.github.io/archR/reference/seqs_str.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/viz_basis_vectors_as_heatmap.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/viz_bas_vec_heatmap_seqlogo.html</loc>
   </url>
   <url>
-    <loc>http://snikumbh.github.io/archR/reference/viz_basis_vectors_as_seqlogo.html</loc>
-  </url>
-  <url>
-    <loc>http://snikumbh.github.io/archR/reference/viz_basis_vectors_in_combined_heatmaps_seqlogos.html</loc>
-  </url>
-  <url>
-    <loc>http://snikumbh.github.io/archR/reference/viz_seqs_as_acgt_mat_from_seqs.html</loc>
+    <loc>http://snikumbh.github.io/archR/reference/viz_seqs_acgt_mat_from_seqs.html</loc>
   </url>
   <url>
     <loc>http://snikumbh.github.io/archR/articles/archR.html</loc>

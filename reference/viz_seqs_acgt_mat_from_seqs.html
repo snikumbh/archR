@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Visualize a given (PWM) matrix as a sequence logo. — plot_ggseqlogo • archR</title>
+<title>Visualize raw DNA sequences as an image — viz_seqs_acgt_mat_from_seqs • archR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Visualize a given (PWM) matrix as a sequence logo. — plot_ggseqlogo" />
-<meta property="og:description" content="Visualize a given (PWM) matrix as a sequence logo." />
+<meta property="og:title" content="Visualize raw DNA sequences as an image — viz_seqs_acgt_mat_from_seqs" />
+<meta property="og:description" content="This function plots the collection of sequences as an image
+matrix." />
 
 
 
@@ -127,68 +128,108 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Visualize a given (PWM) matrix as a sequence logo.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/plot_ggheatmap.R'><code>R/plot_ggheatmap.R</code></a></small>
-    <div class="hidden name"><code>plot_ggseqlogo.Rd</code></div>
+    <h1>Visualize raw DNA sequences as an image</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/viz_matrix_of_acgt_image.R'><code>R/viz_matrix_of_acgt_image.R</code></a></small>
+    <div class="hidden name"><code>viz_seqs_acgt_mat_from_seqs.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Visualize a given (PWM) matrix as a sequence logo.</p>
+    <p>This function plots the collection of sequences as an image
+matrix.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_ggseqlogo</span><span class='op'>(</span><span class='va'>pwm_mat</span>, method <span class='op'>=</span> <span class='st'>"custom"</span>, pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>, pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>viz_seqs_acgt_mat_from_seqs</span><span class='op'>(</span>
+  <span class='va'>seqs</span>,
+  pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xt_freq <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>pos_lab</span><span class='op'>)</span>, <span class='fl'>5</span><span class='op'>)</span>,
+  yt_freq <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>seqs</span><span class='op'>)</span>, <span class='fl'>100</span><span class='op'>)</span>,
+  col <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"darkgreen"</span>, <span class='st'>"blue"</span>, <span class='st'>"orange"</span>, <span class='st'>"red"</span><span class='op'>)</span>,
+  save_fname <span class='op'>=</span> <span class='cn'>NULL</span>,
+  file_type <span class='op'>=</span> <span class='st'>"PNG"</span>,
+  f_width <span class='op'>=</span> <span class='fl'>450</span>,
+  f_height <span class='op'>=</span> <span class='fl'>900</span>,
+  f_units <span class='op'>=</span> <span class='st'>"px"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>pwm_mat</th>
-      <td><p>Matrix (usually a PWM, but can be any non-normalized matrix) 
-to be represented as a sequence logo.</p></td>
-    </tr>
-    <tr>
-      <th>method</th>
-      <td><p>For <code>ggseqlogo</code>; either of 'custom', 'bits', or
-'probability'. Default is 'custom'.</p></td>
+      <th>seqs</th>
+      <td><p>The sequences as a DNAStringSet object.</p></td>
     </tr>
     <tr>
       <th>pos_lab</th>
-      <td><p>Labels for sequence positions, should be of same
-length as that of the sequences. Default value is NULL, when the 
-positions are labeled from 1 to the length of the sequences.</p></td>
+      <td><p>The labels to be used for the sequence positions.
+Default: Sequence positions are labeled from 1 to the length of the
+sequences.</p></td>
     </tr>
     <tr>
-      <th>pdf_name</th>
-      <td><p>Name of the file which will be saved as PDF.</p></td>
+      <th>xt_freq</th>
+      <td><p>The x-axis tick frequency. Expects a positive integer less 
+than the length of the sequences. Default is 5.</p></td>
+    </tr>
+    <tr>
+      <th>yt_freq</th>
+      <td><p>The y-axis tick frequency. Expects a positive integer less 
+than number of sequences. Default is 100 or.</p></td>
+    </tr>
+    <tr>
+      <th>col</th>
+      <td><p>A vector of four colors used for the DNA bases A, C, G, and T (in
+that order).</p></td>
+    </tr>
+    <tr>
+      <th>save_fname</th>
+      <td><p>Specify the filename (with extension) for saving the
+plot to disk.</p></td>
+    </tr>
+    <tr>
+      <th>file_type</th>
+      <td><p>Specify the file type, namely PNG, JPEG, TIFF.</p></td>
+    </tr>
+    <tr>
+      <th>f_width</th>
+      <td><p>Specify the width for the plot. This depends on the length of
+sequences.</p></td>
+    </tr>
+    <tr>
+      <th>f_height</th>
+      <td><p>Specify the height for the plot. This depends on the number 
+of sequences.</p></td>
+    </tr>
+    <tr>
+      <th>f_units</th>
+      <td><p>Specify the units in which the height and width are given.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A ggplot2 object so you can simply call <code>print</code> or <code>save</code>
-on it later. If <code>pdf_name</code> is given, it is also saved in addition to 
-returning the ggplot object.</p>
+    <p>Nothing returned to the R interpreter.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='plot_ggheatmap.html'>plot_ggheatmap</a></code> for plotting PWMs as heatmaps,
-<code><a href='plot_ggseqlogo_of_seqs.html'>plot_ggseqlogo_of_seqs</a></code> for visualizing a collection of 
-sequences by their sequence logo.</p>
-<p>Other visualization functions: 
+    <div class='dont-index'><p>Other visualization functions: 
 <code><a href='plot_ggheatmap.html'>plot_ggheatmap</a>()</code>,
-<code><a href='viz_bas_vec_heatmap_seqlogo.html'>viz_bas_vec_heatmap_seqlogo</a>()</code>,
-<code><a href='viz_seqs_acgt_mat_from_seqs.html'>viz_seqs_acgt_mat_from_seqs</a>()</code></p></div>
+<code><a href='plot_ggseqlogo.html'>plot_ggseqlogo</a>()</code>,
+<code><a href='viz_bas_vec_heatmap_seqlogo.html'>viz_bas_vec_heatmap_seqlogo</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"example_archRresult.rds"</span>, 
          package <span class='op'>=</span> <span class='st'>"archR"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>pwm</span> <span class='op'>&lt;-</span> <span class='fu'>archR</span><span class='fu'>::</span><span class='fu'><a href='make_dinuc_PWMs.html'>make_dinuc_PWMs</a></span><span class='op'>(</span><span class='fu'><a href='get_clBasVec.html'>get_clBasVec_m</a></span><span class='op'>(</span><span class='va'>res</span>,iter<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span>, 
-                        add_pseudo_counts <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-
-<span class='fu'>plot_ggseqlogo</span><span class='op'>(</span>pwm_mat <span class='op'>=</span> <span class='va'>pwm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div><div class='img'><img src='plot_ggseqlogo-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Image matrix of sequences in the input order </span>
+<span class='fu'>viz_seqs_acgt_mat_from_seqs</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='viz_seqs_acgt_mat_from_seqs-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Image matrix of sequences ordered by the clustering from archR</span>
+<span class='va'>use_seqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span>, iter <span class='op'>=</span> <span class='cn'>NULL</span>, cl <span class='op'>=</span> <span class='cn'>NULL</span>, ord <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>viz_seqs_acgt_mat_from_seqs</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='va'>use_seqs</span><span class='op'>)</span>
+</div><div class='img'><img src='viz_seqs_acgt_mat_from_seqs-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Image matrix of sequences belonging to a single cluster</span>
+<span class='va'>use_seqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span>, iter <span class='op'>=</span> <span class='fl'>2</span>, cl <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='fu'>viz_seqs_acgt_mat_from_seqs</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='va'>use_seqs</span><span class='op'>)</span>
+</div><div class='img'><img src='viz_seqs_acgt_mat_from_seqs-3.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -140,7 +140,7 @@ sequences, this function plots the sequence logo.</p>
 
     <pre class="usage"><span class='fu'>plot_ggseqlogo_of_seqs</span><span class='op'>(</span>
   <span class='va'>seqs</span>,
-  <span class='va'>pos_lab</span>,
+  pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
   xt_freq <span class='op'>=</span> <span class='fl'>5</span>,
   method <span class='op'>=</span> <span class='st'>"bits"</span>,
   title <span class='op'>=</span> <span class='st'>"Title"</span>,
@@ -152,12 +152,14 @@ sequences, this function plots the sequence logo.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>seqs</th>
-      <td><p>Collection of sequences as a Biostrings::DNAStringSet object.</p></td>
+      <td><p>Collection of sequences as a 
+<code><a href='https://rdrr.io/pkg/Biostrings/man/XStringSet-class.html'>DNAStringSet</a></code> object.</p></td>
     </tr>
     <tr>
       <th>pos_lab</th>
-      <td><p>Numeric vector of labels for sequence positions.
-This should be the same length as the width of the given sequences.</p></td>
+      <td><p>Labels for sequence positions, should be of same
+length as that of the sequences. Default value is NULL, when the 
+positions are labeled from 1 to the length of the sequences.</p></td>
     </tr>
     <tr>
       <th>xt_freq</th>
@@ -189,6 +191,22 @@ sequence logo. Default is 'auto'.</p></td>
     <div class='dont-index'><p><code><a href='plot_arch_for_clusters.html'>plot_arch_for_clusters</a></code> for obtaining multiple 
 sequence logo plots as a list.</p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"example_archRresult.rds"</span>, 
+         package <span class='op'>=</span> <span class='st'>"archR"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># Default, using information content on y-axis</span>
+<span class='va'>pl</span> <span class='op'>&lt;-</span> <span class='fu'>plot_ggseqlogo_of_seqs</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span>, iter<span class='op'>=</span><span class='fl'>1</span>, cl<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,
+                             pos_lab <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: first element used of 'length.out' argument</span></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Plot title: Title</span></div><div class='input'>                             
+<span class='co'># Using probability instead of information content</span>
+<span class='va'>pl</span> <span class='op'>&lt;-</span> <span class='fu'>plot_ggseqlogo_of_seqs</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span>, iter<span class='op'>=</span><span class='fl'>1</span>, cl<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,
+                             pos_lab <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span>, 
+                             method <span class='op'>=</span> <span class='st'>"prob"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: first element used of 'length.out' argument</span></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Plot title: Title</span></div><div class='input'>                             
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
