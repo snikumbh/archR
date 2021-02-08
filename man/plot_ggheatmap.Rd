@@ -10,7 +10,9 @@ plot_ggheatmap(pwm_mat, pos_lab = NULL, pdf_name = NULL)
 \item{pwm_mat}{Matrix (usually a PWM, but can be non-normalized/any matrix)
 to be represented as a heatmap.}
 
-\item{pos_lab}{Labels of the positions in the sequences.}
+\item{pos_lab}{Labels for sequence positions, should be of same
+length as that of the sequences. Default value is NULL, when the 
+positions are labeled from 1 to the length of the sequences.}
 
 \item{pdf_name}{Name of the file which will be saved as PDF.}
 }
@@ -23,13 +25,22 @@ on it later. If \code{pdf_name} is given, it is also saved and the
 The given matrix is plotted as a heatmap using \code{ggplot2}'s
 \code{geom_tile}.
 }
+\examples{
+\dontshow{
+res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+         package = "archR", mustWork = TRUE))
+pwm <- make_sinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+                        add_pseudo_counts = FALSE)
+}
+plot_ggheatmap(pwm_mat = pwm)
+
+
+}
 \seealso{
 \code{\link{plot_ggseqlogo}} for plotting PWMs as sequence logos
 
 Other visualization functions: 
 \code{\link{plot_ggseqlogo}()},
-\code{\link{viz_basis_vectors_as_heatmap}()},
-\code{\link{viz_basis_vectors_as_seqlogo}()},
 \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()},
 \code{\link{viz_seqs_as_acgt_mat_from_seqs}()}
 }

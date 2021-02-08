@@ -6,7 +6,7 @@
 \usage{
 plot_ggseqlogo_of_seqs(
   seqs,
-  pos_lab,
+  pos_lab = NULL,
   xt_freq = 5,
   method = "bits",
   title = "Title",
@@ -14,10 +14,12 @@ plot_ggseqlogo_of_seqs(
 )
 }
 \arguments{
-\item{seqs}{Collection of sequences as a Biostrings::DNAStringSet object.}
+\item{seqs}{Collection of sequences as a 
+\code{\link[Biostrings]{DNAStringSet}} object.}
 
-\item{pos_lab}{Numeric vector of labels for sequence positions.
-This should be the same length as the width of the given sequences.}
+\item{pos_lab}{Labels for sequence positions, should be of same
+length as that of the sequences. Default value is NULL, when the 
+positions are labeled from 1 to the length of the sequences.}
 
 \item{xt_freq}{Specify the frequency of the x-axis ticks.}
 
@@ -37,6 +39,20 @@ A sequence logo plot of the given DNA sequences.
 \description{
 A wrapper to ggseqlogo plotting. Given a collection of
 sequences, this function plots the sequence logo.
+}
+\examples{
+res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+         package = "archR", mustWork = TRUE))
+
+# Default, using information content on y-axis
+pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=1),
+                             pos_lab = seq_len(1:100))
+                             
+# Using probability instead of information content
+pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=1),
+                             pos_lab = seq_len(1:100), 
+                             method = "prob")
+                             
 }
 \seealso{
 \code{\link{plot_arch_for_clusters}} for obtaining multiple 

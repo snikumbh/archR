@@ -13,7 +13,7 @@ collate_archR_result(
   regularize = FALSE,
   topn = 50,
   collate = TRUE,
-  flags,
+  flags = list(debugFlag = FALSE, verboseFlag = TRUE),
   ...
 )
 }
@@ -62,4 +62,19 @@ accordingly.
 \description{
 We use hierarchical clustering for reordering/collating raw
 clusters from archR's given iteration.
+}
+\examples{
+res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+         package = "archR", mustWork = TRUE))
+
+# While the default settings for collation use Euclidean distance and
+# ward.D agglomeration, one can choose to use different settings, say,
+# correlation distance and complete linkage, and also regularizing to use 
+# only top 50 dimensions (nucleotide-positions combinations)
+collated_res <- collate(result = res, iter = 2, 
+                        aggl_method = "complete", dist_method = "cor", 
+                        regularize = TRUE, topn = 50)
+                        
+names(collated_res)
+
 }

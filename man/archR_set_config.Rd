@@ -49,11 +49,12 @@ for model selection. Only used when mod_sel_type is set to 'cv'. Default
 value is 5.}
 
 \item{parallelize}{Logical. Specify whether to parallelize the procedure.
-Note that running archR serially can be time consuming. Consider
-parallelizing with at least 2 or 4 cores. If Slurm is available, archR's
-graphical user interface, accessed with \code{\link{run_archR_UI}}, enables 
-providing all input data, setting archR configuration, and running archR 
-directly by submitting/monitoring slurm jobs through the user interface.}
+Note that running archR serially can be time consuming. See `n_cores`. 
+Consider parallelizing with at least 2 or 4 cores. If Slurm is available, 
+archR's graphical user interface, accessed with \code{\link{run_archR_UI}},
+enables providing all input data, setting archR configuration, and running 
+archR directly by submitting/monitoring slurm jobs through the user 
+interface.}
 
 \item{n_cores}{The number of cores to be used when `parallelize` is set
 to TRUE. If `parallelize` is FALSE, nCores is ignored.}
@@ -65,7 +66,7 @@ more than 100 (upto 500) iterations may be needed.}
 \item{alpha_base, alpha_pow}{Specify the base and the power for computing
 'alpha' in performing model selection for NMF. alpha = alpha_base^alpha_pow.
 Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
-Warning: Currently, not used (for future).}
+_Warning_: Currently, not used (for future).}
 
 \item{min_size}{Numeric. Specify the minimum number of sequences, such that
 any cluster/chunk of size less than or equal to it will not be further
@@ -73,8 +74,8 @@ processed. Default is 25.}
 
 \item{checkpointing}{Logical. Specify whether to write intermediate 
 checkpoints to disk as RDS files. Checkpoints and the final result are 
-saved to disk provided the oDir argument is set in \code{\link{archR}}. 
-When oDir argument is not provided or NULL, this is ignored. 
+saved to disk provided the `o_dir` argument is set in \code{\link{archR}}. 
+When `o_dir` argument is not provided or NULL, this is ignored. 
 Default is TRUE.}
 
 \item{flags}{List with four Logical elements as detailed.
@@ -103,7 +104,7 @@ archRconfig <- archR::archR_set_config(
     mod_sel_type = "stability",
     tol = 10^-4,
     bound = 10^-8,
-    flags = list(debug = TRUE, time = TRUE, verbose = TRUE,
+    flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
         plot = FALSE)
 )
 

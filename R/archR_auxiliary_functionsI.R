@@ -14,6 +14,17 @@
 #' @return A list with two elements `nBasisVectors` (integer) and 
 #' `basisVectors` (matrix).
 #' 
+#' @examples 
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'          package = "archR", mustWork = TRUE))
+#' 
+#' k <- get_clBasVec_k(res=res, iter=2)
+#'
+#' bMat <- getclBasVec_m(res=res, iter=1)
+#' 
+#' ## cluster labels of sequences from final clustering
+#' scLab <- get_seqClLab(res=res)
+#'   
 #' @export
 get_clBasVec <- function(res, iter){
     return(res$clustBasisVectors[[iter]])
@@ -754,7 +765,20 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #' it returns the already existing basis vectors, each as singleton clusters. 
 #' The sequence cluster labels and sequence clusters are also handled 
 #' accordingly.
-#'  
+#' 
+#' @examples 
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'          package = "archR", mustWork = TRUE))
+#' 
+#' # While the default settings for collation use Euclidean distance and
+#' # ward.D agglomeration, one can choose to use different settings, say,
+#' # correlation distance and complete linkage, and also regularizing to use 
+#' # only top 50 dimensions (nucleotide-positions combinations)
+#' collated_res <- collate(result = res, iter = 2, 
+#'                         aggl_method = "complete", dist_method = "cor", 
+#'                         regularize = TRUE, topn = 50)
+#'                         
+#' names(collated_res)
 #'
 #' @importFrom stats hclust dist
 #' @importFrom utils tail
@@ -763,7 +787,10 @@ collate_archR_result <- function(result,
                             iter = length(result$seqsClustLabels),
                             clust_method = "hc", aggl_method = "ward.D",
                             dist_method = "euclid", regularize = FALSE, 
-                            topn = 50, collate = TRUE, flags, ...) {
+                            topn = 50, collate = TRUE, 
+                            flags = list(debugFlag = FALSE,
+                                        verboseFlag = TRUE),
+                            ...) {
     ##
     dbg <- flags$debugFlag
     vrbs <- flags$verboseFlag

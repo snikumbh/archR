@@ -157,8 +157,10 @@
 #'
 #' @description Get the one-hot encoding representation of the given sequences.
 #'
-#' @param seqs A DNAStringSet object holding the given DNA sequences
-#' @param sinuc_or_dinuc 'sinuc' or 'dinuc'
+#' @param seqs A \code{\link[Biostrings]{DNAStringSet}} object holding the 
+#' given DNA sequences
+#' @param sinuc_or_dinuc character string, 'sinuc' or 'dinuc' to select for
+#' mono- or dinucleotide profiles.
 #'
 #' @return A sparse matrix of sequences represented with one-hot-encoding
 #' @family input functions
@@ -175,7 +177,8 @@
 #' rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
 #'                         raw_seq = TRUE)
 #' 
-#' get_one_hot_encoded_seqs(seqs = rawSeqs, sinuc_or_dinuc = "dinuc")
+#' seqs_dinuc <- get_one_hot_encoded_seqs(seqs = rawSeqs, 
+#'                                        sinuc_or_dinuc = "dinuc")
 #'                         
 #' @export
 get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
@@ -292,7 +295,7 @@ get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
 #' rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
 #'                         sinuc_or_dinuc = "dinuc")
 #'                        
-#' # FASTA sequences as a Biostrings::DNAStringSet
+#' # FASTA sequences as a Biostrings::DNAStringSet object
 #' rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
 #'                         raw_seq = TRUE)
 #' 

@@ -22,7 +22,7 @@ plot_arch_for_clusters(
 \item{clust_list}{Clusters as a list of sequence IDs in each cluster.}
 
 \item{pos_lab}{Labels for sequence positions, should be of same
-length as length of the sequences. Default value is NULL, when the 
+length as that of the sequences. Default value is NULL, when the 
 positions are labeled from 1 to the length of the sequences.}
 
 \item{xt_freq}{Frequency of x-axis ticks.}
@@ -54,25 +54,26 @@ architecture sequence logos are saved as a multi-page PDF.
 res <- readRDS(system.file("extdata", "example_archRresult.rds", 
          package = "archR", mustWork = TRUE))
 
-## default position labels 1 to length of the sequences.
+# Default position labels 1 to length of the sequences.
 arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
                                   clust_list = res$clustSol$clusters,
-                                  pos_lab = NULL
+                                  pos_lab = NULL)
 arch_pl
 
-## Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
-## 50 basepairs upstream and 49 downstream of the transcription start site 
-## located at position 0.
+# Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
+# 50 basepairs upstream and 49 downstream of the transcription start site 
+# located at position 0.
 arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
                                   clust_list = res$clustSol$clusters,
-                                  pos_lab = seq(-50,49)
+                                  pos_lab = seq(-50,49))
 arch_pl
 
-\dontrun{
+# Plotting architecture sequence logos with probability instead of 
+# information content
 arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
                                   clust_list = res$clustSol$clusters,
-                                  pos_lab = seq_len(100),
-                                  pdf_name = "final_clust_arch.pdf")
-}
+                                  pos_lab = seq(-50,49),
+                                  method = "prob")
+arch_pl
  
 }

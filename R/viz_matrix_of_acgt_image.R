@@ -47,7 +47,7 @@
 #' @param xt_freq The x-axis tick frequency. Expects a positive integer less 
 #' than the length of the sequences. Default is 5.
 #' @param yt_freq The y-axis tick frequency. Expects a positive integer less 
-#' than number of sequences. Default is 100.
+#' than number of sequences. Default is 100 or.
 #' @param col A vector of four colors used for the DNA bases A, C, G, and T (in
 #' that order).
 #' @param save_fname Specify the filename (with extension) for saving the
@@ -65,6 +65,23 @@
 #' @family visualization functions
 #' @importFrom grDevices png dev.off
 #' @importFrom graphics axis image
+#' 
+#' @examples 
+#' 
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'          package = "archR", mustWork = TRUE))
+#' 
+#' # Image matrix of sequences in the input order 
+#' viz_seqs_as_acgt_mat_from_seqs(seqs = seqs_str(res))
+#' 
+#' # Image matrix of sequences ordered by the clustering from archR
+#' use_seqs <- seqs_str(res, iter = NULL, cl = NULL, ord = TRUE)
+#' viz_seqs_as_acgt_mat_from_seqs(seqs = use_seqs)
+#' 
+#' # Image matrix of sequences belonging to a single cluster
+#' use_seqs <- seqs_str(res, iter = 2, cl = 2)
+#' viz_seqs_as_acgt_mat_from_seqs(seqs = use_seqs)
+#' 
 #' @export
 viz_seqs_as_acgt_mat_from_seqs <- function(seqs, pos_lab = NULL,
                                     xt_freq = min(length(pos_lab), 5), 

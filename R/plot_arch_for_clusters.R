@@ -10,7 +10,7 @@
 #' @param clust_list Clusters as a list of sequence IDs in each cluster.
 #' 
 #' @param pos_lab Labels for sequence positions, should be of same
-#' length as length of the sequences. Default value is NULL, when the 
+#' length as that of the sequences. Default value is NULL, when the 
 #' positions are labeled from 1 to the length of the sequences.
 #' 
 #' @param xt_freq Frequency of x-axis ticks.
@@ -37,26 +37,27 @@
 #' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
 #'          package = "archR", mustWork = TRUE))
 #' 
-#' ## default position labels 1 to length of the sequences.
+#' # Default position labels 1 to length of the sequences.
 #' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
 #'                                   clust_list = res$clustSol$clusters,
-#'                                   pos_lab = NULL
+#'                                   pos_lab = NULL)
 #' arch_pl
 #' 
-#' ## Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
-#' ## 50 basepairs upstream and 49 downstream of the transcription start site 
-#' ## located at position 0.
+#' # Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
+#' # 50 basepairs upstream and 49 downstream of the transcription start site 
+#' # located at position 0.
 #' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
 #'                                   clust_list = res$clustSol$clusters,
-#'                                   pos_lab = seq(-50,49)
+#'                                   pos_lab = seq(-50,49))
 #' arch_pl
 #' 
-#' \dontrun{
+#' # Plotting architecture sequence logos with probability instead of 
+#' # information content
 #' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
 #'                                   clust_list = res$clustSol$clusters,
-#'                                   pos_lab = seq_len(100),
-#'                                   pdf_name = "final_clust_arch.pdf")
-#' }
+#'                                   pos_lab = seq(-50,49),
+#'                                   method = "prob")
+#' arch_pl
 #'  
 #' @export
 plot_arch_for_clusters <- function(seqs,
@@ -95,6 +96,7 @@ plot_arch_for_clusters <- function(seqs,
     }
     return(plot_list)
 }
+## =============================================================================
 
 make_plot_titles <- function(clust_list, set_titles){
     if(set_titles){
@@ -115,21 +117,25 @@ make_plot_titles <- function(clust_list, set_titles){
     }
     pl_titles
 }
+## =============================================================================
 
 make_plot_title_str <- function(i, n, name, this_size, st, ed){
     paste0("(", i , "/", n, ") Arch '",
         name, "': ", this_size, " sequences (",  st, "-",  ed, ")")
 }
+## =============================================================================
 
 #' @title Plot sequence logo of a collection of sequences
 #'
 #' @description A wrapper to ggseqlogo plotting. Given a collection of
 #' sequences, this function plots the sequence logo.
 #'
-#' @param seqs Collection of sequences as a Biostrings::DNAStringSet object.
+#' @param seqs Collection of sequences as a 
+#' \code{\link[Biostrings]{DNAStringSet}} object.
 #' 
-#' @param pos_lab Numeric vector of labels for sequence positions.
-#' This should be the same length as the width of the given sequences.
+#' @param pos_lab Labels for sequence positions, should be of same
+#' length as that of the sequences. Default value is NULL, when the 
+#' positions are labeled from 1 to the length of the sequences.
 #' 
 #' @param xt_freq Specify the frequency of the x-axis ticks.
 #' 
@@ -150,9 +156,27 @@ make_plot_title_str <- function(i, n, name, this_size, st, ed){
 #' 
 #' @importFrom Biostrings width
 #' 
+#' @examples 
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'          package = "archR", mustWork = TRUE))
+#' 
+#' # Default, using information content on y-axis
+#' pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=1),
+#'                              pos_lab = seq_len(1:100))
+#'                              
+#' # Using probability instead of information content
+#' pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=1),
+#'                              pos_lab = seq_len(1:100), 
+#'                              method = "prob")
+#'                              
 #' @export
-plot_ggseqlogo_of_seqs <- function(seqs, pos_lab, xt_freq = 5, method = "bits",
-                                    title = "Title", bits_yax = "auto"){
+plot_ggseqlogo_of_seqs <- function(seqs, pos_lab = NULL, xt_freq = 5, 
+                                    method = "bits", title = "Title", 
+                                    bits_yax = "auto"){
+    ##
+    if(is.null(pos_lab)){
+        pos_lab <- seq_len(Biostrings::width(seqs[1]))
+    }
     ##
     if(xt_freq > Biostrings::width(seqs[1])){
         xt_freq <- 5
@@ -186,3 +210,4 @@ plot_ggseqlogo_of_seqs <- function(seqs, pos_lab, xt_freq = 5, method = "bits",
     .msg_pstr("Plot title:", title, flg=TRUE)
     foo_p
 }
+## =============================================================================

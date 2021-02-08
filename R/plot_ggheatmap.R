@@ -5,7 +5,9 @@
 #'
 #' @param pwm_mat Matrix (usually a PWM, but can be non-normalized/any matrix)
 #' to be represented as a heatmap.
-#' @param pos_lab Labels of the positions in the sequences.
+#' @param pos_lab Labels for sequence positions, should be of same
+#' length as that of the sequences. Default value is NULL, when the 
+#' positions are labeled from 1 to the length of the sequences.
 #' @param pdf_name Name of the file which will be saved as PDF.
 #'
 #' @return A ggplot object so you can simply call \code{print} or \code{save}
@@ -21,8 +23,19 @@
 #' @importFrom reshape2 melt
 #' @import ggplot2 
 #' @import ggseqlogo
+#' 
+#' @examples 
+#' \dontshow{
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'          package = "archR", mustWork = TRUE))
+#' pwm <- make_sinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+#'                         add_pseudo_counts = FALSE)
+#' }
+#' plot_ggheatmap(pwm_mat = pwm)
+#' 
 #'
 plot_ggheatmap <- function(pwm_mat, pos_lab = NULL, pdf_name = NULL) {
+    if(is.null(pos_lab)) pos_lab <- set_default_pos_lab2(pwm_mat)
     check_vars(pwm_mat, pos_lab)
     ##
     ## Convert pwm_mat to df, heatmap by ggplot-way
@@ -69,7 +82,9 @@ plot_ggheatmap <- function(pwm_mat, pos_lab = NULL, pdf_name = NULL) {
 #' @param method For \code{ggseqlogo}; either of 'custom', 'bits', or
 #' 'probability'. Default is 'custom'.
 #' 
-#' @param pos_lab Labels of the positions in the sequences.
+#' @param pos_lab Labels for sequence positions, should be of same
+#' length as that of the sequences. Default value is NULL, when the 
+#' positions are labeled from 1 to the length of the sequences.
 #' 
 #' @param pdf_name Name of the file which will be saved as PDF.
 #'
@@ -87,9 +102,21 @@ plot_ggheatmap <- function(pwm_mat, pos_lab = NULL, pdf_name = NULL) {
 #' 
 #' @import ggplot2
 #' @import ggseqlogo
+#' 
+#' @examples 
+#' \dontshow{
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'          package = "archR", mustWork = TRUE))
+#' 
+#' pwm <- make_sinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+#'                         add_pseudo_counts = FALSE)
+#' }
+#' plot_ggseqlogo(pwm_mat = pwm)
+#' 
 plot_ggseqlogo <- function(pwm_mat, method = "custom", pos_lab = NULL, 
     pdf_name = NULL) {
     ##
+    if(is.null(pos_lab)) pos_lab <- set_default_pos_lab2(pwm_mat)
     check_vars(pwm_mat, pos_lab)
     ##
     p1 <- ggplot() +
@@ -114,7 +141,11 @@ plot_ggseqlogo <- function(pwm_mat, method = "custom", pos_lab = NULL,
 }
 ## =============================================================================
 
+set_default_pos_lab2 <- function(pwm_mat){
+    
+    pos_lab <- seq_len(ncol(pwm_mat))
 
+}
 
 check_vars <- function(pwm_mat, pos_lab){
     if (!is.matrix(pwm_mat)) {

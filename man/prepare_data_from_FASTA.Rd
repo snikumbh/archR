@@ -40,7 +40,7 @@ rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
 rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
                         sinuc_or_dinuc = "dinuc")
                        
-# FASTA sequences as a Biostrings::DNAStringSet
+# FASTA sequences as a Biostrings::DNAStringSet object
 rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
                         raw_seq = TRUE)
 

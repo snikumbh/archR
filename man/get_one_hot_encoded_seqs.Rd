@@ -7,9 +7,11 @@
 get_one_hot_encoded_seqs(seqs, sinuc_or_dinuc = "sinuc")
 }
 \arguments{
-\item{seqs}{A DNAStringSet object holding the given DNA sequences}
+\item{seqs}{A \code{\link[Biostrings]{DNAStringSet}} object holding the 
+given DNA sequences}
 
-\item{sinuc_or_dinuc}{'sinuc' or 'dinuc'}
+\item{sinuc_or_dinuc}{character string, 'sinuc' or 'dinuc' to select for
+mono- or dinucleotide profiles.}
 }
 \value{
 A sparse matrix of sequences represented with one-hot-encoding
@@ -26,7 +28,8 @@ fname <- system.file("extdata", "example_data.fa",
 rawSeqs <- prepare_data_from_FASTA(fasta_fname = fname,
                         raw_seq = TRUE)
 
-get_one_hot_encoded_seqs(seqs = rawSeqs, sinuc_or_dinuc = "dinuc")
+seqs_dinuc <- get_one_hot_encoded_seqs(seqs = rawSeqs, 
+                                       sinuc_or_dinuc = "dinuc")
                         
 }
 \seealso{

@@ -13,7 +13,9 @@ to be represented as a sequence logo.}
 \item{method}{For \code{ggseqlogo}; either of 'custom', 'bits', or
 'probability'. Default is 'custom'.}
 
-\item{pos_lab}{Labels of the positions in the sequences.}
+\item{pos_lab}{Labels for sequence positions, should be of same
+length as that of the sequences. Default value is NULL, when the 
+positions are labeled from 1 to the length of the sequences.}
 
 \item{pdf_name}{Name of the file which will be saved as PDF.}
 }
@@ -25,6 +27,17 @@ returning the ggplot object.
 \description{
 Visualize a given (PWM) matrix as a sequence logo.
 }
+\examples{
+\dontshow{
+res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+         package = "archR", mustWork = TRUE))
+
+pwm <- make_sinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+                        add_pseudo_counts = FALSE)
+}
+plot_ggseqlogo(pwm_mat = pwm)
+
+}
 \seealso{
 \code{\link{plot_ggheatmap}} for plotting PWMs as heatmaps,
 \code{\link{plot_ggseqlogo_of_seqs}} for visualizing a collection of 
@@ -32,8 +45,6 @@ sequences by their sequence logo.
 
 Other visualization functions: 
 \code{\link{plot_ggheatmap}()},
-\code{\link{viz_basis_vectors_as_heatmap}()},
-\code{\link{viz_basis_vectors_as_seqlogo}()},
 \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()},
 \code{\link{viz_seqs_as_acgt_mat_from_seqs}()}
 }

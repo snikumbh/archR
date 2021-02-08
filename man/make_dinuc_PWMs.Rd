@@ -5,20 +5,20 @@
 \title{Similarly to the PWM-like matrix for mononucleotides, make one for 
  dinucleotides}
 \usage{
-make_dinuc_PWMs(mat, add_pseudo_counts = TRUE, scale = TRUE)
+make_dinuc_PWMs(vec, add_pseudo_counts = TRUE, scale = TRUE)
 }
 \arguments{
-\item{mat}{Input basis matrix}
-
 \item{add_pseudo_counts}{Whether pesudocounts are to be added. TRUE or FALSE.}
 
 \item{scale}{Whether to perform per position scaling of the matrix. TRUE or 
 FALSE}
+
+\item{mat}{Column vector of the basis matrix}
 }
 \value{
-A (PWM) matrix with 4 rows corresponding to the 4 nucleotides (A, C,
-G, T) and the relevant number of columns (i.e., number of elements in given
-vector/4)
+A (PWM) matrix with 16 rows corresponding to the dinucleotide 
+combinations of the four nucleotides (A, C, G, T) and the relevant number 
+of columns (i.e., number of elements in given vector/16)
 }
 \description{
 This function converts the basis matrix with basis vectors 

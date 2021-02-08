@@ -28,7 +28,7 @@ sequences.}
 than the length of the sequences. Default is 5.}
 
 \item{yt_freq}{The y-axis tick frequency. Expects a positive integer less 
-than number of sequences. Default is 100.}
+than number of sequences. Default is 100 or.}
 
 \item{col}{A vector of four colors used for the DNA bases A, C, G, and T (in
 that order).}
@@ -53,12 +53,27 @@ Nothing returned to the R interpreter.
 This function plots the collection of sequences as an image
 matrix.
 }
+\examples{
+
+res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+         package = "archR", mustWork = TRUE))
+
+# Image matrix of sequences in the input order 
+viz_seqs_as_acgt_mat_from_seqs(seqs = seqs_str(res))
+
+# Image matrix of sequences ordered by the clustering from archR
+use_seqs <- seqs_str(res, iter = NULL, cl = NULL, ord = TRUE)
+viz_seqs_as_acgt_mat_from_seqs(seqs = use_seqs)
+
+# Image matrix of sequences belonging to a single cluster
+use_seqs <- seqs_str(res, iter = 2, cl = 2)
+viz_seqs_as_acgt_mat_from_seqs(seqs = use_seqs)
+
+}
 \seealso{
 Other visualization functions: 
 \code{\link{plot_ggheatmap}()},
 \code{\link{plot_ggseqlogo}()},
-\code{\link{viz_basis_vectors_as_heatmap}()},
-\code{\link{viz_basis_vectors_as_seqlogo}()},
 \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}()}
 }
 \concept{visualization functions}

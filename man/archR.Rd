@@ -128,7 +128,7 @@ functions.
 \item \code{\link{viz_basis_vectors_as_seqlogo}}
 \item \code{\link{viz_basis_vectors_in_combined_heatmaps_seqlogos}}
 \item \code{\link{plot_arch_for_clusters}}
-plot_ggseqlogo_of_seqs
+\item \code{\link{plot_ggseqlogo_of_seqs}}
 \item \code{\link{viz_seqs_as_acgt_mat_from_seqs}}
 }
 }
@@ -156,7 +156,7 @@ archRconfig <- archR::archR_set_config(
     tol = 10^-4,
     bound = 10^-8,
     inner_chunk_size = 100,
-    flags = list(debug = TRUE, time = TRUE, verbose = TRUE,
+    flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
         plot = FALSE)
 )
 

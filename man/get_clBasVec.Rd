@@ -46,6 +46,18 @@ iteration. Note that eatures along rows.
 order of sequences here is as per the input.
 }}
 
+\examples{
+res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+         package = "archR", mustWork = TRUE))
+
+k <- get_clBasVec_k(res=res, iter=2)
+
+bMat <- getclBasVec_m(res=res, iter=1)
+
+## cluster labels of sequences from final clustering
+scLab <- get_seqClLab(res=res)
+  
+}
 \seealso{
 \code{\link{seqs_str}}
 }
