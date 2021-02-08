@@ -5,9 +5,9 @@
 #'
 #' @param mat Actually a vector that will be reshaped into a (PWM)
 #' matrix of DNA sequences.
-#' @param add_pseudo_counts Boolean, taking values TRUE/T or FALSE/F, specifying
+#' @param add_pseudo_counts Logical, taking values TRUE or FALSE, specifying
 #' whether or not pseudocounts are added to the matrix.
-#' @param scale Boolean, taking values TRUE/T or FALSE/F, specifying whether or
+#' @param scale Logical, taking values TRUE or FALSE, specifying whether or
 #' not the matrix is scaled column-wise, i.e., all columns summed to 1.
 #'
 #' @return A (PWM) matrix with 4 rows corresponding to the 4 nucleotides (A, C,
@@ -17,13 +17,7 @@
 #' @export
 #' 
 make_sinuc_PWMs <- function(mat, add_pseudo_counts = TRUE, scale = TRUE) {
-    ## return PWM matrix TO-DO: Make more clear whether a matrix or a column
-    ## vector is expected
-    ## if(!is.matrix(mat)){
-    ## stop('mat not of type matrix') }
-    ## if(sum(dim(mat)) == 2 && is.na(mat)){
-    ## stop('Empty mat')
-    ## }
+    ##
     sinuc <- c("A", "C", "G", "T")
     if (add_pseudo_counts) {
         mat <- mat + 10^-5
