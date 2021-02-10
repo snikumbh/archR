@@ -85,7 +85,7 @@ architecture sequence logos are saved as a multi-page PDF." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -151,6 +151,7 @@ architecture sequence logos are saved as a multi-page PDF.</p>
   pdf_width <span class='op'>=</span> <span class='fl'>11</span>,
   pdf_height <span class='op'>=</span> <span class='fl'>2</span>,
   pdf_name <span class='op'>=</span> <span class='st'>"archR_sequence_architectures.pdf"</span>,
+  show <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -192,6 +193,12 @@ Default values are 11 and 2.</p></td>
       <td><p>Specify the PDF filename.</p></td>
     </tr>
     <tr>
+      <th>show</th>
+      <td><p>Set TRUE if plot should be immediately shown/plotted. Default is 
+TRUE. By setting FALSE, one can simply collect the list of plots and use
+any other approach to arrange/display them. See examples.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Additional args passed to <code><a href='plot_ggseqlogo_of_seqs.html'>plot_ggseqlogo_of_seqs</a></code>.</p></td>
     </tr>
@@ -208,36 +215,33 @@ file (one plot per page).</p>
          package <span class='op'>=</span> <span class='st'>"archR"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Default position labels 1 to length of the sequences.</span>
-<span class='va'>arch_pl</span> <span class='op'>&lt;-</span> <span class='fu'>plot_arch_for_clusters</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>, 
-                                  clust_list <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>clustSol</span><span class='op'>$</span><span class='va'>clusters</span>,
-                                  pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
-                                  pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-<span class='va'>arch_pl</span>
-</div><div class='output co'>#&gt; [[1]]</div><div class='img'><img src='plot_arch_for_clusters-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; [[2]]</div><div class='img'><img src='plot_arch_for_clusters-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; [[3]]</div><div class='img'><img src='plot_arch_for_clusters-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
 <span class='co'># Can also set pos_lab based on biology, e.g., use -50 to 49 denoting </span>
 <span class='co'># 50 basepairs upstream and 49 downstream of the transcription start site </span>
 <span class='co'># located at position 0.</span>
 <span class='va'>arch_pl</span> <span class='op'>&lt;-</span> <span class='fu'>plot_arch_for_clusters</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>, 
                                   clust_list <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>clustSol</span><span class='op'>$</span><span class='va'>clusters</span>,
-                                  pos_lab <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>50</span>,<span class='fl'>49</span><span class='op'>)</span>,
-                                  pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-<span class='va'>arch_pl</span>
-</div><div class='output co'>#&gt; [[1]]</div><div class='img'><img src='plot_arch_for_clusters-4.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; [[2]]</div><div class='img'><img src='plot_arch_for_clusters-5.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; [[3]]</div><div class='img'><img src='plot_arch_for_clusters-6.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
+                                  pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
+                                  pdf_name <span class='op'>=</span> <span class='cn'>NULL</span>, 
+                                  fixed_coord <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_arch_for_clusters-1.png' alt='' width='700' height='433' /></div><div class='img'><img src='plot_arch_for_clusters-2.png' alt='' width='700' height='433' /></div><div class='img'><img src='plot_arch_for_clusters-3.png' alt='' width='700' height='433' /></div><div class='input'>
+ 
+<span class='co'># Using cowplot::plot_grid</span>
+<span class='va'>arch_pl</span> <span class='op'>&lt;-</span> <span class='fu'>plot_arch_for_clusters</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>, 
+                                  clust_list <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>clustSol</span><span class='op'>$</span><span class='va'>clusters</span>,
+                                  pos_lab <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>,
+                                  method <span class='op'>=</span> <span class='st'>"bits"</span>,
+                                  pdf_name <span class='op'>=</span> <span class='cn'>NULL</span>, show <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>cowplot</span><span class='fu'>::</span><span class='fu'><a href='https://wilkelab.org/cowplot/reference/plot_grid.html'>plot_grid</a></span><span class='op'>(</span>plotlist <span class='op'>=</span> <span class='va'>arch_pl</span>, ncol<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_arch_for_clusters-4.png' alt='' width='700' height='433' /></div><div class='input'> 
 <span class='co'># Plotting architecture sequence logos with probability instead of </span>
 <span class='co'># information content</span>
 <span class='va'>arch_pl</span> <span class='op'>&lt;-</span> <span class='fu'>plot_arch_for_clusters</span><span class='op'>(</span>seqs <span class='op'>=</span> <span class='fu'><a href='seqs_str.html'>seqs_str</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>, 
                                   clust_list <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>clustSol</span><span class='op'>$</span><span class='va'>clusters</span>,
-                                  pos_lab <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>50</span>,<span class='fl'>49</span><span class='op'>)</span>,
+                                  pos_lab <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>,
                                   method <span class='op'>=</span> <span class='st'>"prob"</span>,
-                                  pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-<span class='va'>arch_pl</span>
-</div><div class='output co'>#&gt; [[1]]</div><div class='img'><img src='plot_arch_for_clusters-7.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; [[2]]</div><div class='img'><img src='plot_arch_for_clusters-8.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; [[3]]</div><div class='img'><img src='plot_arch_for_clusters-9.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'> 
+                                  pdf_name <span class='op'>=</span> <span class='cn'>NULL</span>, show <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>cowplot</span><span class='fu'>::</span><span class='fu'><a href='https://wilkelab.org/cowplot/reference/plot_grid.html'>plot_grid</a></span><span class='op'>(</span>plotlist <span class='op'>=</span> <span class='va'>arch_pl</span>, ncol<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span> 
+</div><div class='img'><img src='plot_arch_for_clusters-5.png' alt='' width='700' height='433' /></div><div class='input'> 
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

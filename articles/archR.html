@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2021-02-08</h4>
+            <h4 class="date">2021-02-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -263,7 +263,7 @@
 
 <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_seqs_acgt_mat_from_seqs.html">viz_seqs_acgt_mat_from_seqs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">inputSeqsRaw</span><span class="op">)</span>, 
                           pos_lab <span class="op">=</span> <span class="va">positions</span>, save_fname <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
-<p><img src="archR_files/figure-html/plot-seqs-1.png" width="480"></p>
+<p><img src="archR_files/figure-html/plot-seqs-1.png" width="384"></p>
 </div>
 <div id="calling-archr" class="section level2">
 <h2 class="hasAnchor">
@@ -294,67 +294,67 @@
                             seqs_pos <span class="op">=</span> <span class="va">positions</span>,
                             threshold_itr <span class="op">=</span> <span class="va">perform_iters</span><span class="op">)</span>
 <span class="co">#&gt; Model selection by factor stability</span>
-<span class="co">#&gt; Tolerance: 0.001 &amp; Bound: 1e-08</span>
-<span class="co">#&gt; === Iteration  1 ,  1  chunk(s) ===</span>
-<span class="co">#&gt; [Outer chunk  1 / 1 ]  [Size:  200 ]</span>
+<span class="co">#&gt; Bound: 1e-08</span>
+<span class="co">#&gt; === Iteration 1 [1 chunk(s)] ===</span>
+<span class="co">#&gt; -----[Outer chunk 1/1] [Size:200]</span>
 <span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk  1 / 2 ]  [Size:  100 ]</span>
+<span class="co">#&gt; [Inner chunk 1/2] [Size:100]</span>
 <span class="co">#&gt; Checking K =  1</span>
 <span class="co">#&gt; Checking K =  2</span>
 <span class="co">#&gt; Checking K =  3</span>
 <span class="co">#&gt; Checking K =  4</span>
 <span class="co">#&gt; Best K for this subset:  3</span>
 <span class="co">#&gt; Fetching  3  clusters</span>
-<span class="co">#&gt; [Inner chunk  2 / 2 ]  [Size:  100 ]</span>
+<span class="co">#&gt; [Inner chunk 2/2] [Size:100]</span>
 <span class="co">#&gt; Checking K =  1</span>
 <span class="co">#&gt; Checking K =  2</span>
 <span class="co">#&gt; Checking K =  3</span>
 <span class="co">#&gt; Checking K =  4</span>
 <span class="co">#&gt; Best K for this subset:  3</span>
 <span class="co">#&gt; Fetching  3  clusters</span>
-<span class="co">#&gt; [Outer chunk 1/1] complete</span>
-<span class="co">#&gt; [Iteration 1] complete</span>
+<span class="co">#&gt; -----[Outer chunk 1/1] complete</span>
+<span class="co">#&gt; =====[Iteration 1] complete</span>
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
-<span class="co">#&gt; Iteration 1 completed  in 0.529 mins</span>
-<span class="co">#&gt; 0.529 mins  ellapsed since start</span>
-<span class="co">#&gt; === Iteration  2 ,  3  chunk(s) ===</span>
-<span class="co">#&gt; [Outer chunk  1 / 3 ]  [Size:  100 ]</span>
+<span class="co">#&gt; Iteration 1 completed  in 0.629 mins</span>
+<span class="co">#&gt; 0.629 mins  ellapsed since start</span>
+<span class="co">#&gt; === Iteration 2 [3 chunk(s)] ===</span>
+<span class="co">#&gt; -----[Outer chunk 1/3] [Size:100]</span>
 <span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk  1 / 1 ]  [Size:  100 ]</span>
+<span class="co">#&gt; [Inner chunk 1/1] [Size:100]</span>
 <span class="co">#&gt; Checking K =  1</span>
 <span class="co">#&gt; Checking K =  2</span>
 <span class="co">#&gt; Checking K =  3</span>
 <span class="co">#&gt; Best K for this subset:  2</span>
 <span class="co">#&gt; Fetching  2  clusters</span>
-<span class="co">#&gt; [Outer chunk 1/3] complete</span>
-<span class="co">#&gt; [Outer chunk  2 / 3 ]  [Size:  50 ]</span>
+<span class="co">#&gt; -----[Outer chunk 1/3] complete</span>
+<span class="co">#&gt; -----[Outer chunk 2/3] [Size:50]</span>
 <span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk  1 / 1 ]  [Size:  50 ]</span>
+<span class="co">#&gt; [Inner chunk 1/1] [Size:50]</span>
 <span class="co">#&gt; Checking K =  1</span>
 <span class="co">#&gt; Checking K =  2</span>
 <span class="co">#&gt; Best K for this subset:  1</span>
 <span class="co">#&gt; Fetching  1  clusters</span>
-<span class="co">#&gt; [Outer chunk 2/3] complete</span>
-<span class="co">#&gt; [Outer chunk  3 / 3 ]  [Size:  50 ]</span>
+<span class="co">#&gt; -----[Outer chunk 2/3] complete</span>
+<span class="co">#&gt; -----[Outer chunk 3/3] [Size:50]</span>
 <span class="co">#&gt; Decision: Processing</span>
-<span class="co">#&gt; [Inner chunk  1 / 1 ]  [Size:  50 ]</span>
+<span class="co">#&gt; [Inner chunk 1/1] [Size:50]</span>
 <span class="co">#&gt; Checking K =  1</span>
 <span class="co">#&gt; Checking K =  2</span>
 <span class="co">#&gt; Best K for this subset:  1</span>
 <span class="co">#&gt; Fetching  1  clusters</span>
-<span class="co">#&gt; [Outer chunk 3/3] complete</span>
-<span class="co">#&gt; [Iteration 2] complete</span>
+<span class="co">#&gt; -----[Outer chunk 3/3] complete</span>
+<span class="co">#&gt; =====[Iteration 2] complete</span>
 <span class="co">#&gt; Managing clusters from outer chunk(s)</span>
-<span class="co">#&gt; Iteration 2 completed  in 0.624 mins</span>
-<span class="co">#&gt; 1.15 mins  ellapsed since start</span>
+<span class="co">#&gt; Iteration 2 completed  in 0.613 mins</span>
+<span class="co">#&gt; 1.24 mins  ellapsed since start</span>
 <span class="co">#&gt; Collating clusters</span>
-<span class="co">#&gt; archR exiting , 1.15 mins</span></code></pre></div>
+<span class="co">#&gt; archR exiting , 1.24 mins</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#understanding-the-result-object-from-archr" class="anchor"></a>Understanding the result object from <em>archR</em>
 </h2>
-<p>In the version 0.1.5, <em>archR</em> naively returns a result object which is a nested list of seven elements. These include: - the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; - the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; - the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; - the raw sequences provided [<code>rawSeqs</code>]; - if timeFlag is set, timing information (in minutes) per iteration [<code>timeInfo</code>]; - the configuration setting [<code>config</code>]; and - the call itself [<code>call</code>].</p>
+<p>In the version 0.1.6, <em>archR</em> naively returns a result object which is a nested list of seven elements. These include: - the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; - the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; - the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; - the raw sequences provided [<code>rawSeqs</code>]; - if timeFlag is set, timing information (in minutes) per iteration [<code>timeInfo</code>]; - the configuration setting [<code>config</code>]; and - the call itself [<code>call</code>].</p>
 <div id="nmf-basis-vectors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nmf-basis-vectors" class="anchor"></a>NMF basis vectors</h3>
@@ -376,13 +376,11 @@
 <span class="co">#&gt; [4,] 0.074610342 0.04276400 0.09945618 0.05334238</span>
 <span class="co">#&gt; [5,] 0.080347189 0.11747636 0.07484865 0.10758754</span>
 <span class="co">#&gt; [6,] 0.007201571 0.11872570 0.05051104 0.10543655</span></code></pre></div>
+<p>The NMF basis vectors can be visualized as a heatmap and/or sequence logo using [<a href="https://snikumbh.github.io/archR/reference/viz_bas_vec_heatmap_seqlogo.html" class="uri">https://snikumbh.github.io/archR/reference/viz_bas_vec_heatmap_seqlogo.html</a>] (viz_bas_vec_heat_seqlogo) function.</p>
 </div>
-</div>
-<div id="visualize-results-from-archr" class="section level2">
-<h2 class="hasAnchor">
-<a href="#visualize-results-from-archr" class="anchor"></a>Visualize results from <em>archR</em>
-</h2>
-<p>In this section we demonstrate how to visualize results from <em>archR</em>. One can visualize the NMF basis vectors as well as the sequence clusters.</p>
+<div id="basis-vectors-at-iteration-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#basis-vectors-at-iteration-1" class="anchor"></a>Basis vectors at iteration 1</h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_bas_vec_heatmap_seqlogo.html">viz_bas_vec_heatmap_seqlogo</a></span><span class="op">(</span>feat_mat <span class="op">=</span> <span class="fu"><a href="../reference/get_clBasVec.html">get_clBasVec_m</a></span><span class="op">(</span><span class="va">archRresult</span>, <span class="fl">1</span><span class="op">)</span>, 
                                   method <span class="op">=</span> <span class="st">"bits"</span>, sinuc_or_dinuc <span class="op">=</span> <span class="st">"dinuc"</span><span class="op">)</span>
@@ -394,6 +392,10 @@
 <pre><code>#&gt; Scale for 'x' is already present. Adding another scale for 'x', which will
 #&gt; replace the existing scale.</code></pre>
 <p><img src="archR_files/figure-html/viz-BV-1-2.png" width="2400"><img src="archR_files/figure-html/viz-BV-1-3.png" width="2400"></p>
+</div>
+<div id="basis-vectors-at-iteration-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#basis-vectors-at-iteration-2" class="anchor"></a>Basis vectors at iteration 2</h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_bas_vec_heatmap_seqlogo.html">viz_bas_vec_heatmap_seqlogo</a></span><span class="op">(</span>feat_mat <span class="op">=</span> <span class="fu"><a href="../reference/get_clBasVec.html">get_clBasVec_m</a></span><span class="op">(</span><span class="va">archRresult</span>, <span class="fl">2</span><span class="op">)</span>, 
                                   method <span class="op">=</span> <span class="st">"bits"</span>, sinuc_or_dinuc <span class="op">=</span> <span class="st">"dinuc"</span><span class="op">)</span>
@@ -408,13 +410,17 @@
 <pre><code>#&gt; Scale for 'x' is already present. Adding another scale for 'x', which will
 #&gt; replace the existing scale.</code></pre>
 <p><img src="archR_files/figure-html/viz-BV-2-3.png" width="2400"><img src="archR_files/figure-html/viz-BV-2-4.png" width="2400"></p>
-<p>The clustered output from <em>archR</em> can again be visualized as a matrix. Simply sort the sequences based on the cluster labels assigned to them and call <code>archR::viz_seqs_as_acgt_mat_from_seqs</code> with the sorted order as shown.</p>
+</div>
+<div id="visualize-sequences-by-clusters" class="section level3">
+<h3 class="hasAnchor">
+<a href="#visualize-sequences-by-clusters" class="anchor"></a>Visualize sequences by clusters</h3>
+<p>The clustered output from <em>archR</em> can again be visualized as a matrix. Use the <a href="seqs_str">https://snikumbh.github.io/archR/reference/seqs_str.html</a> function to fetch sequences by clusters at any iteration and call <code>archR::viz_seqs_as_acgt_mat_from_seqs</code> as shown.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_seqs_acgt_mat_from_seqs.html">viz_seqs_acgt_mat_from_seqs</a></span><span class="op">(</span><span class="fu"><a href="../reference/seqs_str.html">seqs_str</a></span><span class="op">(</span><span class="va">archRresult</span>, iter <span class="op">=</span> <span class="fl">1</span>, ord <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
                                   pos_lab <span class="op">=</span> <span class="va">positions</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="archR_files/figure-html/clust-itr1-1.png" alt="Figure: Clusters at iteration 1" width="288"><p class="caption">
+<img src="archR_files/figure-html/clust-itr1-1.png" alt="Figure: Clusters at iteration 1" width="384"><p class="caption">
 Figure: Clusters at iteration 1
 </p>
 </div>
@@ -423,9 +429,10 @@ Figure: Clusters at iteration 1
 <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/viz_seqs_acgt_mat_from_seqs.html">viz_seqs_acgt_mat_from_seqs</a></span><span class="op">(</span><span class="fu"><a href="../reference/seqs_str.html">seqs_str</a></span><span class="op">(</span><span class="va">archRresult</span>, iter <span class="op">=</span> <span class="fl">2</span>, ord <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
                                   pos_lab <span class="op">=</span> <span class="va">positions</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="archR_files/figure-html/clust-itr2-1.png" alt="Figure: Clusters at iteration 2" width="480"><p class="caption">
+<img src="archR_files/figure-html/clust-itr2-1.png" alt="Figure: Clusters at iteration 2" width="384"><p class="caption">
 Figure: Clusters at iteration 2
 </p>
+</div>
 </div>
 </div>
 </div>
@@ -457,7 +464,7 @@ Figure: Clusters at iteration 2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt; [1] Biostrings_2.58.0   XVector_0.30.0      IRanges_2.24.1     </span>
-<span class="co">#&gt; [4] S4Vectors_0.28.1    BiocGenerics_0.36.0 archR_0.1.5        </span>
+<span class="co">#&gt; [4] S4Vectors_0.28.1    BiocGenerics_0.36.0 archR_0.1.6        </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;  [1] tidyselect_1.1.0  xfun_0.20         purrr_0.3.4       reshape2_1.4.4   </span>
@@ -468,7 +475,7 @@ Figure: Clusters at iteration 2
 <span class="co">#&gt; [21] gtable_0.3.0      ragg_0.4.1        memoise_2.0.0     evaluate_0.14    </span>
 <span class="co">#&gt; [25] labeling_0.4.2    Biobase_2.50.0    knitr_1.31        fastmap_1.1.0    </span>
 <span class="co">#&gt; [29] highr_0.8         Rcpp_1.0.6        scales_1.1.1      cachem_1.0.3     </span>
-<span class="co">#&gt; [33] hopach_2.50.0     desc_1.2.0        farver_2.0.3      systemfonts_1.0.0</span>
+<span class="co">#&gt; [33] hopach_2.50.0     desc_1.2.0        farver_2.0.3      systemfonts_1.0.1</span>
 <span class="co">#&gt; [37] fs_1.5.0          textshaping_0.2.1 ggplot2_3.3.3     digest_0.6.27    </span>
 <span class="co">#&gt; [41] stringi_1.5.3     dplyr_1.0.4       cowplot_1.1.1     grid_4.0.3       </span>
 <span class="co">#&gt; [45] rprojroot_2.0.2   tools_4.0.3       magrittr_2.0.1    tibble_3.0.6     </span>

@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -136,7 +136,14 @@
     <p>Visualize a given (PWM) matrix as a sequence logo.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_ggseqlogo</span><span class='op'>(</span><span class='va'>pwm_mat</span>, method <span class='op'>=</span> <span class='st'>"custom"</span>, pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>, pdf_name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_ggseqlogo</span><span class='op'>(</span>
+  <span class='va'>pwm_mat</span>,
+  method <span class='op'>=</span> <span class='st'>"bits"</span>,
+  pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pdf_name <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bits_yax <span class='op'>=</span> <span class='st'>"full"</span>,
+  fixed_coord <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,7 +156,7 @@ to be represented as a sequence logo.</p></td>
     <tr>
       <th>method</th>
       <td><p>For <code>ggseqlogo</code>; either of 'custom', 'bits', or
-'probability'. Default is 'custom'.</p></td>
+'probability'. Default is 'bits'.</p></td>
     </tr>
     <tr>
       <th>pos_lab</th>
@@ -160,6 +167,18 @@ positions are labeled from 1 to the length of the sequences.</p></td>
     <tr>
       <th>pdf_name</th>
       <td><p>Name of the file which will be saved as PDF.</p></td>
+    </tr>
+    <tr>
+      <th>bits_yax</th>
+      <td><p>Specify 'full' if the information content y-axis limits 
+should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
+the y-axis limits according to the maximum information content of the 
+sequence logo. Default is 'full'.</p></td>
+    </tr>
+    <tr>
+      <th>fixed_coord</th>
+      <td><p>Set this to TRUE to use a fixed aspect ratio for the 
+plot. Default is FALSE.</p></td>
     </tr>
     </table>
 
@@ -186,9 +205,9 @@ sequences by their sequence logo.</p>
 <span class='va'>pwm</span> <span class='op'>&lt;-</span> <span class='fu'>archR</span><span class='fu'>::</span><span class='fu'><a href='make_dinuc_PWMs.html'>make_dinuc_PWMs</a></span><span class='op'>(</span><span class='fu'><a href='get_clBasVec.html'>get_clBasVec_m</a></span><span class='op'>(</span><span class='va'>res</span>,iter<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span>, 
                         add_pseudo_counts <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'>plot_ggseqlogo</span><span class='op'>(</span>pwm_mat <span class='op'>=</span> <span class='va'>pwm</span><span class='op'>)</span>
+<span class='fu'>plot_ggseqlogo</span><span class='op'>(</span>pwm_mat <span class='op'>=</span> <span class='va'>pwm</span>, fixed_coord <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div><div class='img'><img src='plot_ggseqlogo-1.png' alt='' width='700' height='433' /></div><div class='input'>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='img'><img src='plot_ggseqlogo-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

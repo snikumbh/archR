@@ -86,7 +86,7 @@ visualization." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -145,20 +145,22 @@ visualization.</p>
 
     <pre class="usage"><span class='fu'>viz_bas_vec_heatmap_seqlogo</span><span class='op'>(</span>
   <span class='va'>feat_mat</span>,
-  method <span class='op'>=</span> <span class='st'>"custom"</span>,
+  method <span class='op'>=</span> <span class='st'>"bits"</span>,
   pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
   add_pseudo_counts <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pdf_name <span class='op'>=</span> <span class='cn'>NULL</span>,
-  sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"sinuc"</span>
+  sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"sinuc"</span>,
+  fixed_coord <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span>
 
 <span class='fu'>viz_bas_vec_seqlogo</span><span class='op'>(</span>
   <span class='va'>feat_mat</span>,
-  method <span class='op'>=</span> <span class='st'>"custom"</span>,
+  method <span class='op'>=</span> <span class='st'>"bits"</span>,
   pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
   add_pseudo_counts <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pdf_name <span class='op'>=</span> <span class='cn'>NULL</span>,
-  sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"sinuc"</span>
+  sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"sinuc"</span>,
+  fixed_coord <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span>
 
 <span class='fu'>viz_bas_vec_heatmap</span><span class='op'>(</span>
@@ -166,7 +168,8 @@ visualization.</p>
   pos_lab <span class='op'>=</span> <span class='cn'>NULL</span>,
   add_pseudo_counts <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pdf_name <span class='op'>=</span> <span class='cn'>NULL</span>,
-  sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"sinuc"</span>
+  sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"sinuc"</span>,
+  fixed_coord <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -179,7 +182,7 @@ visualization.</p>
     <tr>
       <th>method</th>
       <td><p>For <code>ggseqlogo</code> -- either of "custom", "bits", or
-"probability". Default is "custom".</p></td>
+"probability". Default is "bits".</p></td>
     </tr>
     <tr>
       <th>pos_lab</th>
@@ -202,6 +205,11 @@ features matrix.</p></td>
       <th>sinuc_or_dinuc</th>
       <td><p>"sinuc" or "dinuc" for choosing between mono- and
 dinucleotide profiles respectively.</p></td>
+    </tr>
+    <tr>
+      <th>fixed_coord</th>
+      <td><p>Set this to TRUE to use a fixed aspect ratio for the 
+plot. Default is FALSE.</p></td>
     </tr>
     </table>
 
@@ -228,18 +236,22 @@ NMF basis vectors as a heatmap</p></li>
     <pre class="examples"><div class='input'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"example_archRresult.rds"</span>, 
          package <span class='op'>=</span> <span class='st'>"archR"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>viz_bas_vec_heatmap_seqlogo</span><span class='op'>(</span>feat_mat <span class='op'>=</span> <span class='fu'><a href='get_clBasVec.html'>get_clBasVec_m</a></span><span class='op'>(</span><span class='va'>res</span>,iter<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>viz_bas_vec_heatmap_seqlogo</span><span class='op'>(</span>feat_mat <span class='op'>=</span> <span class='fu'><a href='get_clBasVec.html'>get_clBasVec_m</a></span><span class='op'>(</span><span class='va'>res</span>,iter<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,
+                            sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"dinuc"</span>, fixed_coord <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-2.png' alt='' width='700' height='433' /></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-3.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'>viz_bas_vec_seqlogo</span><span class='op'>(</span>feat_mat <span class='op'>=</span> <span class='fu'><a href='get_clBasVec.html'>get_clBasVec_m</a></span><span class='op'>(</span><span class='va'>res</span>,iter<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-2.png' alt='' width='700' height='433' /></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>viz_bas_vec_seqlogo</span><span class='op'>(</span>feat_mat <span class='op'>=</span> <span class='fu'><a href='get_clBasVec.html'>get_clBasVec_m</a></span><span class='op'>(</span><span class='va'>res</span>,iter<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,
+                     sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"dinuc"</span>, fixed_coord <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-4.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-5.png' alt='' width='700' height='433' /></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-6.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'>viz_bas_vec_heatmap</span><span class='op'>(</span>feat_mat <span class='op'>=</span> <span class='fu'><a href='get_clBasVec.html'>get_clBasVec_m</a></span><span class='op'>(</span><span class='va'>res</span>,iter<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-7.png' alt='' width='700' height='433' /></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-8.png' alt='' width='700' height='433' /></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-9.png' alt='' width='700' height='433' /></div><div class='input'>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-4.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; <span class='message'>Scale for 'x' is already present. Adding another scale for 'x', which will</span>
+#&gt; <span class='message'>replace the existing scale.</span></div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-5.png' alt='' width='700' height='433' /></div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-6.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Visualizing basis vector for a single cluster</span>
+<span class='fu'>viz_bas_vec_heatmap</span><span class='op'>(</span>feat_mat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='get_clBasVec.html'>get_clBasVec_m</a></span><span class='op'>(</span><span class='va'>res</span>,iter<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>]</span><span class='op'>)</span>,
+                     sinuc_or_dinuc <span class='op'>=</span> <span class='st'>"dinuc"</span>, fixed_coord <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='img'><img src='viz_bas_vec_heatmap_seqlogo-7.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
