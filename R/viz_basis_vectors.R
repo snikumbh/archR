@@ -8,7 +8,7 @@
 #' @param feat_mat The features matrix (basis vectors matrix) from archR. 
 #' 
 #' @param method For \code{ggseqlogo} -- either of "custom", "bits", or
-#' "probability". Default is "custom".
+#' "probability". Default is "bits".
 #' @param pos_lab Labels for sequence positions, should be of same
 #' length as that of the sequences. Default value is NULL, when the 
 #' positions are labeled from 1 to the length of the sequences.
@@ -19,6 +19,9 @@
 #' (also provide the extension).
 #' @param sinuc_or_dinuc "sinuc" or "dinuc" for choosing between mono- and
 #' dinucleotide profiles respectively.
+#' @param fixed_coord Set this to TRUE to use a fixed aspect ratio for the 
+#' plot. Default is FALSE. Mainly useful for sequence logo. For just heatmap, 
+#' this is ignored.
 #'
 #' @return nothing
 #'
@@ -32,12 +35,13 @@
 #' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
 #'          package = "archR", mustWork = TRUE))
 #' 
-#' viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(res,iter=1))
+#' viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(res,iter=1),
+#'                             sinuc_or_dinuc = "dinuc", fixed_coord = TRUE)
 #' 
-viz_bas_vec_heatmap_seqlogo <- function(feat_mat, 
-                                    method = "custom", pos_lab = NULL, 
-                                    add_pseudo_counts = FALSE, pdf_name = NULL,
-                                    sinuc_or_dinuc = "sinuc") {
+viz_bas_vec_heatmap_seqlogo <- function(feat_mat, method = "bits", 
+                                pos_lab = NULL, add_pseudo_counts = FALSE,
+                                pdf_name = NULL, sinuc_or_dinuc = "sinuc",
+                                fixed_coord = FALSE){
     check_cowplot()
     check_vars2(feat_mat)
     ##
@@ -45,34 +49,31 @@ viz_bas_vec_heatmap_seqlogo <- function(feat_mat,
         pos_lab <- set_default_pos_lab(feat_mat, sinuc_or_dinuc)
     }
     ##
-    invisible(apply(feat_mat, MARGIN = 2, function(x) {
-    if (sinuc_or_dinuc == "dinuc") {
-        pwm <- make_dinuc_PWMs(x, add_pseudo_counts = FALSE)
-    } else if (sinuc_or_dinuc == "sinuc") {
-        pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
-    }
-    ## Heatmap on top
-    p1 <- plot_ggheatmap(pwm_mat = pwm, pos_lab = pos_lab,
-                    pdf_name = pdf_name)
-    p1 <- p1 + theme(plot.margin = margin(0,0,0,0))
-    ## Seqlogo below
-    p2 <- plot_ggseqlogo(pwm_mat = pwm, method = method,
-                    pos_lab = pos_lab, pdf_name = pdf_name)
-    ## Make adjustments for alignment
-    p2 <- p2 + theme(plot.margin = margin(0,0,0,0))
-    final_p <- cowplot::plot_grid(p1, p2, nrow = 2, rel_heights = c(1,0.8))
-    ##
     if (!is.null(pdf_name)) {
         if (file.exists(pdf_name)) {
             warning("File exists, will overwrite", immediate. = TRUE)
         }
-        ggplot2::ggsave(final_p, device = "pdf", width = 20, 
-                            height = 2.5)
-    } else {
-        base::suppressMessages(print(final_p))
+        grDevices::pdf(file=pdf_name, width=20, height=4)
     }
-}))
-    
+    invisible(apply(feat_mat, MARGIN = 2, function(x) {
+        if (sinuc_or_dinuc == "dinuc") {
+            pwm <- make_dinuc_PWMs(x, add_pseudo_counts = FALSE)
+        } else if (sinuc_or_dinuc == "sinuc") {
+            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
+        }
+        ## Heatmap on top
+        p1 <- plot_ggheatmap(pwm_mat = pwm, pos_lab = pos_lab)
+        p1 <- p1 + theme(plot.margin = margin(0,0,0,0, unit="cm"))
+        ## Seqlogo below
+        p2 <- plot_ggseqlogo(pwm_mat = pwm, method = method, pos_lab = pos_lab, 
+            fixed_coord = fixed_coord)
+        ## Make adjustments for alignment
+        p2 <- p2 + theme(plot.margin = margin(0,0,0,0, unit="cm"))
+        final_p <- cowplot::plot_grid(p1, p2, nrow = 2, align="v")
+        ##
+        base::suppressMessages(print(final_p))
+    }))
+    if (!is.null(pdf_name)) {dev.off()}
 }
 ## =============================================================================
 
@@ -83,15 +84,13 @@ viz_bas_vec_heatmap_seqlogo <- function(feat_mat,
 #' 
 #'
 #' @examples 
-#' viz_bas_vec_seqlogo(feat_mat = get_clBasVec_m(res,iter=1))
+#' viz_bas_vec_seqlogo(feat_mat = get_clBasVec_m(res,iter=1),
+#'                      sinuc_or_dinuc = "dinuc", fixed_coord = TRUE)
 #'
 #' @export
-viz_bas_vec_seqlogo <- function(feat_mat,
-                                method = "custom",
-                                pos_lab = NULL,
-                                add_pseudo_counts = FALSE,
-                                pdf_name = NULL,
-                                sinuc_or_dinuc = "sinuc") {
+viz_bas_vec_seqlogo <- function(feat_mat, method = "bits", pos_lab = NULL,
+                                add_pseudo_counts = FALSE, pdf_name = NULL,
+                                sinuc_or_dinuc = "sinuc", fixed_coord = FALSE){
     ## Visualize all basis factors (expected as columns of the given features
     ## matrix) as seqlogos
     check_vars2(feat_mat)
@@ -107,8 +106,8 @@ viz_bas_vec_seqlogo <- function(feat_mat,
             pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
         }
         p1 <- plot_ggseqlogo(pwm_mat = pwm, method = method,
-            pos_lab = pos_lab,
-            pdf_name = pdf_name)
+            pos_lab = pos_lab, pdf_name = pdf_name, 
+            fixed_coord = fixed_coord)
         base::suppressMessages(print(p1))
     }))
 }
@@ -119,13 +118,14 @@ viz_bas_vec_seqlogo <- function(feat_mat,
 #' 
 #'
 #' @examples 
-#' viz_bas_vec_heatmap(feat_mat = get_clBasVec_m(res,iter=1))
+#' # Visualizing basis vector for a single cluster
+#' viz_bas_vec_heatmap(feat_mat = as.matrix(get_clBasVec_m(res,iter=1)[,3]),
+#'                      sinuc_or_dinuc = "dinuc", fixed_coord = TRUE)
 #'
 #' @export
-viz_bas_vec_heatmap <- function(feat_mat, pos_lab = NULL,
-                                add_pseudo_counts = FALSE,
-                                pdf_name = NULL,
-                                sinuc_or_dinuc = "sinuc") {
+viz_bas_vec_heatmap <- function(feat_mat, pos_lab = NULL, 
+                                add_pseudo_counts = FALSE, pdf_name = NULL,
+                                sinuc_or_dinuc = "sinuc", fixed_coord = FALSE){
     # Visualize all basis factors (expected as columns of the given features
     # matrix) as heatmaps
     ##
@@ -135,23 +135,34 @@ viz_bas_vec_heatmap <- function(feat_mat, pos_lab = NULL,
         pos_lab <- set_default_pos_lab(feat_mat, sinuc_or_dinuc)
     }
     ##
-    if (sinuc_or_dinuc == "sinuc") {
-        invisible(apply(feat_mat, MARGIN = 2, function(x) {
-            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
-            p1 <- plot_ggheatmap(pwm_mat = pwm,
-                pos_lab = pos_lab,
-                pdf_name = pdf_name)
-            base::suppressMessages(print(p1))
-        }))
-    } else if (sinuc_or_dinuc == "dinuc") {
-        invisible(apply(feat_mat, MARGIN = 2, function(x) {
+    invisible(apply(feat_mat, MARGIN = 2, function(x) {
+        if (sinuc_or_dinuc == "dinuc") {
             pwm <- make_dinuc_PWMs(x, add_pseudo_counts = FALSE)
-            p1 <- plot_ggheatmap(pwm_mat = pwm,
-                pos_lab = pos_lab,
-                pdf_name = pdf_name)
-            base::suppressMessages(print(p1))
-        }))
-    }
+        } else if (sinuc_or_dinuc == "sinuc") {
+            pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
+        }
+        p1 <- plot_ggheatmap(pwm_mat = pwm,
+            pos_lab = pos_lab, pdf_name = pdf_name, fixed_coord = fixed_coord)
+        base::suppressMessages(print(p1))
+    }))
+    ##
+    # if (sinuc_or_dinuc == "sinuc") {
+    #     invisible(apply(feat_mat, MARGIN = 2, function(x) {
+    #         pwm <- make_sinuc_PWMs(x, add_pseudo_counts = FALSE)
+    #         p1 <- plot_ggheatmap(pwm_mat = pwm,
+    #             pos_lab = pos_lab, pdf_name = pdf_name, 
+    #             fixed_coord = fixed_coord)
+    #         base::suppressMessages(print(p1))
+    #     }))
+    # } else if (sinuc_or_dinuc == "dinuc") {
+    #     invisible(apply(feat_mat, MARGIN = 2, function(x) {
+    #         pwm <- make_dinuc_PWMs(x, add_pseudo_counts = FALSE)
+    #         p1 <- plot_ggheatmap(pwm_mat = pwm,
+    #             pos_lab = pos_lab, pdf_name = pdf_name,
+    #             fixed_coord = fixed_coord)
+    #         base::suppressMessages(print(p1))
+    #     }))
+    # }
 }
 ## =============================================================================
 

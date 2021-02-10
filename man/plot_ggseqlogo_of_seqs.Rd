@@ -9,8 +9,9 @@ plot_ggseqlogo_of_seqs(
   pos_lab = NULL,
   xt_freq = 5,
   method = "bits",
-  title = "Title",
-  bits_yax = "auto"
+  title = NULL,
+  bits_yax = "full",
+  fixed_coord = FALSE
 )
 }
 \arguments{
@@ -26,12 +27,16 @@ positions are labeled from 1 to the length of the sequences.}
 \item{method}{Specify either 'bits' for information content or 
 'prob' for probability.}
 
-\item{title}{The title for the plot.}
+\item{title}{The title for the plot. Deafult is NULL.}
 
 \item{bits_yax}{Specify 'full' if the information content y-axis limits 
 should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
 the y-axis limits according to the maximum information content of the 
-sequence logo. Default is 'auto'.}
+sequence logo. Default is 'full'.}
+
+\item{fixed_coord}{Specify TRUE if the aspect ratio of the plot should be 
+fixed, FALSE otherwise. Default is TRUE. When `method` argument is set to 
+'bits', ratio is 4, when 'prob', ratio is 6.}
 }
 \value{
 A sequence logo plot of the given DNA sequences.
@@ -45,13 +50,16 @@ res <- readRDS(system.file("extdata", "example_archRresult.rds",
          package = "archR", mustWork = TRUE))
 
 # Default, using information content on y-axis
-pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=1),
-                             pos_lab = seq_len(1:100))
+pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=3),
+                             pos_lab = seq_len(100), title = NULL,
+                             fixed_coord = TRUE)
+pl
                              
 # Using probability instead of information content
-pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=1),
-                             pos_lab = seq_len(1:100), 
-                             method = "prob")
+pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=3),
+                             pos_lab = seq_len(100), title = "", 
+                             method = "prob", fixed_coord = TRUE)
+pl
                              
 }
 \seealso{

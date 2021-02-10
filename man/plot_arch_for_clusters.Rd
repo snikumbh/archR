@@ -13,6 +13,7 @@ plot_arch_for_clusters(
   pdf_width = 11,
   pdf_height = 2,
   pdf_name = "archR_sequence_architectures.pdf",
+  show = TRUE,
   ...
 )
 }
@@ -37,6 +38,10 @@ Default values are 11 and 2.}
 
 \item{pdf_name}{Specify the PDF filename.}
 
+\item{show}{Set TRUE if plot should be immediately shown/plotted. Default is 
+TRUE. By setting FALSE, one can simply collect the list of plots and use
+any other approach to arrange/display them. See examples.}
+
 \item{...}{Additional args passed to \code{\link{plot_ggseqlogo_of_seqs}}.}
 }
 \value{
@@ -55,28 +60,31 @@ res <- readRDS(system.file("extdata", "example_archRresult.rds",
          package = "archR", mustWork = TRUE))
 
 # Default position labels 1 to length of the sequences.
-arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
-                                  clust_list = res$clustSol$clusters,
-                                  pos_lab = NULL,
-                                  pdf_name = NULL)
-arch_pl
-
 # Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
 # 50 basepairs upstream and 49 downstream of the transcription start site 
 # located at position 0.
 arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
                                   clust_list = res$clustSol$clusters,
-                                  pos_lab = seq(-50,49),
-                                  pdf_name = NULL)
-arch_pl
+                                  pos_lab = NULL,
+                                  pdf_name = NULL, 
+                                  fixed_coord = TRUE)
 
+ 
+# Using cowplot::plot_grid
+arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
+                                  clust_list = res$clustSol$clusters,
+                                  pos_lab = seq(100),
+                                  method = "bits",
+                                  pdf_name = NULL, show = FALSE)
+cowplot::plot_grid(plotlist = arch_pl, ncol=1)
+ 
 # Plotting architecture sequence logos with probability instead of 
 # information content
 arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
                                   clust_list = res$clustSol$clusters,
-                                  pos_lab = seq(-50,49),
+                                  pos_lab = seq(100),
                                   method = "prob",
-                                  pdf_name = NULL)
-arch_pl
+                                  pdf_name = NULL, show = FALSE)
+cowplot::plot_grid(plotlist = arch_pl, ncol=1) 
  
 }

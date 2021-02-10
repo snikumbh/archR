@@ -188,6 +188,7 @@ get_one_hot_encoded_seqs <- function(seqs, sinuc_or_dinuc = "sinuc") {
             base::strsplit(as.character(seqs), split = NULL)
         if (length(seqs_split_as_list) > 0) {
             if (sinuc_or_dinuc == "sinuc") {
+                .msg_pstr("Generating dinucleotide profiles", flg=TRUE)
                 encoded_seqs <- lapply(seqs_split_as_list,
                                         .one_hot_encode_sinuc)
             } else if (sinuc_or_dinuc == "dinuc") {

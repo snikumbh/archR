@@ -32,7 +32,7 @@ clustering with \code{\link[stats]{hclust}}. Default is 'ward.D'.}
 \item{dist_method}{Distance measure to be used with hierarchical clustering. 
 Available options are "euclid" (default), "cor" for correlation, "cosangle" 
 for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
-\code{\link[TFBSTools]{PFMSimilarity}}).}
+\code{\link[TFBSTools]{TFBSTools::PFMSimilarity}}).}
 
 \item{regularize}{Logical. Specify TRUE if regularization is to be performed 
 before comparison. Default is FALSE. Also see argument 'topN'.}
@@ -64,7 +64,7 @@ basis vectors, i.e, IDs of basis vectors that were collated into one.}
 collated clustering.}
 }
 
-When `collate' is FALSE, 
+When 'collate' is FALSE, 
 it returns the already existing basis vectors, each as singleton clusters. 
 The sequence cluster labels and sequence clusters are also handled 
 accordingly. All are available as part of the same list as the earlier case.

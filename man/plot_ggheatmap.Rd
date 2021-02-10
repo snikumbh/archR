@@ -4,7 +4,7 @@
 \alias{plot_ggheatmap}
 \title{Plot a given position weight matrix as a heatmap using ggplot2}
 \usage{
-plot_ggheatmap(pwm_mat, pos_lab = NULL, pdf_name = NULL)
+plot_ggheatmap(pwm_mat, pos_lab = NULL, pdf_name = NULL, fixed_coord = FALSE)
 }
 \arguments{
 \item{pwm_mat}{Matrix (usually a PWM, but can be non-normalized/any matrix)
@@ -33,7 +33,7 @@ res <- readRDS(system.file("extdata", "example_archRresult.rds",
 pwm <- archR::make_dinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
                         add_pseudo_counts = FALSE)
 
-plot_ggseqlogo(pwm_mat = pwm)
+plot_ggheatmap(pwm_mat = pwm, fixed_coord = TRUE)
 
 }
 \seealso{

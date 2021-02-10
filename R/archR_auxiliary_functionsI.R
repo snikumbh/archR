@@ -740,7 +740,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #' @param dist_method Distance measure to be used with hierarchical clustering. 
 #' Available options are "euclid" (default), "cor" for correlation, "cosangle" 
 #' for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
-#' \code{\link[TFBSTools]{PFMSimilarity}}). 
+#' \code{\link[TFBSTools]{TFBSTools::PFMSimilarity}}). 
 #' 
 #' @param regularize Logical. Specify TRUE if regularization is to be performed 
 #' before comparison. Default is FALSE. Also see argument 'topN'.
@@ -771,7 +771,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #' collated clustering.}
 #' }
 #' 
-#' When `collate' is FALSE, 
+#' When 'collate' is FALSE, 
 #' it returns the already existing basis vectors, each as singleton clusters. 
 #' The sequence cluster labels and sequence clusters are also handled 
 #' accordingly. All are available as part of the same list as the earlier case.

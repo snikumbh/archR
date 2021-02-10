@@ -25,6 +25,10 @@
 #' 
 #' @param pdf_name Specify the PDF filename. 
 #' 
+#' @param show Set TRUE if plot should be immediately shown/plotted. Default is 
+#' TRUE. By setting FALSE, one can simply collect the list of plots and use
+#' any other approach to arrange/display them. See examples.
+#' 
 #' @param ... Additional args passed to \code{\link{plot_ggseqlogo_of_seqs}}.
 #'
 #' @return A list of (ggplot2-based) sequence logo plots is returned. When a 
@@ -38,29 +42,32 @@
 #'          package = "archR", mustWork = TRUE))
 #' 
 #' # Default position labels 1 to length of the sequences.
-#' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
-#'                                   clust_list = res$clustSol$clusters,
-#'                                   pos_lab = NULL,
-#'                                   pdf_name = NULL)
-#' arch_pl
-#' 
 #' # Can also set pos_lab based on biology, e.g., use -50 to 49 denoting 
 #' # 50 basepairs upstream and 49 downstream of the transcription start site 
 #' # located at position 0.
 #' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
 #'                                   clust_list = res$clustSol$clusters,
-#'                                   pos_lab = seq(-50,49),
-#'                                   pdf_name = NULL)
-#' arch_pl
+#'                                   pos_lab = NULL,
+#'                                   pdf_name = NULL, 
+#'                                   fixed_coord = TRUE)
 #' 
+#'  
+#' # Using cowplot::plot_grid
+#' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
+#'                                   clust_list = res$clustSol$clusters,
+#'                                   pos_lab = seq(100),
+#'                                   method = "bits",
+#'                                   pdf_name = NULL, show = FALSE)
+#' cowplot::plot_grid(plotlist = arch_pl, ncol=1)
+#'  
 #' # Plotting architecture sequence logos with probability instead of 
 #' # information content
 #' arch_pl <- plot_arch_for_clusters(seqs = seqs_str(res), 
 #'                                   clust_list = res$clustSol$clusters,
-#'                                   pos_lab = seq(-50,49),
+#'                                   pos_lab = seq(100),
 #'                                   method = "prob",
-#'                                   pdf_name = NULL)
-#' arch_pl
+#'                                   pdf_name = NULL, show = FALSE)
+#' cowplot::plot_grid(plotlist = arch_pl, ncol=1) 
 #'  
 #' @export
 plot_arch_for_clusters <- function(seqs,
@@ -71,6 +78,7 @@ plot_arch_for_clusters <- function(seqs,
                                 pdf_width = 11,
                                 pdf_height = 2,
                                 pdf_name = "archR_sequence_architectures.pdf",
+                                show = TRUE,
                                 ...){
     ##
     stopifnot(!is.null(clust_list))
@@ -90,12 +98,16 @@ plot_arch_for_clusters <- function(seqs,
     ##
     plot_titles <- make_plot_titles(clust_list, set_titles)
     suppressMessages(plot_list <- lapply(seq_along(clust_list), function(x){
-        plot_ggseqlogo_of_seqs(seqs=seqs[clust_list[[x]]],
-            pos_lab = pos_lab,
-            xt_freq = xt_freq,
-            title = plot_titles[[x]],
-            ...)
+        pl <- plot_ggseqlogo_of_seqs(seqs=seqs[clust_list[[x]]],
+                pos_lab = pos_lab,
+                xt_freq = xt_freq,
+                title = plot_titles[[x]],
+                ...)
     }))
+    ##
+    if(show){
+        invisible(capture.output(plot_list))
+    }
     ##
     if(!is.null(pdf_name)){
         grDevices::pdf(file=pdf_name, width=pdf_width, height=pdf_height)
@@ -150,12 +162,16 @@ make_plot_title_str <- function(i, n, name, this_size, st, ed){
 #' @param method Specify either 'bits' for information content or 
 #' 'prob' for probability.
 #' 
-#' @param title The title for the plot.
+#' @param title The title for the plot. Deafult is NULL.
 #' 
 #' @param bits_yax Specify 'full' if the information content y-axis limits 
 #' should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
 #' the y-axis limits according to the maximum information content of the 
-#' sequence logo. Default is 'auto'.
+#' sequence logo. Default is 'full'.
+#' 
+#' @param fixed_coord Specify TRUE if the aspect ratio of the plot should be 
+#' fixed, FALSE otherwise. Default is TRUE. When `method` argument is set to 
+#' 'bits', ratio is 4, when 'prob', ratio is 6.
 #' 
 #' @return A sequence logo plot of the given DNA sequences.
 #' 
@@ -169,18 +185,21 @@ make_plot_title_str <- function(i, n, name, this_size, st, ed){
 #'          package = "archR", mustWork = TRUE))
 #' 
 #' # Default, using information content on y-axis
-#' pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=1),
-#'                              pos_lab = seq_len(1:100))
+#' pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=3),
+#'                              pos_lab = seq_len(100), title = NULL,
+#'                              fixed_coord = TRUE)
+#' pl
 #'                              
 #' # Using probability instead of information content
-#' pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=1),
-#'                              pos_lab = seq_len(1:100), 
-#'                              method = "prob")
+#' pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=3),
+#'                              pos_lab = seq_len(100), title = "", 
+#'                              method = "prob", fixed_coord = TRUE)
+#' pl
 #'                              
 #' @export
 plot_ggseqlogo_of_seqs <- function(seqs, pos_lab = NULL, xt_freq = 5, 
-                                    method = "bits", title = "Title", 
-                                    bits_yax = "auto"){
+                                    method = "bits", title = NULL, 
+                                    bits_yax = "full", fixed_coord = FALSE){
     ##
     if(is.null(pos_lab)){
         pos_lab <- seq_len(Biostrings::width(seqs[1]))
@@ -194,7 +213,7 @@ plot_ggseqlogo_of_seqs <- function(seqs, pos_lab = NULL, xt_freq = 5,
     xtick_cal <- seq(0, nPos, by = xt_freq)
     xtick_cal[1] <- 1
     xtick_cal[length(xtick_cal)] <- nPos
-
+    ##
     foo_p <-
         ggseqlogo::ggseqlogo(
             as.character(seqs),
@@ -212,10 +231,35 @@ plot_ggseqlogo_of_seqs <- function(seqs, pos_lab = NULL, xt_freq = 5,
                                     labels = pos_lab[xtick_cal],
                                     expand = expansion(mult = c(0, 0)))
     ##
-    if(!is.null(title)) foo_p <- foo_p + ggplot2::ggtitle(title)
-    if(bits_yax == 'full') foo_p <- foo_p + ggplot2::ylim(0.0, 2.0) 
+    foo_p <- add_lims_lab(foo_p, method, bits_yax)
+    foo_p <- fix_coord(foo_p, nPos=length(pos_lab), method, fixed_coord)
     ##
-    .msg_pstr("Plot title:", title, flg=TRUE)
+    if(!is.null(title)){ 
+        foo_p <- foo_p + ggplot2::ggtitle(title)
+        .msg_pstr("Plot title:", title, flg=TRUE)
+    }
+    ##
+    
     foo_p
+}
+## =============================================================================
+
+set_ratio <- function(nPos, for100 = 4){
+    ## ratio of 4 for 100 positions looks good.
+    return(nPos*for100/100)
+}
+## =============================================================================
+
+
+fix_coord <- function(p1, nPos, method, fixed_coord){
+    if(fixed_coord){
+        if(method == "bits") use_ratio <- set_ratio(nPos, 4)
+        if((method == "prob" || method == "custom")){
+            use_ratio <- set_ratio(nPos, 8)
+        }
+        if(method == "heatmap") use_ratio <- set_ratio(nPos, 2)
+        p1 <- p1 + ggplot2::coord_fixed(ratio = use_ratio)
+    }
+    return(p1)
 }
 ## =============================================================================

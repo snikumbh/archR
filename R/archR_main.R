@@ -154,14 +154,6 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     ##
     if(plt){
         plot_all_seqs_logo(seqs_raw, seqs_pos, dpath=o_dir)
-        #
-        # allSequencesLogo <- plot_ggseqlogo_of_seqs(seqs = seqs_raw,
-        #                         position_labels = seqs_pos,
-        #                         title = paste("Sequence logo of all",
-        #                                     length(seqs_raw),"sequences" ))
-        # ggsave(filename = file.path(o_dir,"allSequencesLogo.pdf"),
-        #         plot = allSequencesLogo,
-        #         device = "pdf", width = 20, height = 2.5)
     }
     ## Make checks for params in configuration
     .assert_archR_config(config, ncol(seqs_ohe_mat))
@@ -216,7 +208,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     if(parallelize){
         cl <- parallel::makeCluster(crs, type = "FORK")
         parallel::setDefaultCluster(cl)
-        .msg_pstr("Parallelization w/ ", crs, " cores", flg=dbg)
+        .msg_pstr("Parallelization w/", crs, "cores", flg=dbg)
         .msg_pstr(cl, flg=dbg)
     }
     ####
@@ -225,7 +217,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     }
     if(modSelType == "stability"){
         .msg_pstr("Model selection by factor stability", flg=vrbs || dbg)
-        .msg_pstr("Tolerance:", tol, "& Bound:", bound, flg=vrbs || dbg)
+        .msg_pstr("Bound:", bound, flg=vrbs || dbg)
     }
     
 
@@ -234,8 +226,8 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     while (test_itr <= threshold_itr) {
         iterStartTime <- Sys.time()
         totOuterChunksColl <- length(outerChunksColl)
-        .msg_pstr("=== Iteration ", test_itr, ", ", totOuterChunksColl, 
-            " chunk(s) ===", flg=vrbs)
+        .msg_pstr("=== Iteration", test_itr, 
+            paste0("[", totOuterChunksColl, "chunk(s)]"), "===", flg=vrbs)
         nxtOuterChunksColl <- vector("list")
         seqsClustLabels <- rep("0", ncol(seqs_ohe_mat))
         intClustFactors <- NULL
@@ -243,9 +235,9 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         for (outerChunkIdx in seq_along(outerChunksColl)) {
             ##
             outerChunk <- outerChunksColl[[outerChunkIdx]]
-            .msg_pstr("[Outer chunk ", outerChunkIdx,"/",
-                totOuterChunksColl, "]", 
-                " [Size: ", length(outerChunk), "]", flg=vrbs)
+            .msg_pstr(paste0("-----[Outer chunk ", outerChunkIdx, "/",
+                        totOuterChunksColl, "]"), 
+                paste0("[Size:", length(outerChunk), "]"), flg=vrbs)
             
             ## Make a decision to process based on size of chunk
             doNotProcess <- .decide_process_outer_chunk(minSeqs,
@@ -285,9 +277,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 nClustEachIC <- rep(0, length(innerChunksColl))
                 #################### INNER CHUNK FOR LOOP #####################
                 for (innerChunkIdx in seq_along(innerChunksColl)) {
-                    .msg_pstr("[Inner chunk ", innerChunkIdx, "/",
-                        length(innerChunksColl), "]", " [Size: ", 
-                        length(innerChunksColl[[innerChunkIdx]]),"]", flg=vrbs)
+                    .msg_pstr(paste0("[Inner chunk ", innerChunkIdx, "/",
+                        length(innerChunksColl), "]"), 
+                        paste0("[Size:", 
+                        length(innerChunksColl[[innerChunkIdx]]),"]"), flg=vrbs)
                     ##
                     ## Setting up sequences for the current chunk
                     this_seqsMat <-
@@ -368,9 +361,9 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                         collatedClustAssignments)
             ##
             chunksComplInfo <-
-                paste0("[Outer chunk ", outerChunkIdx, "/", totOuterChunksColl,
+                paste0("-----[Outer chunk ", outerChunkIdx, "/", totOuterChunksColl,
                         "] complete")
-            iterComplInfo <- paste0("[Iteration ", test_itr, "] complete")
+            iterComplInfo <- paste0("=====[Iteration ", test_itr, "] complete")
             currInfo <- paste0("current total factors: ",
                                 ncol(intClustFactors))
             nextIterInfo <- paste0("Current total chunks for next iteration: ",

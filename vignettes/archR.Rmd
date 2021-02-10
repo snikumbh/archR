@@ -174,7 +174,7 @@ identical(inputSeqs_direct, inputSeqsMat)
 
 ## Visualize input sequences as an image
 
-```{r plot-seqs, echo=TRUE, fig.height=6, fig.width=5}
+```{r plot-seqs, echo=TRUE, fig.dim=c(4,6)}
 # Visualize the sequences in a image matrix where the DNA bases are 
 # assigned fixed colors
 
@@ -257,22 +257,22 @@ dim(i2_bv)
 head(i2_bv)
 ```
 
+The NMF basis vectors can be visualized as a heatmap and/or sequence logo using 
+[https://snikumbh.github.io/archR/reference/viz_bas_vec_heatmap_seqlogo.html]
+ (viz_bas_vec_heat_seqlogo) function.
 
-## Visualize results from _archR_
+### Basis vectors at iteration 1
 
-In this section we demonstrate how to visualize results from _archR_. 
-One can visualize the NMF basis vectors as well as the sequence clusters.
-
-
-
-```{r viz-BV-1, echo=TRUE, fig.height=2, fig.width=25}
+```{r viz-BV-1, echo=TRUE, fig.height=5, fig.width=25}
 archR::viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(archRresult, 1), 
                                   method = "bits", sinuc_or_dinuc = "dinuc")
 
 ```
 
+### Basis vectors at iteration 2
 
-```{r viz-BV-2, fig.height=2, fig.width=25, echo=TRUE} 
+
+```{r viz-BV-2, fig.height=5, fig.width=25, echo=TRUE} 
 archR::viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(archRresult, 2), 
                                   method = "bits", sinuc_or_dinuc = "dinuc")
 
@@ -281,20 +281,21 @@ archR::viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(archRresult, 2),
 
 
 
-
-
+### Visualize sequences by clusters
 
 The clustered output from _archR_ can again be visualized as a matrix. 
-Simply sort the sequences based on the cluster labels assigned to them and call 
-`archR::viz_seqs_as_acgt_mat_from_seqs` with the sorted order as shown.
-```{r clust-itr1, fig.dim=c(3,6), fig.cap="Figure: Clusters at iteration 1"}
+Use the [https://snikumbh.github.io/archR/reference/seqs_str.html](seqs_str)
+function to fetch sequences by clusters at any iteration and call 
+`archR::viz_seqs_as_acgt_mat_from_seqs` as shown.
+
+```{r clust-itr1, fig.dim=c(4,6), fig.cap="Figure: Clusters at iteration 1"}
 
 archR::viz_seqs_acgt_mat_from_seqs(seqs_str(archRresult, iter = 1, ord = TRUE),
                                   pos_lab = positions)
 
 ```
 
-```{r clust-itr2, fig.dim=c(5,6), fig.cap="Figure: Clusters at iteration 2"}
+```{r clust-itr2, fig.dim=c(4,6), fig.cap="Figure: Clusters at iteration 2"}
 
 archR::viz_seqs_acgt_mat_from_seqs(seqs_str(archRresult, iter = 2, ord = TRUE),
                                   pos_lab = positions)

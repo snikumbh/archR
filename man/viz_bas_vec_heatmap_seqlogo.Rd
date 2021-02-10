@@ -9,20 +9,22 @@ plot}
 \usage{
 viz_bas_vec_heatmap_seqlogo(
   feat_mat,
-  method = "custom",
+  method = "bits",
   pos_lab = NULL,
   add_pseudo_counts = FALSE,
   pdf_name = NULL,
-  sinuc_or_dinuc = "sinuc"
+  sinuc_or_dinuc = "sinuc",
+  fixed_coord = FALSE
 )
 
 viz_bas_vec_seqlogo(
   feat_mat,
-  method = "custom",
+  method = "bits",
   pos_lab = NULL,
   add_pseudo_counts = FALSE,
   pdf_name = NULL,
-  sinuc_or_dinuc = "sinuc"
+  sinuc_or_dinuc = "sinuc",
+  fixed_coord = FALSE
 )
 
 viz_bas_vec_heatmap(
@@ -30,14 +32,15 @@ viz_bas_vec_heatmap(
   pos_lab = NULL,
   add_pseudo_counts = FALSE,
   pdf_name = NULL,
-  sinuc_or_dinuc = "sinuc"
+  sinuc_or_dinuc = "sinuc",
+  fixed_coord = FALSE
 )
 }
 \arguments{
 \item{feat_mat}{The features matrix (basis vectors matrix) from archR.}
 
 \item{method}{For \code{ggseqlogo} -- either of "custom", "bits", or
-"probability". Default is "custom".}
+"probability". Default is "bits".}
 
 \item{pos_lab}{Labels for sequence positions, should be of same
 length as that of the sequences. Default value is NULL, when the 
@@ -52,6 +55,10 @@ features matrix.}
 
 \item{sinuc_or_dinuc}{"sinuc" or "dinuc" for choosing between mono- and
 dinucleotide profiles respectively.}
+
+\item{fixed_coord}{Set this to TRUE to use a fixed aspect ratio for the 
+plot. Default is FALSE. Mainly useful for sequence logo. For just heatmap, 
+this is ignored.}
 }
 \value{
 nothing
@@ -74,11 +81,15 @@ NMF basis vectors as a heatmap
 res <- readRDS(system.file("extdata", "example_archRresult.rds", 
          package = "archR", mustWork = TRUE))
 
-viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(res,iter=1))
+viz_bas_vec_heatmap_seqlogo(feat_mat = get_clBasVec_m(res,iter=1),
+                            sinuc_or_dinuc = "dinuc", fixed_coord = TRUE)
 
-viz_bas_vec_seqlogo(feat_mat = get_clBasVec_m(res,iter=1))
+viz_bas_vec_seqlogo(feat_mat = get_clBasVec_m(res,iter=1),
+                     sinuc_or_dinuc = "dinuc", fixed_coord = TRUE)
 
-viz_bas_vec_heatmap(feat_mat = get_clBasVec_m(res,iter=1))
+# Visualizing basis vector for a single cluster
+viz_bas_vec_heatmap(feat_mat = as.matrix(get_clBasVec_m(res,iter=1)[,3]),
+                     sinuc_or_dinuc = "dinuc", fixed_coord = TRUE)
 
 }
 \seealso{

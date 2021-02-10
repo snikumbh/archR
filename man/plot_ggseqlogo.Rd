@@ -4,20 +4,32 @@
 \alias{plot_ggseqlogo}
 \title{Visualize a given (PWM) matrix as a sequence logo.}
 \usage{
-plot_ggseqlogo(pwm_mat, method = "custom", pos_lab = NULL, pdf_name = NULL)
+plot_ggseqlogo(
+  pwm_mat,
+  method = "bits",
+  pos_lab = NULL,
+  pdf_name = NULL,
+  bits_yax = "full",
+  fixed_coord = FALSE
+)
 }
 \arguments{
 \item{pwm_mat}{Matrix (usually a PWM, but can be any non-normalized matrix) 
 to be represented as a sequence logo.}
 
 \item{method}{For \code{ggseqlogo}; either of 'custom', 'bits', or
-'probability'. Default is 'custom'.}
+'probability'. Default is 'bits'.}
 
 \item{pos_lab}{Labels for sequence positions, should be of same
 length as that of the sequences. Default value is NULL, when the 
 positions are labeled from 1 to the length of the sequences.}
 
 \item{pdf_name}{Name of the file which will be saved as PDF.}
+
+\item{bits_yax}{Specify 'full' if the information content y-axis limits 
+should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
+the y-axis limits according to the maximum information content of the 
+sequence logo. Default is 'full'.}
 }
 \value{
 A ggplot2 object so you can simply call \code{print} or \code{save}
@@ -35,7 +47,7 @@ res <- readRDS(system.file("extdata", "example_archRresult.rds",
 pwm <- archR::make_dinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
                         add_pseudo_counts = FALSE)
 
-plot_ggseqlogo(pwm_mat = pwm)
+plot_ggseqlogo(pwm_mat = pwm, fixed_coord = TRUE)
 
 }
 \seealso{

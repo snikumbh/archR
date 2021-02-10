@@ -10,10 +10,10 @@ make_sinuc_PWMs(mat, add_pseudo_counts = TRUE, scale = TRUE)
 \item{mat}{Actually a vector that will be reshaped into a (PWM)
 matrix of DNA sequences.}
 
-\item{add_pseudo_counts}{Boolean, taking values TRUE/T or FALSE/F, specifying
+\item{add_pseudo_counts}{Logical, taking values TRUE or FALSE, specifying
 whether or not pseudocounts are added to the matrix.}
 
-\item{scale}{Boolean, taking values TRUE/T or FALSE/F, specifying whether or
+\item{scale}{Logical, taking values TRUE or FALSE, specifying whether or
 not the matrix is scaled column-wise, i.e., all columns summed to 1.}
 }
 \value{
