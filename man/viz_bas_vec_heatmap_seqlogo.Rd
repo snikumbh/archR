@@ -57,8 +57,7 @@ features matrix.}
 dinucleotide profiles respectively.}
 
 \item{fixed_coord}{Set this to TRUE to use a fixed aspect ratio for the 
-plot. Default is FALSE. Mainly useful for sequence logo. For just heatmap, 
-this is ignored.}
+plot. Default is FALSE.}
 }
 \value{
 nothing

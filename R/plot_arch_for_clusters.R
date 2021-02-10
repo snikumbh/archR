@@ -36,6 +36,7 @@
 #' file (one plot per page).
 #'
 #' @importFrom grDevices pdf dev.off
+#' @importFrom utils capture.output
 #' 
 #' @examples 
 #' res <- readRDS(system.file("extdata", "example_archRresult.rds", 

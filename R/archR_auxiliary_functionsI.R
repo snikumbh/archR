@@ -434,62 +434,65 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 }
 ## =============================================================================
 
-.unfurl_nodeList <- function(nodeList, vrbs=FALSE){
+.unfurl_nodeList <- function(nodeList, vec_ver = FALSE, vrbs=FALSE){
     ##
     returnVal <- .assert_archR_list_properties(nodeList)
     if(returnVal != "FOO") stop(returnVal)
     ##
-    element_lengths <- unlist(lapply(nodeList, length))
-    if(any(element_lengths != 1)){
-        .msg_pstr("Needs unfurling...", flg=vrbs)
-        new_list <- vector("list", sum(element_lengths))
-        iter1_new <- 0
-        iter2_old <- 1
-        while(iter2_old <= length(nodeList)){
-            if(length(nodeList[[iter2_old]]) == 1){
-                iter1_new <- iter1_new + 1
-                new_list[[iter1_new]] <- nodeList[[iter2_old]]
-            }else{
-                for(i in seq_along(nodeList[[iter2_old]])){
+    if(vec_ver){
+        element_lengths <- unlist(lapply(nodeList, length))
+        if(any(element_lengths != 1)){
+            .msg_pstr("Needs unfurling...", flg=vrbs)
+            new_list <- vector("list", sum(element_lengths))
+            iter1_new <- 0
+            iter2_old <- 1
+            while(iter2_old <= length(nodeList)){
+                if(length(nodeList[[iter2_old]]) == 1){
                     iter1_new <- iter1_new + 1
-                    new_list[[iter1_new]] <- nodeList[[iter2_old]][[i]]
+                    new_list[[iter1_new]] <- nodeList[[iter2_old]]
+                }else{
+                    for(i in seq_along(nodeList[[iter2_old]])){
+                        iter1_new <- iter1_new + 1
+                        new_list[[iter1_new]] <- nodeList[[iter2_old]][[i]]
+                    }
                 }
+                iter2_old <- iter2_old + 1
             }
-            iter2_old <- iter2_old + 1
+            return(new_list)
+            
+        }else{
+            .msg_pstr("No unfurling...", flg=vrbs)
+            return(nodeList)
         }
-        new_list
-        
     }else{
-        .msg_pstr("No unfurling...", flg=vrbs)
-        nodeList
+        element_lengths <- unlist(lapply(nodeList, function(elem){
+            ifelse(is.list(elem), length(elem), 1)
+            # else 1
+        }))
+        if(any(element_lengths != 1)){
+            .msg_pstr("Needs unfurling...", flg=vrbs)
+            new_list <- vector("list", sum(element_lengths))
+            iter1 <- 0
+            iter2 <- 1
+            while(iter2 <= length(nodeList)){
+                if(!is.list(nodeList[[iter2]])){
+                    iter1 <- iter1 + 1
+                    new_list[[iter1]] <- nodeList[[iter2]]
+                }else{
+                    for(i in seq_along(nodeList[[iter2]])){
+                        iter1 <- iter1 + 1
+                        new_list[[iter1]] <- nodeList[[iter2]][[i]]
+                    }
+                }
+                iter2 <- iter2 + 1
+            }
+            return(new_list)
+        }else{
+            .msg_pstr("No unfurling...", flg=vrbs)
+            return(nodeList)
+        }
     }
-    # element_lengths <- unlist(lapply(nodeList, function(elem){
-    #     ifelse(is.list(elem), length(elem), 1)
-    #     # else 1
-    # }))
     
-    # if(any(element_lengths != 1)){
-    #     .msg_pstr("Needs unfurling...", flg=vrbs)
-    #     new_list <- vector("list", sum(element_lengths))
-    #     iter1 <- 0
-    #     iter2 <- 1
-    #     while(iter2 <= length(nodeList)){
-    #         if(!is.list(nodeList[[iter2]])){
-    #             iter1 <- iter1 + 1
-    #             new_list[[iter1]] <- nodeList[[iter2]]
-    #         }else{
-    #             for(i in seq_along(nodeList[[iter2]])){
-    #                 iter1 <- iter1 + 1
-    #                 new_list[[iter1]] <- nodeList[[iter2]][[i]]
-    #             }
-    #         }
-    #         iter2 <- iter2 + 1
-    #     }
-    #     new_list
-    # }else{
-    #     .msg_pstr("No unfurling...", flg=vrbs)
-    #     nodeList
-    # }
 }
 ## =============================================================================
 
@@ -622,14 +625,14 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 }
 ## =============================================================================
 
-.detect_just_for_sake_clust <- function(cheight_idx, clust_list, vrbs=FALSE){
-    updated_clust_list <- clust_list
-    cl_lens <- lapply(clust_list, length)
+.detect_just_for_sake_clust <- function(cheight_idx, cl_list, vrbs=FALSE){
+    upd_cl_list <- cl_list
+    cl_lens <- lapply(cl_list, length)
     if(cheight_idx == 1 && length(which(cl_lens == 2)) == 1){
         .msg_pstr("just for sake clustering detected!", flg=vrbs)
-        updated_clust_list <- .unfurl_nodeList(clust_list)
+        upd_cl_list <- .unfurl_nodeList(cl_list, vec_ver=TRUE, vrbs)
     }
-    updated_clust_list
+    upd_cl_list
 }
 ## =============================================================================
 
@@ -668,7 +671,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
             return(thisX)
         }
     })
-    clust_list <- .unfurl_nodeList(updated_clust_list)
+    clust_list <- .unfurl_nodeList(updated_clust_list, vec_ver=FALSE)
     clust_list
 }
 ## =============================================================================
@@ -777,7 +780,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #' @param dist_method Distance measure to be used with hierarchical clustering. 
 #' Available options are "euclid" (default), "cor" for correlation, "cosangle" 
 #' for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
-#' \code{\link[TFBSTools]{TFBSTools::PFMSimilarity}}). 
+#' \code{\link[TFBSTools]{PFMSimilarity}}). 
 #' 
 #' @param regularize Logical. Specify TRUE if regularization is to be performed 
 #' before comparison. Default is FALSE. Also see argument 'topN'.

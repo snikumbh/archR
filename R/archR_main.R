@@ -361,8 +361,8 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                         collatedClustAssignments)
             ##
             chunksComplInfo <-
-                paste0("-----[Outer chunk ", outerChunkIdx, "/", totOuterChunksColl,
-                        "] complete")
+                paste0("-----[Outer chunk ", outerChunkIdx, "/", 
+                            totOuterChunksColl, "] complete")
             iterComplInfo <- paste0("=====[Iteration ", test_itr, "] complete")
             currInfo <- paste0("current total factors: ",
                                 ncol(intClustFactors))

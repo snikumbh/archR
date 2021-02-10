@@ -15,6 +15,9 @@ length as that of the sequences. Default value is NULL, when the
 positions are labeled from 1 to the length of the sequences.}
 
 \item{pdf_name}{Name of the file which will be saved as PDF.}
+
+\item{fixed_coord}{Set this to TRUE to use a fixed aspect ratio for the 
+plot. Default is FALSE.}
 }
 \value{
 A ggplot object so you can simply call \code{print} or \code{save}

@@ -20,8 +20,7 @@
 #' @param sinuc_or_dinuc "sinuc" or "dinuc" for choosing between mono- and
 #' dinucleotide profiles respectively.
 #' @param fixed_coord Set this to TRUE to use a fixed aspect ratio for the 
-#' plot. Default is FALSE. Mainly useful for sequence logo. For just heatmap, 
-#' this is ignored.
+#' plot. Default is FALSE.
 #'
 #' @return nothing
 #'

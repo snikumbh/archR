@@ -25,11 +25,18 @@ test_that("collate_clusters handles empty globClustAssignments", {
                  "Cluster assignments variable has a 0-length entry")
 })
 
+test_that("unfurl_nodeList handles example nodeList well (vec version)", {
+    nodeList <- list(1, c(2, 5), 6, 7)
+    unfurled_nodeList <- list(1, 2, 5, 6, 7)
+    ans <- .unfurl_nodeList(nodeList = nodeList, vec_ver=TRUE)
+    expect_identical(unfurled_nodeList, ans)
+    
+})
 
 test_that("unfurl_nodeList handles example nodeList well", {
     nodeList <- list(c(1,3,4), list(2, 5), c(6,7))
     unfurled_nodeList <- list(c(1,3,4), 2, 5, c(6,7))
-    ans <- .unfurl_nodeList(nodeList = nodeList)
+    ans <- .unfurl_nodeList(nodeList = nodeList, vec_ver=FALSE)
     expect_identical(unfurled_nodeList, ans)
     
 })
@@ -37,9 +44,9 @@ test_that("unfurl_nodeList handles example nodeList well", {
 
 test_that("unfurl_nodeList handles empty/null nodeList", {
     nodeList <- NULL
-    expect_error(.unfurl_nodeList(nodeList = nodeList))
+    expect_error(.unfurl_nodeList(nodeList = nodeList), vec_ver=FALSE)
     nodeList <- list()
-    expect_error(.unfurl_nodeList(nodeList = nodeList))
+    expect_error(.unfurl_nodeList(nodeList = nodeList), vec_ver=FALSE)
 })
 
 

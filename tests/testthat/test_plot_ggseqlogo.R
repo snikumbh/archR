@@ -53,10 +53,18 @@ test_that("ggseqlogo plotting works", {
   # rnorm
   set.seed(1234)
   # test variables
-  testPositionLabels <- seq(25)
-  testPwmMat <- matrix(rnorm(100), nrow = 4)
-  testPwmMat <- make_sinuc_PWMs(testPwmMat)
-  p1 <- plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels)
+  # testPositionLabels <- seq(25)
+  # testPwmMat <- matrix(rnorm(100), nrow = 4)
+  # testPwmMat <- make_sinuc_PWMs(testPwmMat)
+  # p1 <- plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels)
+  #
+  res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+          package = "archR", mustWork = TRUE))
+  
+  pwm <- archR::make_dinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+                         add_pseudo_counts = FALSE)
+  
+  p1 <- plot_ggseqlogo(pwm_mat = pwm, fixed_coord = TRUE)
   # test plot
   vdiffr::expect_doppelganger("ggseqlogo plot example", p1)
 })

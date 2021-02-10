@@ -32,7 +32,7 @@ clustering with \code{\link[stats]{hclust}}. Default is 'ward.D'.}
 \item{dist_method}{Distance measure to be used with hierarchical clustering. 
 Available options are "euclid" (default), "cor" for correlation, "cosangle" 
 for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
-\code{\link[TFBSTools]{TFBSTools::PFMSimilarity}}).}
+\code{\link[TFBSTools]{PFMSimilarity}}).}
 
 \item{regularize}{Logical. Specify TRUE if regularization is to be performed 
 before comparison. Default is FALSE. Also see argument 'topN'.}

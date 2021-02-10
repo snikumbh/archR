@@ -30,6 +30,9 @@ positions are labeled from 1 to the length of the sequences.}
 should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
 the y-axis limits according to the maximum information content of the 
 sequence logo. Default is 'full'.}
+
+\item{fixed_coord}{Set this to TRUE to use a fixed aspect ratio for the 
+plot. Default is FALSE.}
 }
 \value{
 A ggplot2 object so you can simply call \code{print} or \code{save}

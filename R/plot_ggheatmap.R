@@ -9,6 +9,8 @@
 #' length as that of the sequences. Default value is NULL, when the 
 #' positions are labeled from 1 to the length of the sequences.
 #' @param pdf_name Name of the file which will be saved as PDF.
+#' @param fixed_coord Set this to TRUE to use a fixed aspect ratio for the 
+#' plot. Default is FALSE.
 #'
 #' @return A ggplot object so you can simply call \code{print} or \code{save}
 #' on it later. If \code{pdf_name} is given, it is also saved and the
@@ -96,6 +98,9 @@ plot_ggheatmap <- function(pwm_mat, pos_lab = NULL, pdf_name = NULL,
 #' should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
 #' the y-axis limits according to the maximum information content of the 
 #' sequence logo. Default is 'full'.
+#' 
+#' @param fixed_coord Set this to TRUE to use a fixed aspect ratio for the 
+#' plot. Default is FALSE. 
 #'
 #' @return A ggplot2 object so you can simply call \code{print} or \code{save}
 #' on it later. If \code{pdf_name} is given, it is also saved in addition to 
