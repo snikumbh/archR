@@ -1,3 +1,18 @@
+
+# archR 0.1.6
+
+## New features
+* Can choose to fix aspect ratio for visualization functions
+  - `plot_ggheatmap()`
+  - `plot_ggseqlogo()`
+  - `viz_bas_vec_heatmap_seqlogo()`
+  - `viz_bas_vec_heatmap()`
+  - `viz_bas_vec_seqlogo()`
+  - `plot_arch_for_clusters()`
+  - `plot_ggseqlogo_of_seqs()`
+* Ability to detect occurrence of just for sake clustering when fetching from 
+  HAC
+
 # archR 0.1.5
 
 ## New features

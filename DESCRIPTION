@@ -1,7 +1,7 @@
 Type: Package
 Package: archR
 Title: Identify Different Architectures of Sequence Elements
-Version: 0.1.5
+Version: 0.1.6
 Authors@R: 
     person(given = "Sarvesh",
            family = "Nikumbh",
@@ -28,7 +28,7 @@ URL: https://snikumbh.github.io/archR/,
 BugReports: https://github.com/snikumbh/archR/issues
 SystemRequirements: Python (>= 3.5), scikit-learn (>= 0.21.2)
 Depends:
-    R (>= 3.6.0)
+    R (>= 4.0.0)
 Imports:
     utils,
     graphics,
