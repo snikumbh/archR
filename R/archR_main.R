@@ -227,7 +227,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         iterStartTime <- Sys.time()
         totOuterChunksColl <- length(outerChunksColl)
         .msg_pstr("=== Iteration", test_itr, 
-            paste0("[", totOuterChunksColl, "chunk(s)]"), "===", flg=vrbs)
+            paste0("[", totOuterChunksColl, " chunk(s)]"), "===", flg=vrbs)
         nxtOuterChunksColl <- vector("list")
         seqsClustLabels <- rep("0", ncol(seqs_ohe_mat))
         intClustFactors <- NULL
