@@ -1,5 +1,11 @@
 #' Date: 2020-06-27
-#' Author: Sarvesh Nikumbh
+#' Edits: Sarvesh Nikumbh
+#' Original authors: rslurm pkg authors
+#' TODO: - Thoroughly check if these edits to rslurm exported functions are 
+#' needed and cannot be manipulated otherwise.
+#' 
+#' TODO: - Separate out the UI as an individual package dependent on archR
+#'       - Add rslurm authors as contributors with permission
 #'
 #' This is an adapted version of the slurm_call function from rslurm package.
 #' Changes implemented:
