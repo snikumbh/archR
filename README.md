@@ -73,6 +73,7 @@ archRconfig <- archR::archR_set_config(
         inner_chunk_size = 500,
         flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
                      plot = FALSE)
+        )
 
 #
 ### Call/Run archR
