@@ -46,7 +46,7 @@ handle_dir_creation <- function(o_dir, vrbs){
 get_features_matrix <- function(nmfResultObj){
     returnVal <- .assert_archR_list_properties(nmfResultObj)
     if (returnVal != "FOO") stop(returnVal)
-    else return(as.matrix(nmfResultObj[[1]]))
+    return(as.matrix(nmfResultObj[[1]]))
 }
 ## =============================================================================
 
@@ -56,29 +56,38 @@ get_features_matrix <- function(nmfResultObj){
 get_samples_matrix <- function(nmfResultObj){
     returnVal <- .assert_archR_list_properties(nmfResultObj)
     if (returnVal != "FOO") stop(returnVal)
-    else return(as.matrix(nmfResultObj[[2]]))
+    return(as.matrix(nmfResultObj[[2]]))
 }
 ## =============================================================================
 
 get_trimers_from_alphabet <- function(alph){
-    if (!is.null(alph)) {
-        return(do.call(paste0, expand.grid(alph, alph, alph)))
-    } else {
-        stop("Expecting non-NULL alphabet")
-    }
+    if (is.null(alph)) stop("Expecting non-NULL alphabet")
+    return(do.call(paste0, expand.grid(alph, alph, alph)))
+    
 }
 ## =============================================================================
 
 get_dimers_from_alphabet <- function(alph){
-    if (!is.null(alph)) {
-        return(do.call(paste0, expand.grid(alph, alph)))
-    } else {
-        stop("Expecting non-NULL alphabet")
+    if (is.null(alph)) stop("Expecting non-NULL alphabet")
+    return(do.call(paste0, expand.grid(alph, alph)))
+    
+}
+## =============================================================================
+
+manage_o_dir <- function(plt, o_dir){
+    if(plt){
+        if(is.null(o_dir)){
+            stop(paste("'plot' flag is TRUE but 'o_dir' is not provided.",
+                    "Did you forget to set 'o_dir'?"))
+        }
     }
 }
 ## =============================================================================
 
 plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
+    if(is.null(dpath)){
+        stop("directory path/name is NULL")
+    }
     allSequencesLogo <- plot_ggseqlogo_of_seqs(
         seqs = seqs_raw,
         pos_lab = seqs_pos, 
