@@ -152,6 +152,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         seqs_pos <- seq_len(Biostrings::width(seqs_raw[1]))
     }
     ##
+    manage_o_dir(plt, o_dir) # this will stop if o_dir is NULL
     if(plt){
         plot_all_seqs_logo(seqs_raw, seqs_pos, dpath=o_dir)
     }
