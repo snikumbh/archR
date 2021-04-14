@@ -44,9 +44,9 @@ test_that("unfurl_nodeList handles example nodeList well", {
 
 test_that("unfurl_nodeList handles empty/null nodeList", {
     nodeList <- NULL
-    expect_error(.unfurl_nodeList(nodeList = nodeList), vec_ver=FALSE)
+    expect_error(.unfurl_nodeList(nodeList = nodeList, vec_ver=FALSE))
     nodeList <- list()
-    expect_error(.unfurl_nodeList(nodeList = nodeList), vec_ver=FALSE)
+    expect_error(.unfurl_nodeList(nodeList = nodeList, vec_ver=FALSE))
 })
 
 

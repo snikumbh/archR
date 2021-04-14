@@ -38,6 +38,48 @@ test_that("archR (stability) works when timeFlag is FALSE", {
 })
 
 
+test_that("archR (stability) works when plot==TRUE, o_dir is NULL", {
+    ## Make toy objects and data
+    fname <- system.file("extdata", "example_data.fa",
+        package = "archR",
+        mustWork = TRUE)
+    
+    
+    
+    tssSeqs_sinuc <- suppressMessages(archR::prepare_data_from_FASTA(fname))
+    tssSeqsRaw <- suppressMessages(archR::prepare_data_from_FASTA(fname, 
+        raw_seq = TRUE))
+    
+    nSeqs <- ncol(tssSeqs_sinuc)
+    positions <- seq(1,100)
+    
+    useFlags <- list(debug = FALSE,
+        verbose = TRUE,
+        plot = TRUE,
+        time = FALSE)
+    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+        k_min = 2, k_max = 20, 
+        parallelize = FALSE,
+        mod_sel_type = "stability", 
+        n_iterations = 50,
+        n_cores = NA,
+        flags = useFlags)
+    set.seed(1234)
+    ##
+    expect_error(archR::archR(toyConfig, 
+        seqs_raw = tssSeqsRaw, 
+        seqs_ohe_mat = tssSeqs_sinuc, 
+        threshold_itr = 1, o_dir = NULL), 
+        ##
+        paste("'plot' flag is TRUE but 'o_dir' is not provided.",
+            "Did you forget to set 'o_dir'?")
+        )
+    ##
+})
+
+
+
+
 test_that("archR (cv) works when timeFlag is FALSE", {
     ## Make toy objects and data
     fname <- system.file("extdata", "example_data.fa",

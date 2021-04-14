@@ -56,6 +56,20 @@ test_that("get_dimers is working fine", {
 })
 
 
+test_that("get_trimers is working fine", {
+  alphabet = c("A", "C", "G", "T")
+  expectAns <- c("AAA", "CAA", "GAA", "TAA", "ACA", "CCA", "GCA", "TCA", "AGA",
+    "CGA", "GGA", "TGA", "ATA", "CTA", "GTA", "TTA", "AAC", "CAC", "GAC", "TAC",
+    "ACC", "CCC", "GCC", "TCC", "AGC", "CGC", "GGC", "TGC", "ATC", "CTC", "GTC",
+    "TTC", "AAG", "CAG", "GAG", "TAG", "ACG", "CCG", "GCG", "TCG", "AGG", "CGG", 
+    "GGG", "TGG", "ATG", "CTG", "GTG", "TTG", "AAT", "CAT", "GAT", "TAT", "ACT", 
+    "CCT", "GCT", "TCT", "AGT", "CGT", "GGT", "TGT", "ATT", "CTT", "GTT", "TTT")
+  ans <- get_trimers_from_alphabet(alphabet)
+  expect_equal(expectAns, ans)
+  expect_error(get_trimers_from_alphabet(NULL))
+})
+
+
 # test_that("get_hopach_cluster_medoidsIdx handles null hopach object", {
 #     hopachObj <- NULL
 #     fMat <- matrix(rep(runif(1),1000), ncol = 5)
