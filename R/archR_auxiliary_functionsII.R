@@ -430,6 +430,11 @@ archR_set_config <- function(inner_chunk_size = 500,
 ## additionally hold new ones
 ## - Similarly, globFactors variable is updated inside the function to
 ## additionally hold new ones
+## 
+## doRegularize arg is passed on to stability_model _selection function
+## For first iteration, doRegularize will be FALSE, and TRUE in subsequent 
+## iterations of archR
+## 
 .handle_chunk_w_NMF2 <- function(innerChunkIdx,
                                     innerChunksColl,
                                     this_mat,
@@ -437,7 +442,8 @@ archR_set_config <- function(inner_chunk_size = 500,
                                     cgfglinear = TRUE,
                                     coarse_step = 10,
                                     askParsimony = TRUE,
-                                    config){
+                                    doRegularize = FALSE,
+                                    config, oDir, test_itr, oChunkIdx){
     .assert_archR_flags(config$flags)
     dbg <- config$flags$debugFlag
     vrbs <- config$flags$verboseFlag
@@ -468,10 +474,11 @@ archR_set_config <- function(inner_chunk_size = 500,
     #########################
     if(config$modSelType == "stability"){
         .msg_pstr("Performing stability-based model selection", flg=dbg)
+        if(doRegularize) .msg_pstr("Regularization w/ dispersion", flg=dbg)
         best_k <- .stability_model_select_pyNMF2(
             X = this_mat, param_ranges = config$paramRanges,
             parallelDo = config$parallelize, nCores = config$nCoresUse,
-            nIterations = config$nIterationsUse,
+            nIterations = config$nIterationsUse, doRegularize = doRegularize,
             tol = config$tol, bound = config$bound,
             flags = config$flags, returnBestK = TRUE, bootstrap = TRUE
         )
@@ -504,13 +511,9 @@ archR_set_config <- function(inner_chunk_size = 500,
                                         nRuns = nRuns,
                                         bootstrap = TRUE)
         featuresMatrixList <- lapply(nmf_nRuns_list$nmf_result_list,
-                                    function(x){
-                                        get_features_matrix(x)
-                                    })
+                                        get_features_matrix)
         samplesMatrixList <- lapply(nmf_nRuns_list$nmf_result_list,
-                                    function(x){
-                                        get_samples_matrix(x)
-                                    })
+                                        get_samples_matrix)
         ##
         new_ord <- nmf_nRuns_list$new_ord
         ## Get reconstruction accuracies for them
@@ -521,6 +524,8 @@ archR_set_config <- function(inner_chunk_size = 500,
             recA <- as.matrix(featuresMatrixList[[nR]]) %*%
                 as.matrix(samplesMatrixList[[nR]])
             this_q2 <- .compute_q2(as.matrix(A), recA)
+            # this_evar***********$$$$@@@@@@@@
+            # print()
             if(this_q2 > bestQ2){
                 bestQ2 <- this_q2
                 bestFeatMat <- featuresMatrixList[[nR]]
@@ -541,7 +546,8 @@ archR_set_config <- function(inner_chunk_size = 500,
         .msg_pstr("Fetching ", best_k," cluster(s) w/ NMF scores", flg=dbg)
         clusterMembershipsForSamples <-
             .get_cluster_memberships_per_run(samplesMatrix = samplesMatrix,
-                iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx)
+                iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx, 
+                oDir, test_itr, oChunkIdx)
         forGlobClustAssignments <- .assign_samples_to_clusters(
             clusterMembershipsVec = clusterMembershipsForSamples,
             nClusters = best_k, iChunkIdx = innerChunkIdx, 
