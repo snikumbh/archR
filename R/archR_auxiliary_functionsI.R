@@ -154,7 +154,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 # @return A list that can be assigned as an element in globClustAssignments
 #
 .get_cluster_memberships_per_run <- function(samplesMatrix, iChunksColl,
-                                        iChunkIdx) {
+                                        iChunkIdx, oDir, test_itr, oChunkIdx) {
     .assert_archR_samplesMatrix(samplesMatrix)
     nClusters = nrow(samplesMatrix)
     returnClusterAsList <- vector("list", nClusters)
@@ -167,7 +167,111 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     } else {
         ##
     }
+    print(class(clustMemberships))
+    print(clustMemberships)
+    print(iChunkIdx)
+    # print(iChunksColl)
+    print(oDir)
+    .debug_samplesMat_plotting(samplesMatrix, clustMemberships, iChunkIdx, 
+        oDir, test_itr, oChunkIdx)
+    # stop("SAMARTH")
     return(clustMemberships)
+}
+## =============================================================================
+
+## This function detects if, for a given number of factors, overfitting has 
+## occurred. 
+## 
+## Return value: TRUE if overfitting detected, o/w FALSE
+## 
+## Input args:
+## -- samplesMat
+## -- clusterMemberships
+## -- minSeqs (This can be a different value than that passed via archR config)
+## --
+.detect_overfitting <- function(samplesMat, clustMemberships, minSeqs){
+    
+    len_clusts <- lapply(seq_len(ncol(samplesMat)), function(x){
+        length(which(clustMemberships == x))
+        })
+    if(any(len_clusts) < minSeqs){
+        return(FALSE)
+    }else{
+        .compare_IQRs(samplesMat, clustMemberships)
+    }
+}
+## =============================================================================
+
+.compare_IQRs <- function(samplesMat, clustMemberships){
+    # put factors along columns
+    samplesMat <- t(samplesMat)
+    all_iqr <- lapply(seq_len(ncol(samplesMat)), function(x){
+        matrixStats::colIQRs(matrix(samplesMat[clustMemberships == x,], 
+            ncol = ncol(samplesMat), byrow = FALSE))
+    })
+    all_iqr_vec <- unlist(all_iqr)
+    bxst_all_iqr <- boxplot.stats(all_iqr_vec)
+    print(bxst_all_iqr)
+    if(length(bxst_all_iqr$out) != 0){
+        print("*** NO OVERFITTING ***")
+        return(TRUE)
+    }
+    return(FALSE)
+}
+
+
+.debug_samplesMat_plotting <- function(samplesMat, clustMemberships, 
+                                iChunkIdx, oDir, test_itr, oChunkIdx){
+    # put factors along columns
+    samplesMat <- t(samplesMat)
+    #
+    sam_df <- as.data.frame(samplesMat)
+    sam_df$clust <- clustMemberships
+    sam_df <- tidyr::pivot_longer(sam_df, cols = paste0("V", seq(ncol(samplesMat))), 
+                        names_to = "Factors")
+    
+    pl <- ggpubr::ggboxplot(sam_df, x = "Factors", y = "value", 
+                facet.by = "clust", 
+                add = c("mean"), add.params = list(color="blue"),
+                title = paste0("Iteration: ", test_itr, 
+                    "; Outer Chunk: ", oChunkIdx,
+                    "; Inner Chunk: ", iChunkIdx
+                ))
+    fname <- file.path(oDir, paste0(test_itr, "_", 
+                                    oChunkIdx, "_", 
+                                    iChunkIdx, "_samarth_trial.png"))
+    ggsave(fname, pl, device = "png")
+    ####
+    ## 1. How about comparing IQRs for each set of samples per cluster
+    ## -- IQR is less robust, so that if there is a skew, it will reflect in the IQR
+    ## -- Perhaps, even SD?
+    ## -- Use MAD to compare them
+    ##
+    all_iqr <- lapply(seq_len(ncol(samplesMat)), function(x){
+        matrixStats::colIQRs(matrix(samplesMat[clustMemberships == x,], 
+                                ncol = ncol(samplesMat), byrow = FALSE))
+            })
+    all_iqr_vec <- unlist(all_iqr)
+    all_iqr_mad <- mad(all_iqr_vec)
+    all_sd <- lapply(seq_len(ncol(samplesMat)), function(x){
+        matrixStats::colSds(matrix(samplesMat[clustMemberships == x,], 
+                                ncol = ncol(samplesMat), byrow = FALSE))
+    })
+    all_sd_mad <- unlist(lapply(all_sd, mad))
+    print("All IQRs")
+    print(all_iqr)
+    print("MAD of all IQRs")
+    print(all_iqr_mad)
+    ##
+    iqr_zscore <- (all_iqr_vec - median(all_iqr_vec))/all_iqr_mad
+    print("ZScores")
+    print(iqr_zscore)
+    print(iqr_zscore[iqr_zscore > 2.5])
+    print("Boxplot.stats")
+    bxst_all_iqr <- boxplot.stats(all_iqr_vec)
+    print(bxst_all_iqr)
+    # if()
+    
 }
 ## =============================================================================
 
