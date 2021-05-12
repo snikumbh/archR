@@ -297,7 +297,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                         coarse_step = 10,
                                         monolinear = FALSE,
                                         askParsimony = set_parsimony[test_itr],
-                                        config)
+                                        doRegularize = FALSE,
+                                        config, 
+                                        o_dir, test_itr, 
+                                        outerChunkIdx)
                     }else{
                         ##
                         thisNMFResult <-
@@ -308,7 +311,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                         coarse_step = 5,
                                         monolinear = TRUE,
                                         askParsimony = set_parsimony[test_itr],
-                                        config)
+                                        doRegularize = TRUE,
+                                        config, 
+                                        o_dir, test_itr, 
+                                        outerChunkIdx)
                     }
                     .assert_archR_NMFresult(thisNMFResult)
                     globFactors[[innerChunkIdx]] <- 
