@@ -492,6 +492,8 @@ archR_set_config <- function(inner_chunk_size = 500,
                 immediate. = TRUE)
     }
     .msg_pstr("Best K for this subset: ", best_k, flg=vrbs)
+    
+    
     ##
     if (best_k >= 1) {
         ## For fetching sequence clusters from samplesMat
@@ -524,8 +526,6 @@ archR_set_config <- function(inner_chunk_size = 500,
             recA <- as.matrix(featuresMatrixList[[nR]]) %*%
                 as.matrix(samplesMatrixList[[nR]])
             this_q2 <- .compute_q2(as.matrix(A), recA)
-            # this_evar***********$$$$@@@@@@@@
-            # print()
             if(this_q2 > bestQ2){
                 bestQ2 <- this_q2
                 bestFeatMat <- featuresMatrixList[[nR]]
@@ -543,11 +543,41 @@ archR_set_config <- function(inner_chunk_size = 500,
         samplesMatrix <- matrix(rep(NA, length(tempM)), nrow = nrow(tempM))
         samplesMatrix[ ,bestOrd] <- tempM
         #####
-        .msg_pstr("Fetching ", best_k," cluster(s) w/ NMF scores", flg=dbg)
+        .msg_pstr("Fetching ", best_k," cluster(s)", flg=dbg)
         clusterMembershipsForSamples <-
             .get_cluster_memberships_per_run(samplesMatrix = samplesMatrix,
                 iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx, 
                 oDir, test_itr, oChunkIdx)
+        ##
+        ## Could handle overfitting here
+        if(best_k > 1){
+            has_overfit <- .detect_overfitting(samplesMatrix, 
+                                                clusterMembershipsForSamples, 
+                                                minSeqs = 50)
+            print("Overfit at:")
+            # if(length(has_overfit) > 0){ 
+            #     print(paste("Overfit at:", has_overfit))
+            # }else{
+            #     print("No Overfit")
+            # }
+            ## 
+            ## -- Note which clusters are overfit
+            ## -- Remove those columns from featuresMat
+            ## -- Adjust clustMemberships
+            if(length(has_overfit) > 0){
+                print(has_overfit)
+                clusterMembershipsForSamples <- 
+                    .adjustSampleMemberships(clusterMembershipsForSamples, 
+                                        samplesMatrix, has_overfit)
+                featuresMatrix <- as.matrix(featuresMatrix[, -c(has_overfit)])
+                best_k <- best_k - length(has_overfit)
+                .msg_pstr("Adjusting for any overfitting, fetched ", 
+                    best_k, "cluster(s)", flg=vrbs)
+            }else{
+                print("None")
+            }
+        }
+        ##
         forGlobClustAssignments <- .assign_samples_to_clusters(
             clusterMembershipsVec = clusterMembershipsForSamples,
             nClusters = best_k, iChunkIdx = innerChunkIdx, 
@@ -599,16 +629,21 @@ archR_set_config <- function(inner_chunk_size = 500,
 
 intermediateResultsPlot <- function(seq_lab, seqs_raw = NULL,
                                 pos_lab = NULL, iter = 0, fname = NULL,
+                                name_suffix = NULL,
                                 vrbs = TRUE){
 ## This function plots and prints resulting clusters -- the sequence image
 ## matrix (PNG file) and the sequence logos (PDF file).
 
-if(is.numeric(iter)){
-    name_suffix <- paste0("Iteration", iter)
-    .msg_pstr("=== Intermediate Result ===", flg=vrbs)
+if(is.null(name_suffix)){
+    if(is.numeric(iter)){
+        name_suffix <- paste0("Iteration", iter)
+        .msg_pstr("=== Intermediate Result ===", flg=vrbs)
+    }else{
+        name_suffix <- paste0("Final")
+        .msg_pstr("=== Final Result ===", flg=vrbs)
+    }
 }else{
-    name_suffix <- paste0("Final")
-    .msg_pstr("=== Final Result ===", flg=vrbs)
+    .msg_pstr("=== On-demand Result ===", flg=vrbs)
 }
 ##
 seqs_clust_list_ord <- get_seqs_clust_list(seq_lab)

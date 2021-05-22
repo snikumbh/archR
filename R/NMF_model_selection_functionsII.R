@@ -26,84 +26,138 @@
     vrbs <- flags$verboseFlag
     ##
     foo_scores <- expand.grid(list(kValue = param_ranges$k_vals,
-                                    ScoreType = c("AmariTypeDistance", "CopheneticCor", "Dispersion"),
+                                    ScoreType = c("AmariTypeDistance"),
                                     nRuns = nIterations, Score = -0.01
                             ))
     ##
     .msg_pstr("Bound : ", bound, flg=dbg)
     ##
     bestK <- 1
+    breakNow <- FALSE
     prev_amari <- NA
     for(kValue in param_ranges$k_vals){
         .msg_pstr("Checking K = ", kValue, flg=vrbs)
-        ##
-        # this_amari <- .get_amari_for_k(X, kValue, parallelDo, nCores, 
-        #                                 nIterations, bootstrap )
-        this_dists <- .get_coph_amari_disp_for_k(X, kValue, parallelDo, nCores, 
-            nIterations, bootstrap#, 
-            #amari = TRUE, coph = FALSE, disp=FALSE
-        )
-        this_amari <- this_dists[1]
-        this_coph <- this_dists[2]
-        this_disp <- this_dists[3]
-        # this_coph <- .get_coph_amari_for_k(X, kValue, parallelDo, nCores, 
-        #                                 nIterations, bootstrap, 
-        #                                 amari=FALSE, coph = TRUE, disp=FALSE )
-        # this_disp <- .get_coph_amari_for_k(X, kValue, parallelDo, nCores, 
-        #                                 nIterations, bootstrap, 
-        #                                 amari=FALSE, coph=FALSE, disp=TRUE )
-        ##
+        # ##
+        # # this_amari <- .get_amari_for_k(X, kValue, parallelDo, nCores, 
+        # #                                 nIterations, bootstrap )
+        # this_dists <- .get_coph_amari_disp_for_k(X, kValue, parallelDo, nCores, 
+        #     nIterations, bootstrap#, 
+        #     #amari = TRUE, coph = FALSE, disp=FALSE
+        # )
+        # this_amari <- this_dists[1]
+        # this_coph <- this_dists[2]
+        # this_disp <- this_dists[3]
+        # # this_coph <- .get_coph_amari_for_k(X, kValue, parallelDo, nCores, 
+        # #                                 nIterations, bootstrap, 
+        # #                                 amari=FALSE, coph = TRUE, disp=FALSE )
+        # # this_disp <- .get_coph_amari_for_k(X, kValue, parallelDo, nCores, 
+        # #                                 nIterations, bootstrap, 
+        # #                                 amari=FALSE, coph=FALSE, disp=TRUE )
+        # ##
+        
+        ## 1. Get NMF results 
+        resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
+            alphaVal = 0, parallelDo = parallelDo,
+            nCores = nCores, nRuns = nIterations,
+            bootstrap = bootstrap)
+        
+        featMatList <- .get_feat_or_samp_matList(resultList, feat = TRUE)
+        
+        this_amari <- .get_amari_from_featMatList(featMatList)
         if(is.na(this_amari)){
             warning("NA in Amari-type distance computation")
         }
         .msg_pstr("AmariTypeDist : ", this_amari, flg=dbg)
-
-        # foo_scores[foo_scores$kValue == kValue, "Score"] <- this_amari
-        cat("Amari------Coph------Dispersion\n")
-        print(c(this_amari, this_coph, this_disp))
-        foo_scores[foo_scores$kValue == kValue, "Score"] <- c(this_amari, this_coph, this_disp)
-        ##
-        breakNow <- FALSE
-        ##
-        # if(this_amari == 0) {
-        #     bestK <- 1
-        #     # break
-        #     breakNow <- FALSE #was true before testing dispersion as sole condition
-        # }
-        ##
-        ## When regularization is to be performed (with dispersion)
-        ## Possiblities:
-        ## a. Select only those for whom dispersion exactly == 1
-        ## b. Select those for whom dispersion very near to 1, i.e. > 0.9999
-        ## Currently trying a. exactly == 1
-        # cat("Currently testing dispersion == 1, exact condition\n")
-        if(kValue > 1 && this_amari > bound){# && (1 - this_disp) > 0){
-           ## check dispersion coefficient
-           breakNow <- TRUE
+        
+        if(this_amari <= bound){
+            # if(kValue > 1){
+            #     useMinSeqs <- 50
+            #     sampMatList <- .get_feat_or_samp_matList(resultList, 
+            #         bootstrap = bootstrap, feat = FALSE)
+            #     clustMemberships <- lapply(sampMatList, function(x){
+            #         .get_cluster_memberships_per_run(as.matrix(x))
+            #     })
+            #     
+            #     len_clusts <- 
+            #         lapply(seq_len(length(sampMatList)), function(y){
+            #             samplesMat <- as.matrix(sampMatList[[y]])
+            #             unlist(lapply(seq_len(nrow(samplesMat)), function(x){
+            #                 length(which(clustMemberships[[y]] == x))
+            #             }))
+            #         })
+            #         
+            #     print("*** LEN CLUSTS ***")
+            #     print(paste(len_clusts))
+            #     if(any(unlist(len_clusts) < useMinSeqs)){
+            #         print("Will check for overfitting...")
+            #         overfits <- unlist(lapply(seq(5), function(x){
+            #             .detect_overfitting(sampMatList[[x]], 
+            #                 clustMemberships[[x]], minSeqs = useMinSeqs)
+            #         }))
+            #         print(paste("Overfits vals: ", unique(overfits), collapse=", "))
+            #         if(any(overfits)){
+            #             # bestK <- kValue - 1
+            #             print(paste("OVERFIT OVERFIT OVERFIT K = ", kValue))
+            #             # breakNow <- TRUE
+            #             # stop("samarth")
+            #         }    
+            #     }else{
+            #         print("No need to check overfitting")
+            #     }
+            # }
+        }else{
+            breakNow <- TRUE
         }
+        
+        
+        
+
+        # # foo_scores[foo_scores$kValue == kValue, "Score"] <- this_amari
+        # # cat("Amari------Coph------Dispersion\n")
+        # # print(c(this_amari, this_coph, this_disp))
+        # foo_scores[foo_scores$kValue == kValue, "Score"] <- this_amari
         ##
-        # if(this_amari > 0 && this_amari < bound){
-        #     ## When using tolerance. Currently, it is ignored
-        #     if(!is.na(prev_amari)){
-        #         ignore <- TRUE
-        #         bestK <- .tol_best_k(kValue, this_amari, prev_amari, tol, 
-        #                                 verbose = FALSE)
-        #         if(!ignore && !is.null(bestK)) break
-        #     }
-        #     # ## When regularization is to be performed (with dispersion)
-        #     # ## Possiblities: 
-        #     # ## a. Select only those for whom dispersion exactly == 1
-        #     # ## b. Select those for whom dispersion very near to 1, i.e. > 0.9999
-        #     # ## Currently trying a. exactly == 1
-        #     # cat("Currently testing dispersion == 1, exact condition\n")
-        #     # if(doRegularize && kValue > 1 && (this_disp - 1) == 0){
-        #     #    ## check dispersion coefficient
-        #     #    breakNow <- TRUE
-        #     # }
-        # }else{
-        #     breakNow <- FALSE #was true before testing dispersion as sole condition
+        # breakNow <- FALSE
+        # ##
+        # # if(this_amari == 0) {
+        # #     bestK <- 1
+        # #     # break
+        # #     breakNow <- FALSE #was true before testing dispersion as sole condition
+        # # }
+        # ##
+        # ## When regularization is to be performed (with dispersion)
+        # ## Possiblities:
+        # ## a. Select only those for whom dispersion exactly == 1
+        # ## b. Select those for whom dispersion very near to 1, i.e. > 0.9999
+        # ## Currently trying a. exactly == 1
+        # # cat("Currently testing dispersion == 1, exact condition\n")
+        # if(kValue > 1 && this_amari > bound){# && (1 - this_disp) > 0){
+        #    ## check dispersion coefficient
+        #    breakNow <- TRUE
         # }
-        ##
+        # ##
+        # # if(this_amari > 0 && this_amari < bound){
+        # #     ## When using tolerance. Currently, it is ignored
+        # #     if(!is.na(prev_amari)){
+        # #         ignore <- TRUE
+        # #         bestK <- .tol_best_k(kValue, this_amari, prev_amari, tol, 
+        # #                                 verbose = FALSE)
+        # #         if(!ignore && !is.null(bestK)) break
+        # #     }
+        # #     # ## When regularization is to be performed (with dispersion)
+        # #     # ## Possiblities: 
+        # #     # ## a. Select only those for whom dispersion exactly == 1
+        # #     # ## b. Select those for whom dispersion very near to 1, i.e. > 0.9999
+        # #     # ## Currently trying a. exactly == 1
+        # #     # cat("Currently testing dispersion == 1, exact condition\n")
+        # #     # if(doRegularize && kValue > 1 && (this_disp - 1) == 0){
+        # #     #    ## check dispersion coefficient
+        # #     #    breakNow <- TRUE
+        # #     # }
+        # # }else{
+        # #     breakNow <- FALSE #was true before testing dispersion as sole condition
+        # # }
+        # ##
         if(breakNow){
             ## greater than bound, choose and break loop
             ## Here, if kValue = 1, bestK would be assigned 0. Avoid this.
@@ -121,6 +175,29 @@
     return(abs(floor(log10(A)) - floor(log10(B))))
 }
 
+
+.get_feat_or_samp_matList <- function(resultList, bootstrap, feat = TRUE){
+    if(feat){
+        featMatList <- lapply(resultList$nmf_result_list, get_features_matrix)
+        return(featMatList)
+    }
+    sampMatList <- lapply(resultList$nmf_result_list, get_samples_matrix)
+    
+    if(bootstrap){
+        sampMatListNew <-
+            lapply(seq_len(length(sampMatList)), function(x){
+                thisMat <- as.matrix(sampMatList[[x]])
+                thisNR <- nrow(thisMat)
+                thisNC <- ncol(thisMat)
+                origOrdX <- matrix(rep(-100,thisNR*thisNC),
+                    nrow = thisNR, ncol =  thisNC)
+                origOrdX[,resultList$new_ord[[x]]] <- thisMat
+                origOrdX
+            })
+        sampMatList <- sampMatListNew
+    }
+    return(sampMatList)
+}
 
 .tol_best_k <- function(kValue, this_amari, prev_amari, tol, verbose){
     magChange <- .mag_change(this_amari, prev_amari)

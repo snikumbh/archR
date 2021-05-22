@@ -435,6 +435,8 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                     flg=dbg)
                 setMinClusters <- max(ceiling(mean(nClustEachIC)), 2)
             }
+            intermediateResultsPlot(seq_lab = seqsClustLabels, seqs_raw = seqs_raw, pos_lab = seqs_pos, iter = test_itr, fname = o_dir, 
+                name_suffix = paste0(test_itr, "_ondemand"))
             ## regularize
             regIntClustFactors <- .regularizeMat(basisMat = intClustFactors,
                                                 topN = 50)
@@ -464,6 +466,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
             ## But we need this for rearrangement
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
                                                         nxtOuterChunksColl)
+            intermediateResultsPlot(seq_lab = seqsClustLabels, seqs_raw = seqs_raw, pos_lab = seqs_pos, iter = test_itr, fname = o_dir, name_suffix = "ondemand")
             ##
         } else {
             .msg_pstr("Decision for outer chunk collation: No", flg=dbg)
