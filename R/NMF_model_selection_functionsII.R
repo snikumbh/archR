@@ -14,13 +14,12 @@
                             nIterations = 100,
                             bootstrap = TRUE,
                             returnBestK = TRUE,
-                            ## Introduced for regularization    
-                            doRegularize = FALSE,
+                            ## TODO: Should tol stay as an argument?
                             tol = 10^-3,
                             bound = 10^-6,
                             flags = list(debugFlag = FALSE,
                                 verboseFlag = TRUE, plotVerboseFlag = FALSE,
-                                        timeFlag = FALSE)
+                                timeFlag = FALSE)
                             ){
     dbg <- flags$debugFlag
     vrbs <- flags$verboseFlag
@@ -36,26 +35,9 @@
     breakNow <- FALSE
     prev_amari <- NA
     for(kValue in param_ranges$k_vals){
-        .msg_pstr("Checking K = ", kValue, flg=vrbs)
-        # ##
-        # # this_amari <- .get_amari_for_k(X, kValue, parallelDo, nCores, 
-        # #                                 nIterations, bootstrap )
-        # this_dists <- .get_coph_amari_disp_for_k(X, kValue, parallelDo, nCores, 
-        #     nIterations, bootstrap#, 
-        #     #amari = TRUE, coph = FALSE, disp=FALSE
-        # )
-        # this_amari <- this_dists[1]
-        # this_coph <- this_dists[2]
-        # this_disp <- this_dists[3]
-        # # this_coph <- .get_coph_amari_for_k(X, kValue, parallelDo, nCores, 
-        # #                                 nIterations, bootstrap, 
-        # #                                 amari=FALSE, coph = TRUE, disp=FALSE )
-        # # this_disp <- .get_coph_amari_for_k(X, kValue, parallelDo, nCores, 
-        # #                                 nIterations, bootstrap, 
-        # #                                 amari=FALSE, coph=FALSE, disp=TRUE )
-        # ##
+        if(kValue > 1) .msg_pstr("Checking K = ", kValue, flg=vrbs)
         
-        ## 1. Get NMF results 
+        ## Get NMF results 
         resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
             alphaVal = 0, parallelDo = parallelDo,
             nCores = nCores, nRuns = nIterations,
@@ -69,106 +51,50 @@
         }
         .msg_pstr("AmariTypeDist : ", this_amari, flg=dbg)
         
-        if(this_amari <= bound){
-            # if(kValue > 1){
-            #     useMinSeqs <- 50
-            #     sampMatList <- .get_feat_or_samp_matList(resultList, 
-            #         bootstrap = bootstrap, feat = FALSE)
-            #     clustMemberships <- lapply(sampMatList, function(x){
-            #         .get_cluster_memberships_per_run(as.matrix(x))
-            #     })
-            #     
-            #     len_clusts <- 
-            #         lapply(seq_len(length(sampMatList)), function(y){
-            #             samplesMat <- as.matrix(sampMatList[[y]])
-            #             unlist(lapply(seq_len(nrow(samplesMat)), function(x){
-            #                 length(which(clustMemberships[[y]] == x))
-            #             }))
-            #         })
-            #         
-            #     print("*** LEN CLUSTS ***")
-            #     print(paste(len_clusts))
-            #     if(any(unlist(len_clusts) < useMinSeqs)){
-            #         print("Will check for overfitting...")
-            #         overfits <- unlist(lapply(seq(5), function(x){
-            #             .detect_overfitting(sampMatList[[x]], 
-            #                 clustMemberships[[x]], minSeqs = useMinSeqs)
-            #         }))
-            #         print(paste("Overfits vals: ", unique(overfits), collapse=", "))
-            #         if(any(overfits)){
-            #             # bestK <- kValue - 1
-            #             print(paste("OVERFIT OVERFIT OVERFIT K = ", kValue))
-            #             # breakNow <- TRUE
-            #             # stop("samarth")
-            #         }    
-            #     }else{
-            #         print("No need to check overfitting")
-            #     }
-            # }
-        }else{
-            breakNow <- TRUE
-        }
+        foo_scores[kValue, "Score"] <- this_amari
+        print(foo_scores)
         
-        
-        
-
-        # # foo_scores[foo_scores$kValue == kValue, "Score"] <- this_amari
-        # # cat("Amari------Coph------Dispersion\n")
-        # # print(c(this_amari, this_coph, this_disp))
-        # foo_scores[foo_scores$kValue == kValue, "Score"] <- this_amari
-        ##
-        # breakNow <- FALSE
-        # ##
-        # # if(this_amari == 0) {
-        # #     bestK <- 1
-        # #     # break
-        # #     breakNow <- FALSE #was true before testing dispersion as sole condition
-        # # }
-        # ##
-        # ## When regularization is to be performed (with dispersion)
-        # ## Possiblities:
-        # ## a. Select only those for whom dispersion exactly == 1
-        # ## b. Select those for whom dispersion very near to 1, i.e. > 0.9999
-        # ## Currently trying a. exactly == 1
-        # # cat("Currently testing dispersion == 1, exact condition\n")
-        # if(kValue > 1 && this_amari > bound){# && (1 - this_disp) > 0){
-        #    ## check dispersion coefficient
-        #    breakNow <- TRUE
+        # if(this_amari <= bound){
+        #     
+        # }else{
+        #     breakNow <- TRUE
         # }
-        # ##
-        # # if(this_amari > 0 && this_amari < bound){
-        # #     ## When using tolerance. Currently, it is ignored
-        # #     if(!is.na(prev_amari)){
-        # #         ignore <- TRUE
-        # #         bestK <- .tol_best_k(kValue, this_amari, prev_amari, tol, 
-        # #                                 verbose = FALSE)
-        # #         if(!ignore && !is.null(bestK)) break
-        # #     }
-        # #     # ## When regularization is to be performed (with dispersion)
-        # #     # ## Possiblities: 
-        # #     # ## a. Select only those for whom dispersion exactly == 1
-        # #     # ## b. Select those for whom dispersion very near to 1, i.e. > 0.9999
-        # #     # ## Currently trying a. exactly == 1
-        # #     # cat("Currently testing dispersion == 1, exact condition\n")
-        # #     # if(doRegularize && kValue > 1 && (this_disp - 1) == 0){
-        # #     #    ## check dispersion coefficient
-        # #     #    breakNow <- TRUE
-        # #     # }
-        # # }else{
-        # #     breakNow <- FALSE #was true before testing dispersion as sole condition
-        # # }
-        # ##
+        if(this_amari > bound) breakNow <- TRUE
+        ##
+        check_errant <- FALSE
+        if(kValue %% 5 == 0){
+            check_errant <- .check_no_mag_change_fail_condition(foo_scores)
+            if(check_errant) breakNow <- TRUE
+        }
+        ##
         if(breakNow){
             ## greater than bound, choose and break loop
             ## Here, if kValue = 1, bestK would be assigned 0. Avoid this.
             if(kValue > 1) bestK <- kValue - 1
+            if(check_errant) bestK <- 1
             break
         }
         ##
         prev_amari <- this_amari
+        
     }
     if(returnBestK) return(bestK)
     return(foo_scores)
+}
+
+
+.check_no_mag_change_fail_condition <- function(foo_scores){
+    score_pows <- abs(floor(log10(foo_scores$Score)))
+    score_pows <- score_pows[which(!is.nan(score_pows))]
+    print(score_pows)
+    diffs <- diff(score_pows)
+    print("Score_POWs")
+    print(diffs)
+    print(abs(diffs))
+    if(all(score_pows >= 17)){
+        return(TRUE)
+    }
+    return(FALSE)
 }
 
 .mag_change <- function(A, B){
@@ -214,74 +140,74 @@
 }
 
 
-.get_coph_amari_disp_for_k <- function(X, kValue, parallelDo, nCores, nIterations, 
-    bootstrap#, amari = TRUE, coph = FALSE, disp = FALSE
-    ){
-    
-    resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
-        alphaVal = 0, parallelDo = parallelDo,
-        nCores = nCores, nRuns = nIterations,
-        bootstrap = bootstrap)
-    
-    # if(disp){
-        ## This is required when measures related to samplesMat are used.
-        ## Examples are dispersion and cophenetic correlation
-        ## 
-        # sampMatList <- lapply(resultList$nmf_result_list, function(x){
-        #     get_samples_matrix(x)
-        # })
-        ##
-        # disp_val <- .get_dispersion_from_sampleMatList(sampMatList)
-    # }
-    
-    # if(amari){
-        ## Required for Amari-type distance
-        featMatList <- lapply(resultList$nmf_result_list, function(x){
-            get_features_matrix(x)
-        })
-        amari_val <- .get_amari_from_featMatList(featMatList)
-    # }
-    # if(coph){
-        ## This is required when measures related to samplesMat are used.
-        ## Examples are dispersion and cophenetic correlation
-        ## 
-        sampMatList <- lapply(resultList$nmf_result_list, function(x){
-            get_samples_matrix(x)
-        })
-        if(bootstrap){
-            sampMatListNew <-
-                lapply(seq_len(length(sampMatList)), function(x){
-                    thisMat <- as.matrix(sampMatList[[x]])
-                    thisNR <- nrow(thisMat)
-                    thisNC <- ncol(thisMat)
-                    origOrdX <- matrix(rep(-100,thisNR*thisNC),
-                        nrow = thisNR, ncol =  thisNC)
-                    origOrdX[,resultList$new_ord[[x]]] <- thisMat
-                    origOrdX
-                })
-            sampMatList <- sampMatListNew
-        }
-        ##
-        coph_val <- .get_cophcor_from_sampleMatList(sampMatList)
-        disp_val <- .get_dispersion_from_sampleMatList(sampMatList)
-    # }
-    return(c(amari_val, coph_val, disp_val))
-}
+# .get_coph_amari_disp_for_k <- function(X, kValue, parallelDo, nCores, nIterations, 
+#     bootstrap#, amari = TRUE, coph = FALSE, disp = FALSE
+#     ){
+#     
+#     resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
+#         alphaVal = 0, parallelDo = parallelDo,
+#         nCores = nCores, nRuns = nIterations,
+#         bootstrap = bootstrap)
+#     
+#     # if(disp){
+#         ## This is required when measures related to samplesMat are used.
+#         ## Examples are dispersion and cophenetic correlation
+#         ## 
+#         # sampMatList <- lapply(resultList$nmf_result_list, function(x){
+#         #     get_samples_matrix(x)
+#         # })
+#         ##
+#         # disp_val <- .get_dispersion_from_sampleMatList(sampMatList)
+#     # }
+#     
+#     # if(amari){
+#         ## Required for Amari-type distance
+#         featMatList <- lapply(resultList$nmf_result_list, function(x){
+#             get_features_matrix(x)
+#         })
+#         amari_val <- .get_amari_from_featMatList(featMatList)
+#     # }
+#     # if(coph){
+#         ## This is required when measures related to samplesMat are used.
+#         ## Examples are dispersion and cophenetic correlation
+#         ## 
+#         sampMatList <- lapply(resultList$nmf_result_list, function(x){
+#             get_samples_matrix(x)
+#         })
+#         if(bootstrap){
+#             sampMatListNew <-
+#                 lapply(seq_len(length(sampMatList)), function(x){
+#                     thisMat <- as.matrix(sampMatList[[x]])
+#                     thisNR <- nrow(thisMat)
+#                     thisNC <- ncol(thisMat)
+#                     origOrdX <- matrix(rep(-100,thisNR*thisNC),
+#                         nrow = thisNR, ncol =  thisNC)
+#                     origOrdX[,resultList$new_ord[[x]]] <- thisMat
+#                     origOrdX
+#                 })
+#             sampMatList <- sampMatListNew
+#         }
+#         ##
+#         coph_val <- .get_cophcor_from_sampleMatList(sampMatList)
+#         disp_val <- .get_dispersion_from_sampleMatList(sampMatList)
+#     # }
+#     return(c(amari_val, coph_val, disp_val))
+# }
 
-.get_dispersion_from_sampleMatList <- function(sampMatList){
-    ## Not required for Amari-type distance, but cophcor or dispersion
-    consensusMat <- getConsensusMat(sampMatList)
-    ##
-    return(NMF::dispersion(consensusMat))
-}
+# .get_dispersion_from_sampleMatList <- function(sampMatList){
+#     ## Not required for Amari-type distance, but cophcor or dispersion
+#     consensusMat <- getConsensusMat(sampMatList)
+#     ##
+#     return(NMF::dispersion(consensusMat))
+# }
 
 
-.get_cophcor_from_sampleMatList <- function(sampMatList){
-    ## Not required for Amari-type distance, but cophcor or dispersion
-    consensusMat <- getConsensusMat(sampMatList)
-    ##
-    return(NMF::cophcor(consensusMat))
-}
+# .get_cophcor_from_sampleMatList <- function(sampMatList){
+#     ## Not required for Amari-type distance, but cophcor or dispersion
+#     consensusMat <- getConsensusMat(sampMatList)
+#     ##
+#     return(NMF::cophcor(consensusMat))
+# }
 
 .get_amari_from_featMatList <- function(featMatList){
     return(computeAmariDistances(featMatList))
