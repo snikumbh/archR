@@ -478,9 +478,9 @@ archR_set_config <- function(inner_chunk_size = 500,
         best_k <- .stability_model_select_pyNMF2(
             X = this_mat, param_ranges = config$paramRanges,
             parallelDo = config$parallelize, nCores = config$nCoresUse,
-            nIterations = config$nIterationsUse, doRegularize = doRegularize,
-            tol = config$tol, bound = config$bound,
-            flags = config$flags, returnBestK = TRUE, bootstrap = TRUE
+            nIterations = config$nIterationsUse, tol = config$tol, 
+            bound = config$bound, flags = config$flags, 
+            returnBestK = TRUE, bootstrap = TRUE
         )
     }
     #########################
