@@ -166,12 +166,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         warning("Basis vector that got no sequences assigned: ",
             setdiff( unique(clustMemberships), seq_len(nClusters)))
     } 
-    # print(class(clustMemberships))
-    # print(clustMemberships)
-    # stop("samarth")
-    # print(iChunkIdx)
-    # print(iChunksColl)
-    # print(oDir)
+    
     if(all(!is.na(c(iChunkIdx, oDir, test_itr, oChunkIdx)))){
     .debug_samplesMat_plotting(samplesMatrix, clustMemberships, iChunkIdx, 
         oDir, test_itr, oChunkIdx)
@@ -181,8 +176,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## =============================================================================
 
 .adjustSampleMemberships <- function(old_mem, samplesMatrix, has_overfit){
-    # print("In adjustment function")
-    # print(old_mem)
     print(paste("Adjusting for overfit clusts: ", has_overfit))
     new_mem <- old_mem
     sampClustRanks <- as.vector(apply(samplesMatrix, MARGIN = 2, order, 
@@ -207,7 +200,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     for(i in seq_along(new_mem_elem)){
         new_mem[new_mem == new_mem_elem[i]] <- i
     }
-    # print(new_mem)
     new_mem
 }
 ## =============================================================================
@@ -229,18 +221,13 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         length(which(clustMemberships == x))
         }))
     qual_cl_idx <- which(len_clusts < minSeqs)
-    
-    # append_str <- ifelse(length(qual_cl_idx) > 0, str(qual_cl_idx), "None")
-    # print(paste("Qualifying clust ids:", append_str))
+
     ##
     print("Qualifying clust ids:")
     if(length(qual_cl_idx) > 0){
         print(qual_cl_idx)
         out_cl_idx <- .compare_clusters(samplesMat, clustMemberships, 
-                                        qual_cl_idx)
-        # if(any(out_cl_idx == qual_cl_idx)){
-            # return the clust ids that are over fit
-        # }
+                                        qual_cl_idx, zscore_thresh = 5)
         if(length(out_cl_idx) > 0) return(intersect(qual_cl_idx, out_cl_idx))
     }else{
         print("None")
@@ -250,7 +237,8 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 }
 ## =============================================================================
 
-.compare_clusters <- function(samplesMat, clustMemberships, qual_cl_idx){
+.compare_clusters <- function(samplesMat, clustMemberships, qual_cl_idx, 
+                                zscore_thresh = 5){
     
     clustwise_matlist <- lapply(seq_len(ncol(samplesMat)), function(x){
         temp_mat <- matrix(samplesMat[clustMemberships == x,], 
@@ -258,8 +246,10 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         temp_mat
     })
     
-    out_clust_iqr <- .compare_iqr(clustwise_matlist, qual_cl_idx)
-    out_clust_range <- .compare_range(clustwise_matlist, qual_cl_idx)
+    out_clust_iqr <- .compare_iqr(clustwise_matlist, qual_cl_idx, 
+                                    zscore_thresh = zscore_thresh)
+    out_clust_range <- .compare_range(clustwise_matlist, qual_cl_idx, 
+                                    zscore_thresh = zscore_thresh)
     ##
     ## Those that qualify as outliers by IQR comparison, will also 
     ## qualify by range comparison. But for those which do not qualify 
@@ -285,65 +275,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     if(length(left_out) > 0){
         out_clust_size <- .compare_size(clustwise_matlist, qual_cl_idx)
     }
-    
-    
-    
-    # all_iqr <- lapply(seq_len(ncol(samplesMat)), function(x){
-    #     temp_mat <- matrix(samplesMat[clustMemberships == x,], 
-    #         ncol = ncol(samplesMat), byrow = FALSE)
-    #     ## get column-wise IQRs
-    #     # matrixStats::colIQRs(temp_mat)
-    #     # ## get column-wise range -- how does this work?
-    #     # apply(apply(temp_mat, MARGIN = 2, range), MARGIN = 2, diff)
-    # })
-    ##
-    
-    ## detect if all IQRs for a cluster are 0
-    # all_zero_out <- c()
-    # if_all_zeros <- unlist(lapply(all_iqr, function(x){
-    #     ifelse(all(!(x > 0.0)), TRUE, FALSE)
-    #     ## enter here if all zeros is detected
-    # }))
-    # print("Any all ZEROES:")
-    # print(if_all_zeros)
-    # if(any(if_all_zeros)){
-    #     allzero_out_idx <- which(if_all_zeros)
-    # }
-    # ## PRINTING
-    # print("ALL IQRs -- for comparing")
-    # all_iqr_vec <- unlist(all_iqr)
-    # print(all_iqr_vec)
-    # bxst_all_iqr <- boxplot.stats(all_iqr_vec)
-    # print("Boxplot.stats -- for comparing")
-    # print(bxst_all_iqr)
-    ## Using boxplot.stats to detect outlier
-    # if(length(bxst_all_iqr$out) > 0){
-    #     # idx <- which(bxst_all_iqr$out == all_iqr_vec)
-    #     # The above only gives index of single match
-    #     idx <- unlist(lapply(lapply(bxst_all_iqr$out, function(x){
-    #         x == all_iqr_vec}), which))
-    #     print(paste("*** OVERFITTING ID:", idx," ***"))
-    #     clust_id <- ceiling(idx / ncol(samplesMat))
-    #     print(paste("Clust id: ", clust_id))
-    #     return(clust_id)
-    # }
-    ## Using z-scores on median absolute deviation
-    # all_iqr_mad <- stats::mad(all_iqr_vec)
-    # print("MAD of all IQRs")
-    # print(all_iqr_mad)
-    # iqr_zscore <- (all_iqr_vec - median(all_iqr_vec))/all_iqr_mad
-    # print("ZScores")
-    # print(iqr_zscore)
-    # ## PRINTING
-    # iqr out_idx <- which(iqr_zscore > 5)
-    # if(length(out_idx) > 0 || length(all_zero_out) > 0){
-    #     idx <- out_idx
-    #     print(paste("*** OVERFITTING ID:", idx," ***"))
-    #     clust_id <- ceiling(idx / ncol(samplesMat))
-    #     print(paste("Clust id: ", clust_id))
-    #     return(c(clust_id, all_zero_out))
-    # }
-    # return(0)
+
     return(unique(c(out_clust_iqr, out_clust_range, out_clust_size)))
         
 }
@@ -353,29 +285,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     print("Additional checks for:")
     print(check_these)
     ## get boxplot.stats 
-    # all_stats_lower <- lapply(clustwise_matlist, function(x){
-    #     tempx <- lapply(seq_len(ncol(x)), function(y){
-    #         tempy <- boxplot.stats(as.vector(x[,y]))
-    #         tempy$stats[2]
-    #         })
-    #     unlist(tempx)
-    # })
-    # 
-    # all_stats_upper <- lapply(clustwise_matlist, function(x){
-    #     tempx <- lapply(seq_len(ncol(x)), function(y){
-    #         tempy <- boxplot.stats(as.vector(x[,y]))
-    #         tempy$stats[4]
-    #     })
-    #     unlist(tempx)
-    # })
-    
-    # all_stats_median <- lapply(clustwise_matlist, function(x){
-    #     tempx <- lapply(seq_len(ncol(x)), function(y){
-    #         tempy <- boxplot.stats(as.vector(x[,y]))
-    #         tempy$stats[3]
-    #     })
-    #     unlist(tempx)
-    # })
     all_stats_max <- lapply(clustwise_matlist, function(x){
         tempx <- lapply(seq_len(ncol(x)), function(y){
             max(as.vector(x[,y]))
@@ -394,42 +303,15 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     #####
     print("MIDPOINTS")
     print(all_stats_midpoints)
-    # print("MEDIANS")
-    # print(all_stats_median)
-    # print("MAXs")
-    # print(all_stats_max)
     all_stats_midpoint_nl <- unlist(all_stats_midpoints)
-    # all_stats_median_nl <- unlist(all_stats_median)
-    # all_stats_max_nl <- unlist(all_stats_max)
+    
     #####
-    # print("LOWER")
-    # print(all_stats_lower)
-    # print("UPPER")
-    # print(all_stats_upper)
-    # Is it near max? In other words, is the lower hinge much beyond the 
-    # upper hinge of others?
-    # lower_mad <- stats::mad(unlist(all_stats_lower))
-    # upper_mad <- stats::mad(unlist(all_stats_upper))
-    # upper_median <- stats::median(unlist(all_stats_upper))
-    # print("upper_median")
-    # print(upper_median)
-    # print("lower_mad")
-    # print(upper_mad)
-    # print("upper_mad")
-    # print(upper_mad)
-    # print("3times")
-    # print(3*upper_mad)
     out_cl_idx <- NULL
     for(i in check_these){
         ## use midpoints to compare locations of boxes
         print("Attention")
         print(all_stats_midpoints[[i]][i])
         check_midpoint <- all_stats_midpoints[[i]][i]
-        
-        # check_zscore <- (check_midpoint - median(all_stats_median_nl))/
-        #     mad(all_stats_median_nl)
-        # print("Check_Zscore with medians")
-        # print(check_zscore)
         distWithMax <- abs(check_midpoint - all_stats_max[[i]][i])
         distWithMedianMidpoints <- check_midpoint - median(all_stats_midpoint_nl)
         print("distances")
@@ -441,23 +323,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         }else{
             print(paste(i, "-- IS NOT an overfitted outlier"))
         }
-        
-        
-        # check_lower <- all_stats_lower[[i]][[i]]
-        # check_upper <- all_stats_upper[[i]][[i]]
-        # print(paste("checking", check_lower))
-        # check_zscore <- (check_lower - upper_median)/upper_mad
-        # print("check_zscore")
-        # print(check_zscore)
-        # if(check_zscore >= 5){
-        #     print(paste(i, "-- IS NOT an overfitted outlier"))
-        # }else{
-        #     print(paste(i, "-- IS an overfitted outlier"))
-        #     out_cl_idx <- c(out_cl_idx, i)
-        # }
-        # ## checking with midpoints of the boxes
-        # # check_mid <- (check_upper + check_lower)/2
-        
     }
     return(out_cl_idx)
 }
@@ -481,9 +346,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     }))
     print("Any all ZEROES:")
     print(if_all_zeros)
-    # if(any(if_all_zeros)){
-    #     allzero_out_idx <- which(if_all_zeros)
-    # }
+    
     
     out_cl_idx <- intersect(which(if_all_zeros), qual_cl_idx)
     print("Overfit clust id detected by SIZE: ")
@@ -493,7 +356,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 }
 
 ## return indices of outliers by comparing IQRs
-.compare_iqr <- function(clustwise_matlist, qual_cl_idx){
+.compare_iqr <- function(clustwise_matlist, qual_cl_idx, zscore_thresh = 5){
     print("Comparing by IQR")
     ncl <- ncol(clustwise_matlist[[1]])
     print(dim(clustwise_matlist[[1]]))
@@ -501,24 +364,10 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         ## get column-wise IQRs
         matrixStats::colIQRs(x)
     })
-    # ## detect if all IQRs for a cluster are 0
-    # # all_zero_out <- NULL
-    # if_all_zeros <- unlist(lapply(all_iqr, function(x){
-    #     ifelse(all(!(x > 0.0)), TRUE, FALSE)
-    #     ## enter here if all zeros is detected
-    # }))
-    # print("Any all ZEROES:")
-    # print(if_all_zeros)
-    # if(any(if_all_zeros)){
-    #     allzero_out_idx <- which(if_all_zeros)
-    # }
     ## PRINTING
     print("ALL IQRs -- for comparing")
     all_iqr_vec <- unlist(all_iqr)
     print(all_iqr_vec)
-    # bxst_all_iqr <- boxplot.stats(all_iqr_vec)
-    # print("Boxplot.stats -- for comparing")
-    # print(bxst_all_iqr)
     ##
     all_iqr_mad <- stats::mad(all_iqr_vec)
     print("MAD of all IQRs")
@@ -526,7 +375,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     iqr_zscore <- (all_iqr_vec - median(all_iqr_vec))/all_iqr_mad
     print("ZScores")
     print(iqr_zscore)
-    out_idx <- which(iqr_zscore > 5)
+    out_idx <- which(iqr_zscore > zscore_thresh)
     if(length(out_idx) > 0){
         print(paste("*** OVERFITTING ID (among all):", out_idx," ***"))
         clust_id <- ceiling(out_idx / ncl)
@@ -543,7 +392,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 }
 
 ## return indices of outliers by comparing ranges
-.compare_range <- function(clustwise_matlist, qual_cl_idx){
+.compare_range <- function(clustwise_matlist, qual_cl_idx, zscore_thresh = 5){
     print("Comparing by RANGE")
     
     ncl <- ncol(clustwise_matlist[[1]])
@@ -558,7 +407,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     range_zscore <- (all_range_vec - median(all_range_vec))/all_range_mad
     print("ZScores")
     print(range_zscore)
-    out_idx <- which(range_zscore > 5)
+    out_idx <- which(range_zscore > zscore_thresh)
     if(length(out_idx) > 0){
         print(paste("*** OVERFITTING ID (among all):", out_idx," ***"))
         clust_id <- ceiling(out_idx / ncl)
@@ -575,7 +424,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     return(NULL)
 }
 
-
+## Delete this function after testing
 .debug_samplesMat_plotting <- function(samplesMat, clustMemberships, 
                                 iChunkIdx, oDir, test_itr, oChunkIdx){
     # put factors along columns
@@ -598,36 +447,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
                                     iChunkIdx, "_samarth_trial.png"))
     ggsave(fname, pl, device = "png")
     ####
-    ## 1. How about comparing IQRs for each set of samples per cluster
-    ## -- IQR is less robust, so that if there is a skew, it will reflect in the IQR
-    ## -- Perhaps, even SD?
-    ## -- Use MAD to compare them
-    ##
-    # all_iqr <- lapply(seq_len(ncol(samplesMat)), function(x){
-    #     matrixStats::colIQRs(matrix(samplesMat[clustMemberships == x,], 
-    #                             ncol = ncol(samplesMat), byrow = FALSE))
-    #         })
-    # all_iqr_vec <- unlist(all_iqr)
-    # all_iqr_mad <- mad(all_iqr_vec)
-    # all_sd <- lapply(seq_len(ncol(samplesMat)), function(x){
-    #     matrixStats::colSds(matrix(samplesMat[clustMemberships == x,], 
-    #                             ncol = ncol(samplesMat), byrow = FALSE))
-    # })
-    # all_sd_mad <- unlist(lapply(all_sd, mad))
-    # # print("POST -- All IQRs")
-    # # print(all_iqr)
-    # # print("MAD of all IQRs")
-    # # print(all_iqr_mad)
-    # ##
-    # iqr_zscore <- (all_iqr_vec - median(all_iqr_vec))/all_iqr_mad
-    # # print("ZScores")
-    # # print(iqr_zscore)
-    # # print(iqr_zscore[iqr_zscore > 2.5])
-    # print("POST -- Boxplot.stats")
-    # bxst_all_iqr <- boxplot.stats(all_iqr_vec)
-    # print(bxst_all_iqr)
-    
-    
 }
 ## =============================================================================
 
