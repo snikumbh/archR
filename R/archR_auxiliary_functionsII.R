@@ -99,10 +99,12 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
         pos_lab = seqs_pos, 
         title = paste("Sequence logo of all", length(seqs_raw),"sequences" ))
     ##
+    suppressMessages(
     suppressWarnings(
         ggsave(filename = file.path(dpath, "allSequencesLogo.pdf"),
-        plot = allSequencesLogo,
-        device = "pdf", width = 20, height = 2.5))
+        plot = suppressWarnings(allSequencesLogo),
+        device = "pdf", width = 20, height = 2.5)
+        ))
 }
 ## =============================================================================
 
@@ -642,52 +644,184 @@ intermediateResultsPlot <- function(seq_lab, seqs_raw = NULL,
                                 pos_lab = NULL, iter = 0, fname = NULL,
                                 name_suffix = NULL,
                                 vrbs = TRUE){
-## This function plots and prints resulting clusters -- the sequence image
-## matrix (PNG file) and the sequence logos (PDF file).
-
-if(is.null(name_suffix)){
-    if(is.numeric(iter)){
-        name_suffix <- paste0("Iteration", iter)
-        # .msg_pstr("=== Intermediate Result ===", flg=vrbs)
-        cli::cli_rule(left="Intermediate result")
-    }else{
-        name_suffix <- paste0("Final")
-        # .msg_pstr("=== Final Result ===", flg=vrbs)
-        cli::cli_rule(left="Final result")
-    }
-}else{
-    .msg_pstr("=== On-demand Result ===", flg=vrbs)
-}
-##
-cli::cli_alert_info("Output directory: {.emph {fname}}")
+    ## This function plots and prints resulting clusters -- the sequence image
+    ## matrix (PNG file) and the sequence logos (PDF file).
     
-seqs_clust_list_ord <- get_seqs_clust_list(seq_lab)
-seqs_clust_vec_ord <- unlist(seqs_clust_list_ord)
-# .msg_pstr("Generating unannotated map of clustered sequences...", flg=vrbs)
-image_fname <- paste0(fname, "ClusteringImage_", name_suffix, ".png")
-# .msg_pstr("Sequence clustering image written to: ", image_fname, flg=vrbs)
-cli::cli_alert_info(c("Sequence clustering image written to: ", 
-                        "{.emph {basename(image_fname)}}"))
-viz_seqs_acgt_mat_from_seqs(
-    seqs =  as.character(seqs_raw[seqs_clust_vec_ord]),
-                    pos_lab = pos_lab,
-                    save_fname = image_fname,
-                    f_width = 450,
-                    f_height = 900,
-                    xt_freq = 5,
-                    yt_freq = 100)
-
-##
-# .msg_pstr("Generating architectures for clusters of sequences...", flg=vrbs)
-
-arch_fname <- paste0(fname, "Architecture_SequenceLogos_", name_suffix, ".pdf")
-# .msg_pstr("Architectures written to: ", arch_fname, flg=vrbs)
-cli::cli_alert_info(c("Architectures written to: ", 
-                        "{.emph {basename(arch_fname)}}"))
-
-plot_arch_for_clusters(seqs = seqs_raw, 
-                        clust_list = seqs_clust_list_ord,
+    if(is.null(name_suffix)){
+        if(is.numeric(iter)){
+            name_suffix <- paste0("Iteration", iter)
+            cli::cli_h2("Intermediate result")
+        }else{
+            name_suffix <- paste0("Final")
+            cli::cli_rule(left="Final result")
+        }
+    }else{
+        .msg_pstr("=== On-demand Result ===", flg=vrbs)
+    }
+    ##
+    cli::cli_alert_info("Output directory: {.emph {fname}}")
+    
+    seqs_clust_list_ord <- get_seqs_clust_list(seq_lab)
+    seqs_clust_vec_ord <- unlist(seqs_clust_list_ord)
+    image_fname <- file.path(fname, 
+        paste0("ClusteringImage_", name_suffix, ".png"))
+    cli::cli_alert_info(c("Sequence clustering image written to: ", 
+                            "{.emph {basename(image_fname)}}"))
+    viz_seqs_acgt_mat_from_seqs(
+        seqs =  as.character(seqs_raw[seqs_clust_vec_ord]),
                         pos_lab = pos_lab,
-                        pdf_name = arch_fname)
+                        save_fname = image_fname,
+                        f_width = 450,
+                        f_height = 900,
+                        xt_freq = 5,
+                        yt_freq = 100)
+
+    
+    arch_fn <- file.path(fname, 
+        paste0("Architecture_SequenceLogos_", name_suffix, ".pdf"))
+    cli::cli_alert_info(c("Architectures written to: ", 
+                            "{.emph {basename(arch_fn)}}"))
+    
+    plot_arch_for_clusters(seqs = seqs_raw, 
+                            clust_list = seqs_clust_list_ord,
+                            pos_lab = pos_lab,
+                            pdf_name = arch_fn)
+}
+## =============================================================================
+
+save_final_result <- function(o_dir, temp_archRresult){
+    if(!is.null(o_dir)){
+        rdsFilename <- file.path(o_dir, "archRresult.rds")
+        saveRDS(temp_archRresult, file=rdsFilename)
+        cli::cli_alert_info("Result saved to: {.emph {basename(rdsFilename)}}")
+    }
+}
+## =============================================================================
+
+save_checkpoint <- function(o_dir, test_itr, threshold_itr, 
+                            seqsClustLabelsList, clustFactors,
+                            seqs_raw, config, call = NULL){
+    ##
+    if(!is.null(o_dir) && test_itr != threshold_itr){
+        ##
+        curr_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
+                                clustBasisVectors = clustFactors,
+                                rawSeqs = seqs_raw,
+                                config = config,
+                                call = call)
+        rdsFilename <- file.path(o_dir, paste0("archRresult_checkpoint",
+                                test_itr, ".rds"))
+        saveRDS(curr_archRresult, file=rdsFilename)
+        cli::cli_alert_info(c("Checkpointing at iteration {test_itr}: ",
+            "{basename(rdsFilename)}"))
+    }
+}
+## =============================================================================
+
+
+show_ellapsed_time <- function(use_str = "Time ellapsed since start: ", 
+                                use_time){
+    complTime1 <- Sys.time() - use_time
+    cli::cli_alert(
+        c(use_str, "{prettyunits::pretty_dt(as.difftime(complTime1))}"))
+    
+}
+## =============================================================================
+
+decisionToCollate <- function(clustFactors){
+    decisionToCollate <- TRUE
+    iterations <- length(clustFactors)
+    if(iterations > 1){
+        prevIterNFactors <- clustFactors[[iterations-1]]$nBasisVectors
+        currIterNFactors <- clustFactors[[iterations]]$nBasisVectors
+        if(currIterNFactors == prevIterNFactors){
+            decisionToCollate <- FALSE
+            .msg_pstr("Reordering decision: FALSE", flg=dbg)
+        }
+    }
+    decisionToCollate
+}
+## =============================================================================
+
+keepMinClusters <- function(set_ocollation, temp_res){
+    ## For setting minClusters, note last iteration collated
+    if(any(set_ocollation)){
+        lastItrC <- tail(which(set_ocollation), 1)
+        setMinClustersFinal <- 
+            temp_res$clustBasisVectors[[lastItrC]]$nBasisVectors
+    }else{
+        setMinClustersFinal <- 2 ## the default value
+    }
+    setMinClustersFinal
+}
+## =============================================================================
+
+
+perform_setup <- function(config, total_itr, o_dir, fresh, 
+                        seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony, 
+                        set_ocollation){
+    dbg <- config$flags$debugFlag
+    vrbs <- config$flags$verboseFlag
+    plt <- config$flags$plotVerboseFlag
+    crs <- config$nCoresUse
+    parallelize <- config$parallelize
+    modSelType <- config$modSelType
+    bound <- config$bound
+    
+    ## assert total_itr is a positive integer
+    if(!total_itr > 0) {
+        stop("Expecting number of iterations to be numeric and > 0")
+    }
+    ## TODO Provide a summary function
+    ## TODO Provide a setup function
+    
+    if(!is.null(o_dir)){
+        if(!dir.exists(o_dir)){
+            stop(o_dir, " not found")
+        }
+        if(fresh) o_dir <- handle_dir_creation(o_dir, vrbs||dbg)
+    }
+    ##
+    if(is.null(seqs_pos)){
+        seqs_pos <- seq_len(Biostrings::width(seqs_raw[1]))
+    }
+    ##
+    if(plt){
+        manage_o_dir(plt, o_dir) # this will stop if o_dir is NULL
+        plot_all_seqs_logo(seqs_raw, seqs_pos, dpath=o_dir)
+    }
+    ## Make checks for params in configuration
+    .assert_archR_config(config, ncol(seqs_ohe_mat))
+    .assert_archR_thresholdIteration(total_itr)
+    
+    ##
+    if(length(set_parsimony) < total_itr){
+        set_parsimony <- rep(FALSE, total_itr)
+        set_parsimony[length(set_parsimony)] <- TRUE
+    }
+    ##
+    if(length(set_ocollation) < total_itr){
+        set_ocollation <- rep(FALSE, total_itr)
+        set_ocollation[1] <- TRUE
+        set_ocollation[length(set_ocollation)] <- FALSE #Earlier was TRUE
+    }
+    
+    #### Start cluster only once
+    if(parallelize){
+        cl <- parallel::makeCluster(crs, type = "FORK")
+        parallel::setDefaultCluster(cl)
+        cli::cli_alert_info("Parallelization: {crs} cores")
+    }else{
+        cli::cli_alert_info("Parallelization: No")
+    }
+    ##
+    if(modSelType != "cv" && modSelType != "stability")
+        cli::cli_alert_warning(c("Mis-specified model selection strategy",
+            "Using factor stability for model selection"))
+    msg_suffix <- ifelse(modSelType == "cv", "cross-validation", 
+        "factor stability")
+    cli::cli_alert_info("Model selection by {msg_suffix}")
+    if(modSelType == "stability") cli::cli_alert_info("Bound: {bound}")
+    
 }
 ## =============================================================================

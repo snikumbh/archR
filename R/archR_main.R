@@ -11,12 +11,12 @@
 #' sequences as a DNAStringSet object. This argument required argument.
 #' @param seqs_pos Vector. Specify the tick labels for sequence positions.
 #' Default is NULL.
-#' @param threshold_itr Numeric. Specify the number of iterations to perform.
+#' @param total_itr Numeric. Specify the number of iterations to perform.
 #' Default is 3.
 #' @param set_parsimony Logical vector. Specify if model selection by
 #' cross-validation should prefer parsimonious solutions. Not required when
 #' stability-based model selection is chosen. Length of the vector should match
-#' number of iterations specified in 'threshold_itr' argument. TRUE denotes 
+#' number of iterations specified in 'total_itr' argument. TRUE denotes 
 #' parsimony is followed, FALSE otherwise.
 #' @param set_ocollation Logical vector. Specify for every iteration of archR
 #' if collation of clusters from outer chunks should be performed. TRUE denotes
@@ -103,17 +103,19 @@
 #'                           seqs_ohe_mat = inputSeqsMat,
 #'                           seqs_raw = inputSeqsRaw,
 #'                           seqs_pos = seq(1,100,by=1),
-#'                           threshold_itr = 2)
+#'                           total_itr = 2)
 #' 
 #'  
 #' @export
 archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
-                    threshold_itr = 3,
+                    total_itr = 3,
                     set_parsimony = c(FALSE, FALSE, FALSE),
                     set_ocollation = c(FALSE, TRUE, FALSE),
                     fresh = TRUE,
                     use_oc = NULL,
                     o_dir = NULL){
+    ##
+    archRStartTime <- Sys.time()
     ##
     flags <- config$flags
     plt <- config$flags$plotVerboseFlag
@@ -131,35 +133,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     crs <- config$nCoresUse
     
     cli::cli_rule(left="Setting up")
-    ## assert threshold_itr is a positive integer
-    if(!threshold_itr > 0) {
-        stop("Expecting number of iterations to be numeric and > 0")
-    }
-    ## better, provide a summary function
-    ## message(utils::str(config))
-    archRStartTime <- Sys.time()
-    ##
-    if(!is.null(o_dir)){
-        if(fresh){
-            o_dir <- handle_dir_creation(o_dir, vrbs||dbg)
-        }else{
-            if(!dir.exists(o_dir)){
-                stop(o_dir, " not found")
-            }
-        }
-    }
-    ##
-    if(is.null(seqs_pos)){
-        seqs_pos <- seq_len(Biostrings::width(seqs_raw[1]))
-    }
-    ##
-    manage_o_dir(plt, o_dir) # this will stop if o_dir is NULL
-    if(plt){
-        plot_all_seqs_logo(seqs_raw, seqs_pos, dpath=o_dir)
-    }
-    ## Make checks for params in configuration
-    .assert_archR_config(config, ncol(seqs_ohe_mat))
-    .assert_archR_thresholdIteration(threshold_itr)
+    
+    perform_setup(config, total_itr, o_dir, fresh, 
+                    seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony, 
+                    set_ocollation)
     
     ##
     ## ** To continue archR from an earlier run (further levels downstream)
@@ -168,79 +145,33 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     ##
     ## Initialize sequence-cluster-labels and outerChunks
     seqsClustLabels <- rep("0", ncol(seqs_ohe_mat))
-    seqsClustLabelsList <- vector("list", threshold_itr)
-    clustFactors <- vector("list", threshold_itr)
-    architectures <- vector("list", threshold_itr)
-    if(tym) timeInfo <- vector("list", threshold_itr)
+    seqsClustLabelsList <- vector("list", total_itr)
+    clustFactors <- vector("list", total_itr)
+    architectures <- vector("list", total_itr)
+    if(tym) timeInfo <- vector("list", total_itr)
     ##
     test_itr <- 1
-    ##----------------------------------------------------------------------
+    ##--------------------------------------------------------------------------
+    ## Set outerChunks for first iteration in fresh or non-fresh case
     if(fresh){
         outerChunksColl <- vector("list", 1)
-        ## Set outerChunks for first iteration
         outerChunksColl[[1]] <- seq(ncol(seqs_ohe_mat))
-        ##
     }else{
-        # .msg_pstr("Working on clusters from an earlier run", flg=vrbs)
         cli::cli_alert_info("Working on clusters from an earlier run")
-        if(is.null(use_oc)){
-            stop("'use_oc' should not be NULL")
-        }else{
-            .msg_pstr("OK", flg=dbg)
-            ## use_oc is same as nxtOuterChunkColl
-            seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
-                                                        use_oc)
-            .assert_archR_OK_for_nextIteration(use_oc)
-            outerChunksColl <- use_oc
-            ##
-        }
+        if(is.null(use_oc)) stop("'use_oc' should not be NULL")
+        ## use_oc is same as nxtOuterChunkColl
+        seqsClustLabels <- .update_cluster_labels(seqsClustLabels, use_oc)
+        .assert_archR_OK_for_nextIteration(use_oc)
+        outerChunksColl <- use_oc
     }
     ##
-    ##
-    if(length(set_parsimony) < threshold_itr){
-        set_parsimony <- rep(FALSE, threshold_itr)
-        set_parsimony[length(set_parsimony)] <- TRUE
-    }
-    ##
-    if(length(set_ocollation) < threshold_itr){
-        set_ocollation <- rep(FALSE, threshold_itr)
-        set_ocollation[1] <- TRUE
-        set_ocollation[length(set_parsimony)] <- FALSE #Earlier was TRUE
-    }
     
-    #### Start cluster only once
-    if(parallelize){
-        cl <- parallel::makeCluster(crs, type = "FORK")
-        parallel::setDefaultCluster(cl)
-        # .msg_pstr("Parallelization w/", crs, "cores", flg=dbg)
-        # .msg_pstr(cl, flg=dbg)
-        ##
-        cli::cli_alert_info("Parallelization: {crs} cores")
-    }else{
-        cli::cli_alert_info("Parallelization: No")
-    }
-    ####
-    if(modSelType == "cv"){
-        .msg_pstr("Model selection by cross-validation", flg=vrbs || dbg)
-    }
-    if(modSelType == "stability"){
-        # .msg_pstr("Model selection by factor stability", flg=vrbs || dbg)
-        # .msg_pstr("Bound:", bound, flg=vrbs || dbg)
-        ##
-        ##
-        cli::cli_alert_info("Model selection by factor stability")
-        cli::cli_alert_info("Bound: {bound}")
-    }
-    
-    ##
     ##-------------------------------------------------------------------------
-    while (test_itr <= threshold_itr) {
+    while (test_itr <= total_itr) {
         iterStartTime <- Sys.time()
         totOuterChunksColl <- length(outerChunksColl)
-        # .msg_pstr("=== Iteration", test_itr, 
-        #     paste0("[", totOuterChunksColl, " chunk(s)]"), "===", flg=vrbs)
         ##
-        cli::cli_h1(c("Iteration {test_itr} of {threshold_itr} ",
+        cli::cli_h1(c("Iteration {test_itr} of {total_itr} ",
             "[{totOuterChunksColl} chunk{?s}]"))
         nxtOuterChunksColl <- vector("list")
         seqsClustLabels <- rep("0", ncol(seqs_ohe_mat))
@@ -249,9 +180,6 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         for (outerChunkIdx in seq_along(outerChunksColl)) {
             ##
             outerChunk <- outerChunksColl[[outerChunkIdx]]
-            # .msg_pstr(paste0("-----[Outer chunk ", outerChunkIdx, "/",
-            #             totOuterChunksColl, "]"), 
-            #     paste0("[Size:", length(outerChunk), "]"), flg=vrbs)
             ##
             cli::cli_h2(c("Outer chunk {outerChunkIdx} ",
                 "of {totOuterChunksColl} [Size: {length(outerChunk)}]"))
@@ -261,7 +189,6 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                                         kFolds)
             ##
             if (doNotProcess) {
-                # .msg_pstr("Decision: Skipping", flg=vrbs)
                 ##
                 cli::cli_alert_info("Decision: Skipping")
                 ## TO-DO: Could write function to manipulate
@@ -295,10 +222,6 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 nClustEachIC <- rep(0, length(innerChunksColl))
                 #################### INNER CHUNK FOR LOOP #####################
                 for (innerChunkIdx in seq_along(innerChunksColl)) {
-                    # .msg_pstr(paste0("[Inner chunk ", innerChunkIdx, "/",
-                    #     length(innerChunksColl), "]"), 
-                    #     paste0("[Size:", 
-                    #     length(innerChunksColl[[innerChunkIdx]]),"]"), flg=vrbs)
                     ##
                     cli::cli_h3(c("Inner chunk {innerChunkIdx} of ", 
                         "{length(innerChunksColl)} ", 
@@ -404,11 +327,9 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                 length(nxtOuterChunksColl))
             ##
             
-            # .msg_pstr(chunksComplInfo, flg=vrbs)
             if(outerChunkIdx == totOuterChunksColl) {
-                # .msg_pstr(iterComplInfo, flg=vrbs)
                 cli::cli_alert_success(c("{test_itr} of ",
-                    "{threshold_itr} iteration{?s} complete"))
+                    "{total_itr} iteration{?s} complete"))
             }
             # .msg_pstr(chunksComplInfo, flg=dbg)
             .msg_pstr(currInfo, flg=dbg)
@@ -416,21 +337,19 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
 
         }  ## for loop over outerChunksCollection ENDS
         .msg_pstr("Managing clusters from outer chunk(s)", flg=dbg)
-        # cli::cli_alert_info("Managing clusters from outer chunk(s)")
         
-
         ############### Managing clusters from outer chunks
         intClustFactorsClustering <- NULL
 
         ## Can intClustFactors ever be NULL?
-        
+        #### Debugging print messages ####
         .msg_pstr("totOuterChunks: ", totOuterChunksColl, flg=dbg)
         .msg_pstr(paste(nClustEachOC, collapse=","), flg=dbg)
         .msg_pstr(paste(nClustEachIC, collapse=","), flg=dbg)
         .msg_pstr("Collation this iter:", set_ocollation[test_itr],
                 "; #InnerChunks: ", length(innerChunksColl), 
                 "; #OuterChunks: ", totOuterChunksColl, flg=dbg)
-        
+        ####
         if (set_ocollation[test_itr] && (length(innerChunksColl) > 1 
             || totOuterChunksColl > 1)) {
             ## ^The second condition in the IF statement protects against
@@ -438,14 +357,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
             ## outer chunks is 1.
             .msg_pstr("Decision for outer chunk collation: Yes", flg=dbg)
             ## Cluster the factors using hierarchical clustering
-            ## Combinations considered:
-            ## Cosine distance + Average Linkage
-            ## Euclidean distance + Average Linkage
-            ## modifiedNW distance + Average Linkage
-            ## Euclidean distance + Complete Linkage
-            ## Euclidean distance + Ward.D Linkage
             ## 
-            ############## We use Complete linkage with Euclidean distance
             if(totOuterChunksColl > 1){
                 .msg_pstr("meanClustersOC: ", ceiling(mean(nClustEachOC)), 
                     flg=dbg)
@@ -456,7 +368,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                     setMinClusters <- clustFactors[[lastItrC]]$nBasisVectors
                 }else{
                     ## average clusters identified in each chunk of the 
-                    ## first iteration
+                    ## 1st iter
                     setMinClusters <- max(ceiling(mean(nClustEachOC[1])), 2) 
                 }
             }else{
@@ -466,8 +378,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                     flg=dbg)
                 setMinClusters <- max(ceiling(mean(nClustEachIC)), 2)
             }
-            # intermediateResultsPlot(seq_lab = seqsClustLabels, seqs_raw = seqs_raw, pos_lab = seqs_pos, iter = test_itr, fname = o_dir, 
-            #     name_suffix = paste0(test_itr, "_ondemand"))
+            
             ## regularize
             regIntClustFactors <- .regularizeMat(basisMat = intClustFactors,
                                                 topN = 50)
@@ -520,91 +431,38 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                     vrbs=vrbs||dbg)
             }
         }
-        ##
-        itrComplMsg <- paste("Iteration", test_itr, "completed")
-        itrComplTime <- ""
-        if(tym){
-            complTime1 <- Sys.time() - iterStartTime
-            complTime <- format(as.numeric(Sys.time() - iterStartTime, 
-                units = "mins"), digits = 3)
-            itrComplTime <- paste(" in", complTime, "mins")
-            timeInfo[[test_itr]] <- as.double.difftime(complTime)
-        }
-        # .msg_pstr(itrComplMsg, itrComplTime, flg=vrbs)
-        cli::cli_alert(c("Iteration {test_itr} completed ",
-            "in {prettyunits::pretty_dt(as.difftime(complTime1))}"))
-        ##
-        archRComplMsg <- paste("ellapsed since start")
-        archRComplTime <- ""
-        if(tym){
-            complTime1 <- Sys.time() - archRStartTime
-            complTime <- format(as.numeric(Sys.time() - archRStartTime,
-                                        units = "mins"), digits = 3)
-            archRComplTime <- paste(complTime, "mins ")
-            # .msg_pstr(archRComplTime, archRComplMsg, flg=vrbs)
-            cli::cli_alert(
-            c("Time ellapsed since start: ",
-            "{prettyunits::pretty_dt(as.difftime(complTime1))}"))
-        }
-        ##
-        ## test_itr was updated here
+        
         ## write current iteration clustering to disk as RDS;
         ## good for checkpointing archR
-        if(!is.null(o_dir) && chkpnt && test_itr != threshold_itr){
-            # .msg_pstr("Checkpointing set to TRUE. ",
-            #     "Saving result of iteration ", test_itr, ".", flg=vrbs)
-            ##
-            curr_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
-                                        clustBasisVectors = clustFactors,
-                                        rawSeqs = seqs_raw,
-                                        config = config,
-                                        call = match.call())
-            rdsFilename <- paste0(o_dir, "archRresult_checkpoint",
-                                    test_itr, ".rds")
-            saveRDS(curr_archRresult, file=rdsFilename)
-            cli::cli_alert_info(c("Checkpointing at iteration {test_itr}: ",
-                                    "{basename(rdsFilename)}"))
-        }
+        if(chkpnt) save_checkpoint(o_dir, test_itr, total_itr, 
+                                seqsClustLabelsList, clustFactors,
+                                seqs_raw, config, call = match.call())
         ##
         test_itr <- test_itr + 1
+        ##
+        if(tym) {
+            show_ellapsed_time(
+                use_str =  paste("Iteration", test_itr, "completed: "), 
+                use_time = iterStartTime)
+            show_ellapsed_time(use_time = archRStartTime)
+        }
+        ##
     } ## algorithm while loop ENDS
     ##
-    if(tym){
-        temp_res <- list(seqsClustLabels = seqsClustLabelsList,
-                        clustBasisVectors = clustFactors,
-                        rawSeqs = seqs_raw,
-                        timeInfo = timeInfo,
-                        config = config,
-                        call = match.call())
-    }else{
-        temp_res <- list(seqsClustLabels = seqsClustLabelsList,
-                        clustBasisVectors = clustFactors,
-                        rawSeqs = seqs_raw,
-                        config = config,
-                        call = match.call())
-    }
+    temp_res <- list(seqsClustLabels = seqsClustLabelsList,
+                    clustBasisVectors = clustFactors,
+                    rawSeqs = seqs_raw,
+                    timeInfo = ifelse(tym, timeInfo, NULL),,
+                    config = config,
+                    call = match.call())
     ##
-    decisionToCollate <- TRUE
-    iterations <- length(clustFactors)
-    if(iterations > 1){
-        prevIterNFactors <- clustFactors[[iterations-1]]$nBasisVectors
-        currIterNFactors <- clustFactors[[iterations]]$nBasisVectors
-        if(currIterNFactors == prevIterNFactors){
-            decisionToCollate <- FALSE
-            .msg_pstr("Reordering decision: FALSE", flg=dbg)
-        }
-    }
-    ## For setting minClusters, note last iteration collated
-    if(any(set_ocollation)){
-        lastItrC <- tail(which(set_ocollation), 1)
-        setMinClustersFinal <- 
-            temp_res$clustBasisVectors[[lastItrC]]$nBasisVectors
-    }else{
-        setMinClustersFinal <- 2 ## the default value
-    }
+    
+    decisionToCollate <- decisionToCollate(clustFactors)
+    setMinClustersFinal <- keepMinClusters(set_ocollation, temp_res)
+    
     ##
     temp_res_reord <- collate_archR_result(temp_res,
-                                    iter = threshold_itr,
+                                    iter = total_itr,
                                     clust_method = "hc",
                                     aggl_method = "complete", ## or average?
                                     dist_method = "cor",
@@ -615,65 +473,40 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                     flags = flags,
                                     enableSwitchSilToCH = FALSE)
     ## Print final stage output files to disk
-    if(plt){
-        if(!is.null(o_dir)){
-            intermediateResultsPlot(seq_lab = temp_res_reord$seqsClustLabels,
-                                    seqs_raw = seqs_raw, pos_lab = seqs_pos,
-                                    iter = "Final", fname = o_dir,
-                                    vrbs=vrbs||dbg)
-        }
+    if(plt && !is.null(o_dir)){
+        intermediateResultsPlot(seq_lab = temp_res_reord$seqsClustLabels,
+                                seqs_raw = seqs_raw, pos_lab = seqs_pos,
+                                iter = "Final", fname = o_dir,
+                                vrbs=vrbs||dbg)
     }
     ##
-    if(tym){
-        temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
-                                clustBasisVectors = clustFactors,
-                                clustSol = temp_res_reord,
-                                rawSeqs = seqs_raw,
-                                timeInfo = timeInfo,
-                                config = config,
-                                call = match.call())
-    }else{
-        temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
-                                clustBasisVectors = clustFactors,
-                                clustSol = temp_res_reord,
-                                rawSeqs = seqs_raw,
-                                config = config,
-                                call = match.call())
-    }
+    temp_archRresult <- list(seqsClustLabels = seqsClustLabelsList,
+                            clustBasisVectors = clustFactors,
+                            clustSol = temp_res_reord,
+                            rawSeqs = seqs_raw,
+                            timeInfo = ifelse(tym, timeInfo, NULL),
+                            config = config,
+                            call = match.call())
+    ##
     .assert_archRresult(temp_archRresult)
-    ##
     ## Write result to disk as RDS file
-    if(!is.null(o_dir)){
-        rdsFilename <- paste0(o_dir, "archRresult.rds")
-        saveRDS(temp_archRresult, file=rdsFilename)
-        ##
-        # .msg_pstr("=== Result saved to location ===", flg=vrbs)
-        # .msg_pstr(rdsFilename, flg=vrbs)
-        ##
-        cli::cli_alert_info("Result saved to: {.emph {basename(rdsFilename)}}")
-    }
+    save_final_result(o_dir, temp_archRresult)
+    
     ##
-    ## At the moment, it is preferable to leave archR final iteration unordered.
+    ## It is preferable to leave archR final iteration unordered.
     ## The final result clusters is computed with a particular setting (default)
     ## of collate_archR_result function. 
     ## 
     ## The user can choose the agglomeration method and the distMethod to 
     ## achieve suitable clustering results.
-    ##
+    
     ## Stop cluster
-    .msg_pstr("Stopping cluster...",flg=dbg)
     if(parallelize) parallel::stopCluster(cl)
     ##
-    archRComplMsg <- paste("archR exiting")
-    archRComplTime <- ""
-    if(tym){
+    if(tym){ 
         complTime1 <- Sys.time() - archRStartTime
-        complTime <- format(as.numeric(Sys.time() - archRStartTime,
-                                units = "mins"), digits = 3)
-        archRComplTime <- paste(",", complTime, "mins")
+        cli::cli_rule(c("archR exiting {prettyunits::pretty_dt(complTime1)}"))
     }
-    # .msg_pstr(archRComplMsg, archRComplTime, flg=vrbs)
-    cli::cli_rule(c("archR exiting {prettyunits::pretty_dt(complTime1)}"))
     ##
     return(temp_archRresult)
 } ## archR function ENDS
