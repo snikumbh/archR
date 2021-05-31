@@ -14,9 +14,13 @@
 #' @export
 handle_dir_creation <- function(o_dir, vrbs){
     ##
+    cli::cli_alert_info(c("Output directory at path: ", 
+                    "{.emph {dirname(o_dir)}}"))
     if(dir.exists(o_dir)){
-        .msg_pstr("-- Directory exists: -- ", o_dir, 
-            "-- Changing name to: -- ", flg=vrbs)
+        # .msg_pstr("-- Directory exists: -- ", o_dir, 
+        #     "-- Changing name to: -- ", flg=vrbs)
+        cli::cli_alert_warning("Directory exists: {.emph {basename(o_dir)}}")
+        
         allExistingDirs <- list.dirs(path = dirname(o_dir),
                                         recursive = FALSE)
         dirsThatMatch <- grep(pattern = basename(o_dir), allExistingDirs,
@@ -29,12 +33,14 @@ handle_dir_creation <- function(o_dir, vrbs){
             name_suffix <- name_suffix + 1
             o_dir <- paste(o_dir, name_suffix, sep = "_")
         }
-        .msg_pstr(o_dir, flg=vrbs)
+        # .msg_pstr(o_dir, flg=vrbs)
+        cli::cli_alert_info("Instead writing to: {.emph {basename(o_dir)}}")
     }
     retVal <- dir.create(paste0(o_dir, "/"), showWarnings = TRUE)
     stopifnot(retVal)
     returnODirName <- paste0(o_dir, "/")
-    .msg_pstr("-- Directory created for writing results -- ", flg=vrbs)
+    # .msg_pstr("-- Directory created for writing results -- ", flg=vrbs)
+    # cli::cli_alert_success("")
     returnODirName
 }
 ## =============================================================================
@@ -93,9 +99,10 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
         pos_lab = seqs_pos, 
         title = paste("Sequence logo of all", length(seqs_raw),"sequences" ))
     ##
-    ggsave(filename = file.path(dpath, "allSequencesLogo.pdf"),
+    suppressWarnings(
+        ggsave(filename = file.path(dpath, "allSequencesLogo.pdf"),
         plot = allSequencesLogo,
-        device = "pdf", width = 20, height = 2.5)
+        device = "pdf", width = 20, height = 2.5))
 }
 ## =============================================================================
 
@@ -491,7 +498,7 @@ archR_set_config <- function(inner_chunk_size = 500,
                     "perhaps, further increasing 'nIterationsUse'\n"),
                 immediate. = TRUE)
     }
-    .msg_pstr("Best K for this subset: ", best_k, flg=vrbs)
+    .msg_pstr("Best K for this subset:", best_k, flg=vrbs)
     
     
     ##
@@ -500,7 +507,7 @@ archR_set_config <- function(inner_chunk_size = 500,
         ## Cluster sequences
         ## New strategy, perform nRuns for bestK and use only the best one
         nRuns <- config$nIterationsUse
-        .msg_pstr("Fetching ", best_k, " clusters", flg=vrbs)
+        # .msg_pstr("Fetching ", best_k, " clusters", flg=(vrbs || dbg))
 
         featuresMatrixList <- vector("list", nRuns)
         samplesMatrixList <- vector("list", nRuns)
@@ -533,7 +540,8 @@ archR_set_config <- function(inner_chunk_size = 500,
                 bestOrd <- new_ord[[nR]]
             }
         }
-        .msg_pstr("Best Q2 giving run found: ", bestQ2, flg=dbg)
+        # .msg_pstr("Best Q2 giving run found: ", bestQ2, flg=dbg)
+        # cli::cli_alert_info("Fetched {best_k} clusters")
         ##
         featuresMatrix <- bestFeatMat
         samplesMatrix <- bestSampMat
@@ -543,7 +551,7 @@ archR_set_config <- function(inner_chunk_size = 500,
         samplesMatrix <- matrix(rep(NA, length(tempM)), nrow = nrow(tempM))
         samplesMatrix[ ,bestOrd] <- tempM
         #####
-        .msg_pstr("Fetching ", best_k," cluster(s)", flg=dbg)
+        # .msg_pstr("Fetching ", best_k," cluster(s)", flg=dbg)
         clusterMembershipsForSamples <-
             .get_cluster_memberships_per_run(samplesMatrix = samplesMatrix,
                 iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx, 
@@ -554,7 +562,7 @@ archR_set_config <- function(inner_chunk_size = 500,
             has_overfit <- .detect_overfitting(samplesMatrix, 
                                                 clusterMembershipsForSamples, 
                                                 minSeqs = 50)
-            print("Overfit at:")
+            # print("Overfit at:")
             # if(length(has_overfit) > 0){ 
             #     print(paste("Overfit at:", has_overfit))
             # }else{
@@ -565,17 +573,20 @@ archR_set_config <- function(inner_chunk_size = 500,
             ## -- Remove those columns from featuresMat
             ## -- Adjust clustMemberships
             if(length(has_overfit) > 0){
-                print(has_overfit)
+                # print(has_overfit)
                 clusterMembershipsForSamples <- 
                     .adjustSampleMemberships(clusterMembershipsForSamples, 
                                         samplesMatrix, has_overfit)
                 featuresMatrix <- as.matrix(featuresMatrix[, -c(has_overfit)])
                 best_k <- best_k - length(has_overfit)
-                .msg_pstr("Adjusting for any overfitting, fetched ", 
-                    best_k, "cluster(s)", flg=vrbs)
-            }else{
-                print("None")
+                # .msg_pstr("Adjusting for overfitting, fetched ", 
+                #     best_k, "cluster(s)", flg=vrbs)
+                cli::cli_alert_info(c("Adjusting for overfitting, ",
+                                    "fetched {best_k} cluster{?s}"))
             }
+            # else{
+            #     print("None")
+            # }
         }
         ##
         forGlobClustAssignments <- .assign_samples_to_clusters(
@@ -637,20 +648,26 @@ intermediateResultsPlot <- function(seq_lab, seqs_raw = NULL,
 if(is.null(name_suffix)){
     if(is.numeric(iter)){
         name_suffix <- paste0("Iteration", iter)
-        .msg_pstr("=== Intermediate Result ===", flg=vrbs)
+        # .msg_pstr("=== Intermediate Result ===", flg=vrbs)
+        cli::cli_rule(left="Intermediate result")
     }else{
         name_suffix <- paste0("Final")
-        .msg_pstr("=== Final Result ===", flg=vrbs)
+        # .msg_pstr("=== Final Result ===", flg=vrbs)
+        cli::cli_rule(left="Final result")
     }
 }else{
     .msg_pstr("=== On-demand Result ===", flg=vrbs)
 }
 ##
+cli::cli_alert_info("Output directory: {.emph {fname}}")
+    
 seqs_clust_list_ord <- get_seqs_clust_list(seq_lab)
 seqs_clust_vec_ord <- unlist(seqs_clust_list_ord)
-.msg_pstr("Generating unannotated map of clustered sequences...", flg=vrbs)
+# .msg_pstr("Generating unannotated map of clustered sequences...", flg=vrbs)
 image_fname <- paste0(fname, "ClusteringImage_", name_suffix, ".png")
-.msg_pstr("Sequence clustering image written to: ", image_fname, flg=vrbs)
+# .msg_pstr("Sequence clustering image written to: ", image_fname, flg=vrbs)
+cli::cli_alert_info(c("Sequence clustering image written to: ", 
+                        "{.emph {basename(image_fname)}}"))
 viz_seqs_acgt_mat_from_seqs(
     seqs =  as.character(seqs_raw[seqs_clust_vec_ord]),
                     pos_lab = pos_lab,
@@ -661,9 +678,13 @@ viz_seqs_acgt_mat_from_seqs(
                     yt_freq = 100)
 
 ##
-.msg_pstr("Generating architectures for clusters of sequences...", flg=vrbs)
+# .msg_pstr("Generating architectures for clusters of sequences...", flg=vrbs)
+
 arch_fname <- paste0(fname, "Architecture_SequenceLogos_", name_suffix, ".pdf")
-.msg_pstr("Architectures written to: ", arch_fname, flg=vrbs)
+# .msg_pstr("Architectures written to: ", arch_fname, flg=vrbs)
+cli::cli_alert_info(c("Architectures written to: ", 
+                        "{.emph {basename(arch_fname)}}"))
+
 plot_arch_for_clusters(seqs = seqs_raw, 
                         clust_list = seqs_clust_list_ord,
                         pos_lab = pos_lab,

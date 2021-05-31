@@ -26,7 +26,7 @@
     ##
     foo_scores <- expand.grid(list(kValue = param_ranges$k_vals,
                                     ScoreType = c("AmariTypeDistance"),
-                                    nRuns = nIterations, Score = -0.01
+                                    nRuns = nIterations, Score = 100
                             ))
     ##
     .msg_pstr("Bound : ", bound, flg=dbg)
@@ -35,7 +35,9 @@
     breakNow <- FALSE
     prev_amari <- NA
     for(kValue in param_ranges$k_vals){
-        if(kValue > 1) .msg_pstr("Checking K = ", kValue, flg=vrbs)
+        if(kValue > 1){
+            .msg_pstr("Checking K =", kValue, flg=vrbs)
+        }
         
         ## Get NMF results 
         resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
@@ -52,13 +54,8 @@
         .msg_pstr("AmariTypeDist : ", this_amari, flg=dbg)
         
         foo_scores[kValue, "Score"] <- this_amari
-        print(foo_scores)
         
-        # if(this_amari <= bound){
-        #     
-        # }else{
-        #     breakNow <- TRUE
-        # }
+        
         if(this_amari > bound) breakNow <- TRUE
         ##
         check_errant <- FALSE
@@ -86,11 +83,11 @@
 .check_no_mag_change_fail_condition <- function(foo_scores){
     score_pows <- abs(floor(log10(foo_scores$Score)))
     score_pows <- score_pows[which(!is.nan(score_pows))]
-    print(score_pows)
-    diffs <- diff(score_pows)
-    print("Score_POWs")
-    print(diffs)
-    print(abs(diffs))
+    # print(score_pows)
+    # diffs <- diff(score_pows)
+    # print("Score_POWs")
+    # print(diffs)
+    # print(abs(diffs))
     if(all(score_pows >= 17)){
         return(TRUE)
     }
