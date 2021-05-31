@@ -39,6 +39,7 @@ Imports:
     stats,
     cluster,
     fpc,
+    cli,
     reshape2 (>= 1.4.3),
     reticulate (>= 1.12),
     parallel,
