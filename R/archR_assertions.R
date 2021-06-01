@@ -513,14 +513,11 @@
 ## 
 ## 
 .assert_archRresult <- function(archRresultObj) {
-    if(archRresultObj$config$flags$timeFlag){
-        topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", 
-            "clustSol", "rawSeqs", "timeInfo", "config", "call")
-    }else{
-        ## timeFlag not set so timeInfo shouldn't be present
-        topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", 
-            "clustSol", "rawSeqs", "config", "call")
-    }
+    ## archRresult object always has same list elements.
+    ## When time info is not requested, it is set to NA
+    topLevel_elem_names <- c("seqsClustLabels", "clustBasisVectors", 
+        "clustSol", "rawSeqs", "timeInfo", "config", "call")
+    
     if (is.null(archRresultObj)) {
         stop("archR result object is NULL")
     }

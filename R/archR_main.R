@@ -134,9 +134,14 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     
     cli::cli_rule(left="Setting up")
     
-    perform_setup(config, total_itr, o_dir, fresh, 
+    setup_ans <- perform_setup(config, total_itr, o_dir, fresh, 
                     seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony, 
                     set_ocollation)
+    seqs_pos <- setup_ans$seqs_pos
+    o_dir <- setup_ans$o_dir
+    set_ocollation <- setup_ans$set_ocollation
+    set_parsimony <- setup_ans$set_parsimony
+    cl <- setup_ans$cl
     
     ##
     ## ** To continue archR from an earlier run (further levels downstream)
@@ -173,6 +178,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         ##
         cli::cli_h1(c("Iteration {test_itr} of {total_itr} ",
             "[{totOuterChunksColl} chunk{?s}]"))
+        ##
         nxtOuterChunksColl <- vector("list")
         seqsClustLabels <- rep("0", ncol(seqs_ohe_mat))
         intClustFactors <- NULL
@@ -180,13 +186,12 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         for (outerChunkIdx in seq_along(outerChunksColl)) {
             ##
             outerChunk <- outerChunksColl[[outerChunkIdx]]
+            lenOC <- length(outerChunk)
             ##
             cli::cli_h2(c("Outer chunk {outerChunkIdx} ",
-                "of {totOuterChunksColl} [Size: {length(outerChunk)}]"))
+                "of {totOuterChunksColl} [Size: {lenOC}]"))
             ## Make a decision to process based on size of chunk
-            doNotProcess <- .decide_process_outer_chunk(minSeqs,
-                                                        length(outerChunk),
-                                                        kFolds)
+            doNotProcess <- .decide_process_outer_chunk(minSeqs, lenOC, kFolds)
             ##
             if (doNotProcess) {
                 ##
@@ -201,75 +206,52 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 ## We access clustFactors that are set in the previous 
                 ## iteration, when test_itr would be one less than its 
                 ## current value.
-                if (!is.null(intClustFactors)) {
-                    intClustFactors <- 
+                intClustFactors <- 
                     cbind(intClustFactors, as.matrix(
-                    clustFactors[[test_itr-1]]$basisVectors[, outerChunkIdx])
-                    )
-                } else {
-                    intClustFactors <- as.matrix(
-                    clustFactors[[test_itr-1]]$basisVectors[, outerChunkIdx]
-                    )
-                }
+                    clustFactors[[test_itr-1]]$basisVectors[, outerChunkIdx]))
+                ##
             } else {
-                # .msg_pstr("Decision: Processing", flg=vrbs)
-                innerChunksColl <- .prepare_chunks(outerChunk,
-                                            chnksz)
+                innerChunksColl <- .prepare_chunks(outerChunk, chnksz)
                 ## Maintain these in a list, for collation later when
                 ## all innerChunks in innerChunksColl have been processed
-                globFactors <- vector("list", length(innerChunksColl))
-                globClustAssignments <- vector("list", length(innerChunksColl))
-                nClustEachIC <- rep(0, length(innerChunksColl))
-                #################### INNER CHUNK FOR LOOP #####################
-                for (innerChunkIdx in seq_along(innerChunksColl)) {
-                    ##
-                    cli::cli_h3(c("Inner chunk {innerChunkIdx} of ", 
-                        "{length(innerChunksColl)} ", 
-                        "[Size: {length(innerChunksColl[[innerChunkIdx]])}]"))
-                    ##
-                    ## Setting up sequences for the current chunk
-                    this_seqsMat <-
-                        seqs_ohe_mat[, innerChunksColl[[innerChunkIdx]]]
-                    
-                    if(test_itr == 1 ||
-                        length(outerChunk) > 0.9*chnksz){
-                        thisNMFResult <-
-                            .handle_chunk_w_NMF2(innerChunkIdx,
-                                        innerChunksColl,
-                                        this_seqsMat,
-                                        cgfglinear = TRUE,
-                                        coarse_step = 10,
-                                        monolinear = FALSE,
-                                        askParsimony = set_parsimony[test_itr],
-                                        doRegularize = FALSE,
-                                        config, 
-                                        o_dir, test_itr, 
-                                        outerChunkIdx)
-                    }else{
-                        ##
-                        thisNMFResult <-
-                            .handle_chunk_w_NMF2(innerChunkIdx,
-                                        innerChunksColl,
-                                        this_seqsMat,
-                                        cgfglinear = TRUE,
-                                        coarse_step = 5,
-                                        monolinear = TRUE,
-                                        askParsimony = set_parsimony[test_itr],
-                                        doRegularize = TRUE,
-                                        config, 
-                                        o_dir, test_itr, 
-                                        outerChunkIdx)
-                    }
-                    .assert_archR_NMFresult(thisNMFResult)
-                    globFactors[[innerChunkIdx]] <- 
-                            thisNMFResult$forGlobFactors
-                    globClustAssignments[[innerChunkIdx]] <-
-                            thisNMFResult$forGlobClustAssignments
-                    ##
-                    nClustEachIC[innerChunkIdx] <- 
-                            length(globClustAssignments[[innerChunkIdx]])
-                } ## for loop over innerChunksColl ENDS here
-                #################### INNER CHUNK FOR LOOP ######################
+                icResult <- process_innerChunk(test_itr, innerChunksColl,
+                                    config, lenOC, seqs_ohe_mat, set_parsimony,
+                                    o_dir, outerChunkIdx)
+                globFactors <- icResult$globFactors
+                globClustAssignments <- icResult$globClustAssignments
+                nClustEachIC <- icResult$nClustEachIC
+                
+                
+                # globFactors <- vector("list", length(innerChunksColl))
+                # globClustAssignments <- vector("list", length(innerChunksColl))
+                # nClustEachIC <- rep(0, length(innerChunksColl))
+                # #################### INNER CHUNK FOR LOOP #####################
+                # for (innerChunkIdx in seq_along(innerChunksColl)) {
+                #     ##
+                #     cli::cli_h3(c("Inner chunk {innerChunkIdx} of ",
+                #         "{length(innerChunksColl)} ",
+                #         "[Size: {length(innerChunksColl[[innerChunkIdx]])}]"))
+                #     ##
+                #     ## Setting up sequences for the current chunk
+                #     this_seqsMat <-
+                #         seqs_ohe_mat[, innerChunksColl[[innerChunkIdx]]]
+                #     ##
+                #     cvStep <- ifelse(test_itr == 1 || lenOC > 0.9*chnksz, 10, 5)
+                #     thisNMFResult <- .handle_chunk_w_NMF2(innerChunkIdx,
+                #                     innerChunksColl, this_seqsMat,
+                #                     cgfglinear = TRUE, coarse_step = cvStep,
+                #                     askParsimony = set_parsimony[test_itr],
+                #                     config, o_dir, test_itr, outerChunkIdx)
+                #     ##
+                #     .assert_archR_NMFresult(thisNMFResult)
+                #     globFactors[[innerChunkIdx]] <- thisNMFResult$forGlobFactors
+                #     globClustAssignments[[innerChunkIdx]] <-
+                #             thisNMFResult$forGlobClustAssignments
+                #     ##
+                #     nClustEachIC[innerChunkIdx] <-
+                #             length(globClustAssignments[[innerChunkIdx]])
+                # } ## for loop over innerChunksColl ENDS here
+                # #################### INNER CHUNK FOR LOOP ######################
                 ## We need globFactors, globClustAssignments.
                 ## 
                 ## Single unlist of globClustAssignments brings together
@@ -286,17 +268,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 ##  result object.
                 globFactorsClustering <- NULL
                 ## Manage factors
-                if (!is.null(intClustFactors)) {
-                    intClustFactors <-
-                        cbind(intClustFactors,
-                            .get_factors_from_factor_clustering2(
-                                globFactorsClustering,
-                                globFactorsMat))
-                } else {
-                    intClustFactors <-
-                    .get_factors_from_factor_clustering2(globFactorsClustering,
-                                                            globFactorsMat)
-                }
+                tempClustFactors <- .get_factors_from_factor_clustering2(
+                            globFactorsClustering, globFactorsMat)
+                intClustFactors <- cbind(intClustFactors, tempClustFactors)
+                ##
                 ## Manage collated cluster assignments
                 collatedClustAssignments <-
                     .collate_clusters2(globFactorsClustering,
@@ -308,33 +283,23 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
             .assert_archR_globClustAssignments(collatedClustAssignments)
             ## Assigning cluster labels can be done later, see below
             ## Collect (append) clusters at current level
-            nxtOuterChunksColl <- append(nxtOuterChunksColl,
-                                        collatedClustAssignments)
-            ##
-            chunksComplInfo <-
-                paste0("-----[Outer chunk ", outerChunkIdx, "/", 
-                            totOuterChunksColl, "] complete")
+            nxtOuterChunksColl <- 
+                append(nxtOuterChunksColl, collatedClustAssignments)
             ##
             cli::cli_alert_success(c("{outerChunkIdx} of {totOuterChunksColl} ",
                 "outer chunk{?s} complete"))
-            ##
-            iterComplInfo <- paste0("=====[Iteration ", test_itr, "] complete")
             
             ##
             currInfo <- paste0("current total factors: ",
                                 ncol(intClustFactors))
             nextIterInfo <- paste0("Current total chunks for next iteration: ",
                                 length(nxtOuterChunksColl))
+            .msg_pstr(c(currInfo, "\n", nextIterInfo), flg=dbg)
             ##
-            
             if(outerChunkIdx == totOuterChunksColl) {
                 cli::cli_alert_success(c("{test_itr} of ",
                     "{total_itr} iteration{?s} complete"))
             }
-            # .msg_pstr(chunksComplInfo, flg=dbg)
-            .msg_pstr(currInfo, flg=dbg)
-            .msg_pstr(nextIterInfo, flg=dbg)
-
         }  ## for loop over outerChunksCollection ENDS
         .msg_pstr("Managing clusters from outer chunk(s)", flg=dbg)
         
@@ -356,40 +321,21 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
             ## performing HAC/collation when #inner chunks & the number of 
             ## outer chunks is 1.
             .msg_pstr("Decision for outer chunk collation: Yes", flg=dbg)
-            ## Cluster the factors using hierarchical clustering
-            ## 
-            if(totOuterChunksColl > 1){
-                .msg_pstr("meanClustersOC: ", ceiling(mean(nClustEachOC)), 
-                    flg=dbg)
-                ## For setting minClusters, note last iteration collated
-                chkIdx <- seq_len(test_itr-1)
-                if(any(set_ocollation[chkIdx])){
-                    lastItrC <- tail(which(set_ocollation[chkIdx]), 1)
-                    setMinClusters <- clustFactors[[lastItrC]]$nBasisVectors
-                }else{
-                    ## average clusters identified in each chunk of the 
-                    ## 1st iter
-                    setMinClusters <- max(ceiling(mean(nClustEachOC[1])), 2) 
-                }
-            }else{
-                ## When totOuterChunks is == 1, this is the first iteration
-                ## Use the mean of nClustEachIC
-                .msg_pstr("meanClustersIC: ", ceiling(mean(nClustEachIC)), 
-                    flg=dbg)
-                setMinClusters <- max(ceiling(mean(nClustEachIC)), 2)
-            }
+            ## Cluster the factors using hierarchical clustering 
+            setMinClusters <- keepMinClusters(set_ocollation, temp_res, 
+                                totOuterChunksColl, test_itr, 
+                                nClustEachOC, nClustEachIC, dbg, stage = NULL)
             
-            ## regularize
+            ## regularize basis matrix
             regIntClustFactors <- .regularizeMat(basisMat = intClustFactors,
                                                 topN = 50)
+            ## setting minClusters here can help to not undo the clusters 
+            ## identified by NMF
             intClustFactorsClusteringEucCom <-
                 .handle_clustering_of_factors(regIntClustFactors,
                                                 clustMethod = "hc",
                                                 linkage = "complete",
                                                 distMethod = "cor",
-                                                ## setting minClusters here
-                                                ## can help to not undo the 
-                                                ## clusters identified by NMF
                                                 minClusters = setMinClusters,
                                                 flags = flags)
 
@@ -404,14 +350,13 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                     nxtOuterChunksColl, dbg)
 
             ## Updating cluster labels for sequences can be done later after 
-            ## the clusters have been rearranged
-            ## But we need this for rearrangement
+            ## the clusters have been rearranged. But we need this for 
+            ## rearrangement
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
                                                         nxtOuterChunksColl)
             ##
         } else {
             .msg_pstr("Decision for outer chunk collation: No", flg=dbg)
-            ## TO-DO: move this inside else block above?
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
                                                         nxtOuterChunksColl)
         }
@@ -437,6 +382,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         if(chkpnt) save_checkpoint(o_dir, test_itr, total_itr, 
                                 seqsClustLabelsList, clustFactors,
                                 seqs_raw, config, call = match.call())
+        
         ##
         test_itr <- test_itr + 1
         ##
@@ -452,7 +398,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     temp_res <- list(seqsClustLabels = seqsClustLabelsList,
                     clustBasisVectors = clustFactors,
                     rawSeqs = seqs_raw,
-                    timeInfo = ifelse(tym, timeInfo, NULL),,
+                    timeInfo = ifelse(tym, timeInfo, NA),
                     config = config,
                     call = match.call())
     ##
@@ -484,7 +430,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                             clustBasisVectors = clustFactors,
                             clustSol = temp_res_reord,
                             rawSeqs = seqs_raw,
-                            timeInfo = ifelse(tym, timeInfo, NULL),
+                            timeInfo = ifelse(tym, timeInfo, NA),
                             config = config,
                             call = match.call())
     ##

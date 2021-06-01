@@ -33,14 +33,11 @@ handle_dir_creation <- function(o_dir, vrbs){
             name_suffix <- name_suffix + 1
             o_dir <- paste(o_dir, name_suffix, sep = "_")
         }
-        # .msg_pstr(o_dir, flg=vrbs)
-        cli::cli_alert_info("Instead writing to: {.emph {basename(o_dir)}}")
     }
     retVal <- dir.create(paste0(o_dir, "/"), showWarnings = TRUE)
     stopifnot(retVal)
     returnODirName <- paste0(o_dir, "/")
-    # .msg_pstr("-- Directory created for writing results -- ", flg=vrbs)
-    # cli::cli_alert_success("")
+    cli::cli_alert_success("Writing to: {.emph {basename(o_dir)}}")
     returnODirName
 }
 ## =============================================================================
@@ -440,18 +437,13 @@ archR_set_config <- function(inner_chunk_size = 500,
 ## - Similarly, globFactors variable is updated inside the function to
 ## additionally hold new ones
 ## 
-## doRegularize arg is passed on to stability_model _selection function
-## For first iteration, doRegularize will be FALSE, and TRUE in subsequent 
-## iterations of archR
 ## 
 .handle_chunk_w_NMF2 <- function(innerChunkIdx,
                                     innerChunksColl,
                                     this_mat,
-                                    monolinear = FALSE,
                                     cgfglinear = TRUE,
                                     coarse_step = 10,
                                     askParsimony = TRUE,
-                                    doRegularize = FALSE,
                                     config, oDir, test_itr, oChunkIdx){
     .assert_archR_flags(config$flags)
     dbg <- config$flags$debugFlag
@@ -483,7 +475,6 @@ archR_set_config <- function(inner_chunk_size = 500,
     #########################
     if(config$modSelType == "stability"){
         .msg_pstr("Performing stability-based model selection", flg=dbg)
-        if(doRegularize) .msg_pstr("Regularization w/ dispersion", flg=dbg)
         best_k <- .stability_model_select_pyNMF2(
             X = this_mat, param_ranges = config$paramRanges,
             parallelDo = config$parallelize, nCores = config$nCoresUse,
@@ -715,6 +706,7 @@ save_checkpoint <- function(o_dir, test_itr, threshold_itr,
         cli::cli_alert_info(c("Checkpointing at iteration {test_itr}: ",
             "{basename(rdsFilename)}"))
     }
+    
 }
 ## =============================================================================
 
@@ -743,16 +735,38 @@ decisionToCollate <- function(clustFactors){
 }
 ## =============================================================================
 
-keepMinClusters <- function(set_ocollation, temp_res){
-    ## For setting minClusters, note last iteration collated
-    if(any(set_ocollation)){
-        lastItrC <- tail(which(set_ocollation), 1)
-        setMinClustersFinal <- 
-            temp_res$clustBasisVectors[[lastItrC]]$nBasisVectors
-    }else{
+keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
+                            test_itr, nClustEachOC, nClustEachIC, dbg,
+                            stage = "Final"){
+    if(!is.null(stage) && stage == "Final"){
         setMinClustersFinal <- 2 ## the default value
+        ## For setting minClusters, note last iteration collated
+        if(any(set_ocollation)){
+            lastItrC <- tail(which(set_ocollation), 1)
+            setMinClustersFinal <- 
+                temp_res$clustBasisVectors[[lastItrC]]$nBasisVectors
+        }
+        return(setMinClustersFinal)
     }
-    setMinClustersFinal
+    
+    if(totOuterChunksColl > 1){
+        .msg_pstr("meanClustersOC: ", ceiling(mean(nClustEachOC)), flg=dbg)
+        ## For setting minClusters, note last iteration collated
+        chkIdx <- seq_len(test_itr-1)
+        if(any(set_ocollation[chkIdx])){
+            lastItrC <- tail(which(set_ocollation[chkIdx]), 1)
+            setMinClusters <- clustFactors[[lastItrC]]$nBasisVectors
+        }else{
+            ## average clusters identified in each chunk of the 1st iter
+            setMinClusters <- max(ceiling(mean(nClustEachOC[1])), 2) 
+        }
+    }else{
+        ## When totOuterChunks is == 1, this is the first iteration
+        ## Use the mean of nClustEachIC
+        .msg_pstr("meanClustersIC: ", ceiling(mean(nClustEachIC)), flg=dbg)
+        setMinClusters <- max(ceiling(mean(nClustEachIC)), 2)
+    }
+    return(setMinClusters)
 }
 ## =============================================================================
 
@@ -776,10 +790,13 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     ## TODO Provide a setup function
     
     if(!is.null(o_dir)){
-        if(!dir.exists(o_dir)){
-            stop(o_dir, " not found")
+        if(fresh){
+            o_dir <- handle_dir_creation(o_dir, vrbs||dbg)
+        }else{
+            if(!dir.exists(o_dir)){
+                stop(o_dir, " not found")
+            }
         }
-        if(fresh) o_dir <- handle_dir_creation(o_dir, vrbs||dbg)
     }
     ##
     if(is.null(seqs_pos)){
@@ -823,5 +840,82 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     cli::cli_alert_info("Model selection by {msg_suffix}")
     if(modSelType == "stability") cli::cli_alert_info("Bound: {bound}")
     
+    return(list(cl = cl, o_dir = o_dir, set_ocollation = set_ocollation,
+                set_parsimony = set_parsimony, seqs_pos = seqs_pos))
 }
+## =============================================================================
+
+
+process_innerChunk <- function(test_itr, innerChunksColl, config, lenOC, 
+                            seqs_ohe_mat, set_parsimony, o_dir, outerChunkIdx){
+    # globFactors <- vector("list", length(innerChunksColl))
+    # globClustAssignments <- vector("list", length(innerChunksColl))
+    # nClustEachIC <- rep(0, length(innerChunksColl))
+    
+    nmfResultEachIC <- lapply(seq_along(innerChunksColl), function(x){
+        innerChunkIdx <- x
+        cli::cli_h3(c("Inner chunk {innerChunkIdx} of ", 
+            "{length(innerChunksColl)} ", 
+            "[Size: {length(innerChunksColl[[innerChunkIdx]])}]"))
+        ##
+        ## Setting up sequences for the current chunk
+        this_seqsMat <-
+            seqs_ohe_mat[, innerChunksColl[[innerChunkIdx]]]
+        ##
+        cvStep <- ifelse(test_itr == 1 || lenOC > 0.9*chnksz, 10, 5)
+        thisNMFResult <- .handle_chunk_w_NMF2(innerChunkIdx,
+            innerChunksColl, this_seqsMat,
+            cgfglinear = TRUE, coarse_step = cvStep,
+            askParsimony = set_parsimony[test_itr],
+            config, o_dir, test_itr, outerChunkIdx)
+        thisNMFResult
+    })
+    
+    assertions <- lapply(nmfResultEachIC, .assert_archR_NMFresult)
+    
+    globFactors <- lapply(nmfResultEachIC, function(x){x$forGlobFactors})
+    
+    globClustAssignments <- lapply(nmfResultEachIC, function(x){
+                                    x$forGlobClustAssignments})
+    
+    nClustEachIC <- unlist(lapply(globClustAssignments, length))
+    
+    return(list(globFactors = globFactors, 
+                globClustAssignments = globClustAssignments, 
+                nClustEachIC = nClustEachIC))
+    # #################### INNER CHUNK FOR LOOP #####################
+    # for (innerChunkIdx in seq_along(innerChunksColl)) {
+    #     ##
+    #     cli::cli_h3(c("Inner chunk {innerChunkIdx} of ", 
+    #         "{length(innerChunksColl)} ", 
+    #         "[Size: {length(innerChunksColl[[innerChunkIdx]])}]"))
+    #     ##
+    #     ## Setting up sequences for the current chunk
+    #     this_seqsMat <-
+    #         seqs_ohe_mat[, innerChunksColl[[innerChunkIdx]]]
+    #     ##
+    #     cvStep <- ifelse(test_itr == 1 || lenOC > 0.9*chnksz, 10, 5)
+    #     thisNMFResult <- .handle_chunk_w_NMF2(innerChunkIdx,
+    #         innerChunksColl, this_seqsMat,
+    #         cgfglinear = TRUE, coarse_step = cvStep,
+    #         askParsimony = set_parsimony[test_itr],
+    #         config, o_dir, test_itr, outerChunkIdx)
+    #     ##
+    #     .assert_archR_NMFresult(thisNMFResult)
+    #     globFactors[[innerChunkIdx]] <- thisNMFResult$forGlobFactors
+    #     globClustAssignments[[innerChunkIdx]] <-
+    #         thisNMFResult$forGlobClustAssignments
+    #     ##
+    #     nClustEachIC[innerChunkIdx] <- 
+    #         length(globClustAssignments[[innerChunkIdx]])
+    # } ## for loop over innerChunksColl ENDS here
+    # #################### INNER CHUNK FOR LOOP ######################
+}
+## =============================================================================
+
+
+process_outerChunk <- function(){
+    
+}
+
 ## =============================================================================
