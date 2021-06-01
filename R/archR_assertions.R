@@ -249,7 +249,7 @@
     if (is.numeric(given_val) && given_val >= 0) {
         ## OK
     } else {
-        stop("Expecting threshold iteration to be numeric and > 0")
+        stop("Expecting number of iterations to be numeric and > 0")
     }
 }
 ## =============================================================================

@@ -11,16 +11,16 @@
 #' sequences as a DNAStringSet object. This argument required argument.
 #' @param seqs_pos Vector. Specify the tick labels for sequence positions.
 #' Default is NULL.
-#' @param total_itr Numeric. Specify the number of iterations to perform.
-#' Default is 3.
-#' @param set_parsimony Logical vector. Specify if model selection by
-#' cross-validation should prefer parsimonious solutions. Not required when
-#' stability-based model selection is chosen. Length of the vector should match
-#' number of iterations specified in 'total_itr' argument. TRUE denotes 
-#' parsimony is followed, FALSE otherwise.
-#' @param set_ocollation Logical vector. Specify for every iteration of archR
-#' if collation of clusters from outer chunks should be performed. TRUE denotes
-#' clusters are collated, FALSE otherwise.
+#' @param total_itr Numeric. Specify the number of iterations to perform. This 
+#' should be greater than zero. Default is NULL.
+#' @param set_parsimony Logical vector. A logical vector of length `total_itr` 
+#' specifying if model selection by cross-validation should prefer parsimonious 
+#' solutions. Not required when stability-based model selection is chosen. TRUE 
+#' denotes parsimony is followed, FALSE otherwise.
+#' @param set_ocollation Logical vector. A logical vector of length `total_itr` 
+#' specifying for every iteration of archR if collation of clusters from 
+#' outer chunks should be performed. TRUE denotes clusters are collated, 
+#' FALSE otherwise.
 #' @param fresh Logical. Specify if this is (not) a fresh run. Because
 #' archR enables checkpointing, it is possible to perform additional iterations
 #' upon clusters from an existing archR result (or a checkpoint) object. 
@@ -108,9 +108,9 @@
 #'  
 #' @export
 archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
-                    total_itr = 3,
-                    set_parsimony = c(FALSE, FALSE, FALSE),
-                    set_ocollation = c(FALSE, TRUE, FALSE),
+                    total_itr = NULL,
+                    set_parsimony = NULL,
+                    set_ocollation = NULL,
                     fresh = TRUE,
                     use_oc = NULL,
                     o_dir = NULL){
@@ -139,9 +139,8 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                     set_ocollation)
     seqs_pos <- setup_ans$seqs_pos
     o_dir <- setup_ans$o_dir
-    set_ocollation <- setup_ans$set_ocollation
-    set_parsimony <- setup_ans$set_parsimony
-    cl <- setup_ans$cl
+    
+    
     
     ##
     ## ** To continue archR from an earlier run (further levels downstream)
@@ -221,37 +220,6 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 globClustAssignments <- icResult$globClustAssignments
                 nClustEachIC <- icResult$nClustEachIC
                 
-                
-                # globFactors <- vector("list", length(innerChunksColl))
-                # globClustAssignments <- vector("list", length(innerChunksColl))
-                # nClustEachIC <- rep(0, length(innerChunksColl))
-                # #################### INNER CHUNK FOR LOOP #####################
-                # for (innerChunkIdx in seq_along(innerChunksColl)) {
-                #     ##
-                #     cli::cli_h3(c("Inner chunk {innerChunkIdx} of ",
-                #         "{length(innerChunksColl)} ",
-                #         "[Size: {length(innerChunksColl[[innerChunkIdx]])}]"))
-                #     ##
-                #     ## Setting up sequences for the current chunk
-                #     this_seqsMat <-
-                #         seqs_ohe_mat[, innerChunksColl[[innerChunkIdx]]]
-                #     ##
-                #     cvStep <- ifelse(test_itr == 1 || lenOC > 0.9*chnksz, 10, 5)
-                #     thisNMFResult <- .handle_chunk_w_NMF2(innerChunkIdx,
-                #                     innerChunksColl, this_seqsMat,
-                #                     cgfglinear = TRUE, coarse_step = cvStep,
-                #                     askParsimony = set_parsimony[test_itr],
-                #                     config, o_dir, test_itr, outerChunkIdx)
-                #     ##
-                #     .assert_archR_NMFresult(thisNMFResult)
-                #     globFactors[[innerChunkIdx]] <- thisNMFResult$forGlobFactors
-                #     globClustAssignments[[innerChunkIdx]] <-
-                #             thisNMFResult$forGlobClustAssignments
-                #     ##
-                #     nClustEachIC[innerChunkIdx] <-
-                #             length(globClustAssignments[[innerChunkIdx]])
-                # } ## for loop over innerChunksColl ENDS here
-                # #################### INNER CHUNK FOR LOOP ######################
                 ## We need globFactors, globClustAssignments.
                 ## 
                 ## Single unlist of globClustAssignments brings together
@@ -273,9 +241,8 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 intClustFactors <- cbind(intClustFactors, tempClustFactors)
                 ##
                 ## Manage collated cluster assignments
-                collatedClustAssignments <-
-                    .collate_clusters2(globFactorsClustering,
-                                        globClustAssignments)
+                collatedClustAssignments <- .collate_clusters2(
+                                globFactorsClustering, globClustAssignments)
                 ## Collect number of clusters for each outer chunk
                 nClustEachOC[outerChunkIdx] <- length(collatedClustAssignments)
             }  ## IfElse doNotProcess outer chunk ENDS
@@ -402,10 +369,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                     config = config,
                     call = match.call())
     ##
-    
+    message("Now here samarth")
     decisionToCollate <- decisionToCollate(clustFactors)
-    setMinClustersFinal <- keepMinClusters(set_ocollation, temp_res)
-    
+    setMinClustersFinal <- keepMinClusters(set_ocollation, temp_res, 
+                                stage="Final")
     ##
     temp_res_reord <- collate_archR_result(temp_res,
                                     iter = total_itr,
@@ -447,7 +414,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     ## achieve suitable clustering results.
     
     ## Stop cluster
-    if(parallelize) parallel::stopCluster(cl)
+    if(parallelize) parallel::stopCluster(setup_ans$cl)
     ##
     if(tym){ 
         complTime1 <- Sys.time() - archRStartTime

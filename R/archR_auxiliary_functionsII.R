@@ -738,6 +738,8 @@ decisionToCollate <- function(clustFactors){
 keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
                             test_itr, nClustEachOC, nClustEachIC, dbg,
                             stage = "Final"){
+    message(stage)
+    message(set_ocollation)
     if(!is.null(stage) && stage == "Final"){
         setMinClustersFinal <- 2 ## the default value
         ## For setting minClusters, note last iteration collated
@@ -748,7 +750,7 @@ keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
         }
         return(setMinClustersFinal)
     }
-    
+    message("SAMARTH")
     if(totOuterChunksColl > 1){
         .msg_pstr("meanClustersOC: ", ceiling(mean(nClustEachOC)), flg=dbg)
         ## For setting minClusters, note last iteration collated
@@ -783,11 +785,8 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     bound <- config$bound
     
     ## assert total_itr is a positive integer
-    if(!total_itr > 0) {
-        stop("Expecting number of iterations to be numeric and > 0")
-    }
+    .assert_archR_thresholdIteration(total_itr)
     ## TODO Provide a summary function
-    ## TODO Provide a setup function
     
     if(!is.null(o_dir)){
         if(fresh){
@@ -811,17 +810,20 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     .assert_archR_config(config, ncol(seqs_ohe_mat))
     .assert_archR_thresholdIteration(total_itr)
     
-    ##
-    if(length(set_parsimony) < total_itr){
-        set_parsimony <- rep(FALSE, total_itr)
-        set_parsimony[length(set_parsimony)] <- TRUE
+    if(is.null(set_ocollation)){
+        stop("Please specify an outer chunk collation strategy. Found NULL")
     }
+    
+    # if(length(set_parsimony) < total_itr){
+    #     set_parsimony <- rep(FALSE, total_itr)
+    #     set_parsimony[length(set_parsimony)] <- TRUE
+    # }
     ##
-    if(length(set_ocollation) < total_itr){
-        set_ocollation <- rep(FALSE, total_itr)
-        set_ocollation[1] <- TRUE
-        set_ocollation[length(set_ocollation)] <- FALSE #Earlier was TRUE
-    }
+    # if(length(set_ocollation) < total_itr){
+    #     set_ocollation <- rep(FALSE, total_itr)
+    #     set_ocollation[1] <- TRUE
+    #     set_ocollation[length(set_ocollation)] <- FALSE #Earlier was TRUE
+    # }
     
     #### Start cluster only once
     if(parallelize){
@@ -829,6 +831,7 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
         parallel::setDefaultCluster(cl)
         cli::cli_alert_info("Parallelization: {crs} cores")
     }else{
+        cl <- NA
         cli::cli_alert_info("Parallelization: No")
     }
     ##
@@ -839,9 +842,14 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
         "factor stability")
     cli::cli_alert_info("Model selection by {msg_suffix}")
     if(modSelType == "stability") cli::cli_alert_info("Bound: {bound}")
+    if(modSelType == "cv"){
+        ## Make the user specify set_parsimony when cv
+        if(is.null(set_parsimony)){
+            stop("Please set parsimony choices per iteration")
+        }
+    }
     
-    return(list(cl = cl, o_dir = o_dir, set_ocollation = set_ocollation,
-                set_parsimony = set_parsimony, seqs_pos = seqs_pos))
+    return(list(cl = cl, o_dir = o_dir, seqs_pos = seqs_pos))
 }
 ## =============================================================================
 
@@ -862,6 +870,7 @@ process_innerChunk <- function(test_itr, innerChunksColl, config, lenOC,
         this_seqsMat <-
             seqs_ohe_mat[, innerChunksColl[[innerChunkIdx]]]
         ##
+        chnksz <- config$innerChunkSize
         cvStep <- ifelse(test_itr == 1 || lenOC > 0.9*chnksz, 10, 5)
         thisNMFResult <- .handle_chunk_w_NMF2(innerChunkIdx,
             innerChunksColl, this_seqsMat,
@@ -883,39 +892,5 @@ process_innerChunk <- function(test_itr, innerChunksColl, config, lenOC,
     return(list(globFactors = globFactors, 
                 globClustAssignments = globClustAssignments, 
                 nClustEachIC = nClustEachIC))
-    # #################### INNER CHUNK FOR LOOP #####################
-    # for (innerChunkIdx in seq_along(innerChunksColl)) {
-    #     ##
-    #     cli::cli_h3(c("Inner chunk {innerChunkIdx} of ", 
-    #         "{length(innerChunksColl)} ", 
-    #         "[Size: {length(innerChunksColl[[innerChunkIdx]])}]"))
-    #     ##
-    #     ## Setting up sequences for the current chunk
-    #     this_seqsMat <-
-    #         seqs_ohe_mat[, innerChunksColl[[innerChunkIdx]]]
-    #     ##
-    #     cvStep <- ifelse(test_itr == 1 || lenOC > 0.9*chnksz, 10, 5)
-    #     thisNMFResult <- .handle_chunk_w_NMF2(innerChunkIdx,
-    #         innerChunksColl, this_seqsMat,
-    #         cgfglinear = TRUE, coarse_step = cvStep,
-    #         askParsimony = set_parsimony[test_itr],
-    #         config, o_dir, test_itr, outerChunkIdx)
-    #     ##
-    #     .assert_archR_NMFresult(thisNMFResult)
-    #     globFactors[[innerChunkIdx]] <- thisNMFResult$forGlobFactors
-    #     globClustAssignments[[innerChunkIdx]] <-
-    #         thisNMFResult$forGlobClustAssignments
-    #     ##
-    #     nClustEachIC[innerChunkIdx] <- 
-    #         length(globClustAssignments[[innerChunkIdx]])
-    # } ## for loop over innerChunksColl ENDS here
-    # #################### INNER CHUNK FOR LOOP ######################
 }
-## =============================================================================
-
-
-process_outerChunk <- function(){
-    
-}
-
 ## =============================================================================

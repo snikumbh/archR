@@ -31,7 +31,7 @@ test_that("archR (stability) works when timeFlag is FALSE", {
     archRresult <- suppressMessages(archR::archR(toyConfig, 
                                 seqs_raw = tssSeqsRaw, 
                                 seqs_ohe_mat = tssSeqs_sinuc, 
-                                threshold_itr = 1))
+                                total_itr = 1, set_ocollation = TRUE))
     ##
     expect_equal_to_reference(archRresult, "archRresult_stability_check_timeFalse.rds")
     ##
@@ -69,7 +69,7 @@ test_that("archR (stability) works when plot==TRUE, o_dir is NULL", {
     expect_error(archR::archR(toyConfig, 
         seqs_raw = tssSeqsRaw, 
         seqs_ohe_mat = tssSeqs_sinuc, 
-        threshold_itr = 1, o_dir = NULL), 
+        total_itr = 1, o_dir = NULL), 
         ##
         paste("'plot' flag is TRUE but 'o_dir' is not provided.",
             "Did you forget to set 'o_dir'?")
@@ -111,8 +111,9 @@ test_that("archR (cv) works when timeFlag is FALSE", {
     # skip_on_travis()
     set.seed(1234)
     archRresult <- suppressMessages(archR::archR(toyConfig, seqs_raw = tssSeqsRaw,
-                                        seqs_ohe_mat = tssSeqs_sinuc, 
-                                        threshold_itr = 1))
+                                seqs_ohe_mat = tssSeqs_sinuc, 
+                                total_itr = 1, set_ocollation = TRUE,
+                                set_parsimony = TRUE))
     expect_equal_to_reference(archRresult, "archRresult_cv_check_timeFalse.rds")
 })
 
@@ -139,14 +140,17 @@ test_that("archR (stability) works when debug & timeFlag is FALSE", {
                      plot = FALSE,
                      time = FALSE)
     toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
-                                       k_min = 2, k_max = 20, parallelize = FALSE,
+                                       k_min = 1, k_max = 20, parallelize = FALSE,
                                        mod_sel_type = "stability", 
                                        n_iterations = 50,
                                        n_cores = NA,
                                        flags = useFlags)
     set.seed(1234)
-    archRresult <- suppressMessages(archR::archR(toyConfig, seqs_raw = tssSeqsRaw, 
-                                    seqs_ohe_mat = tssSeqs_sinuc, threshold_itr = 1))
+    archRresult <- #suppressMessages(
+        archR::archR(toyConfig, seqs_raw = tssSeqsRaw, 
+                    seqs_ohe_mat = tssSeqs_sinuc, total_itr = 1,
+                    set_ocollation = TRUE)
+        #)
     ##
     expect_equal_to_reference(archRresult, "archRresult_stability_check_debugTrue.rds")
     ##
@@ -158,9 +162,9 @@ test_that("Handles negative threshold iteration", {
         verbose = TRUE,
         plot = FALSE,
         time = FALSE)
-    # toyResult <- archR(toyConfig, seqs_ohe_mat = tssSeqs, threshold_itr = -1)
+    # toyResult <- archR(toyConfig, seqs_ohe_mat = tssSeqs, total_itr = -1)
     expect_error(.assert_archR_thresholdIteration(-1),
-                 "Expecting threshold iteration to be numeric and > 0")
+                 "Expecting number of iterations to be numeric and > 0")
     toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
         k_min = 2, k_max = 20, parallelize = FALSE,
         mod_sel_type = "stability", 
@@ -168,20 +172,20 @@ test_that("Handles negative threshold iteration", {
         n_cores = NA,
         flags = useFlags)
     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, 
-                        seqs_ohe_mat = tssSeqs_sinuc, threshold_itr = -1),
-                 "Expecting threshold iteration to be numeric and > 0")
+        seqs_ohe_mat = tssSeqs_sinuc, total_itr = -1, set_ocollation = FALSE),
+                 "Expecting number of iterations to be numeric and > 0")
 })
 
 # test_that("Handles negative threshold iteration from archR main", {
-#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, seqs_ohe_mat = tssSeqs_sinuc, threshold_itr = -1))
-#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, seqs_ohe_mat = tssSeqs_sinuc, threshold_itr = -1),
+#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, seqs_ohe_mat = tssSeqs_sinuc, total_itr = -1))
+#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, seqs_ohe_mat = tssSeqs_sinuc, total_itr = -1),
 #                  "Expecting threshold iteration to be numeric and > 0")
 # })
 
 
 test_that("Config handles: negative inner_chunk_size", {
     expect_error(archR_set_config(inner_chunk_size = -500,
-                                k_min = 2, k_max = 8, parallelize = TRUE,
+                                k_min = 1, k_max = 8, parallelize = TRUE,
                                 cv_folds = 3, n_iterations = 50,
                                 n_cores = 2),
                 "'inner_chunk_size' should be > 0")
