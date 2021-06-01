@@ -87,10 +87,12 @@ manage_o_dir <- function(plt, o_dir){
 }
 ## =============================================================================
 
+# @importFrom Biostrings width
 plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
-    if(is.null(dpath)){
-        stop("directory path/name is NULL")
-    }
+    if(is.null(seqs_raw)) stop("seqs_raw is NULL")
+    if(is.null(dpath)) stop("directory path/name is NULL")
+    if(is.null(seqs_pos)) seqs_pos <- seq(1, Biostrings::width(seqs_raw[1]))
+    
     allSequencesLogo <- plot_ggseqlogo_of_seqs(
         seqs = seqs_raw,
         pos_lab = seqs_pos, 
@@ -185,7 +187,7 @@ archR_set_config <- function(inner_chunk_size = 500,
                             k_min = 1,
                             k_max = 20,
                             mod_sel_type = "stability",
-                            tol = 10^-3,
+                            # tol = 10^-3,
                             bound = 10^-8,
                             cv_folds = 5,
                             parallelize = FALSE,
@@ -219,7 +221,7 @@ archR_set_config <- function(inner_chunk_size = 500,
     }
     ##
     archRconfig <- list(modSelType = mod_sel_type,
-                        tol = tol,
+                        # tol = tol,
                         bound = bound,
                         kFolds = cv_folds,
                         parallelize = parallelize,
@@ -478,7 +480,7 @@ archR_set_config <- function(inner_chunk_size = 500,
         best_k <- .stability_model_select_pyNMF2(
             X = this_mat, param_ranges = config$paramRanges,
             parallelDo = config$parallelize, nCores = config$nCoresUse,
-            nIterations = config$nIterationsUse, tol = config$tol, 
+            nIterations = config$nIterationsUse, #tol = config$tol, 
             bound = config$bound, flags = config$flags, 
             returnBestK = TRUE, bootstrap = TRUE
         )
@@ -738,19 +740,18 @@ decisionToCollate <- function(clustFactors){
 keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
                             test_itr, nClustEachOC, nClustEachIC, dbg,
                             stage = "Final"){
-    message(stage)
-    message(set_ocollation)
+    
     if(!is.null(stage) && stage == "Final"){
         setMinClustersFinal <- 2 ## the default value
         ## For setting minClusters, note last iteration collated
         if(any(set_ocollation)){
             lastItrC <- tail(which(set_ocollation), 1)
-            setMinClustersFinal <- 
-                temp_res$clustBasisVectors[[lastItrC]]$nBasisVectors
+            setMinClustersFinal <- get_clBasVec_k(temp_res, lastItrC)
+                # temp_res$clustBasisVectors[[lastItrC]]$nBasisVectors
         }
         return(setMinClustersFinal)
     }
-    message("SAMARTH")
+    
     if(totOuterChunksColl > 1){
         .msg_pstr("meanClustersOC: ", ceiling(mean(nClustEachOC)), flg=dbg)
         ## For setting minClusters, note last iteration collated
@@ -813,17 +814,19 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     if(is.null(set_ocollation)){
         stop("Please specify an outer chunk collation strategy. Found NULL")
     }
+    if(length(set_ocollation) < total_itr){
+        stop("Expecting length of set_ocollation to be same as total_itr")
+    }
+    if(length(set_ocollation) > total_itr){
+        set_ocollation <- set_ocollation[seq(1,total_itr)]
+    }
     
     # if(length(set_parsimony) < total_itr){
     #     set_parsimony <- rep(FALSE, total_itr)
     #     set_parsimony[length(set_parsimony)] <- TRUE
     # }
     ##
-    # if(length(set_ocollation) < total_itr){
-    #     set_ocollation <- rep(FALSE, total_itr)
-    #     set_ocollation[1] <- TRUE
-    #     set_ocollation[length(set_ocollation)] <- FALSE #Earlier was TRUE
-    # }
+    
     
     #### Start cluster only once
     if(parallelize){

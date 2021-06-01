@@ -163,8 +163,9 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     clustMemberships <- apply(samplesMatrix, 2, which.max)
     ##
     if (length(unique(clustMemberships)) != nClusters) {
-        warning("Basis vector that got no sequences assigned: ",
-            setdiff( unique(clustMemberships), seq_len(nClusters)))
+        cli::cli_alert_warning(
+            c("Basis vector that got no sequences assigned: ",
+            setdiff( unique(clustMemberships), seq_len(nClusters))))
     } 
     
     # if(all(!is.na(c(iChunkIdx, oDir, test_itr, oChunkIdx)))){
@@ -176,37 +177,10 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## =============================================================================
 
 .adjustSampleMemberships <- function(old_mem, samplesMatrix, has_overfit){
-    # print(paste("Adjusting for overfit clusts: ", has_overfit))
-    # new_mem <- old_mem
-    # sampClustRanks <- as.vector(apply(samplesMatrix, MARGIN = 2, order, 
-    #     decreasing = TRUE))
-    # for(i in has_overfit){
-    #     idxNA <- which(sampClustRanks == i)
-    #     sampClustRanks[idxNA] <- NA
-    # }
-    # sampClustRanks
-    # sampClustRanks <- matrix(sampClustRanks, nrow = nrow(samplesMatrix))
-    # sampClustRanksList <- as.list(data.frame(sampClustRanks))
-    # 
-    # new_mem <- unlist(lapply(sampClustRanksList, function(x){
-    #     ## picking the first element not NA
-    #     x[which(!is.na(x))[1]]
-    # }))
-    # names(new_mem) <- NULL
-    # ## At this point new memberships for samples can contain clust ids 
-    # ## such 1, 4 and 5 because 2 and 3 are overfit. (i.e. they are not 
-    # ## consecutive). We need to get them to be consecutive 
-    # new_mem_elem <- sort(unique(new_mem))
-    # for(i in seq_along(new_mem_elem)){
-    #     new_mem[new_mem == new_mem_elem[i]] <- i
-    # }
-    # new_mem
-    # 
-    ## Alternatively, assign all overfitted samples back to cluster 1
-    # print("Alternative adjustment of cluster assignment for overfit clusters")
+
+    ## Assign all overfitted samples back to cluster 1
     new_mem <- old_mem
-    # print("Old memberships")
-    # print(new_mem)
+    ##
     for(i in has_overfit){
         new_mem[which(old_mem == i)] <- 1
     }
@@ -218,10 +192,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     for(i in seq_along(new_mem_elem)){
         new_mem[new_mem == new_mem_elem[i]] <- i
     }
-    new_mem
-    
-    # print("New memberships")
-    # print(new_mem)
     new_mem
 }
 ## =============================================================================
@@ -479,30 +449,30 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     return(NULL)
 }
 
-## Delete this function after testing
-.debug_samplesMat_plotting <- function(samplesMat, clustMemberships, 
-                                iChunkIdx, oDir, test_itr, oChunkIdx){
-    # put factors along columns
-    samplesMat <- t(samplesMat)
-    #
-    sam_df <- as.data.frame(samplesMat)
-    sam_df$clust <- clustMemberships
-    sam_df <- tidyr::pivot_longer(sam_df, cols = paste0("V", seq(ncol(samplesMat))), 
-                        names_to = "Factors")
-    
-    pl <- ggpubr::ggboxplot(sam_df, x = "Factors", y = "value", 
-                facet.by = "clust", 
-                add = c("mean"), add.params = list(color="blue"),
-                title = paste0("Iteration: ", test_itr, 
-                    "; Outer Chunk: ", oChunkIdx,
-                    "; Inner Chunk: ", iChunkIdx
-                ))
-    fname <- file.path(oDir, paste0(test_itr, "_", 
-                                    oChunkIdx, "_", 
-                                    iChunkIdx, "_samarth_trial.png"))
-    ggsave(fname, pl, device = "png")
-    ####
-}
+# ## Delete this function after testing
+# .debug_samplesMat_plotting <- function(samplesMat, clustMemberships, 
+#                                 iChunkIdx, oDir, test_itr, oChunkIdx){
+#     # put factors along columns
+#     samplesMat <- t(samplesMat)
+#     #
+#     sam_df <- as.data.frame(samplesMat)
+#     sam_df$clust <- clustMemberships
+#     sam_df <- tidyr::pivot_longer(sam_df, cols = paste0("V", seq(ncol(samplesMat))), 
+#                         names_to = "Factors")
+#     
+#     pl <- ggpubr::ggboxplot(sam_df, x = "Factors", y = "value", 
+#                 facet.by = "clust", 
+#                 add = c("mean"), add.params = list(color="blue"),
+#                 title = paste0("Iteration: ", test_itr, 
+#                     "; Outer Chunk: ", oChunkIdx,
+#                     "; Inner Chunk: ", iChunkIdx
+#                 ))
+#     fname <- file.path(oDir, paste0(test_itr, "_", 
+#                                     oChunkIdx, "_", 
+#                                     iChunkIdx, "_samarth_trial.png"))
+#     ggsave(fname, pl, device = "png")
+#     ####
+# }
 ## =============================================================================
 
 .assign_samples_to_clusters <- function(clusterMembershipsVec, nClusters,
@@ -515,22 +485,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     return(returnClusterAsList)
 }
 ## =============================================================================
-
-
-# .get_consensusClustMemberships <- function(allRunMemberships, nClusters) {
-# 
-#     consensusClustMemberships <-
-#         apply(allRunMemberships, 2, function(yVec){
-#                         which.max(
-#                             vapply(seq_len(nClusters),
-#                                    function(x){sum(yVec == x)},
-#                             numeric(1))
-#                         )}
-#         )
-# 
-#     return(consensusClustMemberships)
-# }
-
 
 
 ## @title Collate clusters from hierarchical clustering

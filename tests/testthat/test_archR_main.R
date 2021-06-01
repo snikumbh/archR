@@ -21,19 +21,24 @@ test_that("archR (stability) works when timeFlag is FALSE", {
                      plot = FALSE,
                      time = FALSE)
     toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
-                                        k_min = 2, k_max = 20, 
+                                        k_min = 1, k_max = 20, 
                                         parallelize = FALSE,
                                         mod_sel_type = "stability", 
                                         n_iterations = 50,
-                                        n_cores = NA,
+                                        n_cores = NA, checkpointing = TRUE,
                                         flags = useFlags)
     set.seed(1234)
-    archRresult <- suppressMessages(archR::archR(toyConfig, 
+    archRresult <- archR::archR(toyConfig, 
                                 seqs_raw = tssSeqsRaw, 
                                 seqs_ohe_mat = tssSeqs_sinuc, 
-                                total_itr = 1, set_ocollation = TRUE))
+                                total_itr = 2, set_ocollation = c(TRUE,FALSE),
+                                o_dir = "temp_test")
     ##
     expect_equal_to_reference(archRresult, "archRresult_stability_check_timeFalse.rds")
+    chkpoint <- readRDS("temp_test/archRresult_checkpoint1.rds")
+    unlink("temp_test", recursive = TRUE)
+    expect_equal_to_reference(chkpoint, "archRresult_checkpoint1.rds")
+    
     ##
 })
 

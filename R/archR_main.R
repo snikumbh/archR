@@ -369,7 +369,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                     config = config,
                     call = match.call())
     ##
-    message("Now here samarth")
+    
     decisionToCollate <- decisionToCollate(clustFactors)
     setMinClustersFinal <- keepMinClusters(set_ocollation, temp_res, 
                                 stage="Final")
