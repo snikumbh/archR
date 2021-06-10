@@ -38,6 +38,7 @@ Imports:
     methods,
     stats,
     cluster,
+    matrixStats,
     fpc,
     cli,
     reshape2 (>= 1.4.3),
