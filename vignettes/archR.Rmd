@@ -208,12 +208,12 @@ user-specified iterations.
 
 ```{r call-archR, echo=TRUE}
 # Call/Run archR
-perform_iters <- 2
 archRresult <- archR::archR(config = archRconfig,
                             seqs_ohe_mat = inputSeqsMat,
                             seqs_raw = inputSeqsRaw,
                             seqs_pos = positions,
-                            threshold_itr = perform_iters)
+                            total_itr = 2,
+                            set_ocollation = c(TRUE, FALSE))
 
 ```
 
