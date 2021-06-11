@@ -5,35 +5,35 @@
 #'
 #' @param config archR configuration object as returned by
 #' \code{\link{archR_set_config}}. This is a required argument.
-#' @param seqs_ohe_mat A matrix of one-hot encoded sequences with sequences 
+#' @param seqs_ohe_mat A matrix of one-hot encoded sequences with sequences
 #' along columns. This is a required argument.
-#' @param seqs_raw A \code{\link[Biostrings]{DNAStringSet}} object. The FASTA 
+#' @param seqs_raw A \code{\link[Biostrings]{DNAStringSet}} object. The FASTA
 #' sequences as a DNAStringSet object. This argument required argument.
 #' @param seqs_pos Vector. Specify the tick labels for sequence positions.
 #' Default is NULL.
-#' @param total_itr Numeric. Specify the number of iterations to perform. This 
+#' @param total_itr Numeric. Specify the number of iterations to perform. This
 #' should be greater than zero. Default is NULL.
-#' @param set_parsimony Logical vector. A logical vector of length `total_itr` 
-#' specifying if model selection by cross-validation should prefer parsimonious 
-#' solutions. Not required when stability-based model selection is chosen. TRUE 
+#' @param set_parsimony Logical vector. A logical vector of length `total_itr`
+#' specifying if model selection by cross-validation should prefer parsimonious
+#' solutions. Not required when stability-based model selection is chosen. TRUE
 #' denotes parsimony is followed, FALSE otherwise.
-#' @param set_ocollation Logical vector. A logical vector of length `total_itr` 
-#' specifying for every iteration of archR if collation of clusters from 
-#' outer chunks should be performed. TRUE denotes clusters are collated, 
+#' @param set_ocollation Logical vector. A logical vector of length `total_itr`
+#' specifying for every iteration of archR if collation of clusters from
+#' outer chunks should be performed. TRUE denotes clusters are collated,
 #' FALSE otherwise.
 #' @param fresh Logical. Specify if this is (not) a fresh run. Because
 #' archR enables checkpointing, it is possible to perform additional iterations
-#' upon clusters from an existing archR result (or a checkpoint) object. 
+#' upon clusters from an existing archR result (or a checkpoint) object.
 #' See 'use_oc' argument. For example, when processing a set of FASTA sequences,
-#' if an earlier call to archR performed two iterations, and now you wish to 
-#' perform a third, the arguments `fresh` and `use_oc` can be used. Simply set 
-#' `fresh` to FALSE and assign the sequence clusters from iteration two from 
-#' the earlier result to `use_oc`. As of v0.1.3, with this setting, archR 
-#' returns a new result object as if the additional iteration performed is the 
+#' if an earlier call to archR performed two iterations, and now you wish to
+#' perform a third, the arguments `fresh` and `use_oc` can be used. Simply set
+#' `fresh` to FALSE and assign the sequence clusters from iteration two from
+#' the earlier result to `use_oc`. As of v0.1.3, with this setting, archR
+#' returns a new result object as if the additional iteration performed is the
 #' only iteration.
-#' @param use_oc List. Clusters to be further processed with archR. These can 
-#' be from a previous archR result (in which case use 
-#' \code{\link{get_seqs_clust_list}} function), or simply clusters from any 
+#' @param use_oc List. Clusters to be further processed with archR. These can
+#' be from a previous archR result (in which case use
+#' \code{\link{get_seqs_clust_list}} function), or simply clusters from any
 #' other method.
 #' Warning: This has not been rigorously tested yet (v0.1.3).
 #' @param o_dir Character. Specify the output directory with its path. archR
@@ -46,44 +46,44 @@
 #'
 #' @return A nested list of elements as follows:
 #' \describe{
-#' \item{seqsClustLabels}{A list with cluster labels for all sequences per 
+#' \item{seqsClustLabels}{A list with cluster labels for all sequences per
 #' iteration of archR. The cluster labels as stored as characters.}
-#' 
-#' \item{clustBasisVectors}{A list with information on NMF basis vectors per 
-#' iteration of archR. Per iteration, there are two variables `nBasisVectors` 
+#'
+#' \item{clustBasisVectors}{A list with information on NMF basis vectors per
+#' iteration of archR. Per iteration, there are two variables `nBasisVectors`
 #' storing the number of basis vectors after model selection,
-#' and `basisVectors`, a matrix storing the basis vectors themselves. 
-#' Dimensions of the `basisVectors` matrix are 4*L x nBasisVectors 
+#' and `basisVectors`, a matrix storing the basis vectors themselves.
+#' Dimensions of the `basisVectors` matrix are 4*L x nBasisVectors
 #' (mononucleotide case) or 16*L x nBasisVectors (dinucleotide case).}
-#'  
-#' \item{clustSol}{The clustering solution obtained upon processing the raw 
-#' clusters from the last iteration of archR's result. This is handled 
+#'
+#' \item{clustSol}{The clustering solution obtained upon processing the raw
+#' clusters from the last iteration of archR's result. This is handled
 #' internally by the function \code{\link{collate_archR_result}} using the
-#' default setting of Euclidean distance and ward.D linkage hierarchical 
+#' default setting of Euclidean distance and ward.D linkage hierarchical
 #' clustering.}
-#'  
+#'
 #' \item{rawSeqs}{The input sequences as a DNAStringSet object.}
-#' 
-#' \item{timeInfo}{Stores the time taken (in minutes) for processing each 
-#' iteration. This element is added only if `time` flag is set to TRUE in 
+#'
+#' \item{timeInfo}{Stores the time taken (in minutes) for processing each
+#' iteration. This element is added only if `time` flag is set to TRUE in
 #' config.}
-#' 
+#'
 #' \item{config}{The configuration used for processing.}
 #' \item{call}{The function call itself.}
 #' }
-#' 
-#' @examples 
-#' 
-#' fname <- system.file("extdata", "example_data.fa", 
+#'
+#' @examples
+#'
+#' fname <- system.file("extdata", "example_data.fa",
 #'                         package = "archR", mustWork = TRUE)
-#' 
+#'
 #' # Specifying 'dinuc' generates dinucleotide features
 #' inputSeqsMat <- archR::prepare_data_from_FASTA(fasta_fname = fname,
 #'     sinuc_or_dinuc = "dinuc")
-#' 
-#' inputSeqsRaw <- archR::prepare_data_from_FASTA(fasta_fname = fname, 
+#'
+#' inputSeqsRaw <- archR::prepare_data_from_FASTA(fasta_fname = fname,
 #'     raw_seq = TRUE)
-#' 
+#'
 #' # Set archR configuration
 #' archRconfig <- archR::archR_set_config(
 #'     parallelize = TRUE,
@@ -97,15 +97,16 @@
 #'     flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
 #'         plot = FALSE)
 #' )
-#' 
-#' # Run archR 
+#'
+#' # Run archR
 #' archRresult <- archR::archR(config = archRconfig,
 #'                           seqs_ohe_mat = inputSeqsMat,
 #'                           seqs_raw = inputSeqsRaw,
 #'                           seqs_pos = seq(1,100,by=1),
-#'                           total_itr = 2)
-#' 
-#'  
+#'                           total_itr = 2,
+#'                           set_ocollation = c(TRUE, FALSE))
+#'
+#'
 #' @export
 archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                     total_itr = NULL,
@@ -124,24 +125,23 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     tym <- config$flags$timeFlag
     chnksz <- config$innerChunkSize
     modSelType <- config$modSelType
-    tol <- config$tol
     bound <- config$bound
     parallelize <- config$parallelize
     minSeqs <- config$minSeqs
     kFolds <- config$kFolds
     chkpnt <- config$checkpointing
     crs <- config$nCoresUse
-    
+
     cli::cli_rule(left="Setting up")
-    
-    setup_ans <- perform_setup(config, total_itr, o_dir, fresh, 
-                    seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony, 
+
+    setup_ans <- perform_setup(config, total_itr, o_dir, fresh,
+                    seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony,
                     set_ocollation)
     seqs_pos <- setup_ans$seqs_pos
     o_dir <- setup_ans$o_dir
-    
-    
-    
+
+
+
     ##
     ## ** To continue archR from an earlier run (further levels downstream)
     ## 1. Initializations of seqClustLabels, Factors etc should be
@@ -152,7 +152,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     seqsClustLabelsList <- vector("list", total_itr)
     clustFactors <- vector("list", total_itr)
     architectures <- vector("list", total_itr)
-    if(tym) timeInfo <- vector("list", total_itr)
+    timeInfo <- lapply(seq_len(total_itr), function(x){NA})
     ##
     test_itr <- 1
     ##--------------------------------------------------------------------------
@@ -169,7 +169,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         outerChunksColl <- use_oc
     }
     ##
-    
+
     ##-------------------------------------------------------------------------
     while (test_itr <= total_itr) {
         iterStartTime <- Sys.time()
@@ -202,10 +202,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 ## assumed to be populated already -- in the first iteration,
                 ## test_itr is 0, and indexing using test_itr would fail.
                 collatedClustAssignments <- list(outerChunk)
-                ## We access clustFactors that are set in the previous 
-                ## iteration, when test_itr would be one less than its 
+                ## We access clustFactors that are set in the previous
+                ## iteration, when test_itr would be one less than its
                 ## current value.
-                intClustFactors <- 
+                intClustFactors <-
                     cbind(intClustFactors, as.matrix(
                     clustFactors[[test_itr-1]]$basisVectors[, outerChunkIdx]))
                 ##
@@ -219,9 +219,9 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 globFactors <- icResult$globFactors
                 globClustAssignments <- icResult$globClustAssignments
                 nClustEachIC <- icResult$nClustEachIC
-                
+
                 ## We need globFactors, globClustAssignments.
-                ## 
+                ##
                 ## Single unlist of globClustAssignments brings together
                 ## clusters from different innerChunks into one collection
                 globClustAssignments <- unlist(globClustAssignments,
@@ -250,12 +250,12 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
             .assert_archR_globClustAssignments(collatedClustAssignments)
             ## Assigning cluster labels can be done later, see below
             ## Collect (append) clusters at current level
-            nxtOuterChunksColl <- 
+            nxtOuterChunksColl <-
                 append(nxtOuterChunksColl, collatedClustAssignments)
             ##
             cli::cli_alert_success(c("{outerChunkIdx} of {totOuterChunksColl} ",
                 "outer chunk{?s} complete"))
-            
+
             ##
             currInfo <- paste0("current total factors: ",
                                 ncol(intClustFactors))
@@ -269,7 +269,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
             }
         }  ## for loop over outerChunksCollection ENDS
         .msg_pstr("Managing clusters from outer chunk(s)", flg=dbg)
-        
+
         ############### Managing clusters from outer chunks
         intClustFactorsClustering <- NULL
 
@@ -279,24 +279,25 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
         .msg_pstr(paste(nClustEachOC, collapse=","), flg=dbg)
         .msg_pstr(paste(nClustEachIC, collapse=","), flg=dbg)
         .msg_pstr("Collation this iter:", set_ocollation[test_itr],
-                "; #InnerChunks: ", length(innerChunksColl), 
+                "; #InnerChunks: ", length(innerChunksColl),
                 "; #OuterChunks: ", totOuterChunksColl, flg=dbg)
         ####
-        if (set_ocollation[test_itr] && (length(innerChunksColl) > 1 
+        if (set_ocollation[test_itr] && (length(innerChunksColl) > 1
             || totOuterChunksColl > 1)) {
             ## ^The second condition in the IF statement protects against
-            ## performing HAC/collation when #inner chunks & the number of 
+            ## performing HAC/collation when #inner chunks & the number of
             ## outer chunks is 1.
             .msg_pstr("Decision for outer chunk collation: Yes", flg=dbg)
-            ## Cluster the factors using hierarchical clustering 
-            setMinClusters <- keepMinClusters(set_ocollation, temp_res, 
-                                totOuterChunksColl, test_itr, 
-                                nClustEachOC, nClustEachIC, dbg, stage = NULL)
-            
+            ## Cluster the factors using hierarchical clustering
+            setMinClusters <- keepMinClusters(set_ocollation, temp_res,
+                                totOuterChunksColl, test_itr,
+                                nClustEachOC, nClustEachIC, dbg,
+                                clustFactors, stage = NULL)
+
             ## regularize basis matrix
             regIntClustFactors <- .regularizeMat(basisMat = intClustFactors,
                                                 topN = 50)
-            ## setting minClusters here can help to not undo the clusters 
+            ## setting minClusters here can help to not undo the clusters
             ## identified by NMF
             intClustFactorsClusteringEucCom <-
                 .handle_clustering_of_factors(regIntClustFactors,
@@ -316,8 +317,8 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 .collate_clusters2(intClustFactorsClusteringEucCom,
                                     nxtOuterChunksColl, dbg)
 
-            ## Updating cluster labels for sequences can be done later after 
-            ## the clusters have been rearranged. But we need this for 
+            ## Updating cluster labels for sequences can be done later after
+            ## the clusters have been rearranged. But we need this for
             ## rearrangement
             seqsClustLabels <- .update_cluster_labels(seqsClustLabels,
                                                         nxtOuterChunksColl)
@@ -343,36 +344,38 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                     vrbs=vrbs||dbg)
             }
         }
-        
+
         ## write current iteration clustering to disk as RDS;
         ## good for checkpointing archR
-        if(chkpnt) save_checkpoint(o_dir, test_itr, total_itr, 
+        if(chkpnt) save_checkpoint(o_dir, test_itr, total_itr,
                                 seqsClustLabelsList, clustFactors,
                                 seqs_raw, config, call = match.call())
-        
-        ##
-        test_itr <- test_itr + 1
         ##
         if(tym) {
-            show_ellapsed_time(
-                use_str =  paste("Iteration", test_itr, "completed: "), 
+            timeInfo[[test_itr]] <- show_ellapsed_time(
+                use_str =  paste("Iteration", test_itr, "completed: "),
                 use_time = iterStartTime)
-            show_ellapsed_time(use_time = archRStartTime)
+            foo <- show_ellapsed_time(use_time = archRStartTime)
         }
+        test_itr <- test_itr + 1
         ##
     } ## algorithm while loop ENDS
     ##
     temp_res <- list(seqsClustLabels = seqsClustLabelsList,
                     clustBasisVectors = clustFactors,
                     rawSeqs = seqs_raw,
-                    timeInfo = ifelse(tym, timeInfo, NA),
+                    timeInfo = timeInfo,
                     config = config,
                     call = match.call())
     ##
-    
-    decisionToCollate <- decisionToCollate(clustFactors)
-    setMinClustersFinal <- keepMinClusters(set_ocollation, temp_res, 
-                                stage="Final")
+
+    decisionToCollate <- decisionToCollate(clustFactors, dbg=dbg)
+    setMinClustersFinal <- keepMinClusters(set_ocollation, temp_res,
+                                           totOuterChunksColl =
+                                               totOuterChunksColl, dbg = dbg,
+                                           nClustEachIC = nClustEachIC,
+                                           test_itr = test_itr -1,
+                                           stage="Final")
     ##
     temp_res_reord <- collate_archR_result(temp_res,
                                     iter = total_itr,
@@ -380,7 +383,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                     aggl_method = "complete", ## or average?
                                     dist_method = "cor",
                                     minClusters = setMinClustersFinal,
-                                    regularize = TRUE, 
+                                    regularize = TRUE,
                                     topn = 50,#floor(0.50*length(seqs_pos)),
                                     collate = decisionToCollate,
                                     flags = flags,
@@ -397,26 +400,26 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                             clustBasisVectors = clustFactors,
                             clustSol = temp_res_reord,
                             rawSeqs = seqs_raw,
-                            timeInfo = ifelse(tym, timeInfo, NA),
+                            timeInfo = timeInfo,
                             config = config,
                             call = match.call())
     ##
     .assert_archRresult(temp_archRresult)
     ## Write result to disk as RDS file
     save_final_result(o_dir, temp_archRresult)
-    
+
     ##
     ## It is preferable to leave archR final iteration unordered.
     ## The final result clusters is computed with a particular setting (default)
-    ## of collate_archR_result function. 
-    ## 
-    ## The user can choose the agglomeration method and the distMethod to 
+    ## of collate_archR_result function.
+    ##
+    ## The user can choose the agglomeration method and the distMethod to
     ## achieve suitable clustering results.
-    
+
     ## Stop cluster
     if(parallelize) parallel::stopCluster(setup_ans$cl)
     ##
-    if(tym){ 
+    if(tym){
         complTime1 <- Sys.time() - archRStartTime
         cli::cli_rule(c("archR exiting {prettyunits::pretty_dt(complTime1)}"))
     }

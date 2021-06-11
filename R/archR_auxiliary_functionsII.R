@@ -14,13 +14,13 @@
 #' @export
 handle_dir_creation <- function(o_dir, vrbs){
     ##
-    cli::cli_alert_info(c("Output directory at path: ", 
+    cli::cli_alert_info(c("Output directory at path: ",
                     "{.emph {dirname(o_dir)}}"))
     if(dir.exists(o_dir)){
-        # .msg_pstr("-- Directory exists: -- ", o_dir, 
+        # .msg_pstr("-- Directory exists: -- ", o_dir,
         #     "-- Changing name to: -- ", flg=vrbs)
         cli::cli_alert_warning("Directory exists: {.emph {basename(o_dir)}}")
-        
+
         allExistingDirs <- list.dirs(path = dirname(o_dir),
                                         recursive = FALSE)
         dirsThatMatch <- grep(pattern = basename(o_dir), allExistingDirs,
@@ -66,14 +66,14 @@ get_samples_matrix <- function(nmfResultObj){
 get_trimers_from_alphabet <- function(alph){
     if (is.null(alph)) stop("Expecting non-NULL alphabet")
     return(do.call(paste0, expand.grid(alph, alph, alph)))
-    
+
 }
 ## =============================================================================
 
 get_dimers_from_alphabet <- function(alph){
     if (is.null(alph)) stop("Expecting non-NULL alphabet")
     return(do.call(paste0, expand.grid(alph, alph)))
-    
+
 }
 ## =============================================================================
 
@@ -92,10 +92,10 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
     if(is.null(seqs_raw)) stop("seqs_raw is NULL")
     if(is.null(dpath)) stop("directory path/name is NULL")
     if(is.null(seqs_pos)) seqs_pos <- seq(1, Biostrings::width(seqs_raw[1]))
-    
+
     allSequencesLogo <- plot_ggseqlogo_of_seqs(
         seqs = seqs_raw,
-        pos_lab = seqs_pos, 
+        pos_lab = seqs_pos,
         title = paste("Sequence logo of all", length(seqs_raw),"sequences" ))
     ##
     suppressMessages(
@@ -119,30 +119,27 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' for number of NMF basis vectors. Default is 1.
 #' @param k_max Numeric. Specify the maximum of the range of values to be tested
 #' for number of NMF basis vectors. Default is 20.
-#' @param mod_sel_type Character. Specify the model selection strategy to 
-#' be used. Default is 'stability'. Another option is 'cv', short for 
-#' cross-validation. Warning: The cross-validation approach can be time 
-#' consuming and computationally expensive than the stability-based approach. 
-#' @param tol Numeric. Specify the tolerance value as criterion for choosing the
-#' most appropriate number of NMF factors. Default is 1e-03. Current, this is
-#' ignored.
+#' @param mod_sel_type Character. Specify the model selection strategy to
+#' be used. Default is 'stability'. Another option is 'cv', short for
+#' cross-validation. Warning: The cross-validation approach can be time
+#' consuming and computationally expensive than the stability-based approach.
 #' @param bound Numeric. Specify the lower bound value as criterion for choosing
 #' the most appropriate number of NMF factors. Default is 1e-08.
-#' @param cv_folds Numeric. Specify the number of cross-validation folds used 
-#' for model selection. Only used when mod_sel_type is set to 'cv'. Default 
+#' @param cv_folds Numeric. Specify the number of cross-validation folds used
+#' for model selection. Only used when mod_sel_type is set to 'cv'. Default
 #' value is 5.
 #' @param parallelize Logical. Specify whether to parallelize the procedure.
-#' Note that running archR serially can be time consuming. See `n_cores`. 
-#' Consider parallelizing with at least 2 or 4 cores. If Slurm is available, 
+#' Note that running archR serially can be time consuming. See `n_cores`.
+#' Consider parallelizing with at least 2 or 4 cores. If Slurm is available,
 #' archR's graphical user interface, accessed with \code{\link{run_archR_UI}},
-#' enables providing all input data, setting archR configuration, and running 
-#' archR directly by submitting/monitoring slurm jobs through the user 
+#' enables providing all input data, setting archR configuration, and running
+#' archR directly by submitting/monitoring slurm jobs through the user
 #' interface.
 #' @param n_cores The number of cores to be used when `parallelize` is set
 #' to TRUE. If `parallelize` is FALSE, nCores is ignored.
 #' @param n_iterations Numeric. Specify the number of bootstrapped iterations
-#' to be performed with NMF. Default value is 100. When using cross-validation 
-#' more than 100 (upto 500) iterations may be needed.  
+#' to be performed with NMF. Default value is 100. When using cross-validation
+#' more than 100 (upto 500) iterations may be needed.
 #' @param alpha_base,alpha_pow Specify the base and the power for computing
 #' 'alpha' in performing model selection for NMF. alpha = alpha_base^alpha_pow.
 #' Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
@@ -150,11 +147,11 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' @param min_size Numeric. Specify the minimum number of sequences, such that
 #' any cluster/chunk of size less than or equal to it will not be further
 #' processed. Default is 25.
-#' @param checkpointing Logical. Specify whether to write intermediate 
-#' checkpoints to disk as RDS files. Checkpoints and the final result are 
-#' saved to disk provided the `o_dir` argument is set in \code{\link{archR}}. 
-#' When `o_dir` argument is not provided or NULL, this is ignored. 
-#' Default is TRUE. 
+#' @param checkpointing Logical. Specify whether to write intermediate
+#' checkpoints to disk as RDS files. Checkpoints and the final result are
+#' saved to disk provided the `o_dir` argument is set in \code{\link{archR}}.
+#' When `o_dir` argument is not provided or NULL, this is ignored.
+#' Default is TRUE.
 #' @param flags List with four Logical elements as detailed.
 #' \describe{
 #'   \item{debug}{Whether debug information for the run is printed}
@@ -164,8 +161,8 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' }
 #'
 #' @return a list with all params for archR set
-#' 
-#' @examples 
+#'
+#' @examples
 #' # Set archR configuration
 #' archRconfig <- archR::archR_set_config(
 #'     inner_chunk_size = 100,
@@ -175,19 +172,17 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #'     k_min = 1,
 #'     k_max = 20,
 #'     mod_sel_type = "stability",
-#'     tol = 10^-4,
 #'     bound = 10^-8,
 #'     flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
 #'         plot = FALSE)
 #' )
-#' 
-#' 
+#'
+#'
 #' @export
 archR_set_config <- function(inner_chunk_size = 500,
                             k_min = 1,
                             k_max = 20,
                             mod_sel_type = "stability",
-                            # tol = 10^-3,
                             bound = 10^-8,
                             cv_folds = 5,
                             parallelize = FALSE,
@@ -284,7 +279,7 @@ archR_set_config <- function(inner_chunk_size = 500,
 ##
 ## Default value 'modNW'
 ## Edit on 2021-01-02:
-## Default value changed to euclid instead of modNW which is computed using 
+## Default value changed to euclid instead of modNW which is computed using
 ## a suggested package
 ##
 ## @return distance matrix from hopach (hdist object)
@@ -295,14 +290,14 @@ archR_set_config <- function(inner_chunk_size = 500,
     ## to use any other distance methods/metrics, we can check if hopach exists
     ## If not, we ask the user to install it.
     ## This lets move hopach to Suggests
-    distMethods_hopach <- c("cosangle", "abscosangle", 
+    distMethods_hopach <- c("cosangle", "abscosangle",
                             "abseuclid", "cor", "abscor")
     distMethods_stats <- c("euclid")
     ##
     if(distMethod == "modNW"){
         distMat <- .get_modNW_dist(factorsMat)
         return(distMat)
-    } 
+    }
     if(any(distMethod == distMethods_hopach)){
         distMat <- .get_hopach_dist(factorsMat, distMethod)
         return(distMat)
@@ -316,11 +311,11 @@ archR_set_config <- function(inner_chunk_size = 500,
 
 .get_hopach_dist <- function(factorsMat, distMethod){
     if(!requireNamespace("hopach", quietly = TRUE)){
-        stop("Please install R package 'hopach' to use ", distMethod, 
+        stop("Please install R package 'hopach' to use ", distMethod,
             " distance.")
     }else{
         ## - these distance metrics are available in hopach pkg
-        ## - hopach::distancematrix func requires vectors along rows. 
+        ## - hopach::distancematrix func requires vectors along rows.
         ## - Distances are computed between row vectors
         if (nrow(factorsMat) > ncol(factorsMat)){
             factorsMat <- t(factorsMat)
@@ -328,7 +323,7 @@ archR_set_config <- function(inner_chunk_size = 500,
         hopachDistMat <- hopach::distancematrix(factorsMat, d = distMethod)
         ## hopachDistMat is a hopach hdist object
         stopifnot(hopachDistMat@Size == nrow(factorsMat))
-        ## make as.matrix as done for dist object in the 
+        ## make as.matrix as done for dist object in the
         ## stats::dist case (see Else condition next)
         hopachDistMat <- hopach::as.matrix(hopachDistMat)
         return(hopachDistMat)
@@ -382,13 +377,13 @@ archR_set_config <- function(inner_chunk_size = 500,
                                     nrow = 4, byrow = FALSE,
                                     dimnames = list(rownames(sinucSparse)))
             })
-        
+
         ##
         lenPFMs <- length(factorsMatList_asPFMs)
         scoresMat <- matrix(rep(0, lenPFMs*lenPFMs), nrow = lenPFMs)
         rownames(scoresMat) <- seq(1,nrow(scoresMat),by=1)
         colnames(scoresMat) <- seq(1,ncol(scoresMat),by=1)
-        
+
         for(i in seq_len(lenPFMs)){
             for(j in seq_len(lenPFMs)){
                 temp <- TFBSTools::PFMSimilarity(
@@ -438,8 +433,8 @@ archR_set_config <- function(inner_chunk_size = 500,
 ## additionally hold new ones
 ## - Similarly, globFactors variable is updated inside the function to
 ## additionally hold new ones
-## 
-## 
+##
+##
 .handle_chunk_w_NMF2 <- function(innerChunkIdx,
                                     innerChunksColl,
                                     this_mat,
@@ -469,7 +464,7 @@ archR_set_config <- function(inner_chunk_size = 500,
                 nCores = config$nCoresUse, nIterations = config$nIterationsUse,
                 verboseFlag = config$flags$verboseFlag,
                 debugFlag = config$flags$debugFlag,
-                returnBestK = TRUE, cgfglinear = cgfglinear, 
+                returnBestK = TRUE, cgfglinear = cgfglinear,
                 coarse_step = coarse_step,
                 askParsimony = askParsimony
             )
@@ -480,8 +475,8 @@ archR_set_config <- function(inner_chunk_size = 500,
         best_k <- .stability_model_select_pyNMF2(
             X = this_mat, param_ranges = config$paramRanges,
             parallelDo = config$parallelize, nCores = config$nCoresUse,
-            nIterations = config$nIterationsUse, #tol = config$tol, 
-            bound = config$bound, flags = config$flags, 
+            nIterations = config$nIterationsUse, #tol = config$tol,
+            bound = config$bound, flags = config$flags,
             returnBestK = TRUE, bootstrap = TRUE
         )
     }
@@ -494,8 +489,8 @@ archR_set_config <- function(inner_chunk_size = 500,
                 immediate. = TRUE)
     }
     .msg_pstr("Best K for this subset:", best_k, flg=vrbs)
-    
-    
+
+
     ##
     if (best_k >= 1) {
         ## For fetching sequence clusters from samplesMat
@@ -549,35 +544,38 @@ archR_set_config <- function(inner_chunk_size = 500,
         # .msg_pstr("Fetching ", best_k," cluster(s)", flg=dbg)
         clusterMembershipsForSamples <-
             .get_cluster_memberships_per_run(samplesMatrix = samplesMatrix,
-                iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx, 
+                iChunksColl = innerChunksColl, iChunkIdx = innerChunkIdx,
                 oDir, test_itr, oChunkIdx)
         ##
         ## Could handle overfitting here
         if(best_k > 1){
-            has_overfit <- .detect_overfitting(samplesMatrix, 
-                                                clusterMembershipsForSamples, 
+            has_overfit <- .detect_overfitting(samplesMatrix,
+                                                clusterMembershipsForSamples,
                                                 minSeqs = 50)
             # print("Overfit at:")
-            # if(length(has_overfit) > 0){ 
+            # if(length(has_overfit) > 0){
             #     print(paste("Overfit at:", has_overfit))
             # }else{
             #     print("No Overfit")
             # }
-            ## 
+            ##
             ## -- Note which clusters are overfit
             ## -- Remove those columns from featuresMat
             ## -- Adjust clustMemberships
             if(length(has_overfit) > 0){
                 # print(has_overfit)
-                clusterMembershipsForSamples <- 
-                    .adjustSampleMemberships(clusterMembershipsForSamples, 
+                clusterMembershipsForSamples <-
+                    .adjustSampleMemberships(clusterMembershipsForSamples,
                                         samplesMatrix, has_overfit)
                 featuresMatrix <- as.matrix(featuresMatrix[, -c(has_overfit)])
                 best_k <- best_k - length(has_overfit)
-                # .msg_pstr("Adjusting for overfitting, fetched ", 
-                #     best_k, "cluster(s)", flg=vrbs)
                 cli::cli_alert_info(c("Adjusting for overfitting, ",
                                     "fetched {best_k} cluster{?s}"))
+                stopifnot(best_k == ncol(featuresMatrix))
+                stopifnot(best_k == length(unique(clusterMembershipsForSamples)))
+                if(best_k == 1){
+                    stopifnot(unique(clusterMembershipsForSamples) == 1)
+                }
             }
             # else{
             #     print("None")
@@ -586,10 +584,9 @@ archR_set_config <- function(inner_chunk_size = 500,
         ##
         forGlobClustAssignments <- .assign_samples_to_clusters(
             clusterMembershipsVec = clusterMembershipsForSamples,
-            nClusters = best_k, iChunkIdx = innerChunkIdx, 
+            nClusters = best_k, iChunkIdx = innerChunkIdx,
             iChunksColl = innerChunksColl)
-        ###############
-        #
+        ##
     } else if (best_k < 1) {
         stop("Error in chosen number of factors: ", best_k)
     }
@@ -639,7 +636,7 @@ intermediateResultsPlot <- function(seq_lab, seqs_raw = NULL,
                                 vrbs = TRUE){
     ## This function plots and prints resulting clusters -- the sequence image
     ## matrix (PNG file) and the sequence logos (PDF file).
-    
+
     if(is.null(name_suffix)){
         if(is.numeric(iter)){
             name_suffix <- paste0("Iteration", iter)
@@ -653,12 +650,12 @@ intermediateResultsPlot <- function(seq_lab, seqs_raw = NULL,
     }
     ##
     cli::cli_alert_info("Output directory: {.emph {fname}}")
-    
+
     seqs_clust_list_ord <- get_seqs_clust_list(seq_lab)
     seqs_clust_vec_ord <- unlist(seqs_clust_list_ord)
-    image_fname <- file.path(fname, 
+    image_fname <- file.path(fname,
         paste0("ClusteringImage_", name_suffix, ".png"))
-    cli::cli_alert_info(c("Sequence clustering image written to: ", 
+    cli::cli_alert_info(c("Sequence clustering image written to: ",
                             "{.emph {basename(image_fname)}}"))
     viz_seqs_acgt_mat_from_seqs(
         seqs =  as.character(seqs_raw[seqs_clust_vec_ord]),
@@ -669,13 +666,13 @@ intermediateResultsPlot <- function(seq_lab, seqs_raw = NULL,
                         xt_freq = 5,
                         yt_freq = 100)
 
-    
-    arch_fn <- file.path(fname, 
+
+    arch_fn <- file.path(fname,
         paste0("Architecture_SequenceLogos_", name_suffix, ".pdf"))
-    cli::cli_alert_info(c("Architectures written to: ", 
+    cli::cli_alert_info(c("Architectures written to: ",
                             "{.emph {basename(arch_fn)}}"))
-    
-    plot_arch_for_clusters(seqs = seqs_raw, 
+
+    plot_arch_for_clusters(seqs = seqs_raw,
                             clust_list = seqs_clust_list_ord,
                             pos_lab = pos_lab,
                             pdf_name = arch_fn)
@@ -691,7 +688,7 @@ save_final_result <- function(o_dir, temp_archRresult){
 }
 ## =============================================================================
 
-save_checkpoint <- function(o_dir, test_itr, threshold_itr, 
+save_checkpoint <- function(o_dir, test_itr, threshold_itr,
                             seqsClustLabelsList, clustFactors,
                             seqs_raw, config, call = NULL){
     ##
@@ -708,21 +705,21 @@ save_checkpoint <- function(o_dir, test_itr, threshold_itr,
         cli::cli_alert_info(c("Checkpointing at iteration {test_itr}: ",
             "{basename(rdsFilename)}"))
     }
-    
+
 }
 ## =============================================================================
 
 
-show_ellapsed_time <- function(use_str = "Time ellapsed since start: ", 
+show_ellapsed_time <- function(use_str = "Time ellapsed since start: ",
                                 use_time){
-    complTime1 <- Sys.time() - use_time
+    complTime1 <- as.difftime(Sys.time() - use_time)
     cli::cli_alert(
-        c(use_str, "{prettyunits::pretty_dt(as.difftime(complTime1))}"))
-    
+        c(use_str, "{prettyunits::pretty_dt(complTime1)}"))
+    as.double.difftime(complTime1)
 }
 ## =============================================================================
 
-decisionToCollate <- function(clustFactors){
+decisionToCollate <- function(clustFactors, dbg){
     decisionToCollate <- TRUE
     iterations <- length(clustFactors)
     if(iterations > 1){
@@ -739,9 +736,9 @@ decisionToCollate <- function(clustFactors){
 
 keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
                             test_itr, nClustEachOC, nClustEachIC, dbg,
-                            stage = "Final"){
-    
-    if(!is.null(stage) && stage == "Final"){
+                            clustFactors, stage = "Final"){
+
+    if(!is.null(stage) && stage == "Final" && test_itr > 1){
         setMinClustersFinal <- 2 ## the default value
         ## For setting minClusters, note last iteration collated
         if(any(set_ocollation)){
@@ -751,7 +748,7 @@ keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
         }
         return(setMinClustersFinal)
     }
-    
+
     if(totOuterChunksColl > 1){
         .msg_pstr("meanClustersOC: ", ceiling(mean(nClustEachOC)), flg=dbg)
         ## For setting minClusters, note last iteration collated
@@ -761,7 +758,7 @@ keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
             setMinClusters <- clustFactors[[lastItrC]]$nBasisVectors
         }else{
             ## average clusters identified in each chunk of the 1st iter
-            setMinClusters <- max(ceiling(mean(nClustEachOC[1])), 2) 
+            setMinClusters <- max(ceiling(mean(nClustEachOC[1])), 2)
         }
     }else{
         ## When totOuterChunks is == 1, this is the first iteration
@@ -774,8 +771,8 @@ keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
 ## =============================================================================
 
 
-perform_setup <- function(config, total_itr, o_dir, fresh, 
-                        seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony, 
+perform_setup <- function(config, total_itr, o_dir, fresh,
+                        seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony,
                         set_ocollation){
     dbg <- config$flags$debugFlag
     vrbs <- config$flags$verboseFlag
@@ -784,11 +781,11 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     parallelize <- config$parallelize
     modSelType <- config$modSelType
     bound <- config$bound
-    
+
     ## assert total_itr is a positive integer
     .assert_archR_thresholdIteration(total_itr)
     ## TODO Provide a summary function
-    
+
     if(!is.null(o_dir)){
         if(fresh){
             o_dir <- handle_dir_creation(o_dir, vrbs||dbg)
@@ -810,24 +807,29 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     ## Make checks for params in configuration
     .assert_archR_config(config, ncol(seqs_ohe_mat))
     .assert_archR_thresholdIteration(total_itr)
-    
+
+    ## TODO Checking set_ocollation and set_parsimony can go to assertions
     if(is.null(set_ocollation)){
         stop("Please specify an outer chunk collation strategy. Found NULL")
     }
     if(length(set_ocollation) < total_itr){
-        stop("Expecting length of set_ocollation to be same as total_itr")
+        stop("Expecting length of set_ocollation to be same as total_itr. ",
+               " Found ", total_itr, " and ", length(set_ocollation),
+             call. = TRUE)
     }
     if(length(set_ocollation) > total_itr){
         set_ocollation <- set_ocollation[seq(1,total_itr)]
+        cli::cli_alert_info(c("Changing length of 'set_ocollation' to ",
+                              "same as that of total_itr"))
     }
-    
+
     # if(length(set_parsimony) < total_itr){
     #     set_parsimony <- rep(FALSE, total_itr)
     #     set_parsimony[length(set_parsimony)] <- TRUE
     # }
     ##
-    
-    
+
+
     #### Start cluster only once
     if(parallelize){
         cl <- parallel::makeCluster(crs, type = "FORK")
@@ -841,7 +843,7 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     if(modSelType != "cv" && modSelType != "stability")
         cli::cli_alert_warning(c("Mis-specified model selection strategy",
             "Using factor stability for model selection"))
-    msg_suffix <- ifelse(modSelType == "cv", "cross-validation", 
+    msg_suffix <- ifelse(modSelType == "cv", "cross-validation",
         "factor stability")
     cli::cli_alert_info("Model selection by {msg_suffix}")
     if(modSelType == "stability") cli::cli_alert_info("Bound: {bound}")
@@ -851,22 +853,22 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
             stop("Please set parsimony choices per iteration")
         }
     }
-    
+
     return(list(cl = cl, o_dir = o_dir, seqs_pos = seqs_pos))
 }
 ## =============================================================================
 
 
-process_innerChunk <- function(test_itr, innerChunksColl, config, lenOC, 
+process_innerChunk <- function(test_itr, innerChunksColl, config, lenOC,
                             seqs_ohe_mat, set_parsimony, o_dir, outerChunkIdx){
     # globFactors <- vector("list", length(innerChunksColl))
     # globClustAssignments <- vector("list", length(innerChunksColl))
     # nClustEachIC <- rep(0, length(innerChunksColl))
-    
+
     nmfResultEachIC <- lapply(seq_along(innerChunksColl), function(x){
         innerChunkIdx <- x
-        cli::cli_h3(c("Inner chunk {innerChunkIdx} of ", 
-            "{length(innerChunksColl)} ", 
+        cli::cli_h3(c("Inner chunk {innerChunkIdx} of ",
+            "{length(innerChunksColl)} ",
             "[Size: {length(innerChunksColl[[innerChunkIdx]])}]"))
         ##
         ## Setting up sequences for the current chunk
@@ -882,18 +884,18 @@ process_innerChunk <- function(test_itr, innerChunksColl, config, lenOC,
             config, o_dir, test_itr, outerChunkIdx)
         thisNMFResult
     })
-    
+
     assertions <- lapply(nmfResultEachIC, .assert_archR_NMFresult)
-    
+
     globFactors <- lapply(nmfResultEachIC, function(x){x$forGlobFactors})
-    
+
     globClustAssignments <- lapply(nmfResultEachIC, function(x){
                                     x$forGlobClustAssignments})
-    
+
     nClustEachIC <- unlist(lapply(globClustAssignments, length))
-    
-    return(list(globFactors = globFactors, 
-                globClustAssignments = globClustAssignments, 
+
+    return(list(globFactors = globFactors,
+                globClustAssignments = globClustAssignments,
                 nClustEachIC = nClustEachIC))
 }
 ## =============================================================================

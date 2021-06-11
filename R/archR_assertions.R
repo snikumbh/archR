@@ -526,6 +526,7 @@
         stop("archR result object list elements' name do not match")
     }
     eq_itr_lengths <- length(archRresultObj$seqsClustLabels)
+    ##
     if(!all(length(archRresultObj$clustBasisVectors) == eq_itr_lengths
             && 
             ifelse(archRresultObj$config$flags$timeFlag, 

@@ -1,62 +1,62 @@
 ## Getter functions ============================================================
 
 ## get functions for components of archR's result object
-## These keep such accesses in other functions agnostic to how they are 
+## These keep such accesses in other functions agnostic to how they are
 ## maintained in the archR result object
 
 #' @title Get functions for archR result object
 #'
 #' @description Basis vectors' information for the selected iteration.
-#' 
+#'
 #' @param res archR result object.
 #' @param iter Choose the iteration of archR result to get from.
-#' 
-#' @return A list with two elements `nBasisVectors` (integer) and 
+#'
+#' @return A list with two elements `nBasisVectors` (integer) and
 #' `basisVectors` (matrix).
-#' 
-#' @examples 
-#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'
+#' @examples
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds",
 #'          package = "archR", mustWork = TRUE))
-#' 
+#'
 #' k <- get_clBasVec_k(res=res, iter=2)
 #'
 #' bMat <- get_clBasVec_m(res=res, iter=2)
-#' 
+#'
 #' ## cluster labels of sequences from final clustering
 #' scLab <- get_seqClLab(res=res, iter=2)
-#'   
+#'
 #' @export
 get_clBasVec <- function(res, iter){
     return(res$clustBasisVectors[[iter]])
 }
 
 
-#' @describeIn get_clBasVec Get the number of basis vectors (clusters) 
+#' @describeIn get_clBasVec Get the number of basis vectors (clusters)
 #' at the  selected iteration.
-#' 
+#'
 #' @return The number of basis vectors (integer).
-#' 
+#'
 #' @export
 get_clBasVec_k <- function(res, iter){
     return(res$clustBasisVectors[[iter]]$nBasisVectors)
 }
 
-#' @describeIn get_clBasVec The basis vectors matrix at the selected 
+#' @describeIn get_clBasVec The basis vectors matrix at the selected
 #' iteration. Note that eatures along rows.
-#' 
-#' @return The basis vectors' matrix with features along the rows of the 
+#'
+#' @return The basis vectors' matrix with features along the rows of the
 #' matrix.
-#' 
+#'
 #' @export
 get_clBasVec_m <- function(res, iter){
     return(res$clustBasisVectors[[iter]]$basisVectors)
 }
 
-#' @describeIn get_clBasVec Get the cluster IDs for each sequence. Note that 
-#' order of sequences here is as per the input. 
-#' 
-#' @return A character vector denoting the cluster IDs for each sequence. 
-#' 
+#' @describeIn get_clBasVec Get the cluster IDs for each sequence. Note that
+#' order of sequences here is as per the input.
+#'
+#' @return A character vector denoting the cluster IDs for each sequence.
+#'
 #' @seealso \code{\link{seqs_str}}
 #' @export
 get_seqClLab <- function(res, iter = NULL){
@@ -70,53 +70,53 @@ get_seqClLab <- function(res, iter = NULL){
 
 
 #' @title Get sequences from the archR result object
-#' @description Wrapper to fetch sequences from the archR result object as 
+#' @description Wrapper to fetch sequences from the archR result object as
 #' character
 #'
 #' @param res archR result object
-#' 
-#' @param iter Specify the iteration of archR result. If set to NULL 
-#' (the default), the original set of sequences (`archRresult$rawSeqs`) is 
+#'
+#' @param iter Specify the iteration of archR result. If set to NULL
+#' (the default), the original set of sequences (`archRresult$rawSeqs`) is
 #' returned.
-#' 
-#' @param cl Specify the cluster number. Sequences belonging to this cluster in 
-#' iteration `iter` of archR result are returned as character. When `iter` is 
+#'
+#' @param cl Specify the cluster number. Sequences belonging to this cluster in
+#' iteration `iter` of archR result are returned as character. When `iter` is
 #' NULL, this is treated as denoting the cluster number in archR's final
-#' clustering solution (`archRresult$clustSol$clusters`). 
-#' 
+#' clustering solution (`archRresult$clustSol$clusters`).
+#'
 #' @param ord Specify TRUE if sequences are ordered by clusters. The original
-#' ordering of the sequences can be fetched by setting `iter` to NULL and `ord` 
+#' ordering of the sequences can be fetched by setting `iter` to NULL and `ord`
 #' to FALSE.
 #'
-#' @details Setting iter to NULL will fetch sequences as per the final 
-#' clustering solution of archR (`clustSol$clusters`). When `iter` is not 
-#' NULL, use `cl` to further choose a particular cluster. When `cl` is NULL, 
-#' the set of sequences returned can be ordered by clusters with `ord = TRUE`. 
-#' Using `ord = FALSE` fetches the sequences by their original order. 
-#' 
-#' @return The selected DNA sequences from the DNAStringSet object as a 
+#' @details Setting iter to NULL will fetch sequences as per the final
+#' clustering solution of archR (`clustSol$clusters`). When `iter` is not
+#' NULL, use `cl` to further choose a particular cluster. When `cl` is NULL,
+#' the set of sequences returned can be ordered by clusters with `ord = TRUE`.
+#' Using `ord = FALSE` fetches the sequences by their original order.
+#'
+#' @return The selected DNA sequences from the DNAStringSet object as a
 #' character vector.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @examples
-#' 
-#' res <- system.file("extdata", "example_archRresult.rds", 
+#'
+#' res <- system.file("extdata", "example_archRresult.rds",
 #'          package = "archR", mustWork = TRUE)
-#'          
+#'
 #' # Fetch sequences from 2nd cluster of archR's final solution
 #' ans <- archR::seqs_str(readRDS(res), iter=NULL, cl=2)
-#' 
+#'
 #' # Fetch all sequences ordered by the final clustering
 #' ans <- archR::seqs_str(readRDS(res), iter=NULL, cl=NULL, ord=TRUE)
-#' 
+#'
 #' # Fetch sequences belonging to first cluster in archR's first iteration
 #' ans <- archR::seqs_str(readRDS(res), iter=1, cl=1)
-#' 
-#' 
+#'
+#'
 seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
-    
-    ## when iter is NULL, return sequences belonging to a cluster (specified 
+
+    ## when iter is NULL, return sequences belonging to a cluster (specified
     ## by cl) in the final solution
     if(is.null(iter) && is.null(cl) && !ord){
         return(as.character(res$rawSeqs))
@@ -141,7 +141,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         use_ord <- unlist(clust_list)
         return(as.character(res$rawSeqs[use_ord]))
     }
-    
+
 }
 
 
@@ -154,7 +154,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 # @return A list that can be assigned as an element in globClustAssignments
 #
 .get_cluster_memberships_per_run <- function(samplesMatrix, iChunksColl = NA,
-                                        iChunkIdx = NA, oDir = NA, 
+                                        iChunkIdx = NA, oDir = NA,
                                         test_itr = NA, oChunkIdx = NA) {
     .assert_archR_samplesMatrix(samplesMatrix)
     nClusters = nrow(samplesMatrix)
@@ -166,8 +166,8 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         cli::cli_alert_warning(
             c("Basis vector that got no sequences assigned: ",
             setdiff( unique(clustMemberships), seq_len(nClusters))))
-    } 
-    
+    }
+
     # if(all(!is.na(c(iChunkIdx, oDir, test_itr, oChunkIdx)))){
     # .debug_samplesMat_plotting(samplesMatrix, clustMemberships, iChunkIdx,
     #     oDir, test_itr, oChunkIdx)
@@ -181,32 +181,56 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     ## Assign all overfitted samples back to cluster 1
     new_mem <- old_mem
     ##
+    unoverfit <- setdiff(unique(old_mem), has_overfit)
+    toassign <- utils::tail(sort(unoverfit, decreasing = FALSE), 1)
     for(i in has_overfit){
-        new_mem[which(old_mem == i)] <- 1
+        ## simply assigning 1 is problematic if/when 1 is among the overfit
+        ## and/or the only one overfit. This has earlier resulted in an error.
+        # new_mem[which(old_mem == i)] <- 1
+        ## Instead assign the lowest cluster ID which is not overfit
+        new_mem[which(old_mem == i)] <- toassign
     }
     names(new_mem) <- NULL
-    ## At this point new memberships for samples can contain clust ids 
-    ## such 1, 4 and 5 because 2 and 3 are overfit. (i.e. they are not 
-    ## consecutive). We need to get them to be consecutive 
+    # print("New memberships")
+    # print(new_mem)
+    ## At this point new memberships for samples can contain clust ids
+    ## such 1, 4 and 5 because 2 and 3 are overfit. (i.e. they are not
+    ## consecutive). We need to get them to be consecutive
+    # print("adjusting new memberships")
     new_mem_elem <- sort(unique(new_mem))
     for(i in seq_along(new_mem_elem)){
         new_mem[new_mem == new_mem_elem[i]] <- i
     }
+    ##
+    # print(new_mem)
+    # print("has_overfit")
+    # print(has_overfit)
+    # print(old_mem)
+    # print(unique(old_mem))
+
+    new_mem_labs <- unique(new_mem)
+    # print(new_mem)
+    # print(unique(new_mem_labs))
+
+    stopifnot((length(unique(old_mem)) - length(has_overfit))
+              == length(new_mem_labs))
+    if(length(new_mem_labs) == 1) stopifnot(unique(new_mem_labs) == 1)
+    ##
     new_mem
 }
 ## =============================================================================
 
-## This function detects if, for a given number of factors, overfitting has 
-## occurred. 
-## 
+## This function detects if, for a given number of factors, overfitting has
+## occurred.
+##
 ## Return value: the outlier clust ids or numeric(0) if no outlier
-## 
+##
 ## Input args:
 ## -- samplesMat
 ## -- clusterMemberships
 ## -- minSeqs (This can be a different value than that passed via archR config)
 ## --
-.detect_overfitting <- function(samplesMat, clustMemberships, minSeqs, 
+.detect_overfitting <- function(samplesMat, clustMemberships, minSeqs,
                                 sizeThreshold = 10){
     # put factors along columns
     samplesMat <- t(samplesMat)
@@ -215,72 +239,77 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         }))
     # print("Len_Clusts: ")
     # print(len_clusts)
-    
-    
+
+
     out_cl_idx_size <- which(len_clusts <= sizeThreshold)
     # print("Already outlier overfit by size")
     # print(out_cl_idx_size)
     qual_cl_idx <- which(len_clusts < minSeqs & len_clusts > sizeThreshold)
-    
-    ## Account for when all available clusters qualify to be checked for 
-    ## overfitting cases
-    if(length(qual_cl_idx) == length(len_clusts)){
-        # print("Adjusted for all clusters' qualification")
-        qual_cl_idx <- setdiff(qual_cl_idx, 1)
-    }
-    
+
     ## Update:
-    ## -- Keep only IQR overfitted outliers when the qualified clusters are 
+    ## -- Keep only IQR overfitted outliers when the qualified clusters are
     ##    among the ones in between.
-    ## -- For any in-between outliers, assign them back to the first cluster, 
+    ## -- For any in-between outliers, assign them back to the first cluster,
     ##    instead ofthe next maximum loading cluster
-    ## -- If the m qualifying clusters are from n-m to n, they can be 
+    ## -- If the m qualifying clusters are from n-m to n, they can be
     ##    considered for either IQR or range-outlier case
-    ## -- 
+    ## --
     out_cl_idx_other <- NULL
     out_cl_idx <- out_cl_idx_size
-    # print("Other Qualifying clust ids:")
+
     if(length(qual_cl_idx) > 0){
+        # print("Other Qualifying clust ids:")
         # print(qual_cl_idx)
-        out_cl_idx_other <- .compare_clusters(samplesMat, clustMemberships, 
+        out_cl_idx_other <- .compare_clusters(samplesMat, clustMemberships,
                                         qual_cl_idx, zscore_thresh = 5)
         out_cl_idx <- unique(union(out_cl_idx_other, out_cl_idx_size))
+        # print("Among qualified ones:")
+        # print(out_cl_idx)
     }
-    
+
+    ## Account for when all available clusters qualify to be checked for
+    ## overfitting cases
+    if(length(out_cl_idx) == length(len_clusts)){
+        print("Adjusted for all clusters' qualification")
+        out_cl_idx <- setdiff(out_cl_idx, 1)
+        print(out_cl_idx)
+    }
+    # print("After possible all-qualification")
+    # print(out_cl_idx)
     if(length(out_cl_idx) > 0) return(out_cl_idx)
     ##
     # print("None")
     return(intersect(1,2))
-    
+
 }
 ## =============================================================================
 
-.compare_clusters <- function(samplesMat, clustMemberships, qual_cl_idx, 
+.compare_clusters <- function(samplesMat, clustMemberships, qual_cl_idx,
                                 zscore_thresh = 5){
-    
+
     clustwise_matlist <- lapply(seq_len(ncol(samplesMat)), function(x){
-        temp_mat <- matrix(samplesMat[clustMemberships == x,], 
+        temp_mat <- matrix(samplesMat[clustMemberships == x,],
             ncol = ncol(samplesMat), byrow = FALSE)
         temp_mat
     })
-    
+
     # Adjust qualifying IDs based on Update in compare_clusters func
     # -- Allow any ID for IQR check
-    
-    out_clust_iqr <- .compare_iqr(clustwise_matlist, qual_cl_idx, 
+
+    out_clust_iqr <- .compare_iqr(clustwise_matlist, qual_cl_idx,
                                     zscore_thresh = zscore_thresh)
     # out_clust_range <- NULL
     out_clust_range <- .compare_range(clustwise_matlist, qual_cl_idx,
                                     zscore_thresh = zscore_thresh)
-    
+
     ##
-    ## Those that qualify as outliers by IQR comparison, will also 
-    ## qualify by range comparison. But for those which do not qualify 
+    ## Those that qualify as outliers by IQR comparison, will also
+    ## qualify by range comparison. But for those which do not qualify
     ## by IQR but by range, we need further checks for them.
-    ## -- where does their box lie, 
+    ## -- where does their box lie,
     ##      -- near the maximum? Not an outlier
     ##      -- near others? outlier
-    ##      
+    ##
     check_these <- setdiff(out_clust_range, out_clust_iqr)
     # print("OUT_BY_RANGE")
     # print(out_clust_range)
@@ -289,7 +318,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     # print("CHECK THESE")
     # print(check_these)
     if(length(check_these) > 0){
-        out_clust_range <- .add_check_range_outliers(check_these, 
+        out_clust_range <- .add_check_range_outliers(check_these,
             clustwise_matlist)
     }
     ##
@@ -300,34 +329,34 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     # }
 
     return(unique(c(out_clust_iqr, out_clust_range, out_clust_size)))
-    # return(NULL)    
+    # return(NULL)
 }
 ## =============================================================================
 
 .add_check_range_outliers <- function(check_these, clustwise_matlist){
     # print("Additional checks for:")
     # print(check_these)
-    ## get boxplot.stats 
+    ## get boxplot.stats
     all_stats_max <- lapply(clustwise_matlist, function(x){
         tempx <- lapply(seq_len(ncol(x)), function(y){
             max(as.vector(x[,y]))
         })
         unlist(tempx)
     })
-    
+
     all_stats_midpoints <- lapply(clustwise_matlist, function(x){
         tempx <- lapply(seq_len(ncol(x)), function(y){
-            tempy <- boxplot.stats(as.vector(x[,y]))
+            tempy <- grDevices::boxplot.stats(as.vector(x[,y]))
             sum(tempy$stats[c(2,4)])/2
         })
         unlist(tempx)
     })
-    
+
     #####
     # print("MIDPOINTS")
     # print(all_stats_midpoints)
     all_stats_midpoint_nl <- unlist(all_stats_midpoints)
-    
+
     #####
     out_cl_idx <- NULL
     for(i in check_these){
@@ -336,7 +365,8 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         # print(all_stats_midpoints[[i]][i])
         check_midpoint <- all_stats_midpoints[[i]][i]
         distWithMax <- abs(check_midpoint - all_stats_max[[i]][i])
-        distWithMedianMidpoints <- check_midpoint - median(all_stats_midpoint_nl)
+        distWithMedianMidpoints <- check_midpoint -
+            stats::median(all_stats_midpoint_nl)
         # print("distances")
         # print(c(distWithMax, distWithMedianMidpoints))
         if(distWithMax > distWithMedianMidpoints){
@@ -352,31 +382,32 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 
 ## Discard clusters with length smaller than 10 sequences
 ## This func is called when IQR and range fail to identify any outliers
-## In which case if the IQRs are all zeros (or very small), that is sure shot overfitting occurrence
+## In which case if the IQRs are all zeros (or very small), that is sure shot
+##  overfitting occurrence
 .compare_size <- function(clustwise_matlist, qual_cl_idx, threshold = 0.01){
-    print("Comparing by SIZE")
-    print(dim(clustwise_matlist[[1]]))
+    # print("Comparing by SIZE")
+    # print(dim(clustwise_matlist[[1]]))
     all_iqr <- lapply(clustwise_matlist, function(x){
         ## get column-wise IQRs
         matrixStats::colIQRs(x)
     })
-    print(length(all_iqr))
+    # print(length(all_iqr))
     ## detect if all IQRs for a cluster are 0
     if_all_zeros <- unlist(lapply(all_iqr, function(x){
         ifelse(all(!(x > threshold)), TRUE, FALSE)
         ## enter here if all zeros is detected
     }))
-    print("Any all ZEROES:")
-    print(if_all_zeros)
-    
+    # print("Any all ZEROES:")
+    # print(if_all_zeros)
+
     ## Alternatively, simply check the number of samples in this cluster,
     ## if < 10, discard.
-    
-    
+
+
     out_cl_idx <- intersect(which(if_all_zeros), qual_cl_idx)
-    print("Overfit clust id detected by SIZE: ")
-    print(out_cl_idx)
-    print("Comparing by SIZE ends")
+    # print("Overfit clust id detected by SIZE: ")
+    # print(out_cl_idx)
+    # print("Comparing by SIZE ends")
     return(out_cl_idx)
 }
 
@@ -397,7 +428,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     all_iqr_mad <- stats::mad(all_iqr_vec)
     # print("MAD of all IQRs")
     # print(all_iqr_mad)
-    iqr_zscore <- (all_iqr_vec - median(all_iqr_vec))/all_iqr_mad
+    iqr_zscore <- (all_iqr_vec - stats::median(all_iqr_vec))/all_iqr_mad
     # print("ZScores")
     # print(iqr_zscore)
     out_idx <- which(iqr_zscore > zscore_thresh)
@@ -419,7 +450,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## return indices of outliers by comparing ranges
 .compare_range <- function(clustwise_matlist, qual_cl_idx, zscore_thresh = 5){
     # print("Comparing by RANGE")
-    
+
     ncl <- ncol(clustwise_matlist[[1]])
     all_range <- lapply(clustwise_matlist, function(x){
         apply(apply(as.matrix(x), MARGIN = 2, range), MARGIN = 2, diff)
@@ -429,7 +460,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     all_range_mad <- stats::mad(all_range_vec)
     # print("MAD of all Ranges")
     # print(all_range_mad)
-    range_zscore <- (all_range_vec - median(all_range_vec))/all_range_mad
+    range_zscore <- (all_range_vec - stats::median(all_range_vec))/all_range_mad
     # print("ZScores")
     # print(range_zscore)
     out_idx <- which(range_zscore > zscore_thresh)
@@ -445,30 +476,31 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         # print("No outliers with Ranges")
     }
     # print("Comparing by RANGE ends")
-    
+
     return(NULL)
 }
 
 # ## Delete this function after testing
-# .debug_samplesMat_plotting <- function(samplesMat, clustMemberships, 
+# .debug_samplesMat_plotting <- function(samplesMat, clustMemberships,
 #                                 iChunkIdx, oDir, test_itr, oChunkIdx){
 #     # put factors along columns
 #     samplesMat <- t(samplesMat)
 #     #
 #     sam_df <- as.data.frame(samplesMat)
 #     sam_df$clust <- clustMemberships
-#     sam_df <- tidyr::pivot_longer(sam_df, cols = paste0("V", seq(ncol(samplesMat))), 
-#                         names_to = "Factors")
-#     
-#     pl <- ggpubr::ggboxplot(sam_df, x = "Factors", y = "value", 
-#                 facet.by = "clust", 
+#     sam_df <- tidyr::pivot_longer(sam_df,
+#                       cols = paste0("V", seq(ncol(samplesMat))),
+#                       names_to = "Factors")
+#
+#     pl <- ggpubr::ggboxplot(sam_df, x = "Factors", y = "value",
+#                 facet.by = "clust",
 #                 add = c("mean"), add.params = list(color="blue"),
-#                 title = paste0("Iteration: ", test_itr, 
+#                 title = paste0("Iteration: ", test_itr,
 #                     "; Outer Chunk: ", oChunkIdx,
 #                     "; Inner Chunk: ", iChunkIdx
 #                 ))
-#     fname <- file.path(oDir, paste0(test_itr, "_", 
-#                                     oChunkIdx, "_", 
+#     fname <- file.path(oDir, paste0(test_itr, "_",
+#                                     oChunkIdx, "_",
 #                                     iChunkIdx, "_samarth_trial.png"))
 #     ggsave(fname, pl, device = "png")
 #     ####
@@ -495,7 +527,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## @return collatedClustAssignments A list
 .collate_clusters2 <- function(clustList, globClAssign, dbg = FALSE) {
     if (is.null(clustList)) {
-        ## When/if factor clustering is not performed, the 
+        ## When/if factor clustering is not performed, the
         ## globClustAssingments variable is directly assigned
         return(globClAssign)
     }else{
@@ -511,7 +543,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
             temp <- unlist(lapply(clustList[[clustIdx]], function(x){
                 globClAssign[[x]]
             }))
-            .msg_pstr("=== INFO ===", .msg_print(clustList[[clustIdx]]), 
+            .msg_pstr("=== INFO ===", .msg_print(clustList[[clustIdx]]),
                     "Size:", length(temp), flg=dbg)
             collClAssign[[clustIdx]] <- temp
         }
@@ -546,29 +578,29 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## @param flags List. Flags variable from archR config
 ##
 ## @return newSeqsClustLabels Vector os clustLabels
-.update_cluster_labels <- function(oldSeqsClustLabels, 
+.update_cluster_labels <- function(oldSeqsClustLabels,
                                 collatedClustAssignments) {
-    ## Important: The collatedClustAssignments variable is a list where each 
-    ## element holds the indices of sequences falling in the same cluster, 
+    ## Important: The collatedClustAssignments variable is a list where each
+    ## element holds the indices of sequences falling in the same cluster,
     ## like so: For a set of 200 sequences, collatedClustAssignments is
     ## [[1]]
-    ## [1]   1   2   6  11  20  23  32  46  50  52  63  68  71  72  75  
+    ## [1]   1   2   6  11  20  23  32  46  50  52  63  68  71  72  75
     ## 80  82  83  85  86  87  88  92  99 102 104 105
     ##
     ## [[2]]
-    ## [1]   3   5   7   8  10  12  13  16  17  18  19  22  25  30  31  
+    ## [1]   3   5   7   8  10  12  13  16  17  18  19  22  25  30  31
     ## 36  37  38  39  41  43  45  47  49  51  53  54
     ## --
     ## This is different than the globClustAssignment variable which will hold
-    ## the indices of the factors that are combined into one cluster. 
-    ## For instance, when there are 25 factors/clusters which have combined 
+    ## the indices of the factors that are combined into one cluster.
+    ## For instance, when there are 25 factors/clusters which have combined
     ## to give 5 clusters, globClustAssignments will hold something like this:
     ## [[1]]
-    ## [1] "3"  "13" "11" "16" "6" 
+    ## [1] "3"  "13" "11" "16" "6"
     ##
     ## [[2]]
     ## [1] "15" "1"  "8"  "25" "18"
-    ## 
+    ##
     .assert_archR_seqsClustLabels(oldSeqsClustLabels)
     .assert_archR_globClustAssignments(collatedClustAssignments)
     nClusters <- length(collatedClustAssignments)
@@ -605,7 +637,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     }
     .assert_archR_innerChunkSize_independent(reqdChunkSize)
     ##
-    ## When chunkLength (i.e., total sequences) < reqdChunkSize, the else 
+    ## When chunkLength (i.e., total sequences) < reqdChunkSize, the else
     ## condition, return the totalSet as the only chunk.
     if (chunkLength > reqdChunkSize) {
         chunkStarts <- seq(1, chunkLength, by = reqdChunkSize)
@@ -622,7 +654,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         ##
         preparedChunks <- vector("list", length(chunkStarts))
         for (i in seq_along(chunkStarts)) {
-            preparedChunks[[i]] <- 
+            preparedChunks[[i]] <-
                 total_set[seq(chunkStarts[i],chunkEnds[i],by=1)]
         }
         ##
@@ -642,36 +674,38 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #
 # @param globFactorsMat Specify the NMF factors as a matrix with the individual
 # factors along the columns.
-# 
+#
 # @param distMethod Specify the distance measure to be used. Default is cosine
 # measure.
-# 
+#
 # @param clustMethod Specify hc. This is the only option available.
-# 
+#
 # @param linkage Specify one of linkage options for hclust.
-# 
+#
 # @param flags Specify the flags from the config param set for archR.
-# 
+#
 # @param returnOrder
-# 
-# @param useCutree By setting this arg to TRUE, the cutree version of 
-# get_clusters func is used. This func uses silhouette and/or 
-# Calinski-Harabasz index. See additional details there. Note: currently, this 
-# is the only avaiable func so useCutree should beset to TRUE always, FALSE 
+#
+# @param useCutree By setting this arg to TRUE, the cutree version of
+# get_clusters func is used. This func uses silhouette and/or
+# Calinski-Harabasz index. See additional details there. Note: currently, this
+# is the only avaiable func so useCutree should beset to TRUE always, FALSE
 # will not work.
-# 
+#
 # @param minClusters Passed to get_clusters function. See explanation there.
-# 
+#
 # @param parentChunks
-# 
+#
 # @return List with clustered factors
-# 
+#
 # Change on 2020-12-28:
 # - change default value for distMethod to 'euclid',
 # - change default value for linkage to 'ward.D',
 # - remove returnOrder arg. not needed; this was useful during development
-# - 
-# 
+# -
+# Change on 2021-06-03:
+# - Added back returnOrder argument
+#
 .handle_clustering_of_factors <- function(globFactorsMat,
                                         clustMethod = "hc",
                                         linkage = "average",
@@ -683,6 +717,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
                                         useCutree = TRUE,
                                         minClusters = 2,
                                         parentChunks = NULL,
+                                        returnOrder = FALSE,
                                         ...) {
     ##
     .assert_archR_featuresMatrix(globFactorsMat)
@@ -703,18 +738,19 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
                     gfDisMat[ord[k], ord[k+1]], collapse="\n"), flg=dbg)
         }
         .msg_pstr("New order: ", .msg_print(ord), flg=dbg)
+        if(returnOrder) return(temp_hclust)
         .msg_pstr("=== Fetching clusters === ", flg=dbg)
         if(useCutree){
             clustList <- .get_clusters_from_hc_using_cutree(
                             hcObj = temp_hclust, distMat = as_dist_mat,
                             hStep = 0.05, parentChunks = parentChunks,
-                            minClusters = minClusters, 
+                            minClusters = minClusters,
                             verbose = flags$debugFlag, ...)
         }
-        
+
         if(length(clustList) == 1){
-            clustList <- lapply(seq_len(max(clustList[[1]])), 
-                                function(x){x})   
+            clustList <- lapply(seq_len(max(clustList[[1]])),
+                                function(x){x})
         }
         .msg_pstr("== DONE ==", "\nClustList: ", .msg_print(clustList), flg=dbg)
         return(clustList)
@@ -747,7 +783,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
                 iter2_old <- iter2_old + 1
             }
             return(new_list)
-            
+
         }else{
             .msg_pstr("No unfurling...", flg=vrbs)
             return(nodeList)
@@ -780,91 +816,91 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
             return(nodeList)
         }
     }
-    
+
 }
 ## =============================================================================
 
 
 ############################## CUTREE VERSION ##################################
 ## This works best/is best referred with ward.D linkage
-# @title Get clusters out of hierarchical clustering object using cutree. 
+# @title Get clusters out of hierarchical clustering object using cutree.
 # Used internally by archR.
-# 
-# @description Clusters from a hierarchical clustering object are obtained 
-# by using cutree at different heights of the tree. The optimum number of 
+#
+# @description Clusters from a hierarchical clustering object are obtained
+# by using cutree at different heights of the tree. The optimum number of
 # clusters are decided based on the average silhouette value of the clustering.
-# 
-# @param hcObj The hierarchical clustering object as returned by 
+#
+# @param hcObj The hierarchical clustering object as returned by
 # \code{\link[stats]{hclust}}.
-# @param distMat The distance matrix that was used by hclust, a 
+# @param distMat The distance matrix that was used by hclust, a
 # \code{\link[stats]{dist}} object.
-# @param hStep Numeric. The step size used to increment height values for 
+# @param hStep Numeric. The step size used to increment height values for
 # cutree. Default value is 0.05.
-# @param parentChunks List. Specify the factor numbers in the previous 
-# iteration of archR that factors in the current iteration resulted from. 
+# @param parentChunks List. Specify the factor numbers in the previous
+# iteration of archR that factors in the current iteration resulted from.
 # Default value is NULL.
-# @param keepSiblingsUncollated Logical. Specify TRUE if all clusters from a 
-# single parent chunk should not be collated, even when recommended so based 
-# on silhouette value computation. Default value FALSE. i.e. if they get 
+# @param keepSiblingsUncollated Logical. Specify TRUE if all clusters from a
+# single parent chunk should not be collated, even when recommended so based
+# on silhouette value computation. Default value FALSE. i.e. if they get
 # collated, it is left as collated.
-# @param enableSwitchSilToCH Logical. When and if the clustering result has 
-# singletons, using the average silhouette value may not be reliable to decide 
-# on the optimum number of clusters. In this case, if this argument is TRUE, 
+# @param enableSwitchSilToCH Logical. When and if the clustering result has
+# singletons, using the average silhouette value may not be reliable to decide
+# on the optimum number of clusters. In this case, if this argument is TRUE,
 # the Calinski-Harabasz index is used instead. Setting it to FALSE, the
 # switch is disabled, i.e., average silhouette value is used. Default is FALSE.
-# @param minClusters Integer. Specify the minimum number of clusters to be 
-# fetched from the HAC solution. 
-# @param distThreshold Numeric. Specify a threshold of units of distance for 
-# considering any two elements as close enough to be merged in the same 
+# @param minClusters Integer. Specify the minimum number of clusters to be
+# fetched from the HAC solution.
+# @param distThreshold Numeric. Specify a threshold of units of distance for
+# considering any two elements as close enough to be merged in the same
 # cluster. The default value is specified for Euclidean distance.
 # @param verbose Logical. Specify TRUE for verbose output.
-# 
-# @importFrom stats cutree 
+#
+# @importFrom stats cutree
 # @importFrom fpc calinhara
 # @importFrom cluster silhouette
 #
 ## Addtional comments:
-## Keeping the min to 0 (as below) leads to as many clusters as 
+## Keeping the min to 0 (as below) leads to as many clusters as
 ## the number of elements. This errors when at mean[, "sil_width"]
 ## cut_heights <- seq(0, max(hcObj$height), by = hStep)
 ##
 ## Important: Address the question of whether any merging is required?
 ## -- We could use information from archR iteration
-##    -- Obtain the cutree-using-h clustering here. 
-##    -- Is it combining consecutive factors, like 1-2-3, 3-4 etc.? 
-##          a. This could mean that it is undoing the clusters 
+##    -- Obtain the cutree-using-h clustering here.
+##    -- Is it combining consecutive factors, like 1-2-3, 3-4 etc.?
+##          a. This could mean that it is undoing the clusters
 ##          identified by archR in a previous iteration.
-##          b. But, if 1 came from chunk 1 and 2-3 came from chunk 2, 
-##          and if the clustering results in combining 1-2, then this 
+##          b. But, if 1 came from chunk 1 and 2-3 came from chunk 2,
+##          and if the clustering results in combining 1-2, then this
 ##          is a plausible merge and should be left alone.
-##          c. So, we use a parentChunks variable that notes the parent 
-##          chunk for each of the current factors. This info can be 
+##          c. So, we use a parentChunks variable that notes the parent
+##          chunk for each of the current factors. This info can be
 ##          used to make this decision unambiguously.
-##          
-## Update: 2020-12-13: We currently let these get combined if 
-## HAC+cutree deems it fine, and we recommend that the clusters at the 
-## iteration of archR can be left uncollated for reference. 
-## The final stage will then hold the best possible set of clusters 
-## guided by silhouette value. Now handled by logical argument 
+##
+## Update: 2020-12-13: We currently let these get combined if
+## HAC+cutree deems it fine, and we recommend that the clusters at the
+## iteration of archR can be left uncollated for reference.
+## The final stage will then hold the best possible set of clusters
+## guided by silhouette value. Now handled by logical argument
 ## keepSiblingsUncollated.
 ##
-## Update: 2020-12-24: With singletons in a clustering, using 
-## silhouette values could be problematic, because it arbitrarily 
-## assigns s(i) = 0 for a singleton cluster. This can lead to 
-## smaller average silhouette value, artificially making that 
-## clustering look bad. Thus, if and when we detect such a case, 
-## test using the Calinski-Harabasz (CH) index automatically. 
+## Update: 2020-12-24: With singletons in a clustering, using
+## silhouette values could be problematic, because it arbitrarily
+## assigns s(i) = 0 for a singleton cluster. This can lead to
+## smaller average silhouette value, artificially making that
+## clustering look bad. Thus, if and when we detect such a case,
+## test using the Calinski-Harabasz (CH) index automatically.
 ## See argument `enableSwitchSilToCH`.
 .get_clusters_from_hc_using_cutree <- function(hcObj, distMat, hStep = 0.05,
                                             parentChunks = NULL,
                                             keepSiblingsUncollated = FALSE,
                                             enableSwitchSilToCH = FALSE,
-                                            minClusters = 2, 
-                                            ## number of clusters in a 
-                                            ## previous iteration on 
+                                            minClusters = 2,
+                                            ## number of clusters in a
+                                            ## previous iteration on
                                             ## which collation was performed
                                             distThreshold = 0.75,
-                                            ## the default value for 
+                                            ## the default value for
                                             ## - euclidean distance: 3
                                             ## - correlation distance: 0.75
                                             verbose = FALSE){
@@ -877,25 +913,25 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     ##
     if(min(distMat) > distThreshold){
         clust_list <- lapply(hcObj$order, function(x) x)
-        .msg_pstr("No element pairs close enough by given dist threshold: ", 
+        .msg_pstr("No element pairs close enough by given dist threshold: ",
                 distThreshold, flg=verbose)
         .msg_pstr("#Clusters: ", length(clust_list), flg=verbose)
         return(clust_list)
     }else{
         ##
         cut_heights <- seq(min(hcObj$height), max(hcObj$height), by = hStep)
-        clust_list <- .get_clusts_sil_or_ch(cut_heights, hcObj, distMat, 
+        clust_list <- .get_clusts_sil_or_ch(cut_heights, hcObj, distMat,
                         minClusters, use_sil = TRUE, verbose = verbose)
         ##
         .msg_pstr("#Clusts using sil.vals:", length(clust_list), flg=verbose)
         .msg_pstr(.msg_print(clust_list), flg=verbose)
         clust_list_lengths <- unlist(lapply(clust_list, length))
         if(enableSwitchSilToCH && any(clust_list_lengths == 1)){
-            .msg_pstr("But singleton(s) present: clusters ", 
+            .msg_pstr("But singleton(s) present: clusters ",
             paste(which(clust_list_lengths == 1), collapse= " "), flg=verbose)
             .msg_pstr("Using Calinski-Harabasz index instead", flg=verbose)
             ### Calinski-Harabasz Index
-            clust_list <- .get_clusts_sil_or_ch(cut_heights, hcObj, distMat, 
+            clust_list <- .get_clusts_sil_or_ch(cut_heights, hcObj, distMat,
                 minClusters, use_sil = FALSE, verbose = verbose)
         }
         ## number of clusters decided, get final clustering result
@@ -903,7 +939,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         .msg_pstr(.msg_print(clust_list), flg=verbose)
         ##
         if(!is.null(parentChunks) && keepSiblingsUncollated){
-            clust_list <- .check_and_uncollate_siblings(clust_list, 
+            clust_list <- .check_and_uncollate_siblings(clust_list,
                             parentChunks, verbose)
         }
         .msg_pstr("#Clusters: ", length(clust_list), flg=verbose)
@@ -934,18 +970,18 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         parents <- unique(parentChunks[clust_list[[x]]])
         thisX <- clust_list[[x]]
         if(length(parents) == 1 && length(thisX) > 1){
-            ## if cluster elements come from same parent chunk of previous 
+            ## if cluster elements come from same parent chunk of previous
             ## iteration + now check if all elements in this cluster
-            ## are the only children of that parent chunk (in other words 
+            ## are the only children of that parent chunk (in other words
             ## nothing got separated and combined with other factors)
             childrenThisParent <- childrenPerParent[[as.integer(parents)]]
             if(identical(as.numeric(childrenThisParent), as.numeric(thisX))){
                 .msg_pstr("Parents are identical", flg=verbose)
-                ## Update: 2020-12-13 
-                ## See update above. 
-                ## With keepSiblingsUncollated as FALSE, this check is not 
+                ## Update: 2020-12-13
+                ## See update above.
+                ## With keepSiblingsUncollated as FALSE, this check is not
                 ## performed.
-                ## 
+                ##
                 ## Split the merge back into separate clusters
                 return(lapply(childrenThisParent, function(y){y}))
             }else{
@@ -954,7 +990,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
             }
         }
         else{
-            ## cluster elements come from different parent chunks 
+            ## cluster elements come from different parent chunks
             ## (of previous iteration)
             return(thisX)
         }
@@ -965,44 +1001,44 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## =============================================================================
 
 ## This works best/is best referred with ward.D linkage
-# @title Get clusters out of hierarchical clustering using either silhouette 
-# value or Calinski-Harabasz index. 
+# @title Get clusters out of hierarchical clustering using either silhouette
+# value or Calinski-Harabasz index.
 # Used internally by archR.
-# 
-# @description Clusters from a hierarchical clustering object are obtained 
-# by using cutree at different heights of the tree. The optimum number of 
+#
+# @description Clusters from a hierarchical clustering object are obtained
+# by using cutree at different heights of the tree. The optimum number of
 # clusters are decided based on the average silhouette value of the clustering.
-# 
-# @param hcObj The hierarchical clustering object as returned by 
+#
+# @param hcObj The hierarchical clustering object as returned by
 # \code{\link[stats]{hclust}}.
-# @param distMat The distance matrix that was used by hclust, a 
+# @param distMat The distance matrix that was used by hclust, a
 # \code{\link[stats]{dist}} object.
-# @param hStep Numeric. The step size used to increment height values for 
+# @param hStep Numeric. The step size used to increment height values for
 # cutree. Default value is 0.05.
-# @param parentChunks List. Specify the factor numbers in the previous 
-# iteration of archR that factors in the current iteration resulted from. 
+# @param parentChunks List. Specify the factor numbers in the previous
+# iteration of archR that factors in the current iteration resulted from.
 # Default value is NULL.
-# @param keepSiblingsUncollated Logical. Specify TRUE if all clusters from a 
-# single parent chunk should not be collated, even when recommended so based 
-# on silhouette value computation. Default value FALSE. i.e. if they get 
+# @param keepSiblingsUncollated Logical. Specify TRUE if all clusters from a
+# single parent chunk should not be collated, even when recommended so based
+# on silhouette value computation. Default value FALSE. i.e. if they get
 # collated, it is left as collated.
-# @param enableSwitchSilToCH Logical. When and if the clustering result has 
-# singletons, using the average silhouette value may not be reliable to decide 
-# on the optimum number of clusters. In this case, if this argument is TRUE, 
+# @param enableSwitchSilToCH Logical. When and if the clustering result has
+# singletons, using the average silhouette value may not be reliable to decide
+# on the optimum number of clusters. In this case, if this argument is TRUE,
 # the Calinski-Harabasz index is used instead. Setting it to FALSE, the
 # switch is disabled, i.e., average silhouette value is used. Default is FALSE.
-# @param minClusters Integer. Specify the minimum number of clusters to be 
-# fetched from the HAC solution. 
-# @param distThreshold Numeric. Specify a threshold of units of distance for 
-# considering any two elements as close enough to be merged in the same 
+# @param minClusters Integer. Specify the minimum number of clusters to be
+# fetched from the HAC solution.
+# @param distThreshold Numeric. Specify a threshold of units of distance for
+# considering any two elements as close enough to be merged in the same
 # cluster. The default value is specified for Euclidean distance.
 # @param verbose Logical. Specify TRUE for verbose output.
-# 
-# @importFrom stats cutree 
+#
+# @importFrom stats cutree
 # @importFrom fpc calinhara
 # @importFrom cluster silhouette
 #
-.get_clusts_sil_or_ch <- function(cut_heights, hcObj, distMat, minClusters, 
+.get_clusts_sil_or_ch <- function(cut_heights, hcObj, distMat, minClusters,
                             use_sil = TRUE, verbose = FALSE){
     measure_cut_h <- unlist(lapply(cut_heights, function(x){
         foo_try <- stats::cutree(hcObj, h = x)
@@ -1017,20 +1053,20 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
             retVal
         }else return(-100)
     }))
-    
+
     ## multiple matches, first match index is returned with which.max
     cheight_idx <- which.max(measure_cut_h)
     score_str <- ifelse(use_sil, "sil score", "CH index")
     .msg_pstr("Max.", score_str, "at index =", cheight_idx, ", h:",
         cut_heights[cheight_idx], flg=verbose)
-    
+
     ## number of clusters decided, get final clustering result
     cut_result <- stats::cutree(hcObj, h = cut_heights[cheight_idx])
     names(cut_result) <- NULL
     clust_list <- lapply(seq_along(unique(cut_result)),
         function(x) which(cut_result == x))
     ## if clustering is just for the sake of it, reject it
-    clust_list <- .detect_just_for_sake_clust(cheight_idx, clust_list, 
+    clust_list <- .detect_just_for_sake_clust(cheight_idx, clust_list,
                                                 vrbs=verbose)
     clust_list
 }
@@ -1050,84 +1086,84 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## =============================================================================
 
 #' @title Collate raw clusters at the chosen iteration of archR result
-#' 
+#'
 #' @description We use hierarchical clustering for reordering/collating raw
 #' clusters from archR's given iteration.
-#' 
+#'
 #' @param result The archR result object.
-#' 
-#' @param iter Specify clusters at which iteration of archR are to be 
+#'
+#' @param iter Specify clusters at which iteration of archR are to be
 #' reordered/collated. Default is the last iteration of the archR result object.
-#' 
+#'
 #' @param clust_method Specify 'hc' for hierarchical clustering. Currently, only
 #' hierarchical clustering is supported.
-#' 
-#' @param aggl_method One of linkage values as specified for hierarchical 
+#'
+#' @param aggl_method One of linkage values as specified for hierarchical
 #' clustering with \code{\link[stats]{hclust}}. Default is 'ward.D'.
-#' 
-#' @param dist_method Distance measure to be used with hierarchical clustering. 
-#' Available options are "euclid" (default), "cor" for correlation, "cosangle" 
-#' for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
-#' \code{\link[TFBSTools]{PFMSimilarity}}). 
-#' 
-#' @param regularize Logical. Specify TRUE if regularization is to be performed 
+#'
+#' @param dist_method Distance measure to be used with hierarchical clustering.
+#' Available options are "euclid" (default), "cor" for correlation, "cosangle"
+#' for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see
+#' \code{\link[TFBSTools]{PFMSimilarity}}).
+#'
+#' @param regularize Logical. Specify TRUE if regularization is to be performed
 #' before comparison. Default is FALSE. Also see argument 'topN'.
-#' 
-#' @param topn Use only the top N dimensions of each basis vector for 
-#' comparing them. Note that since each basis vector has 4L or 16L (mono- or 
-#' dinucleotides) dimensions, each dimension is a combination of nucleotide and 
-#' its position in the sequence. This argument selects the top N dimensions of 
+#'
+#' @param topn Use only the top N dimensions of each basis vector for
+#' comparing them. Note that since each basis vector has 4L or 16L (mono- or
+#' dinucleotides) dimensions, each dimension is a combination of nucleotide and
+#' its position in the sequence. This argument selects the top N dimensions of
 #' the basis vector. This is ignored when argument 'regularize' is FALSE.
-#' 
-#' @param collate Logical. Specify TRUE if collation using 
-#' hierarchical agglomerative clustering is to be performed, otherwise FALSE. 
-#' This argument is used by archR internally to obtain the ordering instead of 
-#' collated clusters. 
-#' 
-#' @param flags Pass the flags object similar to the flags in configuration 
+#'
+#' @param collate Logical. Specify TRUE if collation using
+#' hierarchical agglomerative clustering is to be performed, otherwise FALSE.
+#' This argument is used by archR internally to obtain the ordering instead of
+#' collated clusters.
+#'
+#' @param flags Pass the flags object similar to the flags in configuration
 #' of the archR result object.
 #'
 #' @param ... ignored
 #'
-#' @return When `collate` is TRUE, a list with the following elements is 
+#' @return When `collate` is TRUE, a list with the following elements is
 #' returned:
 #' \describe{
-#' \item{basisVectorsCLust}{A list storing collation information of the 
+#' \item{basisVectorsCLust}{A list storing collation information of the
 #' basis vectors, i.e, IDs of basis vectors that were collated into one.}
 #' \item{clusters}{A list of sequences in each collated cluster.}
-#' \item{seqClustLabels}{Cluster labels for all sequences according to the 
+#' \item{seqClustLabels}{Cluster labels for all sequences according to the
 #' collated clustering.}
 #' }
-#' 
-#' When 'collate' is FALSE, 
-#' it returns the already existing basis vectors, each as singleton clusters. 
-#' The sequence cluster labels and sequence clusters are also handled 
+#'
+#' When 'collate' is FALSE,
+#' it returns the already existing basis vectors, each as singleton clusters.
+#' The sequence cluster labels and sequence clusters are also handled
 #' accordingly. All are available as part of the same list as the earlier case.
-#' 
-#' @examples 
-#' res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+#'
+#' @examples
+#' res <- readRDS(system.file("extdata", "example_archRresult.rds",
 #'          package = "archR", mustWork = TRUE))
-#' 
+#'
 #' # While the default settings for collation use Euclidean distance and
 #' # ward.D agglomeration, one can choose to use different settings, say,
-#' # correlation distance and complete linkage, and also regularizing to use 
+#' # correlation distance and complete linkage, and also regularizing to use
 #' # only top 50 dimensions (nucleotide-positions combinations)
-#' collated_res <- collate_archR_result(result = res, iter = 2, 
-#'                         aggl_method = "complete", dist_method = "cor", 
+#' collated_res <- collate_archR_result(result = res, iter = 2,
+#'                         aggl_method = "complete", dist_method = "cor",
 #'                         regularize = TRUE, topn = 50)
-#'                         
+#'
 #' names(collated_res)
 #'
 #' @importFrom stats hclust dist
 #' @importFrom utils tail
 #' @export
-collate_archR_result <- function(result, 
+collate_archR_result <- function(result,
                             iter = length(result$seqsClustLabels),
                             clust_method = "hc", aggl_method = "ward.D",
-                            dist_method = "euclid", regularize = FALSE, 
-                            topn = 50, collate = TRUE, 
+                            dist_method = "euclid", regularize = FALSE,
+                            topn = 50, collate = TRUE, return_order = FALSE,
                             flags = list(debugFlag = FALSE,
-                                        verboseFlag = TRUE),
+                                         verboseFlag = TRUE),
                             ...) {
     ##
     dbg <- flags$debugFlag
@@ -1139,7 +1175,7 @@ collate_archR_result <- function(result,
     ##
     ## assert that topn value supplied is in the valid range
     if(!(topn > 0 && topn <= nrow(basisMat))){
-        stop("Selected topn value ", topn," is outside expected range [", 
+        stop("Selected topn value ", topn," is outside expected range [",
                 .msg_print(c(1, nrow(basisMat))), "]")
     }
     if(!is.logical(regularize) && !is.logical(collate)){
@@ -1154,26 +1190,49 @@ collate_archR_result <- function(result,
     parentChunks <- .get_parent_chunks(clust_lab, clust_lab_pre, iter, dbg)
     ##
     if(collate){
-        factorsClustering <- 
+        # TODO: resolve how to setup appropriate minCLusters here
+        # useMinClusters <- keepMinClusters(set_ocollation, temp_res,
+        #                                   totOuterChunksColl =
+        #                                       totOuterChunksColl, dbg = dbg,
+        #                                   nClustEachIC = nClustEachIC,
+        #                                   test_itr = test_itr -1,
+        #                                   stage="Final")
+        factorsClustering <-
             .handle_clustering_of_factors(basisMat, clustMethod = clust_method,
                     linkage = aggl_method, distMethod = dist_method,
                     flags = flags, parentChunks = parentChunks, ...)
         .msg_pstr("Factor clustering done, returning:", flg=dbg)
         .msg_pstr(paste("Returning: ", .msg_print(factorsClustering)), flg=dbg)
     }else{
-        ## Do not reorder/collate, but prepare the return object
-        nFactors <- get_clBasVec_k(result, iter) 
+        ## Do not collate, but prepare the return object
+        nFactors <- get_clBasVec_k(result, iter)
         factorsClustering <- vector("list", nFactors)
         factorsClustering <- lapply(seq_len(nFactors), function(x){x})
         .msg_pstr("No factor clustering, returning:", flg=dbg)
         .msg_pstr(.msg_print(factorsClustering), flg=dbg)
     }
+    if(return_order){
+        ## Do not collate just reorder, but prepare the return object
+        nFactors <- get_clBasVec_k(result, iter)
+        factorsClustering <- vector("list", nFactors)
+        factorsClustering <- lapply(seq_len(nFactors), function(x){x})
+        temp <- .handle_clustering_of_factors(basisMat,
+                                              clustMethod = clust_method,
+                                              linkage = aggl_method,
+                                              distMethod = dist_method,
+                                              returnOrder = return_order,
+                                              flags = flags,
+                                              parentChunks = parentChunks, ...)
+        .msg_pstr("No collation of clusters, returning order:", flg=dbg)
+        .msg_pstr(.msg_print(factorsClustering), flg=dbg)
+        return(temp)
+    }
     ##
     seqClusters <- get_seqs_clust_list(clust_lab)
     clusters <- .collate_clusters2(factorsClustering, seqClusters)
-    clustLabels <- .update_cluster_labels(oldSeqsClustLabels = clust_lab, 
+    clustLabels <- .update_cluster_labels(oldSeqsClustLabels = clust_lab,
                                 collatedClustAssignments = clusters)
-    
+
     cluster_sol <- list(basisVectorsClust = factorsClustering,
                         clusters = clusters, seqsClustLabels = clustLabels)
     return(cluster_sol)
@@ -1197,7 +1256,7 @@ collate_archR_result <- function(result,
 
 
 #' @title Retrieve sequence clusters as a list from the sequence labels
-#' 
+#'
 #' @description Given the sequence cluster labels from the archR result object,
 #' returns the clusters separated as a list.
 #'
@@ -1205,13 +1264,13 @@ collate_archR_result <- function(result,
 #' object.
 #'
 #' @return A list holding sequence IDs belonging in each cluster.
-#' 
-#' @examples 
-#' 
+#'
+#' @examples
+#'
 #' clustLabels <- sample(seq_len(4), 50, replace = TRUE)
 #' print(clustLabels)
 #' get_seqs_clust_list(clustLabels)
-#' 
+#'
 #' @export
 get_seqs_clust_list <- function(seqs_clust_lab){
     ## check that labels are not empty/NULL
