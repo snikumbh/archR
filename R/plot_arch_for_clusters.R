@@ -78,8 +78,8 @@ plot_arch_for_clusters <- function(seqs,
                                 set_titles = TRUE,
                                 pdf_width = 11,
                                 pdf_height = 2,
-                                pdf_name = "archR_sequence_architectures.pdf",
-                                show = TRUE,
+                                pdf_name = NULL,
+                                show = FALSE,
                                 ...){
     ##
     stopifnot(!is.null(clust_list))
@@ -114,20 +114,21 @@ plot_arch_for_clusters <- function(seqs,
         grDevices::pdf(file=pdf_name, width=pdf_width, height=pdf_height)
         lapply(plot_list, print)
         dev.off()
+        return(invisible(NULL))
     }
     return(plot_list)
 }
 ## =============================================================================
 
 make_plot_titles <- function(clust_list, set_titles){
+    nClust <- length(clust_list)
+    clust_lens <- unlist(lapply(clust_list, length))
+    cumsums_clust_lens <- cumsum(clust_lens)
+    clust_names <- sort(as.character(seq_along(clust_list)))
+    ##
+    clust_starts <- c(1, 1+cumsums_clust_lens[seq_len(nClust-1)])
+    clust_ends <- cumsums_clust_lens
     if(set_titles){
-        nClust <- length(clust_list)
-        clust_lens <- unlist(lapply(clust_list, length))
-        cumsums_clust_lens <- cumsum(clust_lens)
-        clust_names <- sort(as.character(seq_along(clust_list)))
-        ##
-        clust_starts <- c(1, 1+cumsums_clust_lens[seq_len(nClust-1)])
-        clust_ends <- cumsums_clust_lens
         ##
         pl_titles <- lapply(seq_along(clust_starts), function(x){
             make_plot_title_str(x, nClust, clust_names[x], clust_lens[x], 
