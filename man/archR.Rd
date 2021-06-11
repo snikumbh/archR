@@ -11,9 +11,9 @@ archR(
   seqs_ohe_mat,
   seqs_raw,
   seqs_pos = NULL,
-  threshold_itr = 3,
-  set_parsimony = c(FALSE, FALSE, FALSE),
-  set_ocollation = c(TRUE, FALSE, FALSE),
+  total_itr = NULL,
+  set_parsimony = NULL,
+  set_ocollation = NULL,
   fresh = TRUE,
   use_oc = NULL,
   o_dir = NULL
@@ -32,18 +32,18 @@ sequences as a DNAStringSet object. This argument required argument.}
 \item{seqs_pos}{Vector. Specify the tick labels for sequence positions.
 Default is NULL.}
 
-\item{threshold_itr}{Numeric. Specify the number of iterations to perform.
-Default is 3.}
+\item{total_itr}{Numeric. Specify the number of iterations to perform. This 
+should be greater than zero. Default is NULL.}
 
-\item{set_parsimony}{Logical vector. Specify if model selection by
-cross-validation should prefer parsimonious solutions. Not required when
-stability-based model selection is chosen. Length of the vector should match
-number of iterations specified in 'threshold_itr' argument. TRUE denotes 
-parsimony is followed, FALSE otherwise.}
+\item{set_parsimony}{Logical vector. A logical vector of length `total_itr` 
+specifying if model selection by cross-validation should prefer parsimonious 
+solutions. Not required when stability-based model selection is chosen. TRUE 
+denotes parsimony is followed, FALSE otherwise.}
 
-\item{set_ocollation}{Logical vector. Specify for every iteration of archR
-if collation of clusters from outer chunks should be performed. TRUE denotes
-clusters are collated, FALSE otherwise.}
+\item{set_ocollation}{Logical vector. A logical vector of length `total_itr` 
+specifying for every iteration of archR if collation of clusters from 
+outer chunks should be performed. TRUE denotes clusters are collated, 
+FALSE otherwise.}
 
 \item{fresh}{Logical. Specify if this is (not) a fresh run. Because
 archR enables checkpointing, it is possible to perform additional iterations
@@ -58,7 +58,8 @@ only iteration.}
 
 \item{use_oc}{List. Clusters to be further processed with archR. These can 
 be from a previous archR result (in which case use 
-archRresult$clustSol$clusters), or simply clusters from any other method.
+\code{\link{get_seqs_clust_list}} function), or simply clusters from any 
+other method.
 Warning: This has not been rigorously tested yet (v0.1.3).}
 
 \item{o_dir}{Character. Specify the output directory with its path. archR
@@ -163,7 +164,8 @@ archRresult <- archR::archR(config = archRconfig,
                           seqs_ohe_mat = inputSeqsMat,
                           seqs_raw = inputSeqsRaw,
                           seqs_pos = seq(1,100,by=1),
-                          threshold_itr = 2)
+                          total_itr = 2,
+                          set_ocollation = c(TRUE, FALSE))
 
  
 }

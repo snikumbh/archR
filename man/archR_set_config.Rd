@@ -9,7 +9,6 @@ archR_set_config(
   k_min = 1,
   k_max = 20,
   mod_sel_type = "stability",
-  tol = 10^-3,
   bound = 10^-8,
   cv_folds = 5,
   parallelize = FALSE,
@@ -36,10 +35,6 @@ for number of NMF basis vectors. Default is 20.}
 be used. Default is 'stability'. Another option is 'cv', short for 
 cross-validation. Warning: The cross-validation approach can be time 
 consuming and computationally expensive than the stability-based approach.}
-
-\item{tol}{Numeric. Specify the tolerance value as criterion for choosing the
-most appropriate number of NMF factors. Default is 1e-03. Current, this is
-ignored.}
 
 \item{bound}{Numeric. Specify the lower bound value as criterion for choosing
 the most appropriate number of NMF factors. Default is 1e-08.}
@@ -102,7 +97,6 @@ archRconfig <- archR::archR_set_config(
     k_min = 1,
     k_max = 20,
     mod_sel_type = "stability",
-    tol = 10^-4,
     bound = 10^-8,
     flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
         plot = FALSE)
