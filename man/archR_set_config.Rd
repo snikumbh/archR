@@ -31,31 +31,31 @@ for number of NMF basis vectors. Default is 1.}
 \item{k_max}{Numeric. Specify the maximum of the range of values to be tested
 for number of NMF basis vectors. Default is 20.}
 
-\item{mod_sel_type}{Character. Specify the model selection strategy to 
-be used. Default is 'stability'. Another option is 'cv', short for 
-cross-validation. Warning: The cross-validation approach can be time 
+\item{mod_sel_type}{Character. Specify the model selection strategy to
+be used. Default is 'stability'. Another option is 'cv', short for
+cross-validation. Warning: The cross-validation approach can be time
 consuming and computationally expensive than the stability-based approach.}
 
 \item{bound}{Numeric. Specify the lower bound value as criterion for choosing
 the most appropriate number of NMF factors. Default is 1e-08.}
 
-\item{cv_folds}{Numeric. Specify the number of cross-validation folds used 
-for model selection. Only used when mod_sel_type is set to 'cv'. Default 
+\item{cv_folds}{Numeric. Specify the number of cross-validation folds used
+for model selection. Only used when mod_sel_type is set to 'cv'. Default
 value is 5.}
 
 \item{parallelize}{Logical. Specify whether to parallelize the procedure.
-Note that running archR serially can be time consuming. See `n_cores`. 
-Consider parallelizing with at least 2 or 4 cores. If Slurm is available, 
+Note that running archR serially can be time consuming. See `n_cores`.
+Consider parallelizing with at least 2 or 4 cores. If Slurm is available,
 archR's graphical user interface, accessed with \code{\link{run_archR_UI}},
-enables providing all input data, setting archR configuration, and running 
-archR directly by submitting/monitoring slurm jobs through the user 
+enables providing all input data, setting archR configuration, and running
+archR directly by submitting/monitoring slurm jobs through the user
 interface.}
 
 \item{n_cores}{The number of cores to be used when `parallelize` is set
 to TRUE. If `parallelize` is FALSE, nCores is ignored.}
 
 \item{n_iterations}{Numeric. Specify the number of bootstrapped iterations
-to be performed with NMF. Default value is 100. When using cross-validation 
+to be performed with NMF. Default value is 100. When using cross-validation
 more than 100 (upto 500) iterations may be needed.}
 
 \item{alpha_base, alpha_pow}{Specify the base and the power for computing
@@ -67,10 +67,10 @@ _Warning_: Currently, not used (for future).}
 any cluster/chunk of size less than or equal to it will not be further
 processed. Default is 25.}
 
-\item{checkpointing}{Logical. Specify whether to write intermediate 
-checkpoints to disk as RDS files. Checkpoints and the final result are 
-saved to disk provided the `o_dir` argument is set in \code{\link{archR}}. 
-When `o_dir` argument is not provided or NULL, this is ignored. 
+\item{checkpointing}{Logical. Specify whether to write intermediate
+checkpoints to disk as RDS files. Checkpoints and the final result are
+saved to disk provided the `o_dir` argument is set in \code{\link{archR}}.
+When `o_dir` argument is not provided or NULL, this is ignored.
 Default is TRUE.}
 
 \item{flags}{List with four Logical elements as detailed.
