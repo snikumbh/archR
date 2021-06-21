@@ -737,6 +737,56 @@ collate_clusters <- function(clustering, orig_clust_assign) {
 }
 ## =============================================================================
 
+fetch_cutree_by_hc_order <- function(clust_list, hcorder){
+    ## Arrange clusters themselves by the hc_order
+    starters <- lapply(clust_list, function(x){x[[1]]})
+    starters_pos <- unlist(lapply(unlist(starters), function(x){
+        which(x == hcorder)
+    }))
+
+    use_idx <- sort(starters_pos, index.return = TRUE)
+
+    clust_list <- lapply(seq_along(use_idx$ix), function(x){
+        clust_list[[use_idx$ix[x]]]
+    })
+
+
+    # For each ID in list elements, get their position in the hcorder vector
+    cl_order_idx <- unlist(lapply(unlist(clust_list), function(x){
+        which(x == hcorder)
+    }))
+
+    ## Arrange each cluster elements by hc_order
+
+    cl_lens <- unlist(lapply(clust_list, length))
+
+    cl_ends <- cumsum(cl_lens)
+    cl_starts <- c(1, 1+cl_ends[1:length(cl_ends)-1])
+
+    stopifnot(tail(cl_ends, 1) == length(hcorder))
+
+    clust_list_new <- vector("list", length(cl_lens))
+    for(x in seq_along(cl_starts)){
+        adjust_idx <- cl_order_idx[cl_starts[x]:cl_ends[x]]
+        if(x > 1){
+            adjust_idx <- cl_order_idx[ cl_starts[x]:cl_ends[x] ] - cl_ends[x-1]
+        }
+        clust_list_new[[x]][ adjust_idx ] <- clust_list[[x]]
+    }
+
+    stopifnot(length(unlist(clust_list_new)) == length(hcorder))
+    stopifnot(length(unique(unlist(clust_list_new))) == length(hcorder))
+
+    return_vec <- rep(0, length(hcorder))
+
+    return_vec <- lapply(seq_along(clust_list_new), function(x){
+        return_vec
+    })
+
+    return(clust_list_new)
+}
+
+
 
 ############################## CUTREE VERSION ##################################
 ## This works best/is best referred with ward.D linkage
@@ -839,6 +889,8 @@ collate_clusters <- function(clustering, orig_clust_assign) {
         cut_heights <- seq(min(hcObj$height), max(hcObj$height), by = hStep)
         clust_list <- .get_clusts_sil_or_ch(cut_heights, hcObj, distMat,
                         minClusters, use_sil = TRUE, verbose = verbose)
+        ##
+        clust_list <- fetch_cutree_by_hc_order(clust_list, hcObj$order)
         ##
         .msg_pstr("#Clusts using sil.vals:", length(clust_list), flg=verbose)
         .msg_pstr(.msg_print(clust_list), flg=verbose)

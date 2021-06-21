@@ -1,16 +1,14 @@
 context("Auxiliary Functions I")
 
 
-# test_that("collate_clusters handles null hopach object", {
-#     hopachObj <- NULL
-#     tempList <- vector("list", 5)
-#     globClustAssignments <- lapply(tempList,
-#                                     function(x){
-#                                         x <- round(10*runif(5))
-#                                     })
-#     expect_error(.collate_clusters(hopachObj, globClustAssignments),
-#                  "Hopach object is NULL")
-# })
+test_that("fetch cutree by hcorder ordering", {
+
+    hcorder <- c(6, 7, 1, 10, 4, 2, 5, 8, 9, 3)
+    clust_list <- list(sort(hcorder[1:3]), sort(hcorder[4:8]), sort(hcorder[9]),
+                       sort(hcorder[10]))
+    expect_identical(fetch_cutree_by_hc_order(clust_list, hcorder),
+                     list(c(6,7,1), c(10, 4, 2, 5, 8), c(9), c(3)))
+})
 
 test_that("collate_clusters handles empty globClustAssignments", {
     Obj <- list(clustering = list(k = 5, sizes = rep(5,5), order = 1:25))
