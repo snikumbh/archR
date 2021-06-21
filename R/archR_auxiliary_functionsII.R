@@ -552,18 +552,11 @@ archR_set_config <- function(inner_chunk_size = 500,
             has_overfit <- .detect_overfitting(samplesMatrix,
                                                 clusterMembershipsForSamples,
                                                 minSeqs = 50)
-            # print("Overfit at:")
-            # if(length(has_overfit) > 0){
-            #     print(paste("Overfit at:", has_overfit))
-            # }else{
-            #     print("No Overfit")
-            # }
             ##
             ## -- Note which clusters are overfit
             ## -- Remove those columns from featuresMat
             ## -- Adjust clustMemberships
             if(length(has_overfit) > 0){
-                # print(has_overfit)
                 clusterMembershipsForSamples <-
                     .adjustSampleMemberships(clusterMembershipsForSamples,
                                         samplesMatrix, has_overfit)
@@ -578,9 +571,7 @@ archR_set_config <- function(inner_chunk_size = 500,
                     stopifnot(unique(clusterMembershipsForSamples) == 1)
                 }
             }
-            # else{
-            #     print("None")
-            # }
+
         }
         ##
         forGlobClustAssignments <- .assign_samples_to_clusters(
