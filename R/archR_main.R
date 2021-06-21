@@ -72,6 +72,10 @@
 #' \item{call}{The function call itself.}
 #' }
 #'
+#' @importFrom prettyunits pretty_dt
+#' @importFrom parallel stopCluster
+#' @import cli
+#'
 #' @examples
 #'
 #' fname <- system.file("extdata", "example_data.fa",
