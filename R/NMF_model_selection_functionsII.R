@@ -1,9 +1,9 @@
 ## NMF model selection functions II
 ## Other approaches for model selection
 ##
-## Note on regularization: 
+## Note on regularization:
 ## We use dispersion for regularization together to Amari-type distance measure.
-## The latter is a measure of stability of features, and the first of the 
+## The latter is a measure of stability of features, and the first of the
 ## clusters.
 ##
 
@@ -38,31 +38,38 @@
         if(kValue > 1){
             .msg_pstr("Checking K =", kValue, flg=vrbs)
         }
-        
-        ## Get NMF results 
+
+        ## Get NMF results
         resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
             alphaVal = 0, parallelDo = parallelDo,
             nCores = nCores, nRuns = nIterations,
             bootstrap = bootstrap)
-        
+
         featMatList <- .get_feat_or_samp_matList(resultList, feat = TRUE)
-        
+
         this_amari <- .get_amari_from_featMatList(featMatList)
         if(is.na(this_amari)){
-            warning("NA in Amari-type distance computation")
+            cli::cli_alert_warning("NA in Amari-type distance computation")
         }
         .msg_pstr("AmariTypeDist : ", this_amari, flg=dbg)
-        
+
         foo_scores[kValue, "Score"] <- this_amari
-        
-        
-        if(this_amari > bound) breakNow <- TRUE
+
+
+
         ##
         check_errant <- FALSE
         if(kValue %% 5 == 0){
             check_errant <- .check_no_mag_change_fail_condition(foo_scores)
             if(check_errant) breakNow <- TRUE
         }
+        if(is.na(this_amari)){
+            cli::cli_alert_info("errant TRUE")
+            check_errant <- TRUE
+            breakNow <- TRUE
+        }
+        ##
+        if(!is.na(this_amari) && this_amari > bound) breakNow <- TRUE
         ##
         if(breakNow){
             ## greater than bound, choose and break loop
@@ -73,7 +80,7 @@
         }
         ##
         prev_amari <- this_amari
-        
+
     }
     if(returnBestK) return(bestK)
     return(foo_scores)
@@ -100,7 +107,7 @@
         return(featMatList)
     }
     sampMatList <- lapply(resultList$nmf_result_list, get_samples_matrix)
-    
+
     if(bootstrap){
         sampMatListNew <-
             lapply(seq_len(length(sampMatList)), function(x){
@@ -141,7 +148,7 @@
 amariDistance <- function(matA, matB) {
     K <- dim(matA)[2]
     corrMat <- stats::cor(matA, matB)
-    return(1 - (sum(apply(corrMat, 1, max)) + 
+    return(1 - (sum(apply(corrMat, 1, max)) +
             sum(apply(corrMat, 2, max))) / (2 * K))
 }
 
@@ -163,7 +170,7 @@ computeAmariDistances <- function(matrices){
 #         apply(x, 2, which.max)
 #     })
 #     ## compute connectivity matrix per run
-#     ## finally, compute the consensus matrix (average of all connectivity 
+#     ## finally, compute the consensus matrix (average of all connectivity
 #     ## matrices)
 #     ## Compute the dispersion score (range: -1 to +1)
 #     connectivityMats <- lapply(seq_along(matrices), function(x){

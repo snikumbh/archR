@@ -21,7 +21,7 @@ test_that("collate_clusters handles empty globClustAssignments", {
                                             tempList[[x]] <- round(10*runif(5))
                                        }
                                    })
-    expect_error(.collate_clusters2(Obj, globClustAssignments),
+    expect_error(collate_clusters(Obj, globClustAssignments),
                  "Cluster assignments variable has a 0-length entry")
 })
 
@@ -30,7 +30,7 @@ test_that("unfurl_nodeList handles example nodeList well (vec version)", {
     unfurled_nodeList <- list(1, 2, 5, 6, 7)
     ans <- .unfurl_nodeList(nodeList = nodeList, vec_ver=TRUE)
     expect_identical(unfurled_nodeList, ans)
-    
+
 })
 
 test_that("unfurl_nodeList handles example nodeList well", {
@@ -38,7 +38,7 @@ test_that("unfurl_nodeList handles example nodeList well", {
     unfurled_nodeList <- list(c(1,3,4), 2, 5, c(6,7))
     ans <- .unfurl_nodeList(nodeList = nodeList, vec_ver=FALSE)
     expect_identical(unfurled_nodeList, ans)
-    
+
 })
 
 
@@ -53,10 +53,10 @@ test_that("unfurl_nodeList handles empty/null nodeList", {
 
 
 test_that("update_cluster_labels handles empty collatedClustAssignments", {
-    
+
     toyClustLabels <- c("9", "22", "20", "23", "12", "22", "1", "16", "20",
                         "9", "21", "10", "18", "8", "13", "1", "17", "18",
-                        "11", "14", "11", "9", "25", "3", "12" 
+                        "11", "14", "11", "9", "25", "3", "12"
                         # "16", "1",
                         # "19", "15", "2", "21", "10", "6", "22", "8", "6",
                         # "25", "10", "12", "5", "20", "17", "7", "14", "8",
@@ -64,7 +64,7 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
                         # "24", "13", "3", "15", "5", "13", "19", "5", "11", "23",
                         # "24", "24", "15", "16", "17", "2", "6", "19", "25", "3"
                         )
-    
+
     collection <- as.numeric(c("3", "15", "24", "14", "19", "13", "1", "5", "12", "9",
                     "11", "8", "4", "17", "20", "16", "25", "10", "2", "7",
                     "6", "18", "21", "22", "23"))
@@ -75,7 +75,7 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
                                            tempList[[x]] <- round(10*runif(5))
                                        }
                                    })
-    
+
     idx <- rep(1:5,5)
     collatedClustAssignments <- lapply(seq_along(tempList),
                                    function(x){
@@ -86,7 +86,7 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
                                         collatedClustAssignmentsErr),
                  "Cluster assignments variable has a 0-length entry")
     ####
-    foo <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
+    foo <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4",
                  "1", "4", "2", "1", "4", "2", "5", "5", "3", "4", "5", "3", "2")
     ## this tests the updated cluster labels
     ## -- the updated labels should have 5 unique cluster labels since
@@ -99,12 +99,13 @@ test_that("update_cluster_labels handles empty collatedClustAssignments", {
 
 })
 
-# test_that("get_seqs_clust_list works", {
-#     seqsClustLabels <- foo <- c("2", "4", "1", "3", "3", "1", "5", "2", "5", "3", "1", "4", 
-#                                     "1", "4", "2", "1", "4", "2", "5", "5", "3", "4", "5", "3", "2")
-#     ansList <- archR::get_seqs_clust_list(seqsClustLabels)
-#     expect_length(ansList, 5)
-#     })
+test_that("get_seqs_clust_list works", {
+    seqsClustLabels <- c("2", "4", "1", "3", "3", "1", "5", "2",
+                       "5", "3", "1", "4", "1", "4", "2", "1",
+                       "4", "2", "5", "5", "3", "4", "5", "3", "2")
+    ansList <- archR::get_seqs_clust_list(seqsClustLabels)
+    expect_length(ansList, 5)
+    })
 
 
 

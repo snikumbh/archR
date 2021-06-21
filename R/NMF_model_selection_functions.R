@@ -51,13 +51,65 @@
     D_W <- nmf_submatrixD_result$featuresMatrix
     D_H <- nmf_submatrixD_result$samplesMatrix
     ##
-    reconstructed_submatrixA <- as.matrix(submatrixB) %*% 
+    reconstructed_submatrixA <- as.matrix(submatrixB) %*%
         MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% as.matrix(submatrixC)
     ##
     q2 <- .compute_q2(as.matrix(submatrixA), reconstructed_submatrixA)
     return(q2)
 }
 ## =============================================================================
+
+.get_q2_using_py_serial <- function(x, X, cvfolds){
+
+    ##
+    this_k <- as.numeric(x["k_vals"])
+    this_alpha <- as.numeric(x["alpha"])
+    this_seed <- as.numeric(x["seed_val"])
+    #
+    test_fold <- as.numeric(x["fold"])
+    train_rows <-
+        cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which != test_fold]
+    train_cols <-
+        cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which != test_fold]
+    test_rows <-
+        cvfolds$cvf_rows$subsets[cvfolds$cvf_rows$which == test_fold]
+    test_cols <-
+        cvfolds$cvf_cols$subsets[cvfolds$cvf_cols$which == test_fold]
+    ##
+    ## Split data matrix X -- separate the training and test parts
+    ##        _      _
+    ##   X = |  A  B  |
+    ##       |_ C  D _|
+    ##
+    ## Reconstruct A, by performing NMF on D
+    ## More details in Owen and Perry, Annals of Statistics, 2009
+    ##
+    ## no changing of order of sequences in X, instead keep seeds
+    # new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
+    # X <- X[, new_ord]
+    ##
+    submatrixD <- X[train_rows, train_cols]
+    submatrixA <- X[test_rows, test_cols]
+    submatrixB <- X[test_rows, train_cols]
+    submatrixC <- X[train_rows, test_cols]
+
+    ## NMF on submatrixD
+    ## 1. Setup params
+    ## 2. NMF call, using python/scikit-learn NMF
+    nmf_submatrixD_result <- .perform_single_NMF_run(X = submatrixD,
+                                                    kVal = as.integer(this_k),
+                                                    alphaVal = this_alpha,
+                                                    seedVal = this_seed)
+    D_W <- nmf_submatrixD_result$featuresMatrix
+    D_H <- nmf_submatrixD_result$samplesMatrix
+    ##
+    reconstructed_submatrixA <- as.matrix(submatrixB) %*%
+        MASS::ginv(D_H) %*% MASS::ginv(D_W) %*% as.matrix(submatrixC)
+    ##
+    q2 <- .compute_q2(as.matrix(submatrixA), reconstructed_submatrixA)
+    return(q2)
+
+}
 
 
 .perform_single_NMF_run <- function(X, kVal, alphaVal, seedVal) {
@@ -123,14 +175,14 @@
     ## need this only as place filler for the seed_val column in the
     ## grid_search_params df
     grid_search_params <- expand.grid(list(
-        k_vals = this_K, 
+        k_vals = this_K,
         alpha = aBase ^ aPow,
         fold = seq_len(kFolds), iteration = seq_len(nIter),
         seed_val = dummy_seed
     ))
     ##
     seed_val_list <- get_n_seeds(n = kFolds*nIter)
-    # seed_val_list <- sample.int(.Machine$integer.max, 
+    # seed_val_list <- sample.int(.Machine$integer.max,
     #     size = kFolds*nIter, replace = FALSE)
     grid_search_params[, "seed_val"] <- seed_val_list
     return(grid_search_params)
@@ -142,9 +194,10 @@ get_n_seeds <- function(n){
 }
 
 
-performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
-                                best_K = 0, prev_df = NULL, param_ranges,
-                                kFolds, nIterations, set_verbose){
+performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
+                            prev_best_K = -1, best_K = 0, prev_df = NULL,
+                            param_ranges, kFolds, nIterations,
+                            parallelDo = FALSE, set_verbose = 1){
     vrbs <- ifelse(set_verbose == 1, TRUE, FALSE)
     dbg <- ifelse(set_verbose == 2, TRUE, FALSE)
     kValues <- seq(startVal, endVal, by = step)
@@ -152,16 +205,24 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
     for (this_K in kValues){
         if(prev_best_K != best_K && !is.na(this_K) && this_K != 0){
             ##
-            grid_search_params <- .grid_srch_par_df(this_K, 
+            grid_search_params <- .grid_srch_par_df(this_K,
                 aBase=param_ranges$alphaBase, aPow=param_ranges$alphaPow,
                 kFolds = kFolds, nIter = nIterations)
             ##
-            q2_vals <- unlist(parallel::clusterApplyLB(cl = NULL,
-                        seq_len(nrow(grid_search_params)), function(i) { 
+            if(parallelDo){
+                q2_vals <- unlist(parallel::clusterApplyLB(cl = NULL,
+                        seq_len(nrow(grid_search_params)), function(i) {
                             .get_q2_using_py( grid_search_params[i,] )
                         }))
+            }else{
+                q2_vals <- unlist(lapply(seq_len(nrow(grid_search_params)),
+                                        function(i) {
+                        .get_q2_using_py_serial( grid_search_params[i,],
+                                                X, cvfolds)
+                                    }))
+            }
             ##
-            grid_search_results <- as.data.frame(grid_search_params[, 
+            grid_search_results <- as.data.frame(grid_search_params[,
                     c("k_vals", "alpha", "fold", "iteration")],
                     col.names = c("k_vals", "alpha", "fold", "iteration"))
             grid_search_results$q2_vals <- q2_vals
@@ -177,7 +238,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
             }
             .msg_pstr("Prev best K:", prev_best_K, "Best K:", best_K, "This K:",
                         this_K, flg=dbg)
-            .msg_pstr("Curr nrows:", nrow(grid_search_results), "Total nrows:", 
+            .msg_pstr("Curr nrows:", nrow(grid_search_results), "Total nrows:",
                         nrow(prev_df), flg=dbg)
         }
     }
@@ -247,23 +308,25 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
     ## Get cross-validation folds
     cvfolds <- .generate_folds(dim(X), kFolds)
     ##
-    if (parallelDo) {
+    # if (parallelDo) {
         #######################
         #### New strategy
         if(returnBestK) {
             # message("===Cluster ready?===")
-            cl <- .setup_par_cluster(vlist= 
-                c(".get_q2_using_py", ".compute_q2", "X", "cvfolds"))
+            if(parallelDo){
+                cl <- .setup_par_cluster(vlist=
+                    c(".get_q2_using_py", ".compute_q2", "X", "cvfolds"))
+            }
             ##
             set_verbose <- ifelse(debugFlag, 2, ifelse(verboseFlag, 1, 0))
             if(cgfglinear){
                 .msg_pstr("Coarse-fine grained binary search", flg=vrbs)
                 prev_df <- NULL
-                #go_fine <- FALSE 
-                ## when either lo or hi values are best, so we need to perform 
+                #go_fine <- FALSE
+                ## when either lo or hi values are best, so we need to perform
                 ## a fine-grained search
-                #eureka <- FALSE 
-                ## to note when the mid value happens to be 
+                #eureka <- FALSE
+                ## to note when the mid value happens to be
                 ## the best
                 #coarse_step <- 10
                 mi <- seq(coarse_step, max(param_ranges$k_vals), by=coarse_step)
@@ -274,7 +337,8 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                 prev_best_K <- -1
                 best_K <- 0
                 for (kCGIdx in seq_along(lo)){
-                    searchReturnCoarse <- performSearchForK(
+                    searchReturnCoarse <- performSearchForK(X = X,
+                        cvfolds = cvfolds,
                         startVal = lo[kCGIdx],
                         endVal = hi[kCGIdx],
                         step = 1,
@@ -282,6 +346,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                         best_K = best_K,
                         prev_df = prev_df,
                         param_ranges,
+                        parallelDo = parallelDo,
                         kFolds, nIterations, set_verbose = set_verbose)
                     best_K <- searchReturnCoarse$best_K
                     prev_best_K <- searchReturnCoarse$prev_best_K
@@ -291,38 +356,38 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                         ## Work done, leave loop?
                         .msg_pstr("mi value is best", flg=dbg)
                         if(askParsimony){
-                            ## When mi value is chosen as best, in order for 
-                            ## the 1-SE rule, it would be a good idea compute 
-                            ## q2 values for at least 5 consecutive values of 
-                            ## K less than mi. 
-                            ## This means that, in thise case, we would set 
+                            ## When mi value is chosen as best, in order for
+                            ## the 1-SE rule, it would be a good idea compute
+                            ## q2 values for at least 5 consecutive values of
+                            ## K less than mi.
+                            ## This means that, in thise case, we would set
                             ## fgIL to (mi-5)
-                            ## Then, the 1-SE rule could lead to choosing a 
+                            ## Then, the 1-SE rule could lead to choosing a
                             ## smaller value.
                             ##
                             #go_fine <- TRUE
-                            ## Scenario when the mi value is best, first check 
+                            ## Scenario when the mi value is best, first check
                             ## the 1-SE rule,
                             ## What is the value chosen by this rule?
-                            ## Does it already include values from the previous 
+                            ## Does it already include values from the previous
                             ## triplet, if any?
-                            ## If yes, we may need computations for a few 
+                            ## If yes, we may need computations for a few
                             ## consecutive values below that value
                             # idx_best <- as.numeric(which.max(
                             # unlist(coarse_prev_df["q2_vals"])))
-                            # threshold <- coarse_prev_df[idx_best, "q2"] - 
+                            # threshold <- coarse_prev_df[idx_best, "q2"] -
                             #   coarse_prev_df[idx_best, "SE"]
-                            # 
+                            #
                             ## TODO
-                            fgIL <- max(mi[kCGIdx]-5, 1) 
+                            fgIL <- max(mi[kCGIdx]-5, 1)
                             ## shield against setting 0
                             fgOL <- max(lo[kCGIdx]-1, 1)
                             .msg_range(fgIL, fgOL, vrbs)
                         }else{
-                            ## Added to handle case when 1-SE rule is not 
+                            ## Added to handle case when 1-SE rule is not
                             ## applied
                             ##
-                            fgIL <- max(mi[kCGIdx]-1, 1) 
+                            fgIL <- max(mi[kCGIdx]-1, 1)
                             ## shield against setting 0
                             fgOL <- max(mi[kCGIdx]-1, 1)
                             .msg_range(fgIL, fgOL, vrbs)
@@ -339,7 +404,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                         } else{
                             ## go fine over interval (hi[kCGIdx]+1 , lo[kCGIdx])
                             .msg_pstr("lo value is best", flg=dbg)
-                            fgOL <- lo[kCGIdx]-1    # fine-grained search outer 
+                            fgOL <- lo[kCGIdx]-1    # fine-grained search outer
                             fgIL <- hi[kCGIdx-1]+1  # and inner limit
                             .msg_range(fgIL, fgOL, vrbs)
                             break
@@ -354,9 +419,9 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                     }
                     else if(best_K == hi[kCGIdx]){
                         ## best_K is == hi, go to next coarse-grained iteration
-                        .msg_pstr("Next interval of coarse-grained grid", 
+                        .msg_pstr("Next interval of coarse-grained grid",
                                     flg=vrbs)
-                        
+
                     }
                 }
                 ## Fine-grained search
@@ -368,7 +433,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                     best_K = 0,
                     prev_df = NULL,
                     param_ranges,
-                    kFolds, nIterations, set_verbose)
+                    kFolds, nIterations, set_verbose = set_verbose)
                 best_K <- searchReturnFine$best_K
                 fine_prev_df <- searchReturnFine$return_df
 
@@ -379,11 +444,11 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                 # minKInDF <- min(as.numeric(unlist(combined_df["k_vals"])))
                 kValsInDF <- as.numeric(unlist(combined_df["k_vals"]))
                 if(best_K != 1 && !any((best_K-1) - kValsInDF == 0)){
-                    .msg_pstr("Chosen best value happens to be the lowest.", 
+                    .msg_pstr("Chosen best value happens to be the lowest.",
                         "Making sure...", flg=vrbs)
                     attemptCount <- 1
                     makeSureK <- best_K
-                    while(makeSureK != 1 && 
+                    while(makeSureK != 1 &&
                             !any((makeSureK-1) - kValsInDF == 0)){
                         # Ensure the new value is not already computed
                         fgIL <- max(best_K - 1*attemptCount, 1)
@@ -402,7 +467,7 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
                         combined_df <- searchReturnFine$return_df
 
                         # combined_df <- rbind(combined_df, fine_prev_df)
-                        makeSureK <- .get_best_K(combined_df, 
+                        makeSureK <- .get_best_K(combined_df,
                                                     parsimony = askParsimony)
                         # if(debugFlag) message("MAKE_SURE_K:", makeSureK)
                         attemptCount <- attemptCount + 1
@@ -417,9 +482,9 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
 
             }
         }
-    }
+    # }
     if(best_K == max(param_ranges$k_vals)){
-        warning("best_K: ", 
+        warning("best_K: ",
                 best_K , " is already the maximum value for K specified.
                                 Try increasing therange")
     }
@@ -446,21 +511,21 @@ performSearchForK <- function(startVal, endVal, step = 1, prev_best_K = -1,
     #     print(vlist)
     #     parallel::clusterExport(cl = NULL, varlist = vlist,
     #                     envir = environment())
-    # 
+    #
     # }else{
     #     print("NotNULL")
     #     print(vlist)
     #     parallel::clusterExport(cl = NULL, varlist = vlist,
     #         envir = parent.frame(n=1))
-    # 
+    #
     # }
-    
+
     return(cl)
-    
+
     #####
     # ## from cv_model_select_pyNMF2
     # cl <- parallel::getDefaultCluster()
-    # parallel::clusterEvalQ(cl, 
+    # parallel::clusterEvalQ(cl,
     #     suppressWarnings(require(MASS, quietly = TRUE)))
     # # message("===Seems OK===")
     # ## ^for pseudo-inverse using function `ginv`
@@ -487,7 +552,7 @@ check_par_conditions <- function(nCores){
 
 # return A list of two lists: one containing feature matrices, the other samples
 # matrices
-.perform_multiple_NMF_runs <- function(X, kVal, alphaVal, parallelDo = TRUE, 
+.perform_multiple_NMF_runs <- function(X, kVal, alphaVal, parallelDo = TRUE,
                                 nCores = NA, nRuns = 100, bootstrap = TRUE) {
     ##
     new_ord <- lapply(seq_len(nRuns), function(x){seq_len(ncol(X))})
@@ -504,7 +569,7 @@ check_par_conditions <- function(nCores){
         ##
         cl <- .setup_par_cluster(vlist=c(".perform_single_NMF_run"))
         ##
-        nmf_result_list <- parallel::clusterApplyLB(cl = cl, seq_len(nRuns), 
+        nmf_result_list <- parallel::clusterApplyLB(cl = cl, seq_len(nRuns),
                             function(i) {
                                 .perform_single_NMF_run(
                                 X = X[,new_ord[[i]]], kVal = kVal,
@@ -514,7 +579,7 @@ check_par_conditions <- function(nCores){
         ##
     } else{
         ## In serial
-        nmf_result_list <- lapply(seq_len(nRuns), 
+        nmf_result_list <- lapply(seq_len(nRuns),
                             function(i) {
                                 .perform_single_NMF_run(
                                 X = X[,new_ord[[i]]], kVal = kVal,
@@ -577,7 +642,7 @@ check_par_conditions <- function(nCores){
     best_K <- as.numeric(averages[idx_best, "rel_var"])
     if(parsimony){
         ## Return the value of K using the one SE rule
-        se_rule_threshold <- averages[idx_best, "q2_vals"] - 
+        se_rule_threshold <- averages[idx_best, "q2_vals"] -
             averages[idx_best, "SE"]
         best_K_by_se_rule <- averages[
             which(unlist(averages["q2_vals"]) > se_rule_threshold), "rel_var"]
@@ -637,10 +702,10 @@ check_names_params <- function(x){
 # @importFrom stats sd
 .get_q2_threshold_by_K <- function(model_selectK) {
     ##
-    mean_by_K <- .get_q2_aggregates_chosen_var(model_selectK, 
+    mean_by_K <- .get_q2_aggregates_chosen_var(model_selectK,
                                 model_selectK$k_vals,
                                 base::mean)
-    sd_by_K <- .get_q2_aggregates_chosen_var(model_selectK, 
+    sd_by_K <- .get_q2_aggregates_chosen_var(model_selectK,
                                 model_selectK$k_vals,
                                 stats::sd)
     se_by_K <- sd_by_K / sqrt(nrow(sd_by_K))

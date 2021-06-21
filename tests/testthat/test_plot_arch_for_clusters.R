@@ -1,4 +1,12 @@
-context("Test plotting architectures")
+context("Test plotting architectures/helper functions")
+
+
+test_that("xtick vals are properly set", {
+
+    expect_equal(set_xtick_labels(pos_lab = -10:5, xt_freq = 5),
+                 list(breaks = c(1,6,11,16), labels = c(-10, -5, 0, 5)))
+
+})
 
 # test_that("Given samples matrix object is matrix", {
 #   testSamplesMat <- rnorm(10000) # err

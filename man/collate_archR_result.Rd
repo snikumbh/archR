@@ -13,6 +13,7 @@ collate_archR_result(
   regularize = FALSE,
   topn = 50,
   collate = TRUE,
+  return_order = FALSE,
   flags = list(debugFlag = FALSE, verboseFlag = TRUE),
   ...
 )
@@ -20,71 +21,77 @@ collate_archR_result(
 \arguments{
 \item{result}{The archR result object.}
 
-\item{iter}{Specify clusters at which iteration of archR are to be 
+\item{iter}{Specify clusters at which iteration of archR are to be
 reordered/collated. Default is the last iteration of the archR result object.}
 
 \item{clust_method}{Specify 'hc' for hierarchical clustering. Currently, only
 hierarchical clustering is supported.}
 
-\item{aggl_method}{One of linkage values as specified for hierarchical 
+\item{aggl_method}{One of linkage values as specified for hierarchical
 clustering with \code{\link[stats]{hclust}}. Default is 'ward.D'.}
 
-\item{dist_method}{Distance measure to be used with hierarchical clustering. 
-Available options are "euclid" (default), "cor" for correlation, "cosangle" 
-for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see 
+\item{dist_method}{Distance measure to be used with hierarchical clustering.
+Available options are "euclid" (default), "cor" for correlation, "cosangle"
+for cosine angle, "modNW" for modified Needleman-Wunsch similarity (see
 \code{\link[TFBSTools]{PFMSimilarity}}).}
 
-\item{regularize}{Logical. Specify TRUE if regularization is to be performed 
+\item{regularize}{Logical. Specify TRUE if regularization is to be performed
 before comparison. Default is FALSE. Also see argument 'topN'.}
 
-\item{topn}{Use only the top N dimensions of each basis vector for 
-comparing them. Note that since each basis vector has 4L or 16L (mono- or 
-dinucleotides) dimensions, each dimension is a combination of nucleotide and 
-its position in the sequence. This argument selects the top N dimensions of 
+\item{topn}{Use only the top N dimensions of each basis vector for
+comparing them. Note that since each basis vector has 4L or 16L (mono- or
+dinucleotides) dimensions, each dimension is a combination of nucleotide and
+its position in the sequence. This argument selects the top N dimensions of
 the basis vector. This is ignored when argument 'regularize' is FALSE.}
 
-\item{collate}{Logical. Specify TRUE if collation using 
-hierarchical agglomerative clustering is to be performed, otherwise FALSE. 
-This argument is used by archR internally to obtain the ordering instead of 
-collated clusters.}
+\item{collate}{Logical. Specify TRUE if collation using
+hierarchical agglomerative clustering is to be performed, otherwise FALSE.}
 
-\item{flags}{Pass the flags object similar to the flags in configuration 
+\item{return_order}{Logical. Use this argument when you want hierarchical
+clustering to be performed but not collation of clusters. Therefore,
+setting return_order to TRUE will return the hierarchical clustering
+object itself. This enables custom downstream processing/analysis.}
+
+\item{flags}{Pass the flags object similar to the flags in configuration
 of the archR result object.}
 
 \item{...}{ignored}
 }
 \value{
-When `collate` is TRUE, a list with the following elements is 
+When `collate` is TRUE, a list with the following elements is
 returned:
 \describe{
-\item{basisVectorsCLust}{A list storing collation information of the 
+\item{basisVectorsCLust}{A list storing collation information of the
 basis vectors, i.e, IDs of basis vectors that were collated into one.}
 \item{clusters}{A list of sequences in each collated cluster.}
-\item{seqClustLabels}{Cluster labels for all sequences according to the 
+\item{seqClustLabels}{Cluster labels for all sequences according to the
 collated clustering.}
 }
 
-When 'collate' is FALSE, 
-it returns the already existing basis vectors, each as singleton clusters. 
-The sequence cluster labels and sequence clusters are also handled 
+When 'collate' is FALSE,
+it returns the already existing basis vectors, each as singleton clusters.
+The sequence cluster labels and sequence clusters are also handled
 accordingly. All are available as part of the same list as the earlier case.
+
+When 'return_order' is set to TRUE, the hierarchical clustering result is
+returned instead.
 }
 \description{
 We use hierarchical clustering for reordering/collating raw
 clusters from archR's given iteration.
 }
 \examples{
-res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+res <- readRDS(system.file("extdata", "example_archRresult.rds",
          package = "archR", mustWork = TRUE))
 
 # While the default settings for collation use Euclidean distance and
 # ward.D agglomeration, one can choose to use different settings, say,
-# correlation distance and complete linkage, and also regularizing to use 
+# correlation distance and complete linkage, and also regularizing to use
 # only top 50 dimensions (nucleotide-positions combinations)
-collated_res <- collate_archR_result(result = res, iter = 2, 
-                        aggl_method = "complete", dist_method = "cor", 
+collated_res <- collate_archR_result(result = res, iter = 2,
+                        aggl_method = "complete", dist_method = "cor",
                         regularize = TRUE, topn = 50)
-                        
+
 names(collated_res)
 
 }

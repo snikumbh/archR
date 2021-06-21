@@ -572,7 +572,8 @@ archR_set_config <- function(inner_chunk_size = 500,
                 cli::cli_alert_info(c("Adjusting for overfitting, ",
                                     "fetched {best_k} cluster{?s}"))
                 stopifnot(best_k == ncol(featuresMatrix))
-                stopifnot(best_k == length(unique(clusterMembershipsForSamples)))
+                stopifnot(best_k ==
+                            length(unique(clusterMembershipsForSamples)))
                 if(best_k == 1){
                     stopifnot(unique(clusterMembershipsForSamples) == 1)
                 }
@@ -814,13 +815,13 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     }
     if(length(set_ocollation) < total_itr){
         stop("Expecting length of set_ocollation to be same as total_itr. ",
-               " Found ", total_itr, " and ", length(set_ocollation),
-             call. = TRUE)
+            " Found ", total_itr, " and ", length(set_ocollation),
+            call. = TRUE)
     }
     if(length(set_ocollation) > total_itr){
         set_ocollation <- set_ocollation[seq(1,total_itr)]
         cli::cli_alert_info(c("Changing length of 'set_ocollation' to ",
-                              "same as that of total_itr"))
+                            "same as that of total_itr"))
     }
 
     # if(length(set_parsimony) < total_itr){

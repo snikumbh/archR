@@ -23,42 +23,42 @@ archR(
 \item{config}{archR configuration object as returned by
 \code{\link{archR_set_config}}. This is a required argument.}
 
-\item{seqs_ohe_mat}{A matrix of one-hot encoded sequences with sequences 
+\item{seqs_ohe_mat}{A matrix of one-hot encoded sequences with sequences
 along columns. This is a required argument.}
 
-\item{seqs_raw}{A \code{\link[Biostrings]{DNAStringSet}} object. The FASTA 
+\item{seqs_raw}{A \code{\link[Biostrings]{DNAStringSet}} object. The FASTA
 sequences as a DNAStringSet object. This argument required argument.}
 
 \item{seqs_pos}{Vector. Specify the tick labels for sequence positions.
 Default is NULL.}
 
-\item{total_itr}{Numeric. Specify the number of iterations to perform. This 
+\item{total_itr}{Numeric. Specify the number of iterations to perform. This
 should be greater than zero. Default is NULL.}
 
-\item{set_parsimony}{Logical vector. A logical vector of length `total_itr` 
-specifying if model selection by cross-validation should prefer parsimonious 
-solutions. Not required when stability-based model selection is chosen. TRUE 
+\item{set_parsimony}{Logical vector. A logical vector of length `total_itr`
+specifying if model selection by cross-validation should prefer parsimonious
+solutions. Not required when stability-based model selection is chosen. TRUE
 denotes parsimony is followed, FALSE otherwise.}
 
-\item{set_ocollation}{Logical vector. A logical vector of length `total_itr` 
-specifying for every iteration of archR if collation of clusters from 
-outer chunks should be performed. TRUE denotes clusters are collated, 
+\item{set_ocollation}{Logical vector. A logical vector of length `total_itr`
+specifying for every iteration of archR if collation of clusters from
+outer chunks should be performed. TRUE denotes clusters are collated,
 FALSE otherwise.}
 
 \item{fresh}{Logical. Specify if this is (not) a fresh run. Because
 archR enables checkpointing, it is possible to perform additional iterations
-upon clusters from an existing archR result (or a checkpoint) object. 
+upon clusters from an existing archR result (or a checkpoint) object.
 See 'use_oc' argument. For example, when processing a set of FASTA sequences,
-if an earlier call to archR performed two iterations, and now you wish to 
-perform a third, the arguments `fresh` and `use_oc` can be used. Simply set 
-`fresh` to FALSE and assign the sequence clusters from iteration two from 
-the earlier result to `use_oc`. As of v0.1.3, with this setting, archR 
-returns a new result object as if the additional iteration performed is the 
+if an earlier call to archR performed two iterations, and now you wish to
+perform a third, the arguments `fresh` and `use_oc` can be used. Simply set
+`fresh` to FALSE and assign the sequence clusters from iteration two from
+the earlier result to `use_oc`. As of v0.1.3, with this setting, archR
+returns a new result object as if the additional iteration performed is the
 only iteration.}
 
-\item{use_oc}{List. Clusters to be further processed with archR. These can 
-be from a previous archR result (in which case use 
-\code{\link{get_seqs_clust_list}} function), or simply clusters from any 
+\item{use_oc}{List. Clusters to be further processed with archR. These can
+be from a previous archR result (in which case use
+\code{\link{get_seqs_clust_list}} function), or simply clusters from any
 other method.
 Warning: This has not been rigorously tested yet (v0.1.3).}
 
@@ -71,26 +71,26 @@ is returned, and no plots or checkpoints or result is written to disk.}
 \value{
 A nested list of elements as follows:
 \describe{
-\item{seqsClustLabels}{A list with cluster labels for all sequences per 
+\item{seqsClustLabels}{A list with cluster labels for all sequences per
 iteration of archR. The cluster labels as stored as characters.}
 
-\item{clustBasisVectors}{A list with information on NMF basis vectors per 
-iteration of archR. Per iteration, there are two variables `nBasisVectors` 
+\item{clustBasisVectors}{A list with information on NMF basis vectors per
+iteration of archR. Per iteration, there are two variables `nBasisVectors`
 storing the number of basis vectors after model selection,
-and `basisVectors`, a matrix storing the basis vectors themselves. 
-Dimensions of the `basisVectors` matrix are 4*L x nBasisVectors 
+and `basisVectors`, a matrix storing the basis vectors themselves.
+Dimensions of the `basisVectors` matrix are 4*L x nBasisVectors
 (mononucleotide case) or 16*L x nBasisVectors (dinucleotide case).}
- 
-\item{clustSol}{The clustering solution obtained upon processing the raw 
-clusters from the last iteration of archR's result. This is handled 
+
+\item{clustSol}{The clustering solution obtained upon processing the raw
+clusters from the last iteration of archR's result. This is handled
 internally by the function \code{\link{collate_archR_result}} using the
-default setting of Euclidean distance and ward.D linkage hierarchical 
+default setting of Euclidean distance and ward.D linkage hierarchical
 clustering.}
- 
+
 \item{rawSeqs}{The input sequences as a DNAStringSet object.}
 
-\item{timeInfo}{Stores the time taken (in minutes) for processing each 
-iteration. This element is added only if `time` flag is set to TRUE in 
+\item{timeInfo}{Stores the time taken (in minutes) for processing each
+iteration. This element is added only if `time` flag is set to TRUE in
 config.}
 
 \item{config}{The configuration used for processing.}
@@ -135,14 +135,14 @@ functions.
 
 \examples{
 
-fname <- system.file("extdata", "example_data.fa", 
+fname <- system.file("extdata", "example_data.fa",
                         package = "archR", mustWork = TRUE)
 
 # Specifying 'dinuc' generates dinucleotide features
 inputSeqsMat <- archR::prepare_data_from_FASTA(fasta_fname = fname,
     sinuc_or_dinuc = "dinuc")
 
-inputSeqsRaw <- archR::prepare_data_from_FASTA(fasta_fname = fname, 
+inputSeqsRaw <- archR::prepare_data_from_FASTA(fasta_fname = fname,
     raw_seq = TRUE)
 
 # Set archR configuration
@@ -159,7 +159,7 @@ archRconfig <- archR::archR_set_config(
         plot = FALSE)
 )
 
-# Run archR 
+# Run archR
 archRresult <- archR::archR(config = archRconfig,
                           seqs_ohe_mat = inputSeqsMat,
                           seqs_raw = inputSeqsRaw,
@@ -167,5 +167,5 @@ archRresult <- archR::archR(config = archRconfig,
                           total_itr = 2,
                           set_ocollation = c(TRUE, FALSE))
 
- 
+
 }

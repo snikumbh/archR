@@ -241,7 +241,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 intClustFactors <- cbind(intClustFactors, tempClustFactors)
                 ##
                 ## Manage collated cluster assignments
-                collatedClustAssignments <- .collate_clusters2(
+                collatedClustAssignments <- collate_clusters(
                                 globFactorsClustering, globClustAssignments)
                 ## Collect number of clusters for each outer chunk
                 nClustEachOC[outerChunkIdx] <- length(collatedClustAssignments)
@@ -311,11 +311,11 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                 intClustFactorsClusteringEucCom, intClustFactors)
             ## Manage cluster assignments
             ## Call the hierarchical clustering version of collate_clusters
-            ## This is named .collate_clusters2
+            ## This is named collate_clusters
 
             nxtOuterChunksColl <-
-                .collate_clusters2(intClustFactorsClusteringEucCom,
-                                    nxtOuterChunksColl, dbg)
+                collate_clusters(intClustFactorsClusteringEucCom,
+                                    nxtOuterChunksColl)
 
             ## Updating cluster labels for sequences can be done later after
             ## the clusters have been rearranged. But we need this for
@@ -371,11 +371,11 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
 
     decisionToCollate <- decisionToCollate(clustFactors, dbg=dbg)
     setMinClustersFinal <- keepMinClusters(set_ocollation, temp_res,
-                                           totOuterChunksColl =
-                                               totOuterChunksColl, dbg = dbg,
-                                           nClustEachIC = nClustEachIC,
-                                           test_itr = test_itr -1,
-                                           stage="Final")
+                                            totOuterChunksColl =
+                                                totOuterChunksColl, dbg = dbg,
+                                            nClustEachIC = nClustEachIC,
+                                            test_itr = test_itr -1,
+                                            stage="Final")
     ##
     temp_res_reord <- collate_archR_result(temp_res,
                                     iter = total_itr,

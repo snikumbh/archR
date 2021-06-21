@@ -213,7 +213,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     # print(unique(new_mem_labs))
 
     stopifnot((length(unique(old_mem)) - length(has_overfit))
-              == length(new_mem_labs))
+                == length(new_mem_labs))
     if(length(new_mem_labs) == 1) stopifnot(unique(new_mem_labs) == 1)
     ##
     new_mem
@@ -519,35 +519,38 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## =============================================================================
 
 
-## @title Collate clusters from hierarchical clustering
-##
-## @param clustList A list object giving indices of factors in each cluster
-## @param globClustAssignments A list of cluster assignments
-##
-## @return collatedClustAssignments A list
-.collate_clusters2 <- function(clustList, globClAssign, dbg = FALSE) {
-    if (is.null(clustList)) {
+#' @title Collate sequence IDs from an existing clustering according to a new,
+#' given clustering
+#'
+#' @param clustering A list giving clustering of factors, i.e., the indices of
+#'  factors in each cluster
+#' @param orig_clust_assign  A list of sequence IDs in existing clusters.
+#'
+#' @return A list with sequence IDs collated by the specified clustering
+#' @export
+collate_clusters <- function(clustering, orig_clust_assign) {
+    if (is.null(clustering)) {
         ## When/if factor clustering is not performed, the
-        ## globClustAssingments variable is directly assigned
-        return(globClAssign)
+        ## orig_clust_assign variable is directly assigned
+        return(orig_clust_assign)
     }else{
-        .msg_pstr("=== This is what I got ===", flg=dbg)
-        .msg_pstr(.msg_print(globClAssign), flg=dbg)
-        .assert_archR_globClustAssignments(globClAssign)
+        # .msg_pstr("=== This is what I got ===", flg=dbg)
+        # .msg_pstr(.msg_print(orig_clust_assign), flg=dbg)
+        .assert_archR_globClustAssignments(orig_clust_assign)
         ##
-        nClusters <- length(clustList)
-        clustSizes <- unlist(lapply(clustList, length))
+        nClusters <- length(clustering)
+        clustSizes <- unlist(lapply(clustering, length))
         ##
         collClAssign <- vector("list", nClusters)
         for(clustIdx in seq_along(collClAssign)){
-            temp <- unlist(lapply(clustList[[clustIdx]], function(x){
-                globClAssign[[x]]
+            temp <- unlist(lapply(clustering[[clustIdx]], function(x){
+                orig_clust_assign[[x]]
             }))
-            .msg_pstr("=== INFO ===", .msg_print(clustList[[clustIdx]]),
-                    "Size:", length(temp), flg=dbg)
+            # .msg_pstr("=== INFO ===", .msg_print(clustering[[clustIdx]]),
+            #         "Size:", length(temp), flg=dbg)
             collClAssign[[clustIdx]] <- temp
         }
-        .msg_pstr("=== I am returning ===", .msg_print(collClAssign), flg=dbg)
+        # .msg_pstr("=== I am returning ===", .msg_print(collClAssign), flg=dbg)
         ##
         return(collClAssign)
     }
@@ -1117,8 +1120,11 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #'
 #' @param collate Logical. Specify TRUE if collation using
 #' hierarchical agglomerative clustering is to be performed, otherwise FALSE.
-#' This argument is used by archR internally to obtain the ordering instead of
-#' collated clusters.
+#'
+#' @param return_order Logical. Use this argument when you want hierarchical
+#'  clustering to be performed but not collation of clusters. Therefore,
+#'  setting return_order to TRUE will return the hierarchical clustering
+#'  object itself. This enables custom downstream processing/analysis.
 #'
 #' @param flags Pass the flags object similar to the flags in configuration
 #' of the archR result object.
@@ -1139,6 +1145,9 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #' it returns the already existing basis vectors, each as singleton clusters.
 #' The sequence cluster labels and sequence clusters are also handled
 #' accordingly. All are available as part of the same list as the earlier case.
+#'
+#' When 'return_order' is set to TRUE, the hierarchical clustering result is
+#' returned instead.
 #'
 #' @examples
 #' res <- readRDS(system.file("extdata", "example_archRresult.rds",
@@ -1162,13 +1171,12 @@ collate_archR_result <- function(result,
                             clust_method = "hc", aggl_method = "ward.D",
                             dist_method = "euclid", regularize = FALSE,
                             topn = 50, collate = TRUE, return_order = FALSE,
-                            flags = list(debugFlag = FALSE,
-                                         verboseFlag = TRUE),
+                            flags = list(debugFlag = FALSE, verboseFlag = TRUE),
                             ...) {
     ##
     dbg <- flags$debugFlag
     vrbs <- flags$verboseFlag
-    .msg_pstr("Collating clusters", flg=dbg)
+
     stopifnot(iter > 0)
     basisMat <- get_clBasVec_m(result, iter=iter)
     clust_lab <- get_seqClLab(result, iter=iter)
@@ -1190,6 +1198,7 @@ collate_archR_result <- function(result,
     parentChunks <- .get_parent_chunks(clust_lab, clust_lab_pre, iter, dbg)
     ##
     if(collate){
+        .msg_pstr("Collating clusters", flg=dbg)
         # TODO: resolve how to setup appropriate minCLusters here
         # useMinClusters <- keepMinClusters(set_ocollation, temp_res,
         #                                   totOuterChunksColl =
@@ -1212,24 +1221,25 @@ collate_archR_result <- function(result,
         .msg_pstr(.msg_print(factorsClustering), flg=dbg)
     }
     if(return_order){
+        .msg_pstr("Reordering clusters", flg=dbg)
         ## Do not collate just reorder, but prepare the return object
         nFactors <- get_clBasVec_k(result, iter)
         factorsClustering <- vector("list", nFactors)
         factorsClustering <- lapply(seq_len(nFactors), function(x){x})
         temp <- .handle_clustering_of_factors(basisMat,
-                                              clustMethod = clust_method,
-                                              linkage = aggl_method,
-                                              distMethod = dist_method,
-                                              returnOrder = return_order,
-                                              flags = flags,
-                                              parentChunks = parentChunks, ...)
+                                        clustMethod = clust_method,
+                                        linkage = aggl_method,
+                                        distMethod = dist_method,
+                                        returnOrder = return_order,
+                                        flags = flags,
+                                        parentChunks = parentChunks, ...)
         .msg_pstr("No collation of clusters, returning order:", flg=dbg)
         .msg_pstr(.msg_print(factorsClustering), flg=dbg)
         return(temp)
     }
     ##
     seqClusters <- get_seqs_clust_list(clust_lab)
-    clusters <- .collate_clusters2(factorsClustering, seqClusters)
+    clusters <- collate_clusters(factorsClustering, seqClusters)
     clustLabels <- .update_cluster_labels(oldSeqsClustLabels = clust_lab,
                                 collatedClustAssignments = clusters)
 

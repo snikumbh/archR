@@ -15,27 +15,27 @@ plot_ggseqlogo_of_seqs(
 )
 }
 \arguments{
-\item{seqs}{Collection of sequences as a 
+\item{seqs}{Collection of sequences as a
 \code{\link[Biostrings]{DNAStringSet}} object.}
 
 \item{pos_lab}{Labels for sequence positions, should be of same
-length as that of the sequences. Default value is NULL, when the 
+length as that of the sequences. Default value is NULL, when the
 positions are labeled from 1 to the length of the sequences.}
 
 \item{xt_freq}{Specify the frequency of the x-axis ticks.}
 
-\item{method}{Specify either 'bits' for information content or 
+\item{method}{Specify either 'bits' for information content or
 'prob' for probability.}
 
 \item{title}{The title for the plot. Deafult is NULL.}
 
-\item{bits_yax}{Specify 'full' if the information content y-axis limits 
-should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts 
-the y-axis limits according to the maximum information content of the 
+\item{bits_yax}{Specify 'full' if the information content y-axis limits
+should be 0-2 or 'auto' for a suitable limit. The 'auto' setting adjusts
+the y-axis limits according to the maximum information content of the
 sequence logo. Default is 'full'.}
 
-\item{fixed_coord}{Specify TRUE if the aspect ratio of the plot should be 
-fixed, FALSE otherwise. Default is TRUE. When `method` argument is set to 
+\item{fixed_coord}{Specify TRUE if the aspect ratio of the plot should be
+fixed, FALSE otherwise. Default is TRUE. When `method` argument is set to
 'bits', ratio is 4, when 'prob', ratio is 6.}
 }
 \value{
@@ -46,7 +46,7 @@ A wrapper to ggseqlogo plotting. Given a collection of
 sequences, this function plots the sequence logo.
 }
 \examples{
-res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+res <- readRDS(system.file("extdata", "example_archRresult.rds",
          package = "archR", mustWork = TRUE))
 
 # Default, using information content on y-axis
@@ -54,15 +54,15 @@ pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=3),
                              pos_lab = seq_len(100), title = NULL,
                              fixed_coord = TRUE)
 pl
-                             
+
 # Using probability instead of information content
 pl <- plot_ggseqlogo_of_seqs(seqs = seqs_str(res, iter=1, cl=3),
-                             pos_lab = seq_len(100), title = "", 
+                             pos_lab = seq_len(100), title = "",
                              method = "prob", fixed_coord = TRUE)
 pl
-                             
+
 }
 \seealso{
-\code{\link{plot_arch_for_clusters}} for obtaining multiple 
+\code{\link{plot_arch_for_clusters}} for obtaining multiple
 sequence logo plots as a list.
 }

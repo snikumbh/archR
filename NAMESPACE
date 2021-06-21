@@ -3,6 +3,7 @@
 export(archR)
 export(archR_set_config)
 export(collate_archR_result)
+export(collate_clusters)
 export(get_clBasVec)
 export(get_clBasVec_k)
 export(get_clBasVec_m)

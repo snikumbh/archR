@@ -24,10 +24,10 @@ viz_seqs_acgt_mat_from_seqs(
 Default: Sequence positions are labeled from 1 to the length of the
 sequences.}
 
-\item{xt_freq}{The x-axis tick frequency. Expects a positive integer less 
+\item{xt_freq}{The x-axis tick frequency. Expects a positive integer less
 than the length of the sequences. Default is 5.}
 
-\item{yt_freq}{The y-axis tick frequency. Expects a positive integer less 
+\item{yt_freq}{The y-axis tick frequency. Expects a positive integer less
 than number of sequences. Default is 100 or.}
 
 \item{col}{A vector of four colors used for the DNA bases A, C, G, and T (in
@@ -41,7 +41,7 @@ plot to disk.}
 \item{f_width}{Specify the width for the plot. This depends on the length of
 sequences.}
 
-\item{f_height}{Specify the height for the plot. This depends on the number 
+\item{f_height}{Specify the height for the plot. This depends on the number
 of sequences.}
 
 \item{f_units}{Specify the units in which the height and width are given.}
@@ -55,10 +55,10 @@ matrix.
 }
 \examples{
 
-res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+res <- readRDS(system.file("extdata", "example_archRresult.rds",
          package = "archR", mustWork = TRUE))
 
-# Image matrix of sequences in the input order 
+# Image matrix of sequences in the input order
 viz_seqs_acgt_mat_from_seqs(seqs = seqs_str(res))
 
 # Image matrix of sequences ordered by the clustering from archR
