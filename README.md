@@ -81,7 +81,7 @@ archRresult <- archR::archR(config = archRconfig,
                                seqs_ohe_mat = inputSeqsMat,
                                seqs_raw = inputSeqsRaw,
                                seqs_pos = positions,
-                               threshold_itr = 2)
+                               total_itr = 2)
 
 ```
 
