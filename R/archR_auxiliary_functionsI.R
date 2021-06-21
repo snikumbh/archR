@@ -168,10 +168,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
             setdiff( unique(clustMemberships), seq_len(nClusters))))
     }
 
-    # if(all(!is.na(c(iChunkIdx, oDir, test_itr, oChunkIdx)))){
-    # .debug_samplesMat_plotting(samplesMatrix, clustMemberships, iChunkIdx,
-    #     oDir, test_itr, oChunkIdx)
-    # }
     return(clustMemberships)
 }
 ## =============================================================================
@@ -191,26 +187,17 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
         new_mem[which(old_mem == i)] <- toassign
     }
     names(new_mem) <- NULL
-    # print("New memberships")
-    # print(new_mem)
+
     ## At this point new memberships for samples can contain clust ids
     ## such 1, 4 and 5 because 2 and 3 are overfit. (i.e. they are not
     ## consecutive). We need to get them to be consecutive
-    # print("adjusting new memberships")
     new_mem_elem <- sort(unique(new_mem))
     for(i in seq_along(new_mem_elem)){
         new_mem[new_mem == new_mem_elem[i]] <- i
     }
     ##
-    # print(new_mem)
-    # print("has_overfit")
-    # print(has_overfit)
-    # print(old_mem)
-    # print(unique(old_mem))
 
     new_mem_labs <- unique(new_mem)
-    # print(new_mem)
-    # print(unique(new_mem_labs))
 
     stopifnot((length(unique(old_mem)) - length(has_overfit))
                 == length(new_mem_labs))
@@ -237,13 +224,9 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     len_clusts <- unlist(lapply(seq_len(ncol(samplesMat)), function(x){
         length(which(clustMemberships == x))
         }))
-    # print("Len_Clusts: ")
-    # print(len_clusts)
-
 
     out_cl_idx_size <- which(len_clusts <= sizeThreshold)
-    # print("Already outlier overfit by size")
-    # print(out_cl_idx_size)
+
     qual_cl_idx <- which(len_clusts < minSeqs & len_clusts > sizeThreshold)
 
     ## Update:
@@ -258,27 +241,20 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     out_cl_idx <- out_cl_idx_size
 
     if(length(qual_cl_idx) > 0){
-        # print("Other Qualifying clust ids:")
-        # print(qual_cl_idx)
         out_cl_idx_other <- .compare_clusters(samplesMat, clustMemberships,
                                         qual_cl_idx, zscore_thresh = 5)
         out_cl_idx <- unique(union(out_cl_idx_other, out_cl_idx_size))
-        # print("Among qualified ones:")
-        # print(out_cl_idx)
     }
 
     ## Account for when all available clusters qualify to be checked for
     ## overfitting cases
     if(length(out_cl_idx) == length(len_clusts)){
-        print("Adjusted for all clusters' qualification")
         out_cl_idx <- setdiff(out_cl_idx, 1)
-        print(out_cl_idx)
     }
-    # print("After possible all-qualification")
-    # print(out_cl_idx)
+
     if(length(out_cl_idx) > 0) return(out_cl_idx)
     ##
-    # print("None")
+
     return(intersect(1,2))
 
 }
@@ -311,18 +287,15 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     ##      -- near others? outlier
     ##
     check_these <- setdiff(out_clust_range, out_clust_iqr)
-    # print("OUT_BY_RANGE")
-    # print(out_clust_range)
-    # print("OUT_BY_IQR")
-    # print(out_clust_iqr)
-    # print("CHECK THESE")
-    # print(check_these)
     if(length(check_these) > 0){
         out_clust_range <- .add_check_range_outliers(check_these,
             clustwise_matlist)
     }
     ##
     out_clust_size <- NULL
+    ## This is commented and out_clust_size is set NULL because this is
+    ## already handled above. See detect_overfitting/sizeThreshold
+    ##
     # left_out <- setdiff(qual_cl_idx, union(out_clust_range, out_clust_iqr))
     # if(length(left_out) > 0){
     #     out_clust_size <- .compare_size(clustwise_matlist, qual_cl_idx)
@@ -334,8 +307,6 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 ## =============================================================================
 
 .add_check_range_outliers <- function(check_these, clustwise_matlist){
-    # print("Additional checks for:")
-    # print(check_these)
     ## get boxplot.stats
     all_stats_max <- lapply(clustwise_matlist, function(x){
         tempx <- lapply(seq_len(ncol(x)), function(y){
@@ -353,158 +324,101 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
     })
 
     #####
-    # print("MIDPOINTS")
-    # print(all_stats_midpoints)
     all_stats_midpoint_nl <- unlist(all_stats_midpoints)
-
     #####
     out_cl_idx <- NULL
     for(i in check_these){
         ## use midpoints to compare locations of boxes
-        # print("Attention")
-        # print(all_stats_midpoints[[i]][i])
         check_midpoint <- all_stats_midpoints[[i]][i]
         distWithMax <- abs(check_midpoint - all_stats_max[[i]][i])
         distWithMedianMidpoints <- check_midpoint -
             stats::median(all_stats_midpoint_nl)
-        # print("distances")
-        # print(c(distWithMax, distWithMedianMidpoints))
+
         if(distWithMax > distWithMedianMidpoints){
             ## outlier
-            # print(paste(i, "-- IS an overfitted outlier"))
             out_cl_idx <- c(out_cl_idx, i)
         }else{
-            # print(paste(i, "-- IS NOT an overfitted outlier"))
+            # do nothing
         }
     }
     return(out_cl_idx)
 }
+## =============================================================================
 
 ## Discard clusters with length smaller than 10 sequences
 ## This func is called when IQR and range fail to identify any outliers
 ## In which case if the IQRs are all zeros (or very small), that is sure shot
 ##  overfitting occurrence
 .compare_size <- function(clustwise_matlist, qual_cl_idx, threshold = 0.01){
-    # print("Comparing by SIZE")
-    # print(dim(clustwise_matlist[[1]]))
+
     all_iqr <- lapply(clustwise_matlist, function(x){
         ## get column-wise IQRs
         matrixStats::colIQRs(x)
     })
-    # print(length(all_iqr))
+
     ## detect if all IQRs for a cluster are 0
     if_all_zeros <- unlist(lapply(all_iqr, function(x){
         ifelse(all(!(x > threshold)), TRUE, FALSE)
         ## enter here if all zeros is detected
     }))
-    # print("Any all ZEROES:")
-    # print(if_all_zeros)
+
 
     ## Alternatively, simply check the number of samples in this cluster,
     ## if < 10, discard.
-
+    ## -- This is already handled in a function hierarchical above this func.
+    ##    See detect_overfitting/sizeThreshold
 
     out_cl_idx <- intersect(which(if_all_zeros), qual_cl_idx)
-    # print("Overfit clust id detected by SIZE: ")
-    # print(out_cl_idx)
-    # print("Comparing by SIZE ends")
     return(out_cl_idx)
 }
+## =============================================================================
 
 ## return indices of outliers by comparing IQRs
 .compare_iqr <- function(clustwise_matlist, qual_cl_idx, zscore_thresh = 5){
-    # print("Comparing by IQR")
+
     ncl <- ncol(clustwise_matlist[[1]])
-    # print(dim(clustwise_matlist[[1]]))
+
     all_iqr <- lapply(clustwise_matlist, function(x){
         ## get column-wise IQRs
         matrixStats::colIQRs(x)
     })
-    ## PRINTING
-    # print("ALL IQRs -- for comparing")
     all_iqr_vec <- unlist(all_iqr)
-    # print(all_iqr_vec)
     ##
     all_iqr_mad <- stats::mad(all_iqr_vec)
-    # print("MAD of all IQRs")
-    # print(all_iqr_mad)
     iqr_zscore <- (all_iqr_vec - stats::median(all_iqr_vec))/all_iqr_mad
-    # print("ZScores")
-    # print(iqr_zscore)
+    ##
     out_idx <- which(iqr_zscore > zscore_thresh)
     if(length(out_idx) > 0){
-        # print(paste("*** OVERFITTING ID (among all):", out_idx," ***"))
         clust_id <- ceiling(out_idx / ncl)
-        # print("Overfit clust id detected by IQR: ")
-        # print(clust_id)
-        # print("Overfit clust id being returned: ")
-        # print(intersect(clust_id, qual_cl_idx))
         return(intersect(clust_id, qual_cl_idx))
     }else{
-        # print("No outliers with IQRs")
+        # do nothing
     }
-    # print("Comparing by IQR ends")
     return(NULL)
 }
+## =============================================================================
 
 ## return indices of outliers by comparing ranges
 .compare_range <- function(clustwise_matlist, qual_cl_idx, zscore_thresh = 5){
-    # print("Comparing by RANGE")
 
     ncl <- ncol(clustwise_matlist[[1]])
     all_range <- lapply(clustwise_matlist, function(x){
         apply(apply(as.matrix(x), MARGIN = 2, range), MARGIN = 2, diff)
     })
     all_range_vec <- unlist(all_range)
-    # print(all_range_vec)
+    ##
     all_range_mad <- stats::mad(all_range_vec)
-    # print("MAD of all Ranges")
-    # print(all_range_mad)
     range_zscore <- (all_range_vec - stats::median(all_range_vec))/all_range_mad
-    # print("ZScores")
-    # print(range_zscore)
+    ##
     out_idx <- which(range_zscore > zscore_thresh)
     if(length(out_idx) > 0){
-        # print(paste("*** OVERFITTING ID (among all):", out_idx," ***"))
         clust_id <- ceiling(out_idx / ncl)
-        # print("Overfit clust id detected by RANGE: ")
-        # print(clust_id)
-        # print("Overfit clust id being returned: ")
-        # print(intersect(clust_id, qual_cl_idx))
         return(intersect(clust_id, qual_cl_idx))
     }else{
-        # print("No outliers with Ranges")
+        # do nothing
     }
-    # print("Comparing by RANGE ends")
-
     return(NULL)
 }
-
-# ## Delete this function after testing
-# .debug_samplesMat_plotting <- function(samplesMat, clustMemberships,
-#                                 iChunkIdx, oDir, test_itr, oChunkIdx){
-#     # put factors along columns
-#     samplesMat <- t(samplesMat)
-#     #
-#     sam_df <- as.data.frame(samplesMat)
-#     sam_df$clust <- clustMemberships
-#     sam_df <- tidyr::pivot_longer(sam_df,
-#                       cols = paste0("V", seq(ncol(samplesMat))),
-#                       names_to = "Factors")
-#
-#     pl <- ggpubr::ggboxplot(sam_df, x = "Factors", y = "value",
-#                 facet.by = "clust",
-#                 add = c("mean"), add.params = list(color="blue"),
-#                 title = paste0("Iteration: ", test_itr,
-#                     "; Outer Chunk: ", oChunkIdx,
-#                     "; Inner Chunk: ", iChunkIdx
-#                 ))
-#     fname <- file.path(oDir, paste0(test_itr, "_",
-#                                     oChunkIdx, "_",
-#                                     iChunkIdx, "_samarth_trial.png"))
-#     ggsave(fname, pl, device = "png")
-#     ####
-# }
 ## =============================================================================
 
 .assign_samples_to_clusters <- function(clusterMembershipsVec, nClusters,
