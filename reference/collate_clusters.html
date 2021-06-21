@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • archR</title>
+<title>Collate sequence IDs from an existing clustering according to a new,
+given clustering — collate_clusters • archR</title>
 
 
 <!-- jquery -->
@@ -39,7 +40,10 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Collate sequence IDs from an existing clustering according to a new,
+given clustering — collate_clusters" />
+<meta property="og:description" content="Collate sequence IDs from an existing clustering according to a new,
+given clustering" />
 
 
 
@@ -68,7 +72,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -126,18 +130,42 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Collate sequence IDs from an existing clustering according to a new,
+given clustering</h1>
+    <small class="dont-index">Source: <a href='https://github.com/snikumbh/archR/blob/master/R/archR_auxiliary_functionsI.R'><code>R/archR_auxiliary_functionsI.R</code></a></small>
+    <div class="hidden name"><code>collate_clusters.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="archR.html">Example usage of _archR_ on simulated DNA sequences</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>Collate sequence IDs from an existing clustering according to a new,
+given clustering</p>
     </div>
+
+    <pre class="usage"><span class='fu'>collate_clusters</span><span class='op'>(</span><span class='va'>clustering</span>, <span class='va'>orig_clust_assign</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>clustering</th>
+      <td><p>A list giving clustering of factors, i.e., the indices of
+factors in each cluster</p></td>
+    </tr>
+    <tr>
+      <th>orig_clust_assign</th>
+      <td><p>A list of sequence IDs in existing clusters.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list with sequence IDs collated by the specified clustering</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

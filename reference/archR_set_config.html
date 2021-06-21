@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -141,7 +141,6 @@
   k_min <span class='op'>=</span> <span class='fl'>1</span>,
   k_max <span class='op'>=</span> <span class='fl'>20</span>,
   mod_sel_type <span class='op'>=</span> <span class='st'>"stability"</span>,
-  tol <span class='op'>=</span> <span class='fl'>10</span><span class='op'>^</span><span class='op'>-</span><span class='fl'>3</span>,
   bound <span class='op'>=</span> <span class='fl'>10</span><span class='op'>^</span><span class='op'>-</span><span class='fl'>8</span>,
   cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
   parallelize <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -174,16 +173,10 @@ for number of NMF basis vectors. Default is 20.</p></td>
     </tr>
     <tr>
       <th>mod_sel_type</th>
-      <td><p>Character. Specify the model selection strategy to 
-be used. Default is 'stability'. Another option is 'cv', short for 
-cross-validation. Warning: The cross-validation approach can be time 
+      <td><p>Character. Specify the model selection strategy to
+be used. Default is 'stability'. Another option is 'cv', short for
+cross-validation. Warning: The cross-validation approach can be time
 consuming and computationally expensive than the stability-based approach.</p></td>
-    </tr>
-    <tr>
-      <th>tol</th>
-      <td><p>Numeric. Specify the tolerance value as criterion for choosing the
-most appropriate number of NMF factors. Default is 1e-03. Current, this is
-ignored.</p></td>
     </tr>
     <tr>
       <th>bound</th>
@@ -192,18 +185,18 @@ the most appropriate number of NMF factors. Default is 1e-08.</p></td>
     </tr>
     <tr>
       <th>cv_folds</th>
-      <td><p>Numeric. Specify the number of cross-validation folds used 
-for model selection. Only used when mod_sel_type is set to 'cv'. Default 
+      <td><p>Numeric. Specify the number of cross-validation folds used
+for model selection. Only used when mod_sel_type is set to 'cv'. Default
 value is 5.</p></td>
     </tr>
     <tr>
       <th>parallelize</th>
       <td><p>Logical. Specify whether to parallelize the procedure.
-Note that running archR serially can be time consuming. See `n_cores`. 
-Consider parallelizing with at least 2 or 4 cores. If Slurm is available, 
+Note that running archR serially can be time consuming. See `n_cores`.
+Consider parallelizing with at least 2 or 4 cores. If Slurm is available,
 archR's graphical user interface, accessed with <code><a href='run_archR_UI.html'>run_archR_UI</a></code>,
-enables providing all input data, setting archR configuration, and running 
-archR directly by submitting/monitoring slurm jobs through the user 
+enables providing all input data, setting archR configuration, and running
+archR directly by submitting/monitoring slurm jobs through the user
 interface.</p></td>
     </tr>
     <tr>
@@ -214,7 +207,7 @@ to TRUE. If `parallelize` is FALSE, nCores is ignored.</p></td>
     <tr>
       <th>n_iterations</th>
       <td><p>Numeric. Specify the number of bootstrapped iterations
-to be performed with NMF. Default value is 100. When using cross-validation 
+to be performed with NMF. Default value is 100. When using cross-validation
 more than 100 (upto 500) iterations may be needed.</p></td>
     </tr>
     <tr>
@@ -232,10 +225,10 @@ processed. Default is 25.</p></td>
     </tr>
     <tr>
       <th>checkpointing</th>
-      <td><p>Logical. Specify whether to write intermediate 
-checkpoints to disk as RDS files. Checkpoints and the final result are 
-saved to disk provided the `o_dir` argument is set in <code><a href='archR.html'>archR</a></code>. 
-When `o_dir` argument is not provided or NULL, this is ignored. 
+      <td><p>Logical. Specify whether to write intermediate
+checkpoints to disk as RDS files. Checkpoints and the final result are
+saved to disk provided the `o_dir` argument is set in <code><a href='archR.html'>archR</a></code>.
+When `o_dir` argument is not provided or NULL, this is ignored.
 Default is TRUE.</p></td>
     </tr>
     <tr>
@@ -264,7 +257,6 @@ Default is TRUE.</p></td>
     k_min <span class='op'>=</span> <span class='fl'>1</span>,
     k_max <span class='op'>=</span> <span class='fl'>20</span>,
     mod_sel_type <span class='op'>=</span> <span class='st'>"stability"</span>,
-    tol <span class='op'>=</span> <span class='fl'>10</span><span class='op'>^</span><span class='op'>-</span><span class='fl'>4</span>,
     bound <span class='op'>=</span> <span class='fl'>10</span><span class='op'>^</span><span class='op'>-</span><span class='fl'>8</span>,
     flags <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>debug <span class='op'>=</span> <span class='cn'>FALSE</span>, time <span class='op'>=</span> <span class='cn'>TRUE</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
         plot <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>

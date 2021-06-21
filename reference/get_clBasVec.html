@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -159,21 +159,21 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with two elements `nBasisVectors` (integer) and 
+    <p>A list with two elements `nBasisVectors` (integer) and
 `basisVectors` (matrix).</p>
 <p>The number of basis vectors (integer).</p>
-<p>The basis vectors' matrix with features along the rows of the 
+<p>The basis vectors' matrix with features along the rows of the
 matrix.</p>
 <p>A character vector denoting the cluster IDs for each sequence.</p>
     <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
 
     
 <ul>
-<li><p><code>get_clBasVec_k</code>: Get the number of basis vectors (clusters) 
+<li><p><code>get_clBasVec_k</code>: Get the number of basis vectors (clusters)
 at the  selected iteration.</p></li>
-<li><p><code>get_clBasVec_m</code>: The basis vectors matrix at the selected 
+<li><p><code>get_clBasVec_m</code>: The basis vectors matrix at the selected
 iteration. Note that eatures along rows.</p></li>
-<li><p><code>get_seqClLab</code>: Get the cluster IDs for each sequence. Note that 
+<li><p><code>get_seqClLab</code>: Get the cluster IDs for each sequence. Note that
 order of sequences here is as per the input.</p></li>
 </ul>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -181,7 +181,7 @@ order of sequences here is as per the input.</p></li>
     <div class='dont-index'><p><code><a href='seqs_str.html'>seqs_str</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"example_archRresult.rds"</span>, 
+    <pre class="examples"><div class='input'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"example_archRresult.rds"</span>,
          package <span class='op'>=</span> <span class='st'>"archR"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='va'>k</span> <span class='op'>&lt;-</span> <span class='fu'>get_clBasVec_k</span><span class='op'>(</span>res<span class='op'>=</span><span class='va'>res</span>, iter<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
@@ -190,7 +190,7 @@ order of sequences here is as per the input.</p></li>
 
 <span class='co'>## cluster labels of sequences from final clustering</span>
 <span class='va'>scLab</span> <span class='op'>&lt;-</span> <span class='fu'>get_seqClLab</span><span class='op'>(</span>res<span class='op'>=</span><span class='va'>res</span>, iter<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
-  
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
