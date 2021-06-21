@@ -1,4 +1,16 @@
 
+# archR 0.1.7
+
+## New features
+* Accounting and correcting for over-fitting improves clusters/architectures' 
+quality
+* Improved messages
+* (User-facing) New function collate_clusters
+
+## Breaking changes
+* (User-facing) tolerance no longer an argument in archR_set_configuration.
+
+
 # archR 0.1.6
 
 ## New features
