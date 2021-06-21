@@ -4,6 +4,7 @@
 <!-- badges: start -->
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![DOI](https://zenodo.org/badge/188449833.svg)](https://zenodo.org/badge/latestdoi/188449833)
 [![Build status](https://travis-ci.org/snikumbh/archR.svg?branch=master)](https://travis-ci.org/snikumbh/archR)
 [![Codecov test coverage](https://codecov.io/gh/snikumbh/archR/branch/master/graph/badge.svg)](https://codecov.io/gh/snikumbh/archR?branch=master)
 [![R build status](https://github.com/snikumbh/archR/workflows/R-CMD-check/badge.svg)](https://github.com/snikumbh/archR/actions)
