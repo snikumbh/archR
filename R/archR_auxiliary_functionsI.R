@@ -458,7 +458,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 #' set.seed(123)
 #' n <- 7; nn <- 100
 #' orig_clust_labels <- ceiling(n * runif(nn))
-#' orig_clust_list <- archR::get_seqs_clust_list(orig_clust_labels)
+#' orig_clust <- archR::get_seqs_clust_list(orig_clust_labels)
 #'
 #' to_clust <- list(c(1,4), c(2,3,5), c(6,7))
 #'
@@ -661,6 +661,9 @@ collate_clusters <- function(to_clust, orig_clust) {
     ##
     gfDisMat <- .compute_factor_distances(globFactorsMat, distMethod)
     if(clustMethod == "hc"){
+        if(distMethod == "euclid") use_threshold = 3
+        if(distMethod == "cor") use_threshold = 0.75
+
         as_dist_mat <- stats::as.dist(gfDisMat)
         temp_hclust <- stats::hclust(as_dist_mat, method = linkage)
         ord <- temp_hclust$order
@@ -679,6 +682,7 @@ collate_clusters <- function(to_clust, orig_clust) {
                             hcObj = temp_hclust, distMat = as_dist_mat,
                             hStep = 0.05, parentChunks = parentChunks,
                             minClusters = minClusters,
+                            distThreshold = use_threshold,
                             verbose = flags$debugFlag, ...)
         }
 
@@ -1075,8 +1079,8 @@ fetch_cutree_by_hc_order <- function(clust_list, cutree_res = NULL, hcorder){
     clust_list <- lapply(seq_along(unique(cut_result)),
         function(x) which(cut_result == x))
     ## if clustering is just for the sake of it, reject it
-    clust_list <- .detect_just_for_sake_clust(cheight_idx, clust_list,
-                                                vrbs=verbose)
+    # clust_list <- .detect_just_for_sake_clust(cheight_idx, clust_list,
+    #                                             vrbs=verbose)
     clust_list
 }
 ## =============================================================================
