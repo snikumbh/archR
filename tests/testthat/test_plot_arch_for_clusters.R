@@ -8,6 +8,25 @@ test_that("xtick vals are properly set", {
 
 })
 
+test_that("plot_arch_for_clusters works", {
+
+    fname <- system.file("extdata", "example_data.fa",
+                         package = "archR",
+                         mustWork = TRUE)
+    seq_raw <- suppressMessages(archR::prepare_data_from_FASTA(fname,
+                                                        raw_seq = TRUE))
+
+    ## Collect all sequences of clust1
+    clust1_idx <- which(unlist(lapply(names(seq_raw), function(x){
+        temp <- unlist(strsplit(x, split = "_"))[3] == "clust1"
+        temp
+    })))
+    ##
+    p1 <- archR::plot_arch_for_clusters(seqs = seq_raw,
+                clust_list = list(clust1_idx), pos_lab = 1:100, show = FALSE)
+    vdiffr::expect_doppelganger("plot_arch_for_clusters example", p1)
+})
+
 # test_that("Given samples matrix object is matrix", {
 #   testSamplesMat <- rnorm(10000) # err
 #   testFeaturesMat <- matrix(rnorm(10000), nrow = 200)

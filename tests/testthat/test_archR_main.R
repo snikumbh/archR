@@ -1,7 +1,7 @@
 context("archR main functionality")
 library(archR)
 
-test_that("archR (stability) works when timeFlag is FALSE", {
+test_that("archR (stability) works when timeFlag is FALSE/checkpointing", {
     ## Make toy objects and data
     fname <- system.file("extdata", "example_data.fa",
                                       package = "archR",
@@ -35,8 +35,20 @@ test_that("archR (stability) works when timeFlag is FALSE", {
                                 o_dir = "temp_test")
     ##
     expect_equal_to_reference(archRresult, "archRresult_stability_check_timeFalse.rds")
-    chkpoint <- readRDS("temp_test/archRresult_checkpoint1.rds")
-    unlink("temp_test", recursive = TRUE)
+
+    temp <- list.dirs(".")
+    temp <- unlist(lapply(temp, basename))
+    temp_l <- lapply(temp, function(x){unlist(strsplit(x, split="_"))})
+    recent <- suppressWarnings(unlist(lapply(temp_l, function(x){
+        foo <- tail(x, 1)
+        foo <- ifelse(length(foo) == 1, as.numeric(foo), NA)
+        foo
+        })))
+    recent <- tail(recent, 1)
+    recent <- ifelse(is.na(recent), "temp_test", paste0("temp_test_", recent))
+    rds_fname <- file.path(recent, "archRresult_checkpoint1.rds")
+    chkpoint <- readRDS(rds_fname)
+    unlink(recent, recursive = TRUE)
     expect_equal_to_reference(chkpoint, "archRresult_checkpoint1.rds")
 
     ##
@@ -85,42 +97,44 @@ test_that("archR (stability) works when plot==TRUE, o_dir is NULL", {
 
 
 
-# test_that("archR (cv) works when timeFlag is FALSE", {
-#     ## Make toy objects and data
-#     fname <- system.file("extdata", "example_data.fa",
-#                                     package = "archR",
-#                                     mustWork = TRUE)
-#
-#
-#
-#     tssSeqs_sinuc <-
-#         suppressMessages(archR::prepare_data_from_FASTA(fname))
-#     tssSeqsRaw <-
-#         suppressMessages(archR::prepare_data_from_FASTA(fname,
-#                             raw_seq = TRUE))
-#
-#     nSeqs <- ncol(tssSeqs_sinuc)
-#     positions <- seq(1,100)
-#
-#     useFlags <- list(debug = FALSE,
-#                      verbose = TRUE,
-#                      plot = FALSE,
-#                      time = FALSE)
-#     toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
-#                                        k_min = 2, k_max = 20, parallelize = TRUE,
-#                                        mod_sel_type = "cv",
-#                                        n_iterations = 10,
-#                                        n_cores = 2,
-#                                        flags = useFlags)
-#     ## Test cross-validation-based model selection. This needs to parallel as TRUE.
-#     # skip_on_travis()
-#     set.seed(1234)
-#     archRresult <- suppressMessages(archR::archR(toyConfig, seqs_raw = tssSeqsRaw,
-#                                 seqs_ohe_mat = tssSeqs_sinuc,
-#                                 total_itr = 1, set_ocollation = TRUE,
-#                                 set_parsimony = TRUE))
-#     expect_equal_to_reference(archRresult, "archRresult_cv_check_timeFalse.rds")
-# })
+test_that("archR (cv) works when timeFlag is FALSE", {
+    ## Make toy objects and data
+    fname <- system.file("extdata", "example_data.fa",
+                                    package = "archR",
+                                    mustWork = TRUE)
+
+
+
+    tssSeqs_sinuc <-
+        suppressMessages(archR::prepare_data_from_FASTA(fname))
+    tssSeqsRaw <-
+        suppressMessages(archR::prepare_data_from_FASTA(fname,
+                            raw_seq = TRUE))
+
+    nSeqs <- ncol(tssSeqs_sinuc)
+    positions <- seq(1,100)
+
+    useFlags <- list(debug = TRUE,
+                     verbose = TRUE,
+                     plot = FALSE,
+                     time = FALSE)
+    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+                                       k_min = 2, k_max = 20, parallelize = TRUE,
+                                       mod_sel_type = "cv",
+                                       n_iterations = 10,
+                                       n_cores = 2,
+                                       flags = useFlags)
+    ## Test cross-validation-based model selection. This needs to parallel as TRUE.
+    # skip_on_travis()
+    set.seed(1234)
+    archRresult <- #suppressMessages(
+        archR::archR(toyConfig, seqs_raw = tssSeqsRaw,
+                                seqs_ohe_mat = tssSeqs_sinuc,
+                                total_itr = 1, set_ocollation = TRUE,
+                                set_parsimony = TRUE)
+        # )
+    expect_equal_to_reference(archRresult, "archRresult_cv_check_timeFalse.rds")
+})
 
 
 
