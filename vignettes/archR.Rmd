@@ -70,7 +70,10 @@ Further details to follow.
 _archR_ is currently made available via GitHub, thus, you can use the 
 following procedure for installing _archR_.
 ```{r archR-install, echo=TRUE, eval=FALSE}
-install.packages("remotes")
+
+if (!requireNamespace("remotes", quietly = TRUE)) {
+    install.packages("remotes")   
+}
 remotes::install_github("snikumbh/archR")
  
 ```

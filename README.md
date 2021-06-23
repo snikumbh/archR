@@ -59,19 +59,20 @@ inputSeqsRaw <- archR::prepare_data_from_FASTA(inputFastaFilename,
 
 nSeqs <- length(inputSeqsRaw)
 positions <- seq(1, Biostrings::width(inputSeqsRaw[1]))
-sinuc <- Biostrings::DNA_BASES
 
 # Set archR configuration
 # Most arguments have default values
 archRconfig <- archR::archR_set_config(
         parallelize = TRUE,
-        n_cores = 4,
+        n_cores = 2,
         n_iterations = 100,
         k_min = 1,
         k_max = 20,
         mod_sel_type = "stability",
-        bound = 10^-8,
-        inner_chunk_size = 500,
+        bound = 10^-6,
+        inner_chunk_size = 100,
+	result_aggl = "ward.D",
+	result_dist = "euclid",
         flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
                      plot = FALSE)
         )
@@ -82,7 +83,8 @@ archRresult <- archR::archR(config = archRconfig,
                                seqs_ohe_mat = inputSeqsMat,
                                seqs_raw = inputSeqsRaw,
                                seqs_pos = positions,
-                               total_itr = 2)
+                               total_itr = 2,
+			       set_ocollation = c(TRUE, FALSE))
 
 ```
 
