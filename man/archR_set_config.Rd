@@ -7,7 +7,7 @@
 archR_set_config(
   inner_chunk_size = 500,
   k_min = 1,
-  k_max = 20,
+  k_max = 50,
   mod_sel_type = "stability",
   bound = 10^-8,
   cv_folds = 5,
@@ -17,6 +17,8 @@ archR_set_config(
   alpha_base = 0,
   alpha_pow = 1,
   min_size = 25,
+  result_aggl = "complete",
+  result_dist = "cor",
   checkpointing = TRUE,
   flags = list(debug = FALSE, time = FALSE, verbose = TRUE, plot = FALSE)
 )
@@ -29,7 +31,7 @@ sequences.}
 for number of NMF basis vectors. Default is 1.}
 
 \item{k_max}{Numeric. Specify the maximum of the range of values to be tested
-for number of NMF basis vectors. Default is 20.}
+for number of NMF basis vectors. Default is 50.}
 
 \item{mod_sel_type}{Character. Specify the model selection strategy to
 be used. Default is 'stability'. Another option is 'cv', short for
@@ -44,7 +46,8 @@ for model selection. Only used when mod_sel_type is set to 'cv'. Default
 value is 5.}
 
 \item{parallelize}{Logical. Specify whether to parallelize the procedure.
-Note that running archR serially can be time consuming. See `n_cores`.
+Note that running archR serially can be time consuming, especially when
+using cross-validation for model selection. See `n_cores`.
 Consider parallelizing with at least 2 or 4 cores. If Slurm is available,
 archR's graphical user interface, accessed with \code{\link{run_archR_UI}},
 enables providing all input data, setting archR configuration, and running
@@ -67,13 +70,22 @@ _Warning_: Currently, not used (for future).}
 any cluster/chunk of size less than or equal to it will not be further
 processed. Default is 25.}
 
+\item{result_aggl}{Character. Specify the agglomeration method to be used
+for final result collation with hierarchical clustering. Default is
+'complete' linkage. Possible values are those allowed with \code{\link[stats]{hclust}}. Also see details below.}
+
+\item{result_dist}{Character. Specify the distance method to be used for
+final result collation with hierarchical clustering. Default is 'cor' for
+correlation. Possible values are those allowed with
+\code{\link[stats]{hclust}}. Also see details below.}
+
 \item{checkpointing}{Logical. Specify whether to write intermediate
 checkpoints to disk as RDS files. Checkpoints and the final result are
 saved to disk provided the `o_dir` argument is set in \code{\link{archR}}.
 When `o_dir` argument is not provided or NULL, this is ignored.
 Default is TRUE.}
 
-\item{flags}{List with four Logical elements as detailed.
+\item{flags}{List with four logical elements as detailed.
 \describe{
   \item{debug}{Whether debug information for the run is printed}
   \item{verbose}{Whether verbose information for the run is printed}
@@ -82,10 +94,15 @@ Default is TRUE.}
 }}
 }
 \value{
-a list with all params for archR set
+A list with all params for archR set
 }
 \description{
 This function sets the configuration for `archR`.
+}
+\details{
+Setting suitable values for the following parameters is dependent
+on the data: 'inner_chunk_size', 'k_min', 'k_max', 'mod_sel_type', 'min_size',
+'result_aggl', 'result_dist'.
 }
 \examples{
 # Set archR configuration

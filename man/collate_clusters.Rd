@@ -32,7 +32,7 @@ the resulting three clusters can be achieved with collate clusters
 set.seed(123)
 n <- 7; nn <- 100
 orig_clust_labels <- ceiling(n * runif(nn))
-orig_clust_list <- archR::get_seqs_clust_list(orig_clust_labels)
+orig_clust <- archR::get_seqs_clust_list(orig_clust_labels)
 
 to_clust <- list(c(1,4), c(2,3,5), c(6,7))
 
