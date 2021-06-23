@@ -305,11 +305,11 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
             ## identified by NMF
             intClustFactorsClusteringEucCom <-
                 .handle_clustering_of_factors(regIntClustFactors,
-                                                clustMethod = "hc",
-                                                linkage = "complete",
-                                                distMethod = "cor",
-                                                minClusters = setMinClusters,
-                                                flags = flags)
+                                            clustMethod = "hc",
+                                            linkage = config$result_aggl,
+                                            distMethod = config$result_dist,
+                                            minClusters = setMinClusters,
+                                            flags = flags)
 
             intClustFactors <- .get_factors_from_factor_clustering2(
                 intClustFactorsClusteringEucCom, intClustFactors)
