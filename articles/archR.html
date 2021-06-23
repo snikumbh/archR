@@ -85,7 +85,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2021-06-21</h4>
+            <h4 class="date">2021-06-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -306,18 +306,18 @@
 <span class="co">#&gt; Checking K = 2</span>
 <span class="co">#&gt; Checking K = 3</span>
 <span class="co">#&gt; Checking K = 4</span>
-<span class="co">#&gt; Best K for this subset: 3</span>
+<span class="co">#&gt; ℹ Best K for this chunk: 3</span>
 <span class="co">#&gt; ℹ Adjusting for overfitting, fetched 2 clusters</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Inner chunk 2 of 2 [Size: 100]</span>
 <span class="co">#&gt; Checking K = 2</span>
 <span class="co">#&gt; Checking K = 3</span>
 <span class="co">#&gt; Checking K = 4</span>
-<span class="co">#&gt; Best K for this subset: 3</span>
+<span class="co">#&gt; ℹ Best K for this chunk: 3</span>
 <span class="co">#&gt; ✔ 1 of 1 outer chunk complete</span>
 <span class="co">#&gt; ✔ 1 of 2 iterations complete</span>
-<span class="co">#&gt; → Iteration 1 completed: 35.5s</span>
-<span class="co">#&gt; → Time ellapsed since start: 35.6s</span>
+<span class="co">#&gt; → Iteration 1 completed: 43.1s</span>
+<span class="co">#&gt; → Time ellapsed since start: 43.2s</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 2 of 2 [3 chunks] ─────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
@@ -325,28 +325,28 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Inner chunk 1 of 1 [Size: 50]</span>
 <span class="co">#&gt; Checking K = 2</span>
-<span class="co">#&gt; Best K for this subset: 1</span>
+<span class="co">#&gt; ℹ Best K for this chunk: 1</span>
 <span class="co">#&gt; ✔ 1 of 3 outer chunks complete</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Outer chunk 2 of 3 [Size: 95] ──</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Inner chunk 1 of 1 [Size: 95]</span>
-<span class="co">#&gt; Checking K = 2</span>
-<span class="co">#&gt; Checking K = 3</span>
-<span class="co">#&gt; Best K for this subset: 2</span>
-<span class="co">#&gt; ✔ 2 of 3 outer chunks complete</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Outer chunk 3 of 3 [Size: 55] ──</span>
+<span class="co">#&gt; ── Outer chunk 2 of 3 [Size: 55] ──</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Inner chunk 1 of 1 [Size: 55]</span>
 <span class="co">#&gt; Checking K = 2</span>
 <span class="co">#&gt; Checking K = 3</span>
-<span class="co">#&gt; Best K for this subset: 2</span>
+<span class="co">#&gt; ℹ Best K for this chunk: 2</span>
+<span class="co">#&gt; ✔ 2 of 3 outer chunks complete</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Outer chunk 3 of 3 [Size: 95] ──</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Inner chunk 1 of 1 [Size: 95]</span>
+<span class="co">#&gt; Checking K = 2</span>
+<span class="co">#&gt; Checking K = 3</span>
+<span class="co">#&gt; ℹ Best K for this chunk: 2</span>
 <span class="co">#&gt; ✔ 3 of 3 outer chunks complete</span>
 <span class="co">#&gt; ✔ 2 of 2 iterations complete</span>
-<span class="co">#&gt; → Iteration 2 completed: 33.1s</span>
-<span class="co">#&gt; → Time ellapsed since start: 1m 8.7s</span>
-<span class="co">#&gt; ── archR exiting 1m 8.8s ───────────────────────────────────────────────────────</span></code></pre></div>
+<span class="co">#&gt; → Iteration 2 completed: 40.2s</span>
+<span class="co">#&gt; → Time ellapsed since start: 1m 23.5s</span>
+<span class="co">#&gt; ── archR exiting 1m 23.5s ──────────────────────────────────────────────────────</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
@@ -368,12 +368,12 @@
 <span class="co">#&gt; [1] 1600    5</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">i2_bv</span><span class="op">)</span>
 <span class="co">#&gt;            [,1]       [,2]       [,3]       [,4]       [,5]</span>
-<span class="co">#&gt; [1,] 0.05168607 0.07195463 0.13197330 0.06639917 0.09635006</span>
-<span class="co">#&gt; [2,] 0.02486037 0.08278148 0.11425555 0.08960350 0.02507954</span>
-<span class="co">#&gt; [3,] 0.05076204 0.05024424 0.05881976 0.08960350 0.02507954</span>
-<span class="co">#&gt; [4,] 0.09945618 0.04762930 0.09620334 0.03858696 0.03557924</span>
-<span class="co">#&gt; [5,] 0.07484865 0.09261518 0.15984609 0.06447093 0.04545940</span>
-<span class="co">#&gt; [6,] 0.05051104 0.10413480 0.09968127 0.00000000 0.04606510</span></code></pre></div>
+<span class="co">#&gt; [1,] 0.05168607 0.06638462 0.09627118 0.07195458 0.13197303</span>
+<span class="co">#&gt; [2,] 0.02486037 0.08958292 0.02505844 0.08278143 0.11425532</span>
+<span class="co">#&gt; [3,] 0.05076204 0.08958292 0.02505844 0.05024421 0.05881964</span>
+<span class="co">#&gt; [4,] 0.09945618 0.03857785 0.03555059 0.04762926 0.09620315</span>
+<span class="co">#&gt; [5,] 0.07484865 0.06445717 0.04542092 0.09261511 0.15984577</span>
+<span class="co">#&gt; [6,] 0.05051104 0.00000000 0.04602808 0.10413472 0.09968108</span></code></pre></div>
 <p>The NMF basis vectors can be visualized as a heatmap and/or sequence logo using [<a href="https://snikumbh.github.io/archR/reference/viz_bas_vec_heatmap_seqlogo.html" class="uri">https://snikumbh.github.io/archR/reference/viz_bas_vec_heatmap_seqlogo.html</a>] (viz_bas_vec_heat_seqlogo) function.</p>
 </div>
 <div id="basis-vectors-at-iteration-1" class="section level3">
