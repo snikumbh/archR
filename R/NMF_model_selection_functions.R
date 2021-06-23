@@ -194,7 +194,7 @@ get_n_seeds <- function(n){
 }
 
 
-performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
+performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                             prev_best_K = -1, best_K = 0, prev_df = NULL,
                             param_ranges, kFolds, nIterations,
                             parallelDo = FALSE, set_verbose = 1){
@@ -206,7 +206,8 @@ performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
         if(prev_best_K != best_K && !is.na(this_K) && this_K != 0){
             ##
             grid_search_params <- .grid_srch_par_df(this_K,
-                aBase=param_ranges$alphaBase, aPow=param_ranges$alphaPow,
+                #aBase=param_ranges$alphaBase, aPow=param_ranges$alphaPow,
+                aBase = 0, aPow = 1,
                 kFolds = kFolds, nIter = nIterations)
             ##
             if(parallelDo){
@@ -215,11 +216,12 @@ performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
                             .get_q2_using_py( grid_search_params[i,] )
                         }))
             }else{
-                q2_vals <- unlist(lapply(seq_len(nrow(grid_search_params)),
-                                        function(i) {
-                        .get_q2_using_py_serial( grid_search_params[i,],
-                                                X, cvfolds)
-                                    }))
+                q2_vals <- unlist(
+                    lapply(seq_len(nrow(grid_search_params)),
+                        function(i) {
+                            .get_q2_using_py_serial( grid_search_params[i,],
+                                                X = X, cvfolds = cvfolds)
+                        }))
             }
             ##
             grid_search_results <- as.data.frame(grid_search_params[,
@@ -242,7 +244,7 @@ performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
                         nrow(prev_df), flg=dbg)
         }
     }
-    .msg_pstr("Best K: ", best_K, flg=vrbs)
+    # .msg_pstr("Best K: ", best_K, flg=vrbs)
     returnObject <- list(best_K = best_K, prev_best_K = prev_best_K,
                         return_df = prev_df)
 }
@@ -320,7 +322,7 @@ performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
             ##
             set_verbose <- ifelse(debugFlag, 2, ifelse(verboseFlag, 1, 0))
             if(cgfglinear){
-                .msg_pstr("Coarse-fine grained binary search", flg=vrbs)
+                # .msg_pstr("Coarse-fine grained binary search", flg=vrbs)
                 prev_df <- NULL
                 #go_fine <- FALSE
                 ## when either lo or hi values are best, so we need to perform
@@ -347,7 +349,8 @@ performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
                         prev_df = prev_df,
                         param_ranges,
                         parallelDo = parallelDo,
-                        kFolds, nIterations, set_verbose = set_verbose)
+                        kFolds = kFolds, nIterations = nIterations,
+                        set_verbose = set_verbose)
                     best_K <- searchReturnCoarse$best_K
                     prev_best_K <- searchReturnCoarse$prev_best_K
                     prev_df <- searchReturnCoarse$return_df
@@ -425,15 +428,17 @@ performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
                     }
                 }
                 ## Fine-grained search
-                searchReturnFine <- performSearchForK(
+                searchReturnFine <- performSearchForK( X = X,
+                    cvfolds = cvfolds,
                     startVal = fgIL,
                     endVal = fgOL,
                     step = 1,
                     prev_best_K = -1,
                     best_K = 0,
                     prev_df = NULL,
-                    param_ranges,
-                    kFolds, nIterations, set_verbose = set_verbose)
+                    param_ranges, parallelDo = parallelDo,
+                    kFolds = kFolds, nIterations = nIterations,
+                    set_verbose = set_verbose)
                 best_K <- searchReturnFine$best_K
                 fine_prev_df <- searchReturnFine$return_df
 
@@ -455,14 +460,13 @@ performSearchForK <- function(X, cvfolds , startVal, endVal, step = 1,
                         fgOL <- fgIL
                         .msg_range(fgIL, fgOL, vrbs)
                         searchReturnFine <- performSearchForK(
-                                startVal = fgIL,
-                                endVal = fgOL,
+                                startVal = fgIL, endVal = fgOL,
                                 step = 1,
-                                prev_best_K = -1,
-                                best_K = 0,
+                                prev_best_K = -1, best_K = 0,
                                 prev_df = combined_df,
-                                param_ranges,
-                                kFolds, nIterations, set_verbose)
+                                param_ranges = param_ranges,
+                                kFolds = kFolds, nIterations = nIterations,
+                                set_verbose)
                         # temp_best_K <- searchReturnFine$best_K
                         combined_df <- searchReturnFine$return_df
 

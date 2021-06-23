@@ -488,8 +488,7 @@ archR_set_config <- function(inner_chunk_size = 500,
                     "perhaps, further increasing 'nIterationsUse'\n"),
                 immediate. = TRUE)
     }
-    .msg_pstr("Best K for this subset:", best_k, flg=vrbs)
-
+    cli::cli_alert_info("Best K for this chunk: {best_k}")
 
     ##
     if (best_k >= 1) {
