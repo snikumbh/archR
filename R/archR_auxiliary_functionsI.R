@@ -737,7 +737,30 @@ collate_clusters <- function(clustering, orig_clust_assign) {
 }
 ## =============================================================================
 
-fetch_cutree_by_hc_order <- function(clust_list, hcorder){
+
+# @title Order cutree result by hierarchical clustering order
+#
+# @description Make clusters obtained by cutree to follow the
+# hierarchical clustering order
+#
+# @param cutree_res Result object of cutree
+# @param hcorder The ordering from hierarchical clustering that is accessible
+# in its result object
+#
+# @return A list of clusters, including each clusters' elements, ordered by
+# their appearance in the hierarchical clustering order
+#
+# @examples
+#
+# @export
+fetch_cutree_by_hc_order <- function(clust_list, cutree_res = NULL, hcorder){
+
+    if(!is.null(cutree_res)){
+        names(cutree_res) <- NULL
+        clust_list <- lapply(unique(cutree_res),
+                             function(x){which(cutree_res == x)})
+    }
+
     ## Arrange clusters themselves by the hc_order
     starters <- lapply(clust_list, function(x){x[[1]]})
     starters_pos <- unlist(lapply(unlist(starters), function(x){
@@ -749,7 +772,6 @@ fetch_cutree_by_hc_order <- function(clust_list, hcorder){
     clust_list <- lapply(seq_along(use_idx$ix), function(x){
         clust_list[[use_idx$ix[x]]]
     })
-
 
     # For each ID in list elements, get their position in the hcorder vector
     cl_order_idx <- unlist(lapply(unlist(clust_list), function(x){
@@ -890,7 +912,8 @@ fetch_cutree_by_hc_order <- function(clust_list, hcorder){
         clust_list <- .get_clusts_sil_or_ch(cut_heights, hcObj, distMat,
                         minClusters, use_sil = TRUE, verbose = verbose)
         ##
-        clust_list <- fetch_cutree_by_hc_order(clust_list, hcObj$order)
+        clust_list <- fetch_cutree_by_hc_order(clust_list = clust_list,
+                                               hcorder = hcObj$order)
         ##
         .msg_pstr("#Clusts using sil.vals:", length(clust_list), flg=verbose)
         .msg_pstr(.msg_print(clust_list), flg=verbose)
