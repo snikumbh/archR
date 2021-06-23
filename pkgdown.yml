@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   archR: archR.html
-last_built: 2021-06-23T19:55Z
+last_built: 2021-06-23T23:32Z
 urls:
   reference: http://snikumbh.github.io/archR/reference
   article: http://snikumbh.github.io/archR/articles
