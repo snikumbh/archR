@@ -150,11 +150,11 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' processed. Default is 25.
 #' @param result_aggl Character. Specify the agglomeration method to be used
 #' for final result collation with hierarchical clustering. Default is
-#' 'complete' linkage. Possible values are those allowed with \code{\link{stats::hclust}}. Also see details below.
+#' 'complete' linkage. Possible values are those allowed with \code{\link[stats]{hclust}}. Also see details below.
 #' @param result_dist Character. Specify the distance method to be used for
 #' final result collation with hierarchical clustering. Default is 'cor' for
 #' correlation. Possible values are those allowed with
-#' \code{\link{stats::hclust}}. Also see details below.
+#' \code{\link[stats]{hclust}}. Also see details below.
 #' @param checkpointing Logical. Specify whether to write intermediate
 #' checkpoints to disk as RDS files. Checkpoints and the final result are
 #' saved to disk provided the `o_dir` argument is set in \code{\link{archR}}.
