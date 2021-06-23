@@ -184,7 +184,14 @@ get_n_seeds <- function(n){
     return(sample.int(.Machine$integer.max, size = n, replace = FALSE))
 }
 
-
+# should this be part of main help?
+#  For 'result_aggl' and 'result_dist', it has been observed that
+# agglomeration by 'ward.D' clustering and Euclidean distance work well
+# together while complete linkage works well with 'correlation' as distance.
+# The former works well for architectures that resemble those observed in
+# Drosophila, and the later works well for architectures resembling those in
+# mice.
+#
 performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                             prev_best_K = -1, best_K = 0, prev_df = NULL,
                             param_ranges, kFolds, nIterations,

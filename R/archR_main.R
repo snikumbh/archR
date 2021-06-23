@@ -380,12 +380,13 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                                             nClustEachIC = nClustEachIC,
                                             test_itr = test_itr -1,
                                             stage="Final")
-    ##
+    ## ask the user to set aggl_method and dist_method
+    ## result_aggl and result_dist in config
     temp_res_reord <- collate_archR_result(temp_res,
                                     iter = total_itr,
                                     clust_method = "hc",
-                                    aggl_method = "complete", ## or average?
-                                    dist_method = "cor",
+                                    aggl_method =  config$result_aggl,
+                                    dist_method = config$result_dist,
                                     minClusters = setMinClustersFinal,
                                     regularize = TRUE,
                                     topn = 50,#floor(0.50*length(seqs_pos)),

@@ -118,7 +118,7 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' @param k_min Numeric. Specify the minimum of the range of values to be tested
 #' for number of NMF basis vectors. Default is 1.
 #' @param k_max Numeric. Specify the maximum of the range of values to be tested
-#' for number of NMF basis vectors. Default is 20.
+#' for number of NMF basis vectors. Default is 50.
 #' @param mod_sel_type Character. Specify the model selection strategy to
 #' be used. Default is 'stability'. Another option is 'cv', short for
 #' cross-validation. Warning: The cross-validation approach can be time
@@ -129,7 +129,8 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' for model selection. Only used when mod_sel_type is set to 'cv'. Default
 #' value is 5.
 #' @param parallelize Logical. Specify whether to parallelize the procedure.
-#' Note that running archR serially can be time consuming. See `n_cores`.
+#' Note that running archR serially can be time consuming, especially when
+#' using cross-validation for model selection. See `n_cores`.
 #' Consider parallelizing with at least 2 or 4 cores. If Slurm is available,
 #' archR's graphical user interface, accessed with \code{\link{run_archR_UI}},
 #' enables providing all input data, setting archR configuration, and running
@@ -147,12 +148,19 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' @param min_size Numeric. Specify the minimum number of sequences, such that
 #' any cluster/chunk of size less than or equal to it will not be further
 #' processed. Default is 25.
+#' @param result_aggl Character. Specify the agglomeration method to be used
+#' for final result collation with hierarchical clustering. Default is
+#' 'complete' linkage. Possible values are those allowed with \code{\link{stats::hclust}}. Also see details below.
+#' @param result_dist Character. Specify the distance method to be used for
+#' final result collation with hierarchical clustering. Default is 'cor' for
+#' correlation. Possible values are those allowed with
+#' \code{\link{stats::hclust}}. Also see details below.
 #' @param checkpointing Logical. Specify whether to write intermediate
 #' checkpoints to disk as RDS files. Checkpoints and the final result are
 #' saved to disk provided the `o_dir` argument is set in \code{\link{archR}}.
 #' When `o_dir` argument is not provided or NULL, this is ignored.
 #' Default is TRUE.
-#' @param flags List with four Logical elements as detailed.
+#' @param flags List with four logical elements as detailed.
 #' \describe{
 #'   \item{debug}{Whether debug information for the run is printed}
 #'   \item{verbose}{Whether verbose information for the run is printed}
@@ -160,7 +168,12 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #'   \item{time}{Whether timing information is printed for the run}
 #' }
 #'
-#' @return a list with all params for archR set
+#' @details Setting suitable values for the following parameters is dependent
+#' on the data: 'inner_chunk_size', 'k_min', 'k_max', 'mod_sel_type', 'min_size',
+#' 'result_aggl', 'result_dist'.
+#'
+#'
+#' @return A list with all params for archR set
 #'
 #' @examples
 #' # Set archR configuration
@@ -181,7 +194,7 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' @export
 archR_set_config <- function(inner_chunk_size = 500,
                             k_min = 1,
-                            k_max = 20,
+                            k_max = 50,
                             mod_sel_type = "stability",
                             bound = 10^-8,
                             cv_folds = 5,
@@ -191,6 +204,8 @@ archR_set_config <- function(inner_chunk_size = 500,
                             alpha_base = 0,
                             alpha_pow = 1,
                             min_size = 25,
+                            result_aggl = "complete",
+                            result_dist = "cor",
                             checkpointing = TRUE,
                             flags = list(
                                 debug = FALSE,
@@ -228,6 +243,8 @@ archR_set_config <- function(inner_chunk_size = 500,
                             k_vals = seq(k_min, k_max, by = 1)
                         ),
                         innerChunkSize = inner_chunk_size,
+                        result_aggl = result_aggl,
+                        result_dist = result_dist,
                         checkpointing = checkpointing,
                         minSeqs = min_size,
                         flags = useFlags
