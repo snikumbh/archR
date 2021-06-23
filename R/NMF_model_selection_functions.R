@@ -33,9 +33,6 @@
     ## Reconstruct A, by performing NMF on D
     ## More details in Owen and Perry, Annals of Statistics, 2009
     ##
-    ## no changing of order of sequences in X, instead keep seeds
-    # new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
-    # X <- X[, new_ord]
     ##
     submatrixD <- X[train_rows, train_cols]
     submatrixA <- X[test_rows, test_cols]
@@ -84,9 +81,6 @@
     ## Reconstruct A, by performing NMF on D
     ## More details in Owen and Perry, Annals of Statistics, 2009
     ##
-    ## no changing of order of sequences in X, instead keep seeds
-    # new_ord <- sample(ncol(X), ncol(X), replace = FALSE)
-    # X <- X[, new_ord]
     ##
     submatrixD <- X[train_rows, train_cols]
     submatrixA <- X[test_rows, test_cols]
@@ -114,8 +108,6 @@
 
 .perform_single_NMF_run <- function(X, kVal, alphaVal, seedVal) {
 
-    # new_ord[[iter]] <- sample(ncol(this_mat), ncol(this_mat),
-    #                           #replace = FALSE)
     reticulate::source_python(system.file("python", "perform_nmf.py",
                                         package = "archR",
                                         mustWork = TRUE)
@@ -182,8 +174,7 @@
     ))
     ##
     seed_val_list <- get_n_seeds(n = kFolds*nIter)
-    # seed_val_list <- sample.int(.Machine$integer.max,
-    #     size = kFolds*nIter, replace = FALSE)
+    ##
     grid_search_params[, "seed_val"] <- seed_val_list
     return(grid_search_params)
 }
@@ -238,15 +229,16 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                 best_K <- .get_best_K(new_df)
                 prev_df <- new_df
             }
-            .msg_pstr("Prev best K:", prev_best_K, "Best K:", best_K, "This K:",
-                        this_K, flg=dbg)
-            .msg_pstr("Curr nrows:", nrow(grid_search_results), "Total nrows:",
-                        nrow(prev_df), flg=dbg)
+            .msg_pstr("Prev best K:", prev_best_K,
+                      "Best K:", best_K,
+                      "This K:", this_K, flg=dbg)
+            .msg_pstr("Curr nrows:", nrow(grid_search_results),
+                      "Total nrows:", nrow(prev_df), flg=dbg)
         }
     }
-    # .msg_pstr("Best K: ", best_K, flg=vrbs)
     returnObject <- list(best_K = best_K, prev_best_K = prev_best_K,
                         return_df = prev_df)
+    returnObject
 }
 
 
@@ -314,7 +306,6 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
         #######################
         #### New strategy
         if(returnBestK) {
-            # message("===Cluster ready?===")
             if(parallelDo){
                 cl <- .setup_par_cluster(vlist=
                     c(".get_q2_using_py", ".compute_q2", "X", "cvfolds"))
@@ -444,12 +435,11 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
 
                 combined_df <- rbind(prev_df, fine_prev_df)
                 best_K <- .get_best_K(combined_df, parsimony = askParsimony)
-                # if(set_verbose) print(combined_df)
                 ## Ensure chosen value is not the lower boundary
                 # minKInDF <- min(as.numeric(unlist(combined_df["k_vals"])))
                 kValsInDF <- as.numeric(unlist(combined_df["k_vals"]))
                 if(best_K != 1 && !any((best_K-1) - kValsInDF == 0)){
-                    .msg_pstr("Chosen best value happens to be the lowest.",
+                    .msg_pstr("Chosen best K is lowest in the range tested.",
                         "Making sure...", flg=vrbs)
                     attemptCount <- 1
                     makeSureK <- best_K
@@ -459,21 +449,27 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                         fgIL <- max(best_K - 1*attemptCount, 1)
                         fgOL <- fgIL
                         .msg_range(fgIL, fgOL, vrbs)
-                        searchReturnFine <- performSearchForK(
-                                startVal = fgIL, endVal = fgOL,
+                        searchReturnFine <-
+                            performSearchForK( X = X,
+                                cvfolds = cvfolds,
+                                startVal = fgIL,
+                                endVal = fgOL,
                                 step = 1,
-                                prev_best_K = -1, best_K = 0,
+                                prev_best_K = -1,
+                                best_K = 0,
                                 prev_df = combined_df,
                                 param_ranges = param_ranges,
-                                kFolds = kFolds, nIterations = nIterations,
-                                set_verbose)
+                                parallelDo = parallelDo,
+                                kFolds = kFolds,
+                                nIterations = nIterations,
+                                set_verbose = set_verbose)
                         # temp_best_K <- searchReturnFine$best_K
                         combined_df <- searchReturnFine$return_df
 
                         # combined_df <- rbind(combined_df, fine_prev_df)
                         makeSureK <- .get_best_K(combined_df,
                                                     parsimony = askParsimony)
-                        # if(debugFlag) message("MAKE_SURE_K:", makeSureK)
+
                         attemptCount <- attemptCount + 1
                         # minKInDF <- min(as.numeric(
                         #               unlist(combined_df["k_vals"])))
@@ -488,11 +484,10 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
         }
     # }
     if(best_K == max(param_ranges$k_vals)){
-        warning("best_K: ",
-                best_K , " is already the maximum value for K specified.
-                                Try increasing therange")
+        cli::cli_alert_warning(c("Best K: {best_K} is already the maximum ",
+                                 "value for K specified. Try increasing ",
+                                 "the range"))
     }
-    .msg_pstr("BEST K:", best_K, "\ndone!", flg=dbg)
     ##
     return(best_K)
 }
@@ -510,34 +505,8 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
     parallel::clusterExport(cl = NULL, varlist = vlist,
         envir = parent.frame(n=1))
     # ## ^for pseudo-inverse using function `ginv` (CV-based model selection)
-    # if(is.null(X)){
-    #     print("NULL")
-    #     print(vlist)
-    #     parallel::clusterExport(cl = NULL, varlist = vlist,
-    #                     envir = environment())
-    #
-    # }else{
-    #     print("NotNULL")
-    #     print(vlist)
-    #     parallel::clusterExport(cl = NULL, varlist = vlist,
-    #         envir = parent.frame(n=1))
-    #
-    # }
 
     return(cl)
-
-    #####
-    # ## from cv_model_select_pyNMF2
-    # cl <- parallel::getDefaultCluster()
-    # parallel::clusterEvalQ(cl,
-    #     suppressWarnings(require(MASS, quietly = TRUE)))
-    # # message("===Seems OK===")
-    # ## ^for pseudo-inverse using function `ginv`
-    # parallel::clusterExport(
-    #     cl = NULL,
-    #     varlist = c(".get_q2_using_py", ".compute_q2", "X", "cvfolds"),
-    #     envir = environment()
-    # )
 }
 
 
