@@ -230,10 +230,10 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                 prev_df <- new_df
             }
             .msg_pstr("Prev best K:", prev_best_K,
-                      "Best K:", best_K,
-                      "This K:", this_K, flg=dbg)
+                        "Best K:", best_K,
+                        "This K:", this_K, flg=dbg)
             .msg_pstr("Curr nrows:", nrow(grid_search_results),
-                      "Total nrows:", nrow(prev_df), flg=dbg)
+                        "Total nrows:", nrow(prev_df), flg=dbg)
         }
     }
     returnObject <- list(best_K = best_K, prev_best_K = prev_best_K,
@@ -485,8 +485,8 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
     # }
     if(best_K == max(param_ranges$k_vals)){
         cli::cli_alert_warning(c("Best K: {best_K} is already the maximum ",
-                                 "value for K specified. Try increasing ",
-                                 "the range"))
+                                "value for K specified. Try increasing ",
+                                "the range"))
     }
     ##
     return(best_K)

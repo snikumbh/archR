@@ -434,37 +434,54 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
 
 
 #' @title Collate sequence IDs from an existing clustering according to a new,
-#' given clustering
+#' given clustering of the existing clusters
 #'
-#' @param clustering A list giving clustering of factors, i.e., the indices of
-#'  factors in each cluster
-#' @param orig_clust_assign  A list of sequence IDs in existing clusters.
+#' @description Collate sequences original divided across n clusters into a
+#'  new set of m clusters. These m clusters obtained by clustering the original
+#'  n clusters.
+#' Assume a collection of 100 sequences across seven existing
+#' clusters. These seven clusters are collated to obtain three resulting
+#' clusters. Collating 100 sequences distributed across the seven clusters into
+#' the resulting three clusters can be achieved with collate clusters
+#'
+#' @param to_clust A list giving clustering of factors. In other words this is
+#' the clustering of clusters of sequences given in orig_clust
+#' @param orig_clust  A list of sequence IDs in existing clusters
 #'
 #' @return A list with sequence IDs collated by the specified clustering
 #' @export
-collate_clusters <- function(clustering, orig_clust_assign) {
-    if (is.null(clustering)) {
-        ## When/if factor clustering is not performed, the
-        ## orig_clust_assign variable is directly assigned
-        return(orig_clust_assign)
+#'
+#' @examples
+#'
+#'
+#'
+#' set.seed(123)
+#' n <- 7; nn <- 100
+#' orig_clust_labels <- ceiling(n * runif(nn))
+#' orig_clust_list <- archR::get_seqs_clust_list(orig_clust_labels)
+#'
+#' to_clust <- list(c(1,4), c(2,3,5), c(6,7))
+#'
+#' collate_clusters(to_clust = to_clust, orig_clust = orig_clust)
+#'
+collate_clusters <- function(to_clust, orig_clust) {
+    if (is.null(to_clust)) {
+        ## When/if factor to_clust is not performed, the
+        ## orig_clust variable is directly assigned
+        return(orig_clust)
     }else{
-        # .msg_pstr("=== This is what I got ===", flg=dbg)
-        # .msg_pstr(.msg_print(orig_clust_assign), flg=dbg)
-        .assert_archR_globClustAssignments(orig_clust_assign)
+        .assert_archR_globClustAssignments(orig_clust)
         ##
-        nClusters <- length(clustering)
-        clustSizes <- unlist(lapply(clustering, length))
+        nClusters <- length(to_clust)
+        clustSizes <- unlist(lapply(to_clust, length))
         ##
         collClAssign <- vector("list", nClusters)
         for(clustIdx in seq_along(collClAssign)){
-            temp <- unlist(lapply(clustering[[clustIdx]], function(x){
-                orig_clust_assign[[x]]
+            temp <- unlist(lapply(to_clust[[clustIdx]], function(x){
+                orig_clust[[x]]
             }))
-            # .msg_pstr("=== INFO ===", .msg_print(clustering[[clustIdx]]),
-            #         "Size:", length(temp), flg=dbg)
             collClAssign[[clustIdx]] <- temp
         }
-        # .msg_pstr("=== I am returning ===", .msg_print(collClAssign), flg=dbg)
         ##
         return(collClAssign)
     }
@@ -758,7 +775,7 @@ fetch_cutree_by_hc_order <- function(clust_list, cutree_res = NULL, hcorder){
     if(!is.null(cutree_res)){
         names(cutree_res) <- NULL
         clust_list <- lapply(unique(cutree_res),
-                             function(x){which(cutree_res == x)})
+                                function(x){which(cutree_res == x)})
     }
 
     ## Arrange clusters themselves by the hc_order
@@ -783,7 +800,7 @@ fetch_cutree_by_hc_order <- function(clust_list, cutree_res = NULL, hcorder){
     cl_lens <- unlist(lapply(clust_list, length))
 
     cl_ends <- cumsum(cl_lens)
-    cl_starts <- c(1, 1+cl_ends[1:length(cl_ends)-1])
+    cl_starts <- c(1, 1+cl_ends[seq(length(cl_ends)-1)])
 
     stopifnot(tail(cl_ends, 1) == length(hcorder))
 
@@ -913,7 +930,7 @@ fetch_cutree_by_hc_order <- function(clust_list, cutree_res = NULL, hcorder){
                         minClusters, use_sil = TRUE, verbose = verbose)
         ##
         clust_list <- fetch_cutree_by_hc_order(clust_list = clust_list,
-                                               hcorder = hcObj$order)
+                                                hcorder = hcObj$order)
         ##
         .msg_pstr("#Clusts using sil.vals:", length(clust_list), flg=verbose)
         .msg_pstr(.msg_print(clust_list), flg=verbose)
