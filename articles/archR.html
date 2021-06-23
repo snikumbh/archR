@@ -114,7 +114,10 @@
 <a href="#installation" class="anchor"></a>Installation</h1>
 <p><em>archR</em> is currently made available via GitHub, thus, you can use the following procedure for installing <em>archR</em>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<code class="sourceCode R">
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>   
+<span class="op">}</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"snikumbh/archR"</span><span class="op">)</span>
  </code></pre></div>
 <p>In case of any errors, please consider looking up: <a href="https://github.com/snikumbh/archR">https://github.com/snikumbh/archR</a>. If none of the already noted points with regards to troubleshooting <em>archR</em>’s installation help, please file a <a href="https://github.com/snikumbh/archR/issues/new">new issue</a>.</p>
@@ -319,8 +322,8 @@
 <span class="co">#&gt; ℹ Best K for this chunk: 4</span>
 <span class="co">#&gt; ✔ 1 of 1 outer chunk complete</span>
 <span class="co">#&gt; ✔ 1 of 2 iterations complete</span>
-<span class="co">#&gt; → Iteration 1 completed: 51.3s</span>
-<span class="co">#&gt; → Time ellapsed since start: 51.4s</span>
+<span class="co">#&gt; → Iteration 1 completed: 49.7s</span>
+<span class="co">#&gt; → Time ellapsed since start: 49.8s</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 2 of 2 [4 chunks] ─────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
@@ -353,9 +356,9 @@
 <span class="co">#&gt; ℹ Best K for this chunk: 1</span>
 <span class="co">#&gt; ✔ 4 of 4 outer chunks complete</span>
 <span class="co">#&gt; ✔ 2 of 2 iterations complete</span>
-<span class="co">#&gt; → Iteration 2 completed: 50.4s</span>
-<span class="co">#&gt; → Time ellapsed since start: 1m 41.9s</span>
-<span class="co">#&gt; ── archR exiting 1m 41.9s ──────────────────────────────────────────────────────</span></code></pre></div>
+<span class="co">#&gt; → Iteration 2 completed: 49.1s</span>
+<span class="co">#&gt; → Time ellapsed since start: 1m 38.9s</span>
+<span class="co">#&gt; ── archR exiting 1m 39s ────────────────────────────────────────────────────────</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
