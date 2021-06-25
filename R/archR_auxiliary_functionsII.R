@@ -150,7 +150,8 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' processed. Default is 25.
 #' @param result_aggl Character. Specify the agglomeration method to be used
 #' for final result collation with hierarchical clustering. Default is
-#' 'complete' linkage. Possible values are those allowed with \code{\link[stats]{hclust}}. Also see details below.
+#' 'complete' linkage. Possible values are those allowed with
+#' \code{\link[stats]{hclust}}. Also see details below.
 #' @param result_dist Character. Specify the distance method to be used for
 #' final result collation with hierarchical clustering. Default is 'cor' for
 #' correlation. Possible values are those allowed with
@@ -169,8 +170,8 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' }
 #'
 #' @details Setting suitable values for the following parameters is dependent
-#' on the data: 'inner_chunk_size', 'k_min', 'k_max', 'mod_sel_type', 'min_size',
-#' 'result_aggl', 'result_dist'.
+#' on the data: 'inner_chunk_size', 'k_min', 'k_max', 'mod_sel_type',
+#' 'min_size', 'result_aggl', 'result_dist'.
 #'
 #'
 #' @return A list with all params for archR set
@@ -780,7 +781,7 @@ keepMinClusters <- function(set_ocollation, temp_res, totOuterChunksColl,
 
 
 perform_setup <- function(config, total_itr, o_dir, fresh,
-                        seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony,
+                        seqs_pos, seqs_raw, seqs_ohe_mat,
                         set_ocollation){
     dbg <- config$flags$debugFlag
     vrbs <- config$flags$verboseFlag
@@ -815,27 +816,13 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
     ## Make checks for params in configuration
     .assert_archR_config(config, ncol(seqs_ohe_mat))
     .assert_archR_thresholdIteration(total_itr)
+    .assert_archR_collation(set_ocollation, total_itr)
 
-    ## TODO Checking set_ocollation and set_parsimony can go to assertions
-    if(is.null(set_ocollation)){
-        stop("Please specify an outer chunk collation strategy. Found NULL")
-    }
-    if(length(set_ocollation) < total_itr){
-        stop("Expecting length of set_ocollation to be same as total_itr. ",
-            " Found ", total_itr, " and ", length(set_ocollation),
-            call. = TRUE)
-    }
     if(length(set_ocollation) > total_itr){
         set_ocollation <- set_ocollation[seq(1,total_itr)]
         cli::cli_alert_info(c("Changing length of 'set_ocollation' to ",
-                            "same as that of total_itr"))
+                              "same as that of total_itr"))
     }
-
-    # if(length(set_parsimony) < total_itr){
-    #     set_parsimony <- rep(FALSE, total_itr)
-    #     set_parsimony[length(set_parsimony)] <- TRUE
-    # }
-    ##
 
 
     #### Start cluster only once
@@ -855,14 +842,14 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
         "factor stability")
     cli::cli_alert_info("Model selection by {msg_suffix}")
     if(modSelType == "stability") cli::cli_alert_info("Bound: {bound}")
+    set_parsimony <- NULL
     if(modSelType == "cv"){
-        ## Make the user specify set_parsimony when cv
-        if(is.null(set_parsimony)){
-            stop("Please set parsimony choices per iteration")
-        }
+        ## Specify set_parsimony when cv
+        set_parsimony <- rep(TRUE, total_itr)
     }
 
-    return(list(cl = cl, o_dir = o_dir, seqs_pos = seqs_pos))
+    return(list(cl = cl, o_dir = o_dir, seqs_pos = seqs_pos,
+                set_parsimony = set_parsimony))
 }
 ## =============================================================================
 

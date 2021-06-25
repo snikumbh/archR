@@ -6,7 +6,7 @@ test_that("Matrix has 4 rows", {
   testPwmMat <- matrix(rnorm(100), nrow = 2)
   testPositionLabels <- seq(25)
   expect_error(
-    plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels),
+    suppressWarnings(plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels)),
     paste("Expecting a matrix with 4 rows corresponding to DNA chars",
       "'A', 'C', 'G', 'T'")
   )
@@ -16,7 +16,7 @@ test_that("Given object is matrix", {
   testPwmMat <- rnorm(200) # err
   testPositionLabels <- seq(25)
   expect_error(
-    plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels),
+    suppressWarnings(plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels)),
     "Expecting a matrix with 4 rows"
   )
 })
@@ -25,7 +25,7 @@ test_that("Handling empty matrix", {
   testPwmMat <- matrix()
   testPositionLabels <- seq(25)
   expect_error(
-    plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels),
+    suppressWarnings(plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels)),
     "Empty"
   )
 })
@@ -34,7 +34,7 @@ test_that("Position labels inadequate", {
   testPwmMat <- matrix(rnorm(100), nrow = 4)
   testPositionLabels <- seq(20)
   expect_error(
-    plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels),
+    suppressWarnings(plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels)),
     "Inadequate"
   )
 })
@@ -43,7 +43,7 @@ test_that("Position labels over-abundant", {
   testPwmMat <- matrix(rnorm(100), nrow = 4)
   testPositionLabels <- seq(50)
   expect_error(
-    plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels),
+    suppressWarnings(plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels)),
     "Overabundant"
   )
 })
@@ -58,13 +58,13 @@ test_that("ggseqlogo plotting works", {
   # testPwmMat <- make_sinuc_PWMs(testPwmMat)
   # p1 <- plot_ggseqlogo(testPwmMat, pos_lab = testPositionLabels)
   #
-  res <- readRDS(system.file("extdata", "example_archRresult.rds", 
+  res <- readRDS(system.file("extdata", "example_archRresult.rds",
           package = "archR", mustWork = TRUE))
-  
-  pwm <- archR::make_dinuc_PWMs(get_clBasVec_m(res,iter=1)[,1], 
+
+  pwm <- archR::make_dinuc_PWMs(get_clBasVec_m(res,iter=1)[,1],
                          add_pseudo_counts = FALSE)
-  
-  p1 <- plot_ggseqlogo(pwm_mat = pwm, fixed_coord = TRUE)
+
+  p1 <- suppressWarnings(plot_ggseqlogo(pwm_mat = pwm, fixed_coord = TRUE))
   # test plot
   vdiffr::expect_doppelganger("ggseqlogo plot example", p1)
 })

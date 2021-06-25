@@ -72,7 +72,8 @@ processed. Default is 25.}
 
 \item{result_aggl}{Character. Specify the agglomeration method to be used
 for final result collation with hierarchical clustering. Default is
-'complete' linkage. Possible values are those allowed with \code{\link[stats]{hclust}}. Also see details below.}
+'complete' linkage. Possible values are those allowed with
+\code{\link[stats]{hclust}}. Also see details below.}
 
 \item{result_dist}{Character. Specify the distance method to be used for
 final result collation with hierarchical clustering. Default is 'cor' for
@@ -101,8 +102,8 @@ This function sets the configuration for `archR`.
 }
 \details{
 Setting suitable values for the following parameters is dependent
-on the data: 'inner_chunk_size', 'k_min', 'k_max', 'mod_sel_type', 'min_size',
-'result_aggl', 'result_dist'.
+on the data: 'inner_chunk_size', 'k_min', 'k_max', 'mod_sel_type',
+'min_size', 'result_aggl', 'result_dist'.
 }
 \examples{
 # Set archR configuration

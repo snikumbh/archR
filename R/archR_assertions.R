@@ -254,7 +254,6 @@
 }
 ## =============================================================================
 
-
 ## Function to check properties of paramRanges used for model selection w/ NMF
 ## Expected to be
 ## 1. not NULL
@@ -395,6 +394,19 @@
 
 }
 ## =============================================================================
+
+
+.assert_archR_collation <- function(set_ocollation, total_itr){
+    if(is.null(set_ocollation)){
+        stop("Please specify an outer chunk collation strategy. Found NULL")
+    }
+    if(length(set_ocollation) < total_itr){
+        stop("Expecting length of set_ocollation to be same as total_itr. ",
+             " Found ", total_itr, " and ", length(set_ocollation),
+             call. = TRUE)
+    }
+}
+
 
 
 ## We need to write functions to sanity check the important variables

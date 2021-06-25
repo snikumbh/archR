@@ -34,7 +34,8 @@ test_that("archR (stability) works when timeFlag is FALSE/checkpointing", {
                                 total_itr = 2, set_ocollation = c(TRUE,FALSE),
                                 o_dir = "temp_test")
     ##
-    expect_equal_to_reference(archRresult, "archRresult_stability_check_timeFalse.rds")
+    expect_equal_to_reference(archRresult,
+                              "archRresult_stability_check_timeFalse.rds")
 
     temp <- list.dirs(".")
     temp <- unlist(lapply(temp, basename))
@@ -119,19 +120,19 @@ test_that("archR (cv) works when timeFlag is FALSE", {
                      plot = FALSE,
                      time = FALSE)
     toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
-                                       k_min = 2, k_max = 20, parallelize = TRUE,
-                                       mod_sel_type = "cv",
-                                       n_iterations = 10,
-                                       n_cores = 2,
-                                       flags = useFlags)
-    ## Test cross-validation-based model selection. This needs to parallel as TRUE.
+                                   k_min = 2, k_max = 20, parallelize = TRUE,
+                                   mod_sel_type = "cv",
+                                   n_iterations = 10,
+                                   n_cores = 2,
+                                   flags = useFlags)
+    ## Test cross-validation-based model selection.
+    ## This needs to parallel as TRUE.
     # skip_on_travis()
     set.seed(1234)
     archRresult <- #suppressMessages(
         archR::archR(toyConfig, seqs_raw = tssSeqsRaw,
                                 seqs_ohe_mat = tssSeqs_sinuc,
-                                total_itr = 1, set_ocollation = TRUE,
-                                set_parsimony = TRUE)
+                                total_itr = 1, set_ocollation = TRUE)
         # )
     expect_equal_to_reference(archRresult, "archRresult_cv_check_timeFalse.rds")
 })
@@ -159,11 +160,11 @@ test_that("archR (stability) works when debug & timeFlag is FALSE", {
                      plot = FALSE,
                      time = FALSE)
     toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
-                                       k_min = 1, k_max = 20, parallelize = FALSE,
-                                       mod_sel_type = "stability",
-                                       n_iterations = 50,
-                                       n_cores = NA,
-                                       flags = useFlags)
+                                   k_min = 1, k_max = 20, parallelize = FALSE,
+                                   mod_sel_type = "stability",
+                                   n_iterations = 50,
+                                   n_cores = NA,
+                                   flags = useFlags)
     set.seed(1234)
     archRresult <- #suppressMessages(
         archR::archR(toyConfig, seqs_raw = tssSeqsRaw,
@@ -171,7 +172,8 @@ test_that("archR (stability) works when debug & timeFlag is FALSE", {
                     set_ocollation = TRUE)
         #)
     ##
-    expect_equal_to_reference(archRresult, "archRresult_stability_check_debugTrue.rds")
+    expect_equal_to_reference(archRresult,
+                              "archRresult_stability_check_debugTrue.rds")
     ##
 })
 
@@ -196,8 +198,11 @@ test_that("Handles negative threshold iteration", {
 })
 
 # test_that("Handles negative threshold iteration from archR main", {
-#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, seqs_ohe_mat = tssSeqs_sinuc, total_itr = -1))
-#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw, seqs_ohe_mat = tssSeqs_sinuc, total_itr = -1),
+#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw,
+#     seqs_ohe_mat = tssSeqs_sinuc, total_itr = -1))
+#
+#     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw,
+#     seqs_ohe_mat = tssSeqs_sinuc, total_itr = -1),
 #                  "Expecting threshold iteration to be numeric and > 0")
 # })
 

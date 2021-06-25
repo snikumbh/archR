@@ -22,8 +22,8 @@ test_that("plot_arch_for_clusters works", {
         temp
     })))
     ##
-    p1 <- archR::plot_arch_for_clusters(seqs = seq_raw,
-                clust_list = list(clust1_idx), pos_lab = 1:100, show = FALSE)
+    p1 <- suppressWarnings(archR::plot_arch_for_clusters(seqs = seq_raw,
+                clust_list = list(clust1_idx), pos_lab = 1:100, show = FALSE))
     vdiffr::expect_doppelganger("plot_arch_for_clusters example", p1)
 })
 

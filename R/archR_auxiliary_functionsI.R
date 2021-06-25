@@ -157,7 +157,7 @@ seqs_str <- function(res, iter = NULL, cl = NULL, ord = FALSE){
                                         iChunkIdx = NA, oDir = NA,
                                         test_itr = NA, oChunkIdx = NA) {
     .assert_archR_samplesMatrix(samplesMatrix)
-    nClusters = nrow(samplesMatrix)
+    nClusters <- nrow(samplesMatrix)
     returnClusterAsList <- vector("list", nClusters)
     ## Fetch the cluster memberships for each sample (along the columns)
     clustMemberships <- apply(samplesMatrix, 2, which.max)
@@ -661,8 +661,8 @@ collate_clusters <- function(to_clust, orig_clust) {
     ##
     gfDisMat <- .compute_factor_distances(globFactorsMat, distMethod)
     if(clustMethod == "hc"){
-        if(distMethod == "euclid") use_threshold = 3
-        if(distMethod == "cor") use_threshold = 0.75
+        if(distMethod == "euclid") use_threshold <- 3
+        if(distMethod == "cor") use_threshold <- 0.75
 
         as_dist_mat <- stats::as.dist(gfDisMat)
         temp_hclust <- stats::hclust(as_dist_mat, method = linkage)

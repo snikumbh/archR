@@ -13,10 +13,6 @@
 #' Default is NULL.
 #' @param total_itr Numeric. Specify the number of iterations to perform. This
 #' should be greater than zero. Default is NULL.
-#' @param set_parsimony Logical vector. A logical vector of length `total_itr`
-#' specifying if model selection by cross-validation should prefer parsimonious
-#' solutions. Not required when stability-based model selection is chosen. TRUE
-#' denotes parsimony is followed, FALSE otherwise.
 #' @param set_ocollation Logical vector. A logical vector of length `total_itr`
 #' specifying for every iteration of archR if collation of clusters from
 #' outer chunks should be performed. TRUE denotes clusters are collated,
@@ -114,7 +110,6 @@
 #' @export
 archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
                     total_itr = NULL,
-                    set_parsimony = NULL,
                     set_ocollation = NULL,
                     fresh = TRUE,
                     use_oc = NULL,
@@ -139,11 +134,10 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     cli::cli_rule(left="Setting up")
 
     setup_ans <- perform_setup(config, total_itr, o_dir, fresh,
-                    seqs_pos, seqs_raw, seqs_ohe_mat, set_parsimony,
-                    set_ocollation)
+                    seqs_pos, seqs_raw, seqs_ohe_mat, set_ocollation)
     seqs_pos <- setup_ans$seqs_pos
     o_dir <- setup_ans$o_dir
-
+    set_parsimony <- setup_ans$set_parsimony
 
 
     ##

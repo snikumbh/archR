@@ -12,7 +12,6 @@ archR(
   seqs_raw,
   seqs_pos = NULL,
   total_itr = NULL,
-  set_parsimony = NULL,
   set_ocollation = NULL,
   fresh = TRUE,
   use_oc = NULL,
@@ -34,11 +33,6 @@ Default is NULL.}
 
 \item{total_itr}{Numeric. Specify the number of iterations to perform. This
 should be greater than zero. Default is NULL.}
-
-\item{set_parsimony}{Logical vector. A logical vector of length `total_itr`
-specifying if model selection by cross-validation should prefer parsimonious
-solutions. Not required when stability-based model selection is chosen. TRUE
-denotes parsimony is followed, FALSE otherwise.}
 
 \item{set_ocollation}{Logical vector. A logical vector of length `total_itr`
 specifying for every iteration of archR if collation of clusters from
