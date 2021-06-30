@@ -113,7 +113,7 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #'
 #' @description This function sets the configuration for `archR`.
 #'
-#' @param inner_chunk_size Numeric. Specify the size of the inner chunks of
+#' @param chunk_size Numeric. Specify the size of the inner chunks of
 #' sequences.
 #' @param k_min Numeric. Specify the minimum of the range of values to be tested
 #' for number of NMF basis vectors. Default is 1.
@@ -138,9 +138,9 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' interface.
 #' @param n_cores The number of cores to be used when `parallelize` is set
 #' to TRUE. If `parallelize` is FALSE, nCores is ignored.
-#' @param n_iterations Numeric. Specify the number of bootstrapped iterations
+#' @param n_runs Numeric. Specify the number of bootstrapped runs
 #' to be performed with NMF. Default value is 100. When using cross-validation
-#' more than 100 (upto 500) iterations may be needed.
+#' more than 100 iterations may be needed (upto 500).
 #' @param alpha_base,alpha_pow Specify the base and the power for computing
 #' 'alpha' in performing model selection for NMF. alpha = alpha_base^alpha_pow.
 #' Alpha specifies the regularization for NMF. Default: 0 and 1 respectively.
@@ -179,10 +179,10 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #' @examples
 #' # Set archR configuration
 #' archRconfig <- archR::archR_set_config(
-#'     inner_chunk_size = 100,
+#'     chunk_size = 100,
 #'     parallelize = TRUE,
 #'     n_cores = 2,
-#'     n_iterations = 100,
+#'     n_runs = 100,
 #'     k_min = 1,
 #'     k_max = 20,
 #'     mod_sel_type = "stability",
@@ -193,7 +193,7 @@ plot_all_seqs_logo <- function(seqs_raw, seqs_pos, dpath){
 #'
 #'
 #' @export
-archR_set_config <- function(inner_chunk_size = 500,
+archR_set_config <- function(chunk_size = 500,
                             k_min = 1,
                             k_max = 50,
                             mod_sel_type = "stability",
@@ -201,7 +201,7 @@ archR_set_config <- function(inner_chunk_size = 500,
                             cv_folds = 5,
                             parallelize = FALSE,
                             n_cores = NA,
-                            n_iterations = 500,
+                            n_runs = 500,
                             alpha_base = 0,
                             alpha_pow = 1,
                             min_size = 25,
@@ -237,13 +237,13 @@ archR_set_config <- function(inner_chunk_size = 500,
                         kFolds = cv_folds,
                         parallelize = parallelize,
                         nCoresUse = n_cores,
-                        nIterationsUse = n_iterations,
+                        nRunsUse = n_runs,
                         paramRanges = list(
                             alphaBase = alpha_base,
                             alphaPow = alpha_pow,
                             k_vals = seq(k_min, k_max, by = 1)
                         ),
-                        innerChunkSize = inner_chunk_size,
+                        chunkSize = chunk_size,
                         result_aggl = result_aggl,
                         result_dist = result_dist,
                         checkpointing = checkpointing,
@@ -479,7 +479,7 @@ archR_set_config <- function(inner_chunk_size = 500,
         best_k <- .cv_model_select_pyNMF2(
                 X = this_mat, param_ranges = config$paramRanges,
                 kFolds = config$kFolds, parallelDo = config$parallelize,
-                nCores = config$nCoresUse, nIterations = config$nIterationsUse,
+                nCores = config$nCoresUse, nRuns = config$nRunsUse,
                 verboseFlag = config$flags$verboseFlag,
                 debugFlag = config$flags$debugFlag,
                 returnBestK = TRUE, cgfglinear = cgfglinear,
@@ -493,17 +493,16 @@ archR_set_config <- function(inner_chunk_size = 500,
         best_k <- .stability_model_select_pyNMF2(
             X = this_mat, param_ranges = config$paramRanges,
             parallelDo = config$parallelize, nCores = config$nCoresUse,
-            nIterations = config$nIterationsUse, #tol = config$tol,
-            bound = config$bound, flags = config$flags,
-            returnBestK = TRUE, bootstrap = TRUE
+            nRuns = config$nRunsUse, bound = config$bound,
+            flags = config$flags, returnBestK = TRUE, bootstrap = TRUE
         )
     }
     #########################
     if (best_k == max(config$paramRanges$k_vals)) {
-        warning(c("WARNING: Best K for this subset == 'kMax'. ",
-                    "Consider selecting a larger 'kMax' value, or\n",
-                    "smaller innerChunkSize, or\n",
-                    "perhaps, further increasing 'nIterationsUse'\n"),
+        warning(c("WARNING: Best K for this subset == 'k_max'. ",
+                    "Consider selecting a larger 'k_max' value, or\n",
+                    "smaller chunk_size, or\n",
+                    "perhaps, further increasing 'n_runs'\n"),
                 immediate. = TRUE)
     }
     cli::cli_alert_info("Best K for this chunk: {best_k}")
@@ -513,7 +512,7 @@ archR_set_config <- function(inner_chunk_size = 500,
         ## For fetching sequence clusters from samplesMat
         ## Cluster sequences
         ## New strategy, perform nRuns for bestK and use only the best one
-        nRuns <- config$nIterationsUse
+        nRuns <- config$nRunsUse
         # .msg_pstr("Fetching ", best_k, " clusters", flg=(vrbs || dbg))
 
         featuresMatrixList <- vector("list", nRuns)
@@ -870,7 +869,7 @@ process_innerChunk <- function(test_itr, innerChunksColl, config, lenOC,
         this_seqsMat <-
             seqs_ohe_mat[, innerChunksColl[[innerChunkIdx]]]
         ##
-        chnksz <- config$innerChunkSize
+        chnksz <- config$chunkSize
         cvStep <- ifelse(test_itr == 1 || lenOC > 0.9*chnksz, 10, 5)
         thisNMFResult <- .handle_chunk_w_NMF2(innerChunkIdx,
             innerChunksColl, this_seqsMat,

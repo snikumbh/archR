@@ -194,7 +194,7 @@ get_n_seeds <- function(n){
 #
 performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                             prev_best_K = -1, best_K = 0, prev_df = NULL,
-                            param_ranges, kFolds, nIterations,
+                            param_ranges, kFolds, nRuns,
                             parallelDo = FALSE, set_verbose = 1){
     vrbs <- ifelse(set_verbose == 1, TRUE, FALSE)
     dbg <- ifelse(set_verbose == 2, TRUE, FALSE)
@@ -206,7 +206,7 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
             grid_search_params <- .grid_srch_par_df(this_K,
                 #aBase=param_ranges$alphaBase, aPow=param_ranges$alphaPow,
                 aBase = 0, aPow = 1,
-                kFolds = kFolds, nIter = nIterations)
+                kFolds = kFolds, nIter = nRuns)
             ##
             if(parallelDo){
                 q2_vals <- unlist(parallel::clusterApplyLB(cl = NULL,
@@ -260,7 +260,7 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
 # \code{k}, \code{alphaBase}, and \code{alphaPow}.
 # @param kFolds Numeric The number of cross-validation folds.
 # @param parallelDo Set to \code{1} if you want to parallelize, else \code{0}.
-# @param nIterations Number of iterations for NMF.
+# @param nRuns Number of runs for NMF.
 # @param nCores If \code{parallel} is set to \code{1}
 # @param seed_val The seed to be set.
 # @param set_verbose Default to \code{0} which will not print any messages, or
@@ -277,7 +277,7 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                                     kFolds = 5,
                                     parallelDo = FALSE,
                                     nCores = NA,
-                                    nIterations = 20,
+                                    nRuns = 20,
                                     returnBestK = TRUE,
                                     cgfglinear = TRUE,
                                     coarse_step = 10,
@@ -347,7 +347,7 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                         prev_df = prev_df,
                         param_ranges,
                         parallelDo = parallelDo,
-                        kFolds = kFolds, nIterations = nIterations,
+                        kFolds = kFolds, nRuns = nRuns,
                         set_verbose = set_verbose)
                     best_K <- searchReturnCoarse$best_K
                     prev_best_K <- searchReturnCoarse$prev_best_K
@@ -435,7 +435,7 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                     best_K = 0,
                     prev_df = NULL,
                     param_ranges, parallelDo = parallelDo,
-                    kFolds = kFolds, nIterations = nIterations,
+                    kFolds = kFolds, nRuns = nRuns,
                     set_verbose = set_verbose)
                 best_K <- searchReturnFine$best_K
                 fine_prev_df <- searchReturnFine$return_df
@@ -468,7 +468,7 @@ performSearchForK <- function(X, cvfolds, startVal, endVal, step = 1,
                                 param_ranges = param_ranges,
                                 parallelDo = parallelDo,
                                 kFolds = kFolds,
-                                nIterations = nIterations,
+                                nRuns = nRuns,
                                 set_verbose = set_verbose)
                         # temp_best_K <- searchReturnFine$best_K
                         combined_df <- searchReturnFine$return_df

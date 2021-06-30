@@ -20,11 +20,11 @@ test_that("archR (stability) works when timeFlag is FALSE/checkpointing", {
                      verbose = TRUE,
                      plot = FALSE,
                      time = FALSE)
-    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+    toyConfig <- archR::archR_set_config(chunk_size = 100,
                                         k_min = 1, k_max = 20,
                                         parallelize = FALSE,
                                         mod_sel_type = "stability",
-                                        n_iterations = 50,
+                                        n_runs = 50,
                                         n_cores = NA, checkpointing = TRUE,
                                         flags = useFlags)
     set.seed(1234)
@@ -75,11 +75,11 @@ test_that("archR (stability) works when plot==TRUE, o_dir is NULL", {
         verbose = TRUE,
         plot = TRUE,
         time = FALSE)
-    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+    toyConfig <- archR::archR_set_config(chunk_size = 100,
         k_min = 2, k_max = 20,
         parallelize = FALSE,
         mod_sel_type = "stability",
-        n_iterations = 50,
+        n_runs = 50,
         n_cores = NA,
         flags = useFlags)
     set.seed(1234)
@@ -119,10 +119,10 @@ test_that("archR (cv) works when timeFlag is FALSE", {
                      verbose = TRUE,
                      plot = FALSE,
                      time = FALSE)
-    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+    toyConfig <- archR::archR_set_config(chunk_size = 100,
                                    k_min = 2, k_max = 20, parallelize = TRUE,
                                    mod_sel_type = "cv",
-                                   n_iterations = 10,
+                                   n_runs = 10,
                                    n_cores = 2,
                                    flags = useFlags)
     ## Test cross-validation-based model selection.
@@ -159,10 +159,10 @@ test_that("archR (stability) works when debug & timeFlag is FALSE", {
                      verbose = TRUE,
                      plot = FALSE,
                      time = FALSE)
-    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+    toyConfig <- archR::archR_set_config(chunk_size = 100,
                                    k_min = 1, k_max = 20, parallelize = FALSE,
                                    mod_sel_type = "stability",
-                                   n_iterations = 50,
+                                   n_runs = 50,
                                    n_cores = NA,
                                    flags = useFlags)
     set.seed(1234)
@@ -186,10 +186,10 @@ test_that("Handles negative threshold iteration", {
     # toyResult <- archR(toyConfig, seqs_ohe_mat = tssSeqs, total_itr = -1)
     expect_error(.assert_archR_thresholdIteration(-1),
                  "Expecting number of iterations to be numeric and > 0")
-    toyConfig <- archR::archR_set_config(inner_chunk_size = 100,
+    toyConfig <- archR::archR_set_config(chunk_size = 100,
         k_min = 2, k_max = 20, parallelize = FALSE,
         mod_sel_type = "stability",
-        n_iterations = 50,
+        n_runs = 50,
         n_cores = NA,
         flags = useFlags)
     expect_error(archR(toyConfig, seqs_raw = tssSeqsRaw,
@@ -207,29 +207,29 @@ test_that("Handles negative threshold iteration", {
 # })
 
 
-test_that("Config handles: negative inner_chunk_size", {
-    expect_error(archR_set_config(inner_chunk_size = -500,
+test_that("Config handles: negative chunk_size", {
+    expect_error(archR_set_config(chunk_size = -500,
                                 k_min = 1, k_max = 8, parallelize = TRUE,
-                                cv_folds = 3, n_iterations = 50,
+                                cv_folds = 3, n_runs = 50,
                                 n_cores = 2),
-                "'inner_chunk_size' should be > 0")
+                "'chunk_size' should be > 0")
 })
 
 # This test is now null and void because if the flags variable is NULL,
 # we handle it by assigning the default flag values in set_config func itself
 # test_that("Config handles: NULL flags", {
-#     expect_error(archR_set_config(inner_chunk_size = 500,
+#     expect_error(archR_set_config(chunk_size = 500,
 #                                 k_min = 2, k_max = 8, parallelize = TRUE,
-#                                 cv_folds = 3, n_iterations = 50,
+#                                 cv_folds = 3, n_runs = 50,
 #                                 n_cores = 2,
 #                                 flags = NULL),
 #                  "'flags' are NULL")
 # })
 
 # test_that("Config handles: improper (names in) flags", {
-#     expect_error(archR_set_config(inner_chunk_size = 500,
+#     expect_error(archR_set_config(chunk_size = 500,
 #                                 k_min = 2, k_max = 8, parallelize = TRUE,
-#                                 cv_folds = 3, n_iterations = 50,
+#                                 cv_folds = 3, n_runs = 50,
 #                                 n_cores = 2,
 #                                 flags = list(debug = FALSE,
 #                                             plot = FALSE,
@@ -239,9 +239,9 @@ test_that("Config handles: negative inner_chunk_size", {
 # })
 
 test_that("Config handles: improper (non-logical) flags", {
-    expect_error(archR_set_config(inner_chunk_size = 500,
+    expect_error(archR_set_config(chunk_size = 500,
                                 k_min = 2, k_max = 8, parallelize = TRUE,
-                                cv_folds = 3, n_iterations = 50,
+                                cv_folds = 3, n_runs = 50,
                                 n_cores = 2,
                                 flags = list(debug = NULL,
                                             plot = FALSE,
@@ -251,24 +251,24 @@ test_that("Config handles: improper (non-logical) flags", {
 })
 
 
-test_that("Config handles: negative n_iterations", {
-    expect_error(archR_set_config(inner_chunk_size = 500,
+test_that("Config handles: negative n_runs", {
+    expect_error(archR_set_config(chunk_size = 500,
                                 k_min = 2, k_max = 8, parallelize = TRUE,
-                                cv_folds = 3, n_iterations = -50,
+                                cv_folds = 3, n_runs = -50,
                                 n_cores = 2,
                                 flags = list(debug = FALSE,
                                             plot = FALSE,
                                             verbose = TRUE,
                                             time = TRUE)),
-                 "'n_iterations' should be > 0")
+                 "'n_runs' should be > 0")
 })
 
 
 
 test_that("Config handles: negative min_size", {
-    expect_error(archR_set_config(inner_chunk_size = 500,
+    expect_error(archR_set_config(chunk_size = 500,
                                 k_min = 2, k_max = 8, parallelize = TRUE,
-                                cv_folds = 3, n_iterations = 50,
+                                cv_folds = 3, n_runs = 50,
                                 n_cores = 2,
                                 min_size = -20,
                                 flags = list(debug = FALSE,
@@ -280,9 +280,9 @@ test_that("Config handles: negative min_size", {
 
 
 test_that("Config handles: negative alphaVal", {
-    expect_error(archR_set_config(inner_chunk_size = 500,
+    expect_error(archR_set_config(chunk_size = 500,
                                 k_min = 2, k_max = 8, parallelize = TRUE,
-                                cv_folds = 3, n_iterations = 50,
+                                cv_folds = 3, n_runs = 50,
                                 n_cores = 2,
                                 min_size = 20,
                                 alpha_base = -3,
@@ -296,9 +296,9 @@ test_that("Config handles: negative alphaVal", {
 })
 
 
-test_that("Config handles: inner_chunk_size < nSeqs", {
-    expect_error(.assert_archR_innerChunkSize_in_tandem(500,450),
-                    "'inner_chunk_size' should be <= number of input sequences")
+test_that("Config handles: chunk_size < nSeqs", {
+    expect_error(.assert_archR_chunkSize_in_tandem(500,450),
+                    "'chunk_size' should be <= number of input sequences")
 })
 
 test_that("Config handles: kFolds NULL", {

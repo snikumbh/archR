@@ -88,12 +88,12 @@
 #' archRconfig <- archR::archR_set_config(
 #'     parallelize = TRUE,
 #'     n_cores = 2,
-#'     n_iterations = 100,
+#'     n_runs = 100,
 #'     k_min = 1,
 #'     k_max = 20,
 #'     mod_sel_type = "stability",
 #'     bound = 10^-8,
-#'     inner_chunk_size = 100,
+#'     chunk_size = 100,
 #'     flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
 #'         plot = FALSE)
 #' )
@@ -122,7 +122,7 @@ archR <- function(config, seqs_ohe_mat, seqs_raw, seqs_pos = NULL,
     dbg <- config$flags$debugFlag
     vrbs <- config$flags$verboseFlag
     tym <- config$flags$timeFlag
-    chnksz <- config$innerChunkSize
+    chnksz <- config$chunkSize
     modSelType <- config$modSelType
     bound <- config$bound
     parallelize <- config$parallelize

@@ -5,7 +5,7 @@
 \title{Set archR run configuration}
 \usage{
 archR_set_config(
-  inner_chunk_size = 500,
+  chunk_size = 500,
   k_min = 1,
   k_max = 50,
   mod_sel_type = "stability",
@@ -13,7 +13,7 @@ archR_set_config(
   cv_folds = 5,
   parallelize = FALSE,
   n_cores = NA,
-  n_iterations = 500,
+  n_runs = 500,
   alpha_base = 0,
   alpha_pow = 1,
   min_size = 25,
@@ -24,7 +24,7 @@ archR_set_config(
 )
 }
 \arguments{
-\item{inner_chunk_size}{Numeric. Specify the size of the inner chunks of
+\item{chunk_size}{Numeric. Specify the size of the inner chunks of
 sequences.}
 
 \item{k_min}{Numeric. Specify the minimum of the range of values to be tested
@@ -57,9 +57,9 @@ interface.}
 \item{n_cores}{The number of cores to be used when `parallelize` is set
 to TRUE. If `parallelize` is FALSE, nCores is ignored.}
 
-\item{n_iterations}{Numeric. Specify the number of bootstrapped iterations
+\item{n_runs}{Numeric. Specify the number of bootstrapped runs
 to be performed with NMF. Default value is 100. When using cross-validation
-more than 100 (upto 500) iterations may be needed.}
+more than 100 iterations may be needed (upto 500).}
 
 \item{alpha_base, alpha_pow}{Specify the base and the power for computing
 'alpha' in performing model selection for NMF. alpha = alpha_base^alpha_pow.
@@ -108,10 +108,10 @@ on the data: 'inner_chunk_size', 'k_min', 'k_max', 'mod_sel_type',
 \examples{
 # Set archR configuration
 archRconfig <- archR::archR_set_config(
-    inner_chunk_size = 100,
+    chunk_size = 100,
     parallelize = TRUE,
     n_cores = 2,
-    n_iterations = 100,
+    n_runs = 100,
     k_min = 1,
     k_max = 20,
     mod_sel_type = "stability",

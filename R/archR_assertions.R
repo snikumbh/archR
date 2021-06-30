@@ -294,20 +294,20 @@
 
 
 
-## Function to check validity of nIterationsuse for NMF in config
+## Function to check validity of nRunsUse for NMF in config
 ## Expected to be:
 ## 1. not NULL
 ## 2. numeric and > 0
 ## 3. ?
-.assert_archR_nIterations <- function(nIter_var) {
+.assert_archR_nRuns <- function(nIter_var) {
     if (is.null(nIter_var)) {
-        stop("'n_iterations' is NULL")
+        stop("'n_runs' is NULL")
     }
     if (!is.numeric(nIter_var)) {
-        stop("'n_iterations' should be numeric and > 0")
+        stop("'n_runs' should be numeric and > 0")
     } else {
         if (nIter_var < 0) {
-            stop("'n_iterations' should be > 0")
+            stop("'n_runs' should be > 0")
         }
     }
 }
@@ -316,21 +316,21 @@
 
 
 
-## Function to independently check validity of innerChunkSize
+## Function to independently check validity of chunkSize
 ## Expected to be:
 ## 1. not NULL
 ## 2. numeric and >0
 ## When everything is satisfied, still whether it is valid depends on what is
 ## the total number of sequences
-.assert_archR_innerChunkSize_independent <- function(innerChunkSize_var) {
-    if (is.null(innerChunkSize_var)) {
-        stop("'inner_chunk_size' is NULL")
+.assert_archR_chunkSize_independent <- function(chunkSize_var) {
+    if (is.null(chunkSize_var)) {
+        stop("'chunk_size' is NULL")
     }
-    if (!is.numeric(innerChunkSize_var)) {
-        stop("'inner_chunk_size' should be numeric")
+    if (!is.numeric(chunkSize_var)) {
+        stop("'chunk_size' should be numeric")
     } else {
-        if (innerChunkSize_var <= 0) {
-            stop("'inner_chunk_size' should be > 0")
+        if (chunkSize_var <= 0) {
+            stop("'chunk_size' should be > 0")
         }
     }
 }
@@ -338,16 +338,16 @@
 
 
 
-## Function to check validity of innerChunkSize w.r.t. given sequences
+## Function to check validity of chunkSize w.r.t. given sequences
 ## Expected to be:
-## 1. independently valid (see f .assert_archR_innerChunkSize_independent)
+## 1. independently valid (see f .assert_archR_chunkSize_independent)
 ## 2. < #given sequences
 ##
-.assert_archR_innerChunkSize_in_tandem <- function(innerChunkSize_var,
+.assert_archR_chunkSize_in_tandem <- function(chunkSize_var,
                                                 given_seqs_size) {
-    .assert_archR_innerChunkSize_independent(innerChunkSize_var)
-    if (innerChunkSize_var > given_seqs_size) {
-        stop("'inner_chunk_size' should be <= number of input sequences")
+    .assert_archR_chunkSize_independent(chunkSize_var)
+    if (chunkSize_var > given_seqs_size) {
+        stop("'chunk_size' should be <= number of input sequences")
     }
 }
 ## =============================================================================
@@ -363,8 +363,8 @@
 .assert_archR_config <- function(config_var, seqs_size = NA) {
     ##TODO: Check assertions for new args modSelType, tol and bound
     expNames <- c("modSelType", "bound", "kFolds",
-                    "parallelize", "nCoresUse", "nIterationsUse",
-                    "paramRanges", "innerChunkSize", "minSeqs",
+                    "parallelize", "nCoresUse", "nRunsUse",
+                    "paramRanges", "chunkSize", "minSeqs",
                     "flags", "checkpointing", "result_aggl", "result_dist")
     if (is.null(config_var)) {
         stop("'config' is NULL")
@@ -377,10 +377,10 @@
             stop("Check names of elements in 'config'")
         }
         .assert_archR_kFolds_independent(config_var$kFolds)
-        .assert_archR_innerChunkSize_independent(config_var$innerChunkSize)
+        .assert_archR_chunkSize_independent(config_var$chunkSize)
         if (!is.na(seqs_size)) {
             .assert_archR_kFolds_in_tandem(config_var$kFolds, seqs_size)
-            .assert_archR_innerChunkSize_in_tandem(config_var$innerChunkSize,
+            .assert_archR_chunkSize_in_tandem(config_var$chunkSize,
                                                     seqs_size)
             .assert_archR_min_size_in_tandem(config_var$minSeqs, seqs_size)
         }
@@ -388,7 +388,7 @@
         .assert_archR_model_selection_params(config_var$paramRanges)
         .assert_archR_parallelization_params(config_var$parallelize,
                                             config_var$nCoresUse)
-        .assert_archR_nIterations(config_var$nIterationsUse)
+        .assert_archR_nRuns(config_var$nRunsUse)
         .assert_archR_flags(config_var$flags)
     }
 

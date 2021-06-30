@@ -11,7 +11,7 @@
                             param_ranges,
                             parallelDo = FALSE,
                             nCores = NA,
-                            nIterations = 100,
+                            nRuns = 100,
                             bootstrap = TRUE,
                             returnBestK = TRUE,
                             ## TODO: Should tol stay as an argument?
@@ -26,7 +26,7 @@
     ##
     foo_scores <- expand.grid(list(kValue = param_ranges$k_vals,
                                     ScoreType = c("AmariTypeDistance"),
-                                    nRuns = nIterations, Score = 100
+                                    nRuns = nRuns, Score = 100
                             ))
     ##
     .msg_pstr("Bound : ", bound, flg=dbg)
@@ -42,7 +42,7 @@
         ## Get NMF results
         resultList <- .perform_multiple_NMF_runs(X = X, kVal = kValue,
             alphaVal = 0, parallelDo = parallelDo,
-            nCores = nCores, nRuns = nIterations,
+            nCores = nCores, nRuns = nRuns,
             bootstrap = bootstrap)
 
         featMatList <- .get_feat_or_samp_matList(resultList, feat = TRUE)

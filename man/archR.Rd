@@ -143,12 +143,12 @@ inputSeqsRaw <- archR::prepare_data_from_FASTA(fasta_fname = fname,
 archRconfig <- archR::archR_set_config(
     parallelize = TRUE,
     n_cores = 2,
-    n_iterations = 100,
+    n_runs = 100,
     k_min = 1,
     k_max = 20,
     mod_sel_type = "stability",
     bound = 10^-8,
-    inner_chunk_size = 100,
+    chunk_size = 100,
     flags = list(debug = FALSE, time = TRUE, verbose = TRUE,
         plot = FALSE)
 )

@@ -569,7 +569,7 @@ collate_clusters <- function(to_clust, orig_clust) {
     if (chunkLength == 0) {
         stop("Preparing chunks, length of 'total_set' is 0")
     }
-    .assert_archR_innerChunkSize_independent(reqdChunkSize)
+    .assert_archR_chunkSize_independent(reqdChunkSize)
     ##
     ## When chunkLength (i.e., total sequences) < reqdChunkSize, the else
     ## condition, return the totalSet as the only chunk.

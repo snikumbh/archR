@@ -141,7 +141,7 @@ test_that("prepare_chunks handles negative chunkSize", {
                                        tempList[[x]] <- round(10*runif(5))
                                    })
     expect_error(.prepare_chunks(seqsClustLabels, -25),
-                 "'inner_chunk_size' should be > 0")
+                 "'chunk_size' should be > 0")
 })
 
 
