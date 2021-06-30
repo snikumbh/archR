@@ -1,14 +1,32 @@
 
+
+# archR 0.1.8
+
+## New features
+* Custom ordering of individual clusters within collated clusters. Earlier this 
+followed label ordering as per `cutree` output
+* Improved messages for model selection using cross-validation
+* (User-facing) The agglomeration and distance method used for collation of 
+clusters can be set as part of configuration settings
+
+## Breaking changes
+* (User-facing) Argument name `inner_chunk_size` changed to `chunk_size` in 
+  `archR_set_config()`
+* 
+
+
+
+
 # archR 0.1.7
 
 ## New features
 * Accounting and correcting for over-fitting improves clusters/architectures' 
 quality
 * Improved messages
-* (User-facing) New function collate_clusters
+* (User-facing) New function `collate_clusters()`
 
 ## Breaking changes
-* (User-facing) tolerance no longer an argument in archR_set_configuration.
+* (User-facing) tolerance no longer an argument in archR_set_configuration
 
 
 # archR 0.1.6
