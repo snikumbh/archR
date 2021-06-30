@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@
       <h1 data-toc-skip>Example usage of <em>archR</em> on simulated DNA sequences</h1>
                         <h4 class="author">Sarvesh Nikumbh</h4>
             
-            <h4 class="date">2021-06-23</h4>
+            <h4 class="date">2021-06-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/snikumbh/archR/blob/master/vignettes/archR.Rmd"><code>vignettes/archR.Rmd</code></a></small>
       <div class="hidden name"><code>archR.Rmd</code></div>
@@ -277,12 +277,12 @@
 <span class="va">archRconfig</span> <span class="op">&lt;-</span> <span class="fu">archR</span><span class="fu">::</span><span class="fu"><a href="../reference/archR_set_config.html">archR_set_config</a></span><span class="op">(</span>
         parallelize <span class="op">=</span> <span class="cn">TRUE</span>,
         n_cores <span class="op">=</span> <span class="fl">2</span>,
-        n_iterations <span class="op">=</span> <span class="fl">100</span>,
+        n_runs <span class="op">=</span> <span class="fl">100</span>,
         k_min <span class="op">=</span> <span class="fl">1</span>,
         k_max <span class="op">=</span> <span class="fl">20</span>,
         mod_sel_type <span class="op">=</span> <span class="st">"stability"</span>,
         bound <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">6</span>,
-        inner_chunk_size <span class="op">=</span> <span class="fl">100</span>,
+        chunk_size <span class="op">=</span> <span class="fl">100</span>,
         result_aggl <span class="op">=</span> <span class="st">"ward.D"</span>, 
         result_dist <span class="op">=</span> <span class="st">"euclid"</span>,
         flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>debug <span class="op">=</span> <span class="cn">FALSE</span>, time <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -322,8 +322,8 @@
 <span class="co">#&gt; ℹ Best K for this chunk: 4</span>
 <span class="co">#&gt; ✔ 1 of 1 outer chunk complete</span>
 <span class="co">#&gt; ✔ 1 of 2 iterations complete</span>
-<span class="co">#&gt; → Iteration 1 completed: 49.7s</span>
-<span class="co">#&gt; → Time ellapsed since start: 49.8s</span>
+<span class="co">#&gt; → Iteration 1 completed: 1m 1.2s</span>
+<span class="co">#&gt; → Time ellapsed since start: 1m 1.3s</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 2 of 2 [4 chunks] ─────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
@@ -356,15 +356,15 @@
 <span class="co">#&gt; ℹ Best K for this chunk: 1</span>
 <span class="co">#&gt; ✔ 4 of 4 outer chunks complete</span>
 <span class="co">#&gt; ✔ 2 of 2 iterations complete</span>
-<span class="co">#&gt; → Iteration 2 completed: 49.1s</span>
-<span class="co">#&gt; → Time ellapsed since start: 1m 38.9s</span>
-<span class="co">#&gt; ── archR exiting 1m 39s ────────────────────────────────────────────────────────</span></code></pre></div>
+<span class="co">#&gt; → Iteration 2 completed: 53.1s</span>
+<span class="co">#&gt; → Time ellapsed since start: 1m 54.4s</span>
+<span class="co">#&gt; ── archR exiting 1m 54.4s ──────────────────────────────────────────────────────</span></code></pre></div>
 </div>
 <div id="understanding-the-result-object-from-archr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#understanding-the-result-object-from-archr" class="anchor"></a>Understanding the result object from <em>archR</em>
 </h2>
-<p>In the version 0.1.7, <em>archR</em> naively returns a result object which is a nested list of seven elements. These include: - the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; - the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; - the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; - the raw sequences provided [<code>rawSeqs</code>]; - if timeFlag is set, timing information (in minutes) per iteration [<code>timeInfo</code>]; - the configuration setting [<code>config</code>]; and - the call itself [<code>call</code>].</p>
+<p>In the version 0.1.8, <em>archR</em> naively returns a result object which is a nested list of seven elements. These include: - the sequence cluster labels per iteration [<code>seqsClustLabels</code>]; - the collection of NMF basis vectors per iteration [<code>clustBasisVectors</code>]: each is a list of two elements <code>nBasisVectors</code> and <code>basisVectors</code>; - the clustering solution, [<code>clustSol</code>], which is obtained upon combining raw clusters from the last iteration of archR. This element stores the clustering of NMF basis vectors [<code>basisVectorsClust</code>] and the sequence clusters [<code>clusters</code>]; - the raw sequences provided [<code>rawSeqs</code>]; - if timeFlag is set, timing information (in minutes) per iteration [<code>timeInfo</code>]; - the configuration setting [<code>config</code>]; and - the call itself [<code>call</code>].</p>
 <div id="nmf-basis-vectors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nmf-basis-vectors" class="anchor"></a>NMF basis vectors</h3>
@@ -380,12 +380,12 @@
 <span class="co">#&gt; [1] 1600    5</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">i2_bv</span><span class="op">)</span>
 <span class="co">#&gt;            [,1]       [,2]       [,3]       [,4]       [,5]</span>
-<span class="co">#&gt; [1,] 0.05168607 0.07646545 0.05101575 0.08471968 0.12920686</span>
-<span class="co">#&gt; [2,] 0.02486037 0.07603963 0.09368067 0.04243838 0.10288363</span>
-<span class="co">#&gt; [3,] 0.05076204 0.04942250 0.04745849 0.04243838 0.07754562</span>
-<span class="co">#&gt; [4,] 0.09945618 0.04225743 0.11945475 0.03847347 0.05154964</span>
-<span class="co">#&gt; [5,] 0.07484865 0.09133425 0.17064107 0.04028088 0.09605441</span>
-<span class="co">#&gt; [6,] 0.05051104 0.09435340 0.14381051 0.04232253 0.02514596</span></code></pre></div>
+<span class="co">#&gt; [1,] 0.05168607 0.07646511 0.05101696 0.08471968 0.12920686</span>
+<span class="co">#&gt; [2,] 0.02486037 0.07603933 0.09368281 0.04243838 0.10288363</span>
+<span class="co">#&gt; [3,] 0.05076204 0.04942229 0.04745960 0.04243838 0.07754562</span>
+<span class="co">#&gt; [4,] 0.09945618 0.04225726 0.11945756 0.03847347 0.05154964</span>
+<span class="co">#&gt; [5,] 0.07484865 0.09133385 0.17064509 0.04028088 0.09605441</span>
+<span class="co">#&gt; [6,] 0.05051104 0.09435299 0.14381388 0.04232253 0.02514596</span></code></pre></div>
 <p>The NMF basis vectors can be visualized as a heatmap and/or sequence logo using [<a href="https://snikumbh.github.io/archR/reference/viz_bas_vec_heatmap_seqlogo.html" class="uri">https://snikumbh.github.io/archR/reference/viz_bas_vec_heatmap_seqlogo.html</a>] (viz_bas_vec_heat_seqlogo) function.</p>
 </div>
 <div id="basis-vectors-at-iteration-1" class="section level3">
@@ -499,31 +499,30 @@ Figure: Clusters at iteration 2
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt; [1] Biostrings_2.60.1   GenomeInfoDb_1.28.0 XVector_0.32.0     </span>
 <span class="co">#&gt; [4] IRanges_2.26.0      S4Vectors_0.30.0    BiocGenerics_0.38.0</span>
-<span class="co">#&gt; [7] archR_0.1.7        </span>
+<span class="co">#&gt; [7] archR_0.1.8        </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;  [1] Rcpp_1.0.6             lattice_0.20-44        prettyunits_1.1.1     </span>
-<span class="co">#&gt;  [4] ps_1.6.0               ggseqlogo_0.1          rprojroot_2.0.2       </span>
-<span class="co">#&gt;  [7] digest_0.6.27          utf8_1.2.1             R6_2.5.0              </span>
-<span class="co">#&gt; [10] plyr_1.8.6             evaluate_0.14          ggplot2_3.3.4         </span>
-<span class="co">#&gt; [13] highr_0.9              pillar_1.6.1           zlibbioc_1.38.0       </span>
-<span class="co">#&gt; [16] rlang_0.4.11           rstudioapi_0.13        jquerylib_0.1.4       </span>
-<span class="co">#&gt; [19] Matrix_1.3-3           rmarkdown_2.9          pkgdown_1.6.1         </span>
-<span class="co">#&gt; [22] labeling_0.4.2         textshaping_0.3.5      desc_1.3.0            </span>
-<span class="co">#&gt; [25] stringr_1.4.0          RCurl_1.98-1.3         munsell_0.5.0         </span>
-<span class="co">#&gt; [28] compiler_4.1.0         xfun_0.24              pkgconfig_2.0.3       </span>
-<span class="co">#&gt; [31] systemfonts_1.0.2      htmltools_0.5.1.1      tibble_3.1.2          </span>
-<span class="co">#&gt; [34] GenomeInfoDbData_1.2.6 matrixStats_0.59.0     fansi_0.5.0           </span>
-<span class="co">#&gt; [37] crayon_1.4.1           bitops_1.0-7           grid_4.1.0            </span>
-<span class="co">#&gt; [40] jsonlite_1.7.2         gtable_0.3.0           lifecycle_1.0.0       </span>
-<span class="co">#&gt; [43] magrittr_2.0.1         scales_1.1.1           cli_2.5.0             </span>
-<span class="co">#&gt; [46] stringi_1.6.2          cachem_1.0.5           farver_2.1.0          </span>
-<span class="co">#&gt; [49] reshape2_1.4.4         fs_1.5.0               bslib_0.2.5.1         </span>
-<span class="co">#&gt; [52] ellipsis_0.3.2         ragg_1.1.3             vctrs_0.3.8           </span>
-<span class="co">#&gt; [55] cowplot_1.1.1          tools_4.1.0            glue_1.4.2            </span>
-<span class="co">#&gt; [58] fastmap_1.1.0          yaml_2.2.1             colorspace_2.0-1      </span>
-<span class="co">#&gt; [61] cluster_2.1.2          memoise_2.0.0          knitr_1.33            </span>
-<span class="co">#&gt; [64] sass_0.4.0</span></code></pre></div>
+<span class="co">#&gt;  [4] ggseqlogo_0.1          rprojroot_2.0.2        digest_0.6.27         </span>
+<span class="co">#&gt;  [7] utf8_1.2.1             R6_2.5.0               plyr_1.8.6            </span>
+<span class="co">#&gt; [10] evaluate_0.14          ggplot2_3.3.5          highr_0.9             </span>
+<span class="co">#&gt; [13] pillar_1.6.1           zlibbioc_1.38.0        rlang_0.4.11          </span>
+<span class="co">#&gt; [16] jquerylib_0.1.4        Matrix_1.3-3           rmarkdown_2.9         </span>
+<span class="co">#&gt; [19] pkgdown_1.6.1          labeling_0.4.2         textshaping_0.3.5     </span>
+<span class="co">#&gt; [22] desc_1.3.0             stringr_1.4.0          RCurl_1.98-1.3        </span>
+<span class="co">#&gt; [25] munsell_0.5.0          compiler_4.1.0         xfun_0.24             </span>
+<span class="co">#&gt; [28] pkgconfig_2.0.3        systemfonts_1.0.2      htmltools_0.5.1.1     </span>
+<span class="co">#&gt; [31] tibble_3.1.2           GenomeInfoDbData_1.2.6 matrixStats_0.59.0    </span>
+<span class="co">#&gt; [34] fansi_0.5.0            crayon_1.4.1           bitops_1.0-7          </span>
+<span class="co">#&gt; [37] grid_4.1.0             jsonlite_1.7.2         gtable_0.3.0          </span>
+<span class="co">#&gt; [40] lifecycle_1.0.0        magrittr_2.0.1         scales_1.1.1          </span>
+<span class="co">#&gt; [43] cli_3.0.0              stringi_1.6.2          cachem_1.0.5          </span>
+<span class="co">#&gt; [46] farver_2.1.0           reshape2_1.4.4         fs_1.5.0              </span>
+<span class="co">#&gt; [49] bslib_0.2.5.1          ellipsis_0.3.2         ragg_1.1.3            </span>
+<span class="co">#&gt; [52] vctrs_0.3.8            cowplot_1.1.1          tools_4.1.0           </span>
+<span class="co">#&gt; [55] glue_1.4.2             fastmap_1.1.0          yaml_2.2.1            </span>
+<span class="co">#&gt; [58] colorspace_2.0-2       cluster_2.1.2          memoise_2.0.0         </span>
+<span class="co">#&gt; [61] knitr_1.33             sass_0.4.0</span></code></pre></div>
 </div>
   </div>
 
