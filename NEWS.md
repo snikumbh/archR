@@ -12,9 +12,6 @@ clusters can be set as part of configuration settings
 ## Breaking changes
 * (User-facing) Argument name `inner_chunk_size` changed to `chunk_size` in 
   `archR_set_config()`
-* 
-
-
 
 
 # archR 0.1.7
