@@ -197,11 +197,11 @@ archR_set_config <- function(chunk_size = 500,
                             k_min = 1,
                             k_max = 50,
                             mod_sel_type = "stability",
-                            bound = 10^-8,
+                            bound = 10^-6,
                             cv_folds = 5,
                             parallelize = FALSE,
                             n_cores = NA,
-                            n_runs = 500,
+                            n_runs = 100,
                             alpha_base = 0,
                             alpha_pow = 1,
                             min_size = 25,
@@ -813,7 +813,7 @@ perform_setup <- function(config, total_itr, o_dir, fresh,
         plot_all_seqs_logo(seqs_raw, seqs_pos, dpath=o_dir)
     }
     ## Make checks for params in configuration
-    .assert_archR_config(config, ncol(seqs_ohe_mat))
+    .assert_archR_config(config, seqs_size = ncol(seqs_ohe_mat))
     .assert_archR_thresholdIteration(total_itr)
     .assert_archR_collation(set_ocollation, total_itr)
 
